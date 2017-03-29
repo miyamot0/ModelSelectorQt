@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>scripts/FranckComputation.R</file>
         <file>images/application-exit.png</file>
+        <file>images/applications-other.png</file>
         <file>images/document-new.png</file>
         <file>images/document-open.png</file>
         <file>images/document-save.png</file>
@@ -10,12 +10,21 @@
         <file>images/edit-cut.png</file>
         <file>images/edit-paste.png</file>
         <file>images/printer.png</file>
-        <file>images/applications-other.png</file>
-        <file>images/text-x-generic.png</file>
+        <file>images/SNS.png</file>
         <file>images/system-run.png</file>
+        <file>images/text-x-generic.png</file>
+        <file>scripts/FranckComputation.R</file>
         <file>scripts/installDependencyBase64.R</file>
         <file>scripts/installDependencyJsonlite.R</file>
         <file>scripts/installDependencyReshape.R</file>
-        <file>images/SNS.png</file>
+        <file>COPYING.txt</file>
+        <file>License_base64enc.txt</file>
+        <file>License_BDS.txt</file>
+        <file>License_gnome_icons.txt</file>
+        <file>License_jsonlite.txt</file>
+        <file>License_NLS.txt</file>
+        <file>License_Qt.txt</file>
+        <file>License_R.txt</file>
+        <file>License_reshape.txt</file>
     </qresource>
 </RCC>
