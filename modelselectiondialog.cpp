@@ -41,6 +41,8 @@ ModelSelectionDialog::ModelSelectionDialog(QWidget *parent) :
             qApp->desktop()->availableGeometry()
         )
     );
+
+    this->setWindowFlags(Qt::Tool);
 }
 
 ModelSelectionDialog::~ModelSelectionDialog()
