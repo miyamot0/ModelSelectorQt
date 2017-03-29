@@ -422,7 +422,10 @@ void SheetWidget::showOpenFileDialog()
 void SheetWidget::showSaveFileDialog()
 {
     QString selFilter="Spreadsheet (*.xlsx)";
-    QString file_name = QFileDialog::getSaveFileName(this, "Save file As", QDir::currentPath(), "Spreadsheet (*.xlsx)", &selFilter);
+    QString file_name = QFileDialog::getSaveFileName(this, "Save file As",
+                                                     QDir::homePath(),
+                                                     "Spreadsheet (*.xlsx)",
+                                                     &selFilter);
 
     if(!file_name.trimmed().isEmpty())
     {
@@ -445,8 +448,13 @@ void SheetWidget::showSaveFileDialog()
                     xlsx.write(1, j + 1, temp);
                 }
 
-                temp = table->item(i, j)->data(Qt::DisplayRole).toString();
-                xlsx.write(i + 2, j + 1, temp);
+                QTableWidgetItem *item = table->item(i, j);
+
+                if (item != NULL && !item->text().isEmpty())
+                {
+                    temp = table->item(i, j)->data(Qt::DisplayRole).toString();
+                    xlsx.write(i + 2, j + 1, temp);
+                }
             }
         }
 
