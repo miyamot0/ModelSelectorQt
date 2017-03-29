@@ -104,6 +104,12 @@ SheetWidget::SheetWidget(bool rInstalled, QString commandString, QWidget *parent
 
     resize(QDesktopWidget().availableGeometry(this).size() * 0.7);
 
+    QString cwd = QDir::currentPath();
+
+    #ifdef _WIN32
+
+    cwd = QDir::currentPath();
+
     this->window()->setGeometry(
         QStyle::alignedRect(
             Qt::LeftToRight,
@@ -112,12 +118,6 @@ SheetWidget::SheetWidget(bool rInstalled, QString commandString, QWidget *parent
             qApp->desktop()->availableGeometry()
         )
     );
-
-    QString cwd = QDir::currentPath();
-
-    #ifdef _WIN32
-
-    cwd = QDir::currentPath();
 
     if (!QDir(cwd).exists("FranckComputation.R"))
     {
