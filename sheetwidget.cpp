@@ -479,7 +479,7 @@ void SheetWidget::showAnalysisWindow()
 
 void SheetWidget::showDMSLicenseWindow()
 {
-    licenseDialog = new LicenseDialog("COPYING.txt", this);
+    licenseDialog = new LicenseDialog(":/COPYING.txt", this);
     licenseDialog->setWindowTitle("DMS License (GPL-V3)");
     licenseDialog->setModal(true);
     licenseDialog->show();
@@ -487,7 +487,7 @@ void SheetWidget::showDMSLicenseWindow()
 
 void SheetWidget::showRLicenseWindow()
 {
-    licenseDialog = new LicenseDialog("License_R.txt", this);
+    licenseDialog = new LicenseDialog(":/License_R.txt", this);
     licenseDialog->setWindowTitle("R License (GPL-V3)");
     licenseDialog->setModal(true);
     licenseDialog->show();
@@ -495,7 +495,7 @@ void SheetWidget::showRLicenseWindow()
 
 void SheetWidget::showNLSLicenseWindow()
 {
-    licenseDialog = new LicenseDialog("License_NLS.txt", this);
+    licenseDialog = new LicenseDialog(":/License_NLS.txt", this);
     licenseDialog->setWindowTitle("nls License (GPL-V3)");
     licenseDialog->setModal(true);
     licenseDialog->show();
@@ -503,7 +503,7 @@ void SheetWidget::showNLSLicenseWindow()
 
 void SheetWidget::showBase64LicenseWindow()
 {
-    licenseDialog = new LicenseDialog("License_base64enc.txt", this);
+    licenseDialog = new LicenseDialog(":/License_base64enc.txt", this);
     licenseDialog->setWindowTitle("base64enc License (GPL-V3)");
     licenseDialog->setModal(true);
     licenseDialog->show();
@@ -511,7 +511,7 @@ void SheetWidget::showBase64LicenseWindow()
 
 void SheetWidget::showGridextraLicenseWindow()
 {
-    licenseDialog = new LicenseDialog("License_R.txt", this);
+    licenseDialog = new LicenseDialog(":/License_R.txt", this);
     licenseDialog->setWindowTitle("gridExtra License (MIT)");
     licenseDialog->setModal(true);
     licenseDialog->show();
@@ -519,7 +519,7 @@ void SheetWidget::showGridextraLicenseWindow()
 
 void SheetWidget::showJsonliteLicenseWindow()
 {
-    licenseDialog = new LicenseDialog("License_jsonlite.txt", this);
+    licenseDialog = new LicenseDialog(":/License_jsonlite.txt", this);
     licenseDialog->setWindowTitle("jsonlite License (MIT)");
     licenseDialog->setModal(true);
     licenseDialog->show();
@@ -527,7 +527,7 @@ void SheetWidget::showJsonliteLicenseWindow()
 
 void SheetWidget::showReshapeLicenseWindow()
 {
-    licenseDialog = new LicenseDialog("License_reshape.txt", this);
+    licenseDialog = new LicenseDialog(":/License_reshape.txt", this);
     licenseDialog->setWindowTitle("reshape License (MIT)");
     licenseDialog->setModal(true);
     licenseDialog->show();
@@ -536,7 +536,7 @@ void SheetWidget::showReshapeLicenseWindow()
 void SheetWidget::showBDSLicenseWindow()
 {
 
-    licenseDialog = new LicenseDialog("License_BDS.txt", this);
+    licenseDialog = new LicenseDialog(":/License_BDS.txt", this);
     licenseDialog->setWindowTitle("DMS License (GPL-V3)");
     licenseDialog->setModal(true);
     licenseDialog->show();
@@ -544,7 +544,7 @@ void SheetWidget::showBDSLicenseWindow()
 
 void SheetWidget::showQTLicenseWindow()
 {
-    licenseDialog = new LicenseDialog("License_Qt.txt", this);
+    licenseDialog = new LicenseDialog(":/License_Qt.txt", this);
     licenseDialog->setWindowTitle("Qt License (LGPL-V3)");
     licenseDialog->setModal(true);
     licenseDialog->show();
@@ -552,7 +552,7 @@ void SheetWidget::showQTLicenseWindow()
 
 void SheetWidget::showGnomeLicenseWindow()
 {
-    licenseDialog = new LicenseDialog("License_gnome_icons.txt", this);
+    licenseDialog = new LicenseDialog(":/License_gnome_icons.txt", this);
     licenseDialog->setWindowTitle("Gnome Icon Set License (GPL-V3)");
     licenseDialog->setModal(true);
     licenseDialog->show();
