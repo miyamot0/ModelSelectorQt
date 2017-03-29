@@ -176,7 +176,7 @@ ResultsDialog::~ResultsDialog()
 void ResultsDialog::on_pushButton_2_clicked()
 {
     QString selFilter="Spreadsheet (*.xlsx)";
-    QString file_name = QFileDialog::getSaveFileName(this, "Save file", QDir::currentPath(), "Spreadsheet (*.xlsx)", &selFilter);
+    QString file_name = QFileDialog::getSaveFileName(this, "Save file", QDir::homePath(), "Spreadsheet (*.xlsx)", &selFilter);
 
     if(!file_name.trimmed().isEmpty())
     {
@@ -199,8 +199,14 @@ void ResultsDialog::on_pushButton_2_clicked()
                     xlsx.write(1, j + 1, temp);
                 }
 
-                temp = ui->tableWidget->item(i, j)->data(Qt::DisplayRole).toString();
-                xlsx.write(i + 2, j + 1, temp);
+                QTableWidgetItem *item = ui->tableWidget->item(i, j);
+
+                if (item != NULL && !item->text().isEmpty())
+                {
+                    temp = ui->tableWidget->item(i, j)->data(Qt::DisplayRole).toString();
+                    xlsx.write(i + 2, j + 1, temp);
+                }
+
             }
         }
 
