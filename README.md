@@ -24,11 +24,11 @@ The Small N Stats Discounting Model Selector uses a number of open source projec
 
 ### Referenced Works (R packages/scripts)
 The Discounting Model Selector accesses the following R packages to perform statistical methods:
-* nls R Package - GPLv2 Licensed. Copyright (C) 1999-1999 Saikat DebRoy, Douglas M. Bates, Jose C. Pinheiro.
-* nls R Package - GPLv2 Licensed. Copyright (C) 2000-7. The R Core Team.
-* base64enc R Package - GPLv2 Licensed. Copyright (c) 2015, Simon Urbanek
+* nls R Package - GPLv2+ Licensed. Copyright (C) 1999-1999 Saikat DebRoy, Douglas M. Bates, Jose C. Pinheiro.
+* nls R Package - GPLv2+ Licensed. Copyright (C) 2000-7. The R Core Team.
+* base64enc R Package - GPLv2+ Licensed. Copyright (c) 2015, Simon Urbanek
 * reshape R Package - MIT Licensed. Copyright (c) 2014, Hadley Wickham.
-* BDS R Script - GPLv2 Licensed. Copyright (c) 2016, Dr. Chris Franck, Virginia Tech - Department of Statistics.
+* BDS R Script - GPLv2+ Licensed. Copyright (c) 2016, Dr. Chris Franck, Virginia Tech - Department of Statistics.
 
 ### Referenced Works (academic works)
 The Small N Stats Discounting Model Selector is based on the following academic works:
