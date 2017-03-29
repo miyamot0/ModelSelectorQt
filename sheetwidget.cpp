@@ -822,9 +822,9 @@ void SheetWidget::Calculate(int topDelay, int leftDelay, int bottomDelay, int ri
 
         #elif TARGET_OS_MAC
 
-        QString scriptDir = QCoreApplication::applicationDirPath() + "/";
+        QString scriptDir = "\"" + QCoreApplication::applicationDirPath() + "/";
 
-        mArgList << scriptDir + "FranckComputation.R";
+        mArgList << scriptDir + "FranckComputation.R\"";
 
         #endif
 
