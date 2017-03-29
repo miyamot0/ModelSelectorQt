@@ -35,6 +35,15 @@ int main(int argc, char *argv[])
 
     #ifdef TARGET_OS_MAC
 
+    QFile rScript("/usr/local/bin/Rscript");
+
+    if(rScript.exists())
+    {
+        isRActive = true;
+
+        commandString = "/usr/local/bin/Rscript";
+    }
+
     #endif
 
     SheetWidget mNewSheet(isRActive, commandString);
