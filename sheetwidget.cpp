@@ -115,6 +115,10 @@ SheetWidget::SheetWidget(bool rInstalled, QString commandString, QWidget *parent
 
     QString cwd = QDir::currentPath();
 
+    #ifdef _WIN32
+
+    cwd = QDir::currentPath();
+
     if (!QDir(cwd).exists("FranckComputation.R"))
     {
         QFile::copy(":/scripts/FranckComputation.R", cwd + "/FranckComputation.R");
@@ -134,6 +138,34 @@ SheetWidget::SheetWidget(bool rInstalled, QString commandString, QWidget *parent
     {
         QFile::copy(":/scripts/installDependencyReshape.R", cwd + "/installDependencyReshape.R");
     }
+
+    #endif
+
+    #ifdef TARGET_OS_MAC
+
+    QString scriptDir = QCoreApplication::applicationDirPath() + "/";
+
+    if (!QFile::exists(scriptDir + "FranckComputation.R"))
+    {
+        QFile::copy(":/scripts/FranckComputation.R", scriptDir + "FranckComputation.R");
+    }
+
+    if (!QFile::exists(scriptDir + "installDependencyBase64.R"))
+    {
+        QFile::copy(":/scripts/installDependencyBase64.R", scriptDir + "installDependencyBase64.R");
+    }
+
+    if (!QFile::exists(scriptDir + "installDependencyJsonlite.R"))
+    {
+        QFile::copy(":/scripts/installDependencyJsonlite.R", scriptDir + "installDependencyJsonlite.R");
+    }
+
+    if (!QFile::exists(scriptDir + "installDependencyReshape.R"))
+    {
+        QFile::copy(":/scripts/installDependencyReshape.R", scriptDir + "installDependencyReshape.R");
+    }
+
+    #endif
 
     statusDialog = new StatusDialog(isCoreRPresent, commandParameter, this);
     statusDialog->setModal(true);
@@ -761,7 +793,21 @@ void SheetWidget::Calculate(int topDelay, int leftDelay, int bottomDelay, int ri
         modelArgs << convert_bool(modelQuasiHyperbolic);
 
         QStringList mArgList;
+
+        #ifdef _WIN32
+
         mArgList << "FranckComputation.R";
+
+        #endif
+
+        #ifdef TARGET_OS_MAC
+
+        QString scriptDir = QCoreApplication::applicationDirPath() + "/";
+
+        mArgList << scriptDir + "FranckComputation.R";
+
+        #endif
+
         mArgList << mDelayArgs;
         mArgList << mValueArgs;
         mArgList << modelArgs.join(",");
