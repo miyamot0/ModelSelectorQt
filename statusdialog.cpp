@@ -65,11 +65,11 @@ StatusDialog::StatusDialog(bool rInstalled, QString commandParameter, QWidget *p
 
     #ifdef TARGET_OS_MAC
 
-    QString scriptDir = QCoreApplication::applicationDirPath() + "/";
+    QString scriptDir = "\"" +QCoreApplication::applicationDirPath() + "/";
 
-    mPackageInstall << scriptDir + "installDependencyReshape.R";
-    mPackageInstall << scriptDir + "installDependencyBase64.R";
-    mPackageInstall << scriptDir + "installDependencyJsonlite.R";
+    mPackageInstall << scriptDir + "installDependencyReshape.R\"";
+    mPackageInstall << scriptDir + "installDependencyBase64.R\"";
+    mPackageInstall << scriptDir + "installDependencyJsonlite.R\"";
 
     #endif
 
