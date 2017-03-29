@@ -6,8 +6,8 @@ Features include:
   - Discounting Model comparison/competition using Discounting information criterion (BIC) to inform the best/better fitting models (see Franck et al., 2015)
   - ED50 calculations for all models, all parameter fittings, and overall model competition (e.g., best, 2nd best, ...)
   - Identification of best performing model, with corresponding ED50, for similar cross-model discounting indices
-  - R-based graphical output in appropriate log space(s) for each model selected (ggplot2)
-  - Easily imports common file formats into the application's spreadsheet (.xlsx, .csv)
+  - R-based graphical output in appropriate log space(s) for each model selected
+  - Easily imports common file formats into the application's spreadsheet (.xlsx)
   - Wide range of model outputs/metrics, saveable in common spreadsheet file formats
   - Cross-platform support, compile-able for Windows, Mac, and Linux (only Ubuntu tested)
 
