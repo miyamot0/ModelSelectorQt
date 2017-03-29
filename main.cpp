@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    QString commandString = "Rscript";
+    QString commandString;
     bool isRActive = false;
 
     #ifdef _WIN32
@@ -26,18 +26,10 @@ int main(int argc, char *argv[])
 
         isRActive = true;
     }
-    else
-    {
-        isRActive = false;
-    }
 
-    #endif
+    #elif TARGET_OS_MAC
 
-    #ifdef TARGET_OS_MAC
-
-    QFile rScript("/usr/local/bin/Rscript");
-
-    if(rScript.exists())
+    if(QFile::exists("/usr/local/bin/Rscript"))
     {
         isRActive = true;
 
