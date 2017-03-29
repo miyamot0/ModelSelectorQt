@@ -54,9 +54,24 @@ StatusDialog::StatusDialog(bool rInstalled, QString commandParameter, QWidget *p
     }
 
     QStringList mPackageInstall;
+
+    #ifdef _WIN32
+
     mPackageInstall << "installDependencyReshape.R";
     mPackageInstall << "installDependencyBase64.R";
     mPackageInstall << "installDependencyJsonlite.R";
+
+    #endif
+
+    #ifdef TARGET_OS_MAC
+
+    QString scriptDir = QCoreApplication::applicationDirPath() + "/";
+
+    mPackageInstall << scriptDir + "installDependencyReshape.R";
+    mPackageInstall << scriptDir + "installDependencyBase64.R";
+    mPackageInstall << scriptDir + "installDependencyJsonlite.R";
+
+    #endif
 
     thread = new QThread();
     rWorker = new Rworker(commandParameter, mPackageInstall);

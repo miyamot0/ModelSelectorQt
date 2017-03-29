@@ -370,17 +370,17 @@ void SheetWidget::clearSheet()
 void SheetWidget::showOpenFileDialog()
 {
     QString file_name;
+    QString fileFilter = "Spreadsheet (*.xlsx)";
 
     #ifdef _WIN32
 
-    QString fileFilter = "Spreadsheet (*.xlsx)";
-    file_name = QFileDialog::getOpenFileName(this, "Open spreadsheet file", QDir::homePath(), fileFilter);
+    file_name = QFileDialog::getOpenFileName(this, "Open spreadsheet file", QDir::homePath(),
+                                             fileFilter);
 
     #elif TARGET_OS_MAC
 
-    QString selfilter = tr("Spreadsheet (*.xlsx)");
     file_name = QFileDialog::getOpenFileName(nullptr, "Open spreadsheet file", QDir::homePath(),
-                                             selfilter, nullptr, QFileDialog::Option::DontUseNativeDialog);
+                                             fileFilter, nullptr, QFileDialog::Option::DontUseNativeDialog);
 
     #endif
 
@@ -399,12 +399,9 @@ void SheetWidget::showOpenFileDialog()
 
             xlsx2.selectSheet(sheetSelectDialog->GetSelected());
 
-            xlsx2.dimension().lastColumn();
-            xlsx2.dimension().lastRow();
-
-            for (int w = 0; w < xlsx2.dimension().lastColumn(); w++)
+            for (int w = 0; w < xlsx2.dimension().lastColumn() + 1; w++)
             {
-                for (int h = 0; h < xlsx2.dimension().lastRow(); h++)
+                for (int h = 0; h < xlsx2.dimension().lastRow() + 1; h++)
                 {
                     if (QXlsx::Cell *cell = xlsx2.cellAt(h, w))
                     {
@@ -421,11 +418,26 @@ void SheetWidget::showOpenFileDialog()
 
 void SheetWidget::showSaveFileDialog()
 {
-    QString selFilter="Spreadsheet (*.xlsx)";
-    QString file_name = QFileDialog::getSaveFileName(this, "Save file As",
-                                                     QDir::homePath(),
-                                                     "Spreadsheet (*.xlsx)",
-                                                     &selFilter);
+
+    QString file_name;
+    QString fileFilter = "Spreadsheet (*.xlsx)";
+
+    #ifdef _WIN32
+
+    file_name = QFileDialog::getSaveFileName(this, "Open spreadsheet file", QDir::homePath(),
+                                             fileFilter);
+
+    #elif TARGET_OS_MAC
+
+    file_name = QFileDialog::getSaveFileName(this, "Open spreadsheet file", QDir::homePath(),
+                                             fileFilter, &fileFilter, QFileDialog::Option::DontUseNativeDialog);
+
+    if (!file_name.contains(".xlsx"))
+    {
+        file_name.append(".xlxs");
+    }
+
+    #endif
 
     if(!file_name.trimmed().isEmpty())
     {
@@ -435,25 +447,17 @@ void SheetWidget::showSaveFileDialog()
         int cols = table->columnCount();
 
         QString temp;
-        QTableWidgetItem *col;
 
         for (int i=0; i<rows; i++)
         {
             for (int j=0; j<cols; j++)
             {
-                if (i == 0)
-                {
-                    col = table->horizontalHeaderItem(j);
-                    temp = col->text();
-                    xlsx.write(1, j + 1, temp);
-                }
-
                 QTableWidgetItem *item = table->item(i, j);
 
                 if (item != NULL && !item->text().isEmpty())
                 {
                     temp = table->item(i, j)->data(Qt::DisplayRole).toString();
-                    xlsx.write(i + 2, j + 1, temp);
+                    xlsx.write(i + 1, j + 1, temp);
                 }
             }
         }
