@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>542</width>
-    <height>419</height>
+    <width>622</width>
+    <height>432</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,119 +15,127 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <property name="sizeConstraint">
-    <enum>QLayout::SetDefaultConstraint</enum>
+    <enum>QLayout::SetFixedSize</enum>
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
+       </property>
        <property name="leftMargin">
         <number>0</number>
        </property>
        <property name="rightMargin">
         <number>0</number>
        </property>
+       <item alignment="Qt::AlignTop">
+        <widget class="QLabel" name="TitleBasicSettings">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt; font-weight:600;&quot;&gt;Data Selection&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="margin">
+          <number>5</number>
+         </property>
+        </widget>
+       </item>
        <item>
-        <layout class="QFormLayout" name="formLayout">
-         <property name="sizeConstraint">
-          <enum>QLayout::SetDefaultConstraint</enum>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="leftMargin">
-          <number>5</number>
+         <property name="title">
+          <string>Spreadsheet References</string>
          </property>
-         <property name="topMargin">
-          <number>5</number>
-         </property>
-         <property name="rightMargin">
-          <number>5</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item row="0" column="0" colspan="2">
-          <widget class="QLabel" name="TitleBasicSettings">
-           <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;Data Selection&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="margin">
-            <number>5</number>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" colspan="2">
-          <widget class="QGroupBox" name="groupBox_2">
-           <property name="title">
-            <string>Spreadsheet References</string>
-           </property>
-           <layout class="QFormLayout" name="formLayout_3">
-            <property name="verticalSpacing">
-             <number>6</number>
+         <layout class="QFormLayout" name="formLayout_3">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetMinAndMaxSize</enum>
+          </property>
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+          </property>
+          <property name="verticalSpacing">
+           <number>-1</number>
+          </property>
+          <property name="bottomMargin">
+           <number>12</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelDelay">
+            <property name="text">
+             <string>Delay Series</string>
             </property>
-            <property name="bottomMargin">
-             <number>9</number>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineEditDelays">
+            <property name="enabled">
+             <bool>true</bool>
             </property>
-            <item row="0" column="0">
-             <widget class="QLabel" name="labelDelay">
-              <property name="text">
-               <string>Delay Series</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEditDelays">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="labelValue">
-              <property name="text">
-               <string>Value Series</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="lineEditValues">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="labelValue_2">
-              <property name="text">
-               <string>Maximum Value</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLineEdit" name="lineEditMaxValue"/>
-            </item>
-           </layout>
-          </widget>
-         </item>
-        </layout>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="labelValue">
+            <property name="text">
+             <string>Value Series</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lineEditValues">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="labelValue_2">
+            <property name="text">
+             <string>Maximum Value</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="lineEditMaxValue"/>
+          </item>
+         </layout>
+        </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="displayPlotFigures">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
          <property name="text">
           <string>Output Individual Figures</string>
@@ -136,6 +144,12 @@
        </item>
        <item>
         <widget class="QLabel" name="label_6">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Instructions: Discounting Model Selection is performed by highlighting data from the spreadsheet and using the Context Menu to send the necessary data to the modeling window. &lt;span style=&quot; font-weight:600;&quot;&gt;Only one row or column of delay points can be selected&lt;/span&gt;. A matrix of value points can be selected, though they data sets will be treated as rows if a row of delays are selected or columns if a column of delays are selected. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
@@ -149,7 +163,7 @@
           <bool>true</bool>
          </property>
          <property name="margin">
-          <number>5</number>
+          <number>0</number>
          </property>
         </widget>
        </item>
@@ -165,155 +179,164 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
-        <layout class="QFormLayout" name="formLayout_2">
-         <property name="sizeConstraint">
-          <enum>QLayout::SetDefaultConstraint</enum>
+        <widget class="QLabel" name="TitleAdvancedSettings">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="leftMargin">
+         <property name="lineWidth">
+          <number>1</number>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt; font-weight:600;&quot;&gt;Advanced Modeling Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="margin">
           <number>5</number>
          </property>
-         <property name="topMargin">
-          <number>5</number>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="rightMargin">
-          <number>5</number>
+         <property name="title">
+          <string>Discounting Model Candidates</string>
          </property>
-         <property name="bottomMargin">
-          <number>5</number>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QCheckBox" name="checkBoxNoise">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Include Noise Model</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxExponential">
+            <property name="text">
+             <string>Include Exponential Model</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxHyperbolic">
+            <property name="text">
+             <string>Include Hyperbolic Model</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxQuasiHyperbolic">
+            <property name="text">
+             <string>Include Beta Delta Model</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxMyersonHyperboloid">
+            <property name="text">
+             <string>Include Myerson Hyperboloid</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxRachlinHyperboloid">
+            <property name="text">
+             <string>Include Rachlin Hyperboloid</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <item row="0" column="0" colspan="2">
-          <widget class="QLabel" name="TitleAdvancedSettings">
-           <property name="lineWidth">
-            <number>1</number>
-           </property>
-           <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;Advanced Modeling Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="margin">
-            <number>5</number>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" colspan="2">
-          <widget class="QGroupBox" name="groupBox">
-           <property name="title">
-            <string>Discounting Model Candidates</string>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout">
-            <item>
-             <widget class="QCheckBox" name="checkBoxNoise">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>Include Noise Model</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="checkBoxExponential">
-              <property name="text">
-               <string>Include Exponential Model</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="checkBoxHyperbolic">
-              <property name="text">
-               <string>Include Hyperbolic Model</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="checkBoxQuasiHyperbolic">
-              <property name="text">
-               <string>Include Beta Delta Model</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="checkBoxMyersonHyperboloid">
-              <property name="text">
-               <string>Include Myerson Hyperboloid</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="checkBoxRachlinHyperboloid">
-              <property name="text">
-               <string>Include Rachlin Hyperboloid</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item row="2" column="0" colspan="2">
-          <widget class="QGroupBox" name="groupBox_3">
-           <property name="title">
-            <string>Optional Settings</string>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_2">
-            <item>
-             <widget class="QCheckBox" name="checkBoxBIC">
-              <property name="text">
-               <string>Save BIC to File (All Candidates)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="checkBoxAIC">
-              <property name="text">
-               <string>Save AIC to File (All Candidates)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="checkBoxRMSE">
-              <property name="text">
-               <string>Save RMSE (All Candidates)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="checkBoxBF">
-              <property name="text">
-               <string>Save Bayes Factors (All Candidates)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="checkBoxRachlin">
-              <property name="text">
-               <string>Restrict Rachlin s to &lt;= 1 (Warning)</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-        </layout>
+         <property name="title">
+          <string>Optional Settings</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetFixedSize</enum>
+          </property>
+          <item>
+           <widget class="QCheckBox" name="checkBoxBIC">
+            <property name="text">
+             <string>Save BIC to File (All Candidates)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxAIC">
+            <property name="text">
+             <string>Save AIC to File (All Candidates)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxRMSE">
+            <property name="text">
+             <string>Save RMSE (All Candidates)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxBF">
+            <property name="text">
+             <string>Save Bayes Factors (All Candidates)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxRachlin">
+            <property name="text">
+             <string>Restrict Rachlin s to &lt;= 1 (Warning)</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
