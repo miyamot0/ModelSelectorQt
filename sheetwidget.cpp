@@ -139,9 +139,7 @@ SheetWidget::SheetWidget(bool rInstalled, QString commandString, QWidget *parent
         QFile::copy(":/scripts/installDependencyReshape.R", cwd + "/installDependencyReshape.R");
     }
 
-    #endif
-
-    #ifdef TARGET_OS_MAC
+    #elif TARGET_OS_MAC
 
     QString scriptDir = QCoreApplication::applicationDirPath() + "/";
 
@@ -371,8 +369,20 @@ void SheetWidget::clearSheet()
 
 void SheetWidget::showOpenFileDialog()
 {
+    QString file_name;
+
+    #ifdef _WIN32
+
     QString fileFilter = "Spreadsheet (*.xlsx)";
-    QString file_name = QFileDialog::getOpenFileName(this, "Open a file", QDir::homePath(), fileFilter);
+    file_name = QFileDialog::getOpenFileName(this, "Open spreadsheet file", QDir::homePath(), fileFilter);
+
+    #elif TARGET_OS_MAC
+
+    QString selfilter = tr("Spreadsheet (*.xlsx)");
+    file_name = QFileDialog::getOpenFileName(nullptr, "Open spreadsheet file", QDir::homePath(),
+                                             selfilter, nullptr, QFileDialog::Option::DontUseNativeDialog);
+
+    #endif
 
     if(!file_name.trimmed().isEmpty())
     {
@@ -798,9 +808,7 @@ void SheetWidget::Calculate(int topDelay, int leftDelay, int bottomDelay, int ri
 
         mArgList << "FranckComputation.R";
 
-        #endif
-
-        #ifdef TARGET_OS_MAC
+        #elif TARGET_OS_MAC
 
         QString scriptDir = QCoreApplication::applicationDirPath() + "/";
 
