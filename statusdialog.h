@@ -37,15 +37,27 @@ class StatusDialog : public QDialog
     Q_OBJECT
 
 public:
+    /** Display status of system, for running calculations
+     * @brief StatusDialog
+     * @param rInstalled - Is the Rscript binary found?
+     * @param commandParameter - Location of command
+     * @param parent
+     */
     explicit StatusDialog(bool rInstalled, QString commandParameter, QWidget *parent = 0);
     ~StatusDialog();
 
 public slots:
+    /** Slot for work updates, from background thread
+     * @brief WorkUpdate
+     * @param status - returned response from R
+     */
     void WorkUpdate(QString status);
 
 private:
     Ui::StatusDialog *ui;
+
     QThread *thread;
+
     Rworker *rWorker;
 
     int orderVar;

@@ -35,8 +35,26 @@ class ResultsDialog : public QDialog
     Q_OBJECT
 
 public:
+    /** Widget that handles showing of results to user
+     * @brief ResultsDialog
+     * @param parent
+     */
     explicit ResultsDialog(QWidget *parent = 0);
+
+    /** Optional display parameters, as they are added
+     * @brief ImportDataAndShow
+     * @param cbBIC - add BIC
+     * @param cbAIC - add AIC
+     * @param cbRMSE - add RMSE
+     * @param cbBF - add Bayes Factors
+     */
     void ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool cbBF);
+
+    /** Convert indices to Excel-friendly equivalents
+     * @brief convertExcelColumn
+     * @param mString
+     * @param column
+     */
     void convertExcelColumn(QString &mString, int column);
     ~ResultsDialog();
 

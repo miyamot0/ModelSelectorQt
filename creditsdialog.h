@@ -35,10 +35,18 @@ class CreditsDialog : public QDialog
     Q_OBJECT
 
 public:
+    /** Dialog for credits and acknowledgments
+     * @brief CreditsDialog
+     * @param parent
+     */
     explicit CreditsDialog(QWidget *parent = 0);
+
     ~CreditsDialog();
 
 private slots:
+    /** Close window slot
+     * @brief on_pushButton_clicked
+     */
     void on_pushButton_clicked();
 
 private:

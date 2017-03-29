@@ -35,10 +35,17 @@ class AboutDialog : public QDialog
     Q_OBJECT
 
 public:
+    /** Dialog with FAQ-based content for user
+     * @brief AboutDialog
+     * @param parent
+     */
     explicit AboutDialog(QWidget *parent = 0);
     ~AboutDialog();
 
 private slots:
+    /** Close window slot
+     * @brief on_pushButton_clicked
+     */
     void on_pushButton_clicked();
 
 private:

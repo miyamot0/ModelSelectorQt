@@ -35,9 +35,24 @@ class SheetSelectDialog : public QDialog
     Q_OBJECT
 
 public:
+    /** Display current sheets, selecting one for import
+     * @brief SheetSelectDialog
+     * @param parent
+     */
     explicit SheetSelectDialog(QWidget *parent = 0);
+
+    /** Updates UI, with selection-based options
+     * @brief UpdateUI
+     * @param list
+     */
     void UpdateUI(QStringList list);
+
+    /** Pull selected item from UI
+     * @brief GetSelected
+     * @return
+     */
     QString GetSelected();
+
     ~SheetSelectDialog();
 
 private:

@@ -33,6 +33,10 @@ int main(int argc, char *argv[])
 
     #endif
 
+    #ifdef TARGET_OS_MAC
+
+    #endif
+
     SheetWidget mNewSheet(isRActive, commandString);
     mNewSheet.setWindowIcon(QPixmap(":/images/applications-other.png"));
     mNewSheet.show();

@@ -35,6 +35,11 @@ class LicenseDialog : public QDialog
     Q_OBJECT
 
 public:
+    /** Method for selecting license to show
+     * @brief LicenseDialog
+     * @param fileName - Specific license to include
+     * @param parent - Parent object
+     */
     explicit LicenseDialog(QString fileName, QWidget *parent = 0);
     ~LicenseDialog();
 

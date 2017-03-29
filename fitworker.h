@@ -50,25 +50,55 @@
 
 #include <QObject>
 
+/** Background worker object for opening R connections
+ * @brief The FitWorker class
+ */
 class FitWorker : public QObject
 {
     Q_OBJECT
 
 public:
+    /** Constructor, explicit to avoid parent ownership issues
+     * @brief FitWorker
+     * @param mCommand - Path/command to Rscript
+     * @param mCommandArgs - Arguments to pass to Rscript
+     * @param boundRachlin - Rachlin, special case conditions
+     */
     explicit FitWorker(QString mCommand, QStringList mCommandArgs, bool boundRachlin);
 
 private:
     bool boundRachlinS;
+
     QString command;
+
     QStringList commandParameterList;
 
 signals:
+    /** Begin work signal
+     * @brief workStarted
+     */
     void workStarted();
+
+    /** Work update signal, series by series
+     * @brief workingResult
+     * @param value - List of values received
+     */
     void workingResult(const QStringList &value);
+
+    /** Signal work completed
+     * @brief workFinished
+     */
     void workFinished();
 
 public slots:
+    /** Slot, begin job
+     * @brief startWork
+     */
     void startWork();
+
+    /** Slot, begin heavy lifting
+     * @brief working
+     */
     void working();
 
 };

@@ -35,7 +35,16 @@ class GraphicalOutputDialog : public QDialog
     Q_OBJECT
 
 public:
+    /** Widget for displaying received plots
+     * @brief GraphicalOutputDialog
+     * @param parent
+     */
     explicit GraphicalOutputDialog(QWidget *parent = 0);
+
+    /** Method for adding base64 strings to list
+     * @brief appendBase64
+     * @param chartData - Base data
+     */
     void appendBase64(QString chartData);
 
     QStringList mDisplayData;
@@ -43,17 +52,28 @@ public:
     ~GraphicalOutputDialog();
 
 private slots:
+    /** UI behavior slot
+     * @brief on_NextButton_clicked
+     */
     void on_NextButton_clicked();
 
+    /** UI behavior slot
+     * @brief on_PreviousButton_clicked
+     */
     void on_PreviousButton_clicked();
 
+    /** UI update slot, with current plot
+     * @brief displayPlot
+     */
     void displayPlot();
-
 
 private:
     Ui::GraphicalOutputDialog *ui;
+
     QString chartString;
+
     QImage img;
+
     int currentIndexShown;
 
 };
