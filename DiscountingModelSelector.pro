@@ -4,6 +4,10 @@
 # Copyright 2007, Shawn P. Gilroy
 # Released under the GPL-V3 license
 #
+# Source code for project hosted at:
+#
+# https://github.com/miyamot0/ModelSelectorQt
+#
 #-------------------------------------------------
 
 #-------------------------------------------------
@@ -67,3 +71,6 @@ FORMS    += \
 
 RESOURCES += \
     spreadsheet.qrc
+
+DISTFILES += \
+    README.md
