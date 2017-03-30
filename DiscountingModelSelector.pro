@@ -16,7 +16,7 @@
 #
 #-------------------------------------------------
 
-QT += core gui widgets xlsx
+QT += core gui widgets xlsx svg
 
 TARGET = DiscountingModelSelector
 

@@ -417,7 +417,7 @@ chartFunction<-function(mDelays, mValues, samuelsonK=0,ainslieK=0,betaConstant=0
                           HyperboloidR=rachSeries)
   totalFrame$Noise <- noiseMean  
   
-  png(tempf2 <- tempfile(fileext = '.png'))
+  svg(tempf2 <- tempfile(fileext = '.svg'))
   
   if (probModel == "Noise") {
     plot(totalFrame$Delays, totalFrame$Noise, type = "l", ylim = c(0,1),
@@ -433,7 +433,7 @@ chartFunction<-function(mDelays, mValues, samuelsonK=0,ainslieK=0,betaConstant=0
          xlab = "Delays", 
          ylab = "Value", 
          col = "red",
-         lwd = 2,
+         lwd = 1,
          log = "x")    
   }
   
@@ -441,7 +441,7 @@ chartFunction<-function(mDelays, mValues, samuelsonK=0,ainslieK=0,betaConstant=0
     lines(totalFrame$Delays, totalFrame$Exponential, col = "blue", lwd = 3)
     
   } else {
-    lines(totalFrame$Delays, totalFrame$Exponential, col = "blue", lwd = 2)
+    lines(totalFrame$Delays, totalFrame$Exponential, col = "blue", lwd = 1)
     
   } 
   
@@ -449,7 +449,7 @@ chartFunction<-function(mDelays, mValues, samuelsonK=0,ainslieK=0,betaConstant=0
     lines(totalFrame$Delays, totalFrame$Hyperbolic, col = "green", lwd = 3)
     
   } else {
-    lines(totalFrame$Delays, totalFrame$Hyperbolic, col = "green", lwd = 2)
+    lines(totalFrame$Delays, totalFrame$Hyperbolic, col = "green", lwd = 1)
     
   } 
   
@@ -457,7 +457,7 @@ chartFunction<-function(mDelays, mValues, samuelsonK=0,ainslieK=0,betaConstant=0
     lines(totalFrame$Delays, totalFrame$QuasiHyperbolic, col = "brown", lwd = 3)
     
   } else {
-    lines(totalFrame$Delays, totalFrame$QuasiHyperbolic, col = "brown", lwd = 2)
+    lines(totalFrame$Delays, totalFrame$QuasiHyperbolic, col = "brown", lwd = 1)
     
   } 
   
@@ -465,7 +465,7 @@ chartFunction<-function(mDelays, mValues, samuelsonK=0,ainslieK=0,betaConstant=0
     lines(totalFrame$Delays, totalFrame$HyperboloidM, col = "purple", lwd = 3)
     
   } else  {
-    lines(totalFrame$Delays, totalFrame$HyperboloidM, col = "purple", lwd = 2)
+    lines(totalFrame$Delays, totalFrame$HyperboloidM, col = "purple", lwd = 1)
     
   }
   
@@ -473,7 +473,7 @@ chartFunction<-function(mDelays, mValues, samuelsonK=0,ainslieK=0,betaConstant=0
     lines(totalFrame$Delays, totalFrame$HyperboloidR, col = "orange", lwd = 3)
     
   } else {
-    lines(totalFrame$Delays, totalFrame$HyperboloidR, col = "orange", lwd = 2)
+    lines(totalFrame$Delays, totalFrame$HyperboloidR, col = "orange", lwd = 1)
     
   } 
   
@@ -503,7 +503,7 @@ chartFunction<-function(mDelays, mValues, samuelsonK=0,ainslieK=0,betaConstant=0
   legend("bottomleft", 
          legend = sortShowFrame$legend,
          col = as.vector.factor(sortShowFrame$col),
-         lwd = 4,
+         lwd = 3,
          title = "Discounting Model Probabilities")
   
   dev.off()

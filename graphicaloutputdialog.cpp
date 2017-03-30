@@ -22,6 +22,7 @@
   */
 
 #include <QtWidgets>
+#include <QSvgRenderer>
 #include <QPixmap>
 #include "graphicaloutputdialog.h"
 #include "ui_graphicaloutputdialog.h"
@@ -31,6 +32,9 @@ GraphicalOutputDialog::GraphicalOutputDialog(QWidget *parent) :
     ui(new Ui::GraphicalOutputDialog)
 {
     ui->setupUi(this);
+
+    mSVG = new QSvgWidget();
+    ui->verticalLayout->addWidget(mSVG);
 
     currentIndexShown = 0;
 }
@@ -66,7 +70,39 @@ void GraphicalOutputDialog::on_PreviousButton_clicked()
 
 void GraphicalOutputDialog::appendBase64(QString chartData)
 {
-    mDisplayData.append(chartData);
+    QFile file("tempFileNew.tmp");
+    file.open(QIODevice::WriteOnly);
+    file.write(QByteArray::fromBase64(chartData.toUtf8()));
+    file.close();
+
+    QFile infile("tempFileNew.tmp");
+    infile.open(QFile::ReadOnly);
+
+    QFile outfile ("tempFileOut.tmp");
+    outfile.open(QFile::WriteOnly | QFile::Truncate);
+
+    QTextStream in(&infile);
+    QTextStream out(&outfile);
+
+    QRegExp rx1("<symbol");
+    QRegExp rx2("</symbol");
+
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        line.replace(rx1, "<g"); // so '<symbol' becomes '<g ...'
+        line.replace(rx2, "</g");// and '</symbol becomes '</g'
+        out << line << "\n";
+    }
+
+    infile.close();
+    outfile.close();
+
+    QFile readFile ("tempFileOut.tmp");
+    readFile.open(QFile::ReadOnly);
+
+    mDisplayData.append(readFile.readAll().toBase64());
+
+    readFile.close();
 
     if (mDisplayData.count() == 1)
     {
@@ -79,8 +115,8 @@ void GraphicalOutputDialog::appendBase64(QString chartData)
 void GraphicalOutputDialog::displayPlot()
 {
     chartString = mDisplayData.at(currentIndexShown);
-    img.loadFromData(QByteArray::fromBase64(chartString.toUtf8()));
-    ui->imageLabel->setPixmap(QPixmap::fromImage(img));
+
+    mSVG->load(QByteArray::fromBase64(chartString.toUtf8()));
 
     ui->currentItem->setText("Showing #" + QString::number(currentIndexShown + 1) + " of " + QString::number(mDisplayData.count()) + " plots");
 }

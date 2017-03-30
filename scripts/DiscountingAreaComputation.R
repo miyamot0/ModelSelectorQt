@@ -460,7 +460,7 @@ chartFunction<-function(mDelays, mValues, samuelsonK=0,ainslieK=0,betaConstant=0
   
   pointFrame <- data.frame(DelaysP=mDelays, ValuesP=mValues)
   
-  png(tempf2 <- tempfile(fileext = '.png'))
+  svg(tempf2 <- tempfile(fileext = '.svg'))
   
   plot(totalFrame.melt$Delays, totalFrame.melt$value, type = "l", ylim = c(0,1),
        main = paste("Area Under Curve (", probModel, ")", sep = ""),

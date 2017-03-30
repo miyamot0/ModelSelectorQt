@@ -25,6 +25,9 @@
 #define GRAPHICALOUTPUTDIALOG_H
 
 #include <QDialog>
+#include <QSvgWidget>
+#include <QFile>
+#include <QTextStream>
 
 namespace Ui {
 class GraphicalOutputDialog;
@@ -75,6 +78,8 @@ private:
     QImage img;
 
     int currentIndexShown;
+
+    QSvgWidget *mSVG;
 
 };
 
