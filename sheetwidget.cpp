@@ -696,7 +696,10 @@ void SheetWidget::updateDelayModalWindow()
 {
     if (!modelSelectDialog->isVisible())
     {
-        return;
+        modelSelectDialog = new ModelSelectionDialog(this);
+        modelSelectDialog->setModal(false);
+
+        modelSelectDialog->show();
     }
 
     QList<QTableWidgetSelectionRange> mList = table->selectedRanges();
@@ -734,7 +737,10 @@ void SheetWidget::updateValueModalWindow()
 {
     if (!modelSelectDialog->isVisible())
     {
-        return;
+        modelSelectDialog = new ModelSelectionDialog(this);
+        modelSelectDialog->setModal(false);
+
+        modelSelectDialog->show();
     }
 
     QList<QTableWidgetSelectionRange> mList = table->selectedRanges();
@@ -758,7 +764,10 @@ void SheetWidget::updateMaxValueModalWindow()
 {
     if (!modelSelectDialog->isVisible())
     {
-        return;
+        modelSelectDialog = new ModelSelectionDialog(this);
+        modelSelectDialog->setModal(false);
+
+        modelSelectDialog->show();
     }
 
     if (table->currentItem() != NULL)
@@ -868,6 +877,7 @@ void SheetWidget::Calculate(int topDelay, int leftDelay, int bottomDelay, int ri
     connect(thread, SIGNAL(started()), worker, SLOT(working()));
     connect(worker, SIGNAL(workingResult(QStringList)), this, SLOT(WorkUpdate(QStringList)));
     connect(worker, SIGNAL(workFinished()), thread, SLOT(quit()), Qt::DirectConnection);
+    connect(worker, SIGNAL(workFinished()), this, SLOT(WorkFinished()));
 
     orderVar = 0;
     finalVar = nSeries;
@@ -879,6 +889,7 @@ void SheetWidget::Calculate(int topDelay, int leftDelay, int bottomDelay, int ri
     graphicalOutputDialog->mDisplayData.clear();
 
     statusBar()->showMessage("Beginning calculations...", 3000);
+    modelSelectDialog->setEnabled(false);
 }
 
 void SheetWidget::WorkUpdate(QStringList status)
@@ -893,19 +904,20 @@ void SheetWidget::WorkUpdate(QStringList status)
     {
         graphicalOutputDialog->appendBase64(status.at(status.count() - 1));
     }
+}
 
-    if (orderVar == finalVar)
+void SheetWidget::WorkFinished()
+{
+    resultsDialog->ImportDataAndShow(tripBIC, tripAIC, tripRMSE, tripBF);
+
+    if (displayFigures)
     {
-        modelSelectDialog->ToggleButton(true);
-
-        resultsDialog->ImportDataAndShow(tripBIC, tripAIC, tripRMSE, tripBF);
-        modelSelectDialog->ToggleButton(true);
-
-        if (displayFigures)
-        {
-            graphicalOutputDialog->show();
-        }
+        graphicalOutputDialog->show();
     }
+
+    modelSelectDialog->ToggleButton(true);
+    modelSelectDialog->setEnabled(true);
+    modelSelectDialog->ToggleButton(true);
 }
 
 bool SheetWidget::areDelayPointsValid(QStringList &delayPoints, bool isRowData, int topDelay, int leftDelay, int bottomDelay, int rightDelay)

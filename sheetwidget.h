@@ -144,6 +144,7 @@ public slots:
                    bool modelMyersonGreen, bool modelRachlin, bool showCharts);
 
     void WorkUpdate(QStringList status);
+    void WorkFinished();
 
 private:
     QAction *newSheetAction;
