@@ -96,7 +96,7 @@ void ModelSelectionDialog::on_pushButton_clicked()
     }
 
     SheetWidget *temp = qobject_cast <SheetWidget *>(parent());
-    temp->Calculate(topDelay, leftDelay, bottomDelay, rightDelay, topValue, leftValue, bottomValue, rightValue, maxValue,
+    temp->Calculate("DiscountingAreaComputation.R", topDelay, leftDelay, bottomDelay, rightDelay, topValue, leftValue, bottomValue, rightValue, maxValue,
                     ui->checkBoxBIC->isChecked(), ui->checkBoxAIC->isChecked(), ui->checkBoxRMSE->isChecked(),
                     ui->checkBoxBF->isChecked(), ui->checkBoxRachlin->isChecked(),
                     ui->checkBoxExponential->isChecked(), ui->checkBoxHyperbolic->isChecked(), ui->checkBoxQuasiHyperbolic->isChecked(),

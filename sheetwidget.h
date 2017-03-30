@@ -137,7 +137,7 @@ public slots:
     bool areDimensionsValid(bool isRowData, int dWidth, int vWidth, int dLength, int vLength);
     void areValuePointsValid(QStringList &valuePoints, QStringList &tempDelayPoints, QStringList delayPoints, bool isRowData, int topValue, int leftValue, int bottomValue, int rightValue, int i, double maxValue);
 
-    void Calculate(int topDelay, int leftDelay, int bottomDelay, int rightDelay,
+    void Calculate(QString scriptName, int topDelay, int leftDelay, int bottomDelay, int rightDelay,
                    int topValue, int leftValue, int bottomValue, int rightValue,
                    double maxValue, bool cbBIC, bool cbAIC, bool cbRMSE, bool cbBF, bool cbRachlin,
                    bool modelExponential, bool modelHyperbolic, bool modelQuasiHyperbolic,

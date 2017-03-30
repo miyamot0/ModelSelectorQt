@@ -124,6 +124,11 @@ SheetWidget::SheetWidget(bool rInstalled, QString commandString, QWidget *parent
         QFile::copy(":/scripts/FranckComputation.R", cwd + "/FranckComputation.R");
     }
 
+    if (!QDir(cwd).exists("DiscountingAreaComputation.R"))
+    {
+        QFile::copy(":/scripts/DiscountingAreaComputation.R", cwd + "/DiscountingAreaComputation.R");
+    }
+
     if (!QDir(cwd).exists("installDependencyBase64.R"))
     {
         QFile::copy(":/scripts/installDependencyBase64.R", cwd + "/installDependencyBase64.R");
@@ -146,6 +151,11 @@ SheetWidget::SheetWidget(bool rInstalled, QString commandString, QWidget *parent
     if (!QFile::exists(scriptDir + "FranckComputation.R"))
     {
         QFile::copy(":/scripts/FranckComputation.R", scriptDir + "FranckComputation.R");
+    }
+
+    if (!QFile::exists(scriptDir + "DiscountingAreaComputation.R"))
+    {
+        QFile::copy(":/scripts/DiscountingAreaComputation.R", scriptDir + "DiscountingAreaComputation.R");
     }
 
     if (!QFile::exists(scriptDir + "installDependencyBase64.R"))
@@ -780,7 +790,7 @@ void SheetWidget::updateMaxValueModalWindow()
  * @brief
  */
 
-void SheetWidget::Calculate(int topDelay, int leftDelay, int bottomDelay, int rightDelay, int topValue, int leftValue, int bottomValue, int rightValue,
+void SheetWidget::Calculate(QString scriptName, int topDelay, int leftDelay, int bottomDelay, int rightDelay, int topValue, int leftValue, int bottomValue, int rightValue,
                             double maxValue, bool cbBIC, bool cbAIC, bool cbRMSE, bool cbBF, bool cbRachlin,
                             bool modelExponential, bool modelHyperbolic, bool modelQuasiHyperbolic, bool modelMyersonGreen, bool modelRachlin,
                             bool showCharts)
@@ -843,13 +853,15 @@ void SheetWidget::Calculate(int topDelay, int leftDelay, int bottomDelay, int ri
 
         #ifdef _WIN32
 
-        mArgList << "FranckComputation.R";
+        //mArgList << "FranckComputation.R";
+        mArgList << scriptName;
 
         #elif TARGET_OS_MAC
 
         QString scriptDir = "\"" + QCoreApplication::applicationDirPath() + "/";
 
-        mArgList << scriptDir + "FranckComputation.R\"";
+        //mArgList << scriptDir + "FranckComputation.R\"";
+        mArgList << scriptName + scriptName + "\"";
 
         #endif
 
@@ -858,8 +870,6 @@ void SheetWidget::Calculate(int topDelay, int leftDelay, int bottomDelay, int ri
         mArgList << modelArgs.join(",");
 
         mSeriesCommands << mArgList.join(" ");
-
-        qDebug() << mSeriesCommands;
     }
 
     allResults.clear();

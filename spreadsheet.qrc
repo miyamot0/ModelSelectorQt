@@ -26,5 +26,6 @@
         <file>License_Qt.txt</file>
         <file>License_R.txt</file>
         <file>License_reshape.txt</file>
+        <file>scripts/DiscountingAreaComputation.R</file>
     </qresource>
 </RCC>
