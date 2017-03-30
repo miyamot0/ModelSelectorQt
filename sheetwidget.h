@@ -135,7 +135,7 @@ public slots:
 
     bool areDelayPointsValid(QStringList &delayPoints, bool isRowData, int topDelay, int leftDelay, int bottomDelay, int rightDelay);
     bool areDimensionsValid(bool isRowData, int dWidth, int vWidth, int dLength, int vLength);
-    bool areValuePointsValid(QStringList &valuePoints, bool isRowData, int topValue, int leftValue, int bottomValue, int rightValue, int i, double maxValue);
+    void areValuePointsValid(QStringList &valuePoints, QStringList &tempDelayPoints, QStringList delayPoints, bool isRowData, int topValue, int leftValue, int bottomValue, int rightValue, int i, double maxValue);
 
     void Calculate(int topDelay, int leftDelay, int bottomDelay, int rightDelay,
                    int topValue, int leftValue, int bottomValue, int rightValue,

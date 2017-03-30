@@ -819,23 +819,17 @@ void SheetWidget::Calculate(int topDelay, int leftDelay, int bottomDelay, int ri
     resultsDialog = new ResultsDialog(this);
     resultsDialog->setModal(false);
 
-    QString mDelayArgs = delayPoints.join(",");
-
-    QString mValueArgs;
     QStringList valuePoints;
+    QStringList delayPointsTemp;
 
     mSeriesCommands.clear();
 
     for (int i = 0; i < nSeries; i++)
     {
         valuePoints.clear();
+        delayPointsTemp.clear();
 
-        if (!areValuePointsValid(valuePoints, isRowData, topValue, leftValue, bottomValue, rightValue, i, maxValue))
-        {
-            return;
-        }
-
-        mValueArgs = valuePoints.join(",");
+        areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData, topValue, leftValue, bottomValue, rightValue, i, maxValue);
 
         QStringList modelArgs;
         modelArgs << "1";
@@ -859,11 +853,13 @@ void SheetWidget::Calculate(int topDelay, int leftDelay, int bottomDelay, int ri
 
         #endif
 
-        mArgList << mDelayArgs;
-        mArgList << mValueArgs;
+        mArgList << delayPointsTemp.join(",");
+        mArgList << valuePoints.join(",");
         mArgList << modelArgs.join(",");
 
         mSeriesCommands << mArgList.join(" ");
+
+        qDebug() << mSeriesCommands;
     }
 
     allResults.clear();
@@ -1019,13 +1015,16 @@ bool SheetWidget::areDimensionsValid(bool isRowData, int dWidth, int vWidth, int
     return true;
 }
 
-bool SheetWidget::areValuePointsValid(QStringList &valuePoints, bool isRowData, int topValue, int leftValue, int bottomValue, int rightValue, int i, double maxValue)
+void SheetWidget::areValuePointsValid(QStringList &valuePoints, QStringList &tempDelayPoints, QStringList delayPoints, bool isRowData, int topValue, int leftValue, int bottomValue, int rightValue, int i, double maxValue)
 {
     valuePoints.clear();
+    tempDelayPoints.clear();
 
     QString holder;
     bool valueCheck = true;
     double valHolder;
+
+    int index = 0;
 
     if (isRowData)
     {
@@ -1033,30 +1032,21 @@ bool SheetWidget::areValuePointsValid(QStringList &valuePoints, bool isRowData, 
 
         for (int c = leftValue; c <= rightValue; c++)
         {
-            if (table->item(r + i, c) == NULL)
+            if (table->item(r + i, c) != NULL)
             {
-                QMessageBox::critical(this, "Error",
-                                      "One of your value measures doesn't look correct. Please re-check these values or selections.");
-                modelSelectDialog->ToggleButton(true);
+                holder = table->item(r + i, c)->data(Qt::DisplayRole).toString();
+                valHolder = holder.toDouble(&valueCheck);
 
-                return false;
+                if (valueCheck)
+                {
+                    valHolder = valHolder / maxValue;
+
+                    valuePoints << QString::number(valHolder);
+                    tempDelayPoints << delayPoints.at(index);
+                }
             }
 
-            holder = table->item(r + i, c)->data(Qt::DisplayRole).toString();
-            valHolder = holder.toDouble(&valueCheck);
-
-            if (!valueCheck)
-            {
-                QMessageBox::critical(this, "Error",
-                                      "One of your value measures doesn't look correct. Please re-check these values or selections.");
-                modelSelectDialog->ToggleButton(true);
-
-                return false;
-            }
-
-            valHolder = valHolder / maxValue;
-
-            valuePoints << QString::number(valHolder);
+            index++;
         }
     }
     else
@@ -1065,34 +1055,23 @@ bool SheetWidget::areValuePointsValid(QStringList &valuePoints, bool isRowData, 
 
         for (int r = topValue; r <= bottomValue; r++)
         {
-            if (table->item(r, c + i) == NULL)
+            if (table->item(r, c + i) != NULL)
             {
-                QMessageBox::critical(this, "Error",
-                                      "One of your values measures doesn't look correct. Please re-check these values or selections.");
-                modelSelectDialog->ToggleButton(true);
+                holder = table->item(r, c + i)->data(Qt::DisplayRole).toString();
+                valHolder = holder.toDouble(&valueCheck);
 
-                return false;
+                if (valueCheck)
+                {
+                    valHolder = valHolder / maxValue;
+
+                    valuePoints << QString::number(valHolder);
+                    tempDelayPoints << delayPoints.at(index);
+                }
             }
 
-            holder = table->item(r, c + i)->data(Qt::DisplayRole).toString();
-            valHolder = holder.toDouble(&valueCheck);
-
-            if (!valueCheck)
-            {
-                QMessageBox::critical(this, "Error",
-                                      "One of your value measures doesn't look correct. Please re-check these values or selections.");
-                modelSelectDialog->ToggleButton(true);
-
-                return false;
-            }
-
-            valHolder = valHolder / maxValue;
-
-            valuePoints << QString::number(valHolder);
+            index++;
         }
     }
-
-    return true;
 }
 
 /** Utilities
