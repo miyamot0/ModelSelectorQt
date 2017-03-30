@@ -27,5 +27,6 @@
         <file>License_R.txt</file>
         <file>License_reshape.txt</file>
         <file>scripts/DiscountingAreaComputation.R</file>
+        <file>scripts/DiscountingED50Computation.R</file>
     </qresource>
 </RCC>

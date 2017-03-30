@@ -44,7 +44,9 @@ SOURCES += main.cpp\
     licensedialog.cpp \
     aboutdialog.cpp \
     creditsdialog.cpp \
-    rworker.cpp
+    rworker.cpp \
+    discountingmodelselectioned50dialog.cpp \
+    discountingmodelselectionareadialog.cpp
 
 HEADERS  += \
     sheetselectdialog.h \
@@ -57,7 +59,9 @@ HEADERS  += \
     licensedialog.h \
     aboutdialog.h \
     creditsdialog.h \
-    rworker.h
+    rworker.h \
+    discountingmodelselectioned50dialog.h \
+    discountingmodelselectionareadialog.h
 
 FORMS    += \
     sheetselectdialog.ui \
@@ -67,7 +71,9 @@ FORMS    += \
     graphicaloutputdialog.ui \
     licensedialog.ui \
     aboutdialog.ui \
-    creditsdialog.ui
+    creditsdialog.ui \
+    discountingmodelselectioned50dialog.ui \
+    discountingmodelselectionareadialog.ui
 
 RESOURCES += \
     spreadsheet.qrc

@@ -129,6 +129,11 @@ SheetWidget::SheetWidget(bool rInstalled, QString commandString, QWidget *parent
         QFile::copy(":/scripts/DiscountingAreaComputation.R", cwd + "/DiscountingAreaComputation.R");
     }
 
+    if (!QDir(cwd).exists("DiscountingED50Computation.R"))
+    {
+        QFile::copy(":/scripts/DiscountingED50Computation.R", cwd + "/DiscountingED50Computation.R");
+    }
+
     if (!QDir(cwd).exists("installDependencyBase64.R"))
     {
         QFile::copy(":/scripts/installDependencyBase64.R", cwd + "/installDependencyBase64.R");
@@ -151,6 +156,11 @@ SheetWidget::SheetWidget(bool rInstalled, QString commandString, QWidget *parent
     if (!QFile::exists(scriptDir + "FranckComputation.R"))
     {
         QFile::copy(":/scripts/FranckComputation.R", scriptDir + "FranckComputation.R");
+    }
+
+    if (!QFile::exists(scriptDir + "DiscountingED50Computation.R"))
+    {
+        QFile::copy(":/scripts/DiscountingED50Computation.R", scriptDir + "DiscountingED50Computation.R");
     }
 
     if (!QFile::exists(scriptDir + "DiscountingAreaComputation.R"))
@@ -219,9 +229,13 @@ void SheetWidget::buildMenus()
      * @brief
      */
 
-    openAnalysisWindow = new QAction("O&pen Modeling", this);
-    openAnalysisWindow->setIcon(QIcon(":/images/applications-other.png"));
-    connect(openAnalysisWindow, &QAction::triggered, this, &SheetWidget::showAnalysisWindow);
+    openDiscountingAreaWindow = new QAction("M&odel Selection (AUC)", this);
+    openDiscountingAreaWindow->setIcon(QIcon(":/images/applications-other.png"));
+    connect(openDiscountingAreaWindow, &QAction::triggered, this, &SheetWidget::showDiscountingAreaWindow);
+
+    openDiscountingED50Window = new QAction("M&odel Selection (ED50)", this);
+    openDiscountingED50Window->setIcon(QIcon(":/images/applications-other.png"));
+    connect(openDiscountingED50Window, &QAction::triggered, this, &SheetWidget::showDiscountingED50Window);
 
     /** Edit actions
      * @brief
@@ -251,7 +265,9 @@ void SheetWidget::buildMenus()
      * @brief
      */
 
-    modelSelectDialog = new ModelSelectionDialog(this);
+    discountingAreaDialog = new DiscountingModelSelectionAreaDialog(this);
+
+    discountingED50Dialog = new DiscountingModelSelectionED50Dialog(this);
 
     openLicenseDMS = new QAction("DMS License (GPL-V3)", this);
     openLicenseDMS->setIcon(QIcon(":/images/text-x-generic.png"));
@@ -330,8 +346,9 @@ void SheetWidget::buildMenus()
     sheetEditMenu->addSeparator();
     sheetEditMenu->addAction(clearAction);
 
-    QMenu *sheetCalculationsMenu = menuBar()->addMenu(tr("&Analyses"));
-    sheetCalculationsMenu->addAction(openAnalysisWindow);
+    QMenu *sheetCalculationsMenu = menuBar()->addMenu(tr("&Discounting"));
+    sheetCalculationsMenu->addAction(openDiscountingAreaWindow);
+    sheetCalculationsMenu->addAction(openDiscountingED50Window);
 
     QMenu *sheetLicensesMenu = menuBar()->addMenu(tr("&Licenses"));
     sheetLicensesMenu->addAction(openLicenseDMS);
@@ -351,12 +368,6 @@ void SheetWidget::buildMenus()
     /** Context Menu
      * @brief
      */
-
-    addAction(openAnalysisWindow);
-
-    QAction *separatorOne = new QAction(this);
-    separatorOne->setSeparator(true);
-    addAction(separatorOne);
 
     addAction(delayAction);
     addAction(valueAction);
@@ -486,7 +497,7 @@ void SheetWidget::showSaveFileDialog()
     }
 }
 
-void SheetWidget::showAnalysisWindow()
+void SheetWidget::showDiscountingAreaWindow()
 {
     if (!isCoreRPresent)
     {
@@ -500,13 +511,40 @@ void SheetWidget::showAnalysisWindow()
         return;
     }
 
-    if (!modelSelectDialog->isVisible())
+    if (isToolWindowShown())
     {
-        modelSelectDialog = new ModelSelectionDialog(this);
-        modelSelectDialog->setModal(false);
-
-        modelSelectDialog->show();
+        return;
     }
+
+    discountingAreaDialog = new DiscountingModelSelectionAreaDialog(this);
+    discountingAreaDialog->setModal(false);
+
+    discountingAreaDialog->show();
+}
+
+void SheetWidget::showDiscountingED50Window()
+{
+    if (!isCoreRPresent)
+    {
+        QMessageBox rMessageBox;
+        rMessageBox.setWindowTitle("Please install/setup up");
+        rMessageBox.setTextFormat(Qt::RichText);
+        rMessageBox.setText("<p>The R program was not found on your machine (at least within the normal path). If installed already, please add the binary to your path. If not yet installed, you can download the R program from this location:<br/><br/> <a href='https://www.r-project.org//'>The R Project</a><p>");
+        rMessageBox.setStandardButtons(QMessageBox::Ok);
+        rMessageBox.exec();
+
+        return;
+    }
+
+    if (isToolWindowShown())
+    {
+        return;
+    }
+
+    discountingED50Dialog = new DiscountingModelSelectionED50Dialog(this);
+    discountingED50Dialog->setModal(false);
+
+    discountingED50Dialog->show();
 }
 
 void SheetWidget::showDMSLicenseWindow()
@@ -704,12 +742,9 @@ void SheetWidget::clear()
 
 void SheetWidget::updateDelayModalWindow()
 {
-    if (!modelSelectDialog->isVisible())
+    if (!isToolWindowShown())
     {
-        modelSelectDialog = new ModelSelectionDialog(this);
-        modelSelectDialog->setModal(false);
-
-        modelSelectDialog->show();
+        return;
     }
 
     QList<QTableWidgetSelectionRange> mList = table->selectedRanges();
@@ -740,17 +775,21 @@ void SheetWidget::updateDelayModalWindow()
         return;
     }
 
-    modelSelectDialog->UpdateDelays(mLeft, range.topRow(), range.leftColumn(), range.bottomRow(), range.rightColumn());
+    if (discountingAreaDialog->isVisible())
+    {
+        discountingAreaDialog->UpdateDelays(mLeft, range.topRow(), range.leftColumn(), range.bottomRow(), range.rightColumn());
+    }
+    else if (discountingED50Dialog->isVisible())
+    {
+        discountingED50Dialog->UpdateDelays(mLeft, range.topRow(), range.leftColumn(), range.bottomRow(), range.rightColumn());
+    }
 }
 
 void SheetWidget::updateValueModalWindow()
 {
-    if (!modelSelectDialog->isVisible())
+    if (!isToolWindowShown())
     {
-        modelSelectDialog = new ModelSelectionDialog(this);
-        modelSelectDialog->setModal(false);
-
-        modelSelectDialog->show();
+        return;
     }
 
     QList<QTableWidgetSelectionRange> mList = table->selectedRanges();
@@ -767,23 +806,48 @@ void SheetWidget::updateValueModalWindow()
     mLeft.append(mRight);
     mLeft.append(QString::number(range.bottomRow() + 1));
 
-    modelSelectDialog->UpdateValues(mLeft, range.topRow(), range.leftColumn(), range.bottomRow(), range.rightColumn());
+    if (discountingAreaDialog->isVisible())
+    {
+        discountingAreaDialog->UpdateValues(mLeft, range.topRow(), range.leftColumn(), range.bottomRow(), range.rightColumn());
+    }
+    else if (discountingED50Dialog->isVisible())
+    {
+        discountingED50Dialog->UpdateValues(mLeft, range.topRow(), range.leftColumn(), range.bottomRow(), range.rightColumn());
+    }
 }
 
 void SheetWidget::updateMaxValueModalWindow()
 {
-    if (!modelSelectDialog->isVisible())
+    if (!isToolWindowShown())
     {
-        modelSelectDialog = new ModelSelectionDialog(this);
-        modelSelectDialog->setModal(false);
-
-        modelSelectDialog->show();
+        return;
     }
 
     if (table->currentItem() != NULL)
     {
-        modelSelectDialog->UpdateMaxValue(table->currentItem()->data(Qt::DisplayRole).toString());
+        if (discountingAreaDialog->isVisible())
+        {
+            discountingAreaDialog->UpdateMaxValue(table->currentItem()->data(Qt::DisplayRole).toString());
+        }
+        else if (discountingED50Dialog->isVisible())
+        {
+            discountingED50Dialog->UpdateMaxValue(table->currentItem()->data(Qt::DisplayRole).toString());
+        }
+    }   
+}
+
+bool SheetWidget::isToolWindowShown()
+{
+    if (discountingAreaDialog->isVisible())
+    {
+        return true;
     }
+    else if (discountingED50Dialog->isVisible())
+    {
+        return true;
+    }
+
+    return false;
 }
 
 /** Scoring methods
@@ -801,9 +865,16 @@ void SheetWidget::Calculate(QString scriptName, int topDelay, int leftDelay, int
     tripBF = cbBF;
     tripRMSE = cbRMSE;
 
-    displayFigures = showCharts;
+    if (discountingAreaDialog->isVisible())
+    {
+        discountingAreaDialog->ToggleButton(false);
+    }
+    else if (discountingED50Dialog->isVisible())
+    {
+        discountingED50Dialog->ToggleButton(false);
+    }
 
-    modelSelectDialog->ToggleButton(false);
+    displayFigures = showCharts;
 
     bool isRowData = (rightDelay - leftDelay == 0) ? false : true;
     int nSeries = (isRowData) ? bottomValue - topValue + 1 : nSeries = rightValue - leftValue + 1;
@@ -853,14 +924,12 @@ void SheetWidget::Calculate(QString scriptName, int topDelay, int leftDelay, int
 
         #ifdef _WIN32
 
-        //mArgList << "FranckComputation.R";
         mArgList << scriptName;
 
         #elif TARGET_OS_MAC
 
         QString scriptDir = "\"" + QCoreApplication::applicationDirPath() + "/";
 
-        //mArgList << scriptDir + "FranckComputation.R\"";
         mArgList << scriptName + scriptName + "\"";
 
         #endif
@@ -895,7 +964,15 @@ void SheetWidget::Calculate(QString scriptName, int topDelay, int leftDelay, int
     graphicalOutputDialog->mDisplayData.clear();
 
     statusBar()->showMessage("Beginning calculations...", 3000);
-    modelSelectDialog->setEnabled(false);
+
+    if (discountingAreaDialog->isVisible())
+    {
+        discountingAreaDialog->setEnabled(false);
+    }
+    else if (discountingED50Dialog->isVisible())
+    {
+        discountingED50Dialog->setEnabled(false);
+    }
 }
 
 void SheetWidget::WorkUpdate(QStringList status)
@@ -921,9 +998,16 @@ void SheetWidget::WorkFinished()
         graphicalOutputDialog->show();
     }
 
-    modelSelectDialog->ToggleButton(true);
-    modelSelectDialog->setEnabled(true);
-    modelSelectDialog->ToggleButton(true);
+    if (discountingAreaDialog->isVisible())
+    {
+        discountingAreaDialog->ToggleButton(true);
+        discountingAreaDialog->setEnabled(true);
+    }
+    else if (discountingED50Dialog->isVisible())
+    {
+        discountingED50Dialog->ToggleButton(true);
+        discountingED50Dialog->setEnabled(true);
+    }
 }
 
 bool SheetWidget::areDelayPointsValid(QStringList &delayPoints, bool isRowData, int topDelay, int leftDelay, int bottomDelay, int rightDelay)
@@ -943,7 +1027,15 @@ bool SheetWidget::areDelayPointsValid(QStringList &delayPoints, bool isRowData, 
             {
                 QMessageBox::critical(this, "Error",
                                       "One of your delay measures doesn't look correct. Please re-check these values or selections.");
-                modelSelectDialog->ToggleButton(true);
+
+                if (discountingAreaDialog->isVisible())
+                {
+                    discountingAreaDialog->ToggleButton(true);
+                }
+                else if (discountingED50Dialog->isVisible())
+                {
+                    discountingED50Dialog->ToggleButton(true);
+                }
 
                 return false;
             }
@@ -957,7 +1049,15 @@ bool SheetWidget::areDelayPointsValid(QStringList &delayPoints, bool isRowData, 
             {
                 QMessageBox::critical(this, "Error",
                                       "One of your delay measures doesn't look correct. Please re-check these values or selections.");
-                modelSelectDialog->ToggleButton(true);
+
+                if (discountingAreaDialog->isVisible())
+                {
+                    discountingAreaDialog->ToggleButton(true);
+                }
+                else if (discountingED50Dialog->isVisible())
+                {
+                    discountingED50Dialog->ToggleButton(true);
+                }
 
                 return false;
             }
@@ -973,7 +1073,15 @@ bool SheetWidget::areDelayPointsValid(QStringList &delayPoints, bool isRowData, 
             {
                 QMessageBox::critical(this, "Error",
                                       "One of your delay measures doesn't look correct. Please re-check these values or selections.");
-                modelSelectDialog->ToggleButton(true);
+
+                if (discountingAreaDialog->isVisible())
+                {
+                    discountingAreaDialog->ToggleButton(true);
+                }
+                else if (discountingED50Dialog->isVisible())
+                {
+                    discountingED50Dialog->ToggleButton(true);
+                }
 
                 return false;
             }
@@ -987,7 +1095,15 @@ bool SheetWidget::areDelayPointsValid(QStringList &delayPoints, bool isRowData, 
             {
                 QMessageBox::critical(this, "Error",
                                       "One of your delay measures doesn't look correct. Please re-check these values or selections.");
-                modelSelectDialog->ToggleButton(true);
+
+                if (discountingAreaDialog->isVisible())
+                {
+                    discountingAreaDialog->ToggleButton(true);
+                }
+                else if (discountingED50Dialog->isVisible())
+                {
+                    discountingED50Dialog->ToggleButton(true);
+                }
 
                 return false;
             }
@@ -1005,7 +1121,15 @@ bool SheetWidget::areDimensionsValid(bool isRowData, int dWidth, int vWidth, int
         {
             QMessageBox::critical(this, "Error",
                                   "You have row-based data, but the data selected appears to have different column counts. Please correct.");
-            modelSelectDialog->ToggleButton(true);
+
+            if (discountingAreaDialog->isVisible())
+            {
+                discountingAreaDialog->ToggleButton(true);
+            }
+            else if (discountingED50Dialog->isVisible())
+            {
+                discountingED50Dialog->ToggleButton(true);
+            }
 
             return false;
         }
@@ -1016,7 +1140,15 @@ bool SheetWidget::areDimensionsValid(bool isRowData, int dWidth, int vWidth, int
         {
             QMessageBox::critical(this, "Error",
                                   "You have column-based data, but the data selected appears to have different row counts. Please correct.");
-            modelSelectDialog->ToggleButton(true);
+
+            if (discountingAreaDialog->isVisible())
+            {
+                discountingAreaDialog->ToggleButton(true);
+            }
+            else if (discountingED50Dialog->isVisible())
+            {
+                discountingED50Dialog->ToggleButton(true);
+            }
 
             return false;
         }

@@ -78,11 +78,16 @@
 #include <QtGui>
 
 #include "sheetselectdialog.h"
-#include "modelselectiondialog.h"
+#include "discountingmodelselectioned50dialog.h"
+#include "discountingmodelselectionareadialog.h"
+
 #include "resultsdialog.h"
 #include "statusdialog.h"
+
 #include "fitworker.h"
+
 #include "graphicaloutputdialog.h"
+
 #include "licensedialog.h"
 #include "creditsdialog.h"
 #include "aboutdialog.h"
@@ -118,7 +123,10 @@ public slots:
     void clearSheet();
     void showOpenFileDialog();
     void showSaveFileDialog();
-    void showAnalysisWindow();
+
+    void showDiscountingAreaWindow();
+    void showDiscountingED50Window();
+
     void showCreditsWindow();
     void showFAQWindow();
 
@@ -132,6 +140,8 @@ public slots:
     void showBDSLicenseWindow();
     void showQTLicenseWindow();
     void showGnomeLicenseWindow();
+
+    bool isToolWindowShown();
 
     bool areDelayPointsValid(QStringList &delayPoints, bool isRowData, int topDelay, int leftDelay, int bottomDelay, int rightDelay);
     bool areDimensionsValid(bool isRowData, int dWidth, int vWidth, int dLength, int vLength);
@@ -157,7 +167,8 @@ private:
     QAction *pasteAction;
     QAction *clearAction;
 
-    QAction *openAnalysisWindow;
+    QAction *openDiscountingAreaWindow;
+    QAction *openDiscountingED50Window;
 
     QAction *openLicenseDMS;
     QAction *openLicenseR;
@@ -179,7 +190,10 @@ private:
     QTableWidget *table;
 
     SheetSelectDialog *sheetSelectDialog;
-    ModelSelectionDialog *modelSelectDialog;
+
+    DiscountingModelSelectionAreaDialog *discountingAreaDialog;
+    DiscountingModelSelectionED50Dialog *discountingED50Dialog;
+
     StatusDialog *statusDialog;
     LicenseDialog *licenseDialog;
 
