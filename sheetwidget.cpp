@@ -173,7 +173,7 @@ SheetWidget::SheetWidget(bool rInstalled, QString commandString, QWidget *parent
     {
         QMessageBox rMessageBox;
         rMessageBox.setWindowTitle("Please install/setup R");
-        rMessageBox.setTextFormat(Qt::RichText);   //this is what makes the links clickable
+        rMessageBox.setTextFormat(Qt::RichText);
         rMessageBox.setText("<p>The R program was not found on your machine (at least within the normal path). If installed already, please add the binary to your path. If not yet installed, you can download the R program from this location:<br/><br/> <a href='https://www.r-project.org//'>The R Project</a><p>");
         rMessageBox.setStandardButtons(QMessageBox::Ok);
         rMessageBox.exec();
@@ -478,6 +478,18 @@ void SheetWidget::showSaveFileDialog()
 
 void SheetWidget::showAnalysisWindow()
 {
+    if (!isCoreRPresent)
+    {
+        QMessageBox rMessageBox;
+        rMessageBox.setWindowTitle("Please install/setup up");
+        rMessageBox.setTextFormat(Qt::RichText);
+        rMessageBox.setText("<p>The R program was not found on your machine (at least within the normal path). If installed already, please add the binary to your path. If not yet installed, you can download the R program from this location:<br/><br/> <a href='https://www.r-project.org//'>The R Project</a><p>");
+        rMessageBox.setStandardButtons(QMessageBox::Ok);
+        rMessageBox.exec();
+
+        return;
+    }
+
     if (!modelSelectDialog->isVisible())
     {
         modelSelectDialog = new ModelSelectionDialog(this);
