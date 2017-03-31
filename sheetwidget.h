@@ -116,6 +116,8 @@ public slots:
     void paste();
     void clear();
 
+    bool eventFilter(QObject *object, QEvent *event);
+
     void updateDelayModalWindow();
     void updateValueModalWindow();
     void updateMaxValueModalWindow();
@@ -227,7 +229,6 @@ private:
     bool tripRMSE;
 
     bool displayFigures;
-
 };
 
 

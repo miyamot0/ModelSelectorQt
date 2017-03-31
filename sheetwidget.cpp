@@ -198,6 +198,8 @@ SheetWidget::SheetWidget(bool rInstalled, QString commandString, QWidget *parent
         rMessageBox.setStandardButtons(QMessageBox::Ok);
         rMessageBox.exec();
     }
+
+    table->installEventFilter( this );
 }
 
 void SheetWidget::buildMenus()
@@ -397,6 +399,25 @@ void SheetWidget::clearSheet()
 /** Window methods
  * @brief
  */
+
+bool SheetWidget::eventFilter(QObject *object, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress)
+    {
+        auto keyCode = static_cast<QKeyEvent *>(event);
+        if (keyCode->key() == (int) Qt::Key_Return)
+        {
+            if (table->currentRow() + 1 >= table->rowCount())
+            {
+                return QObject::eventFilter(object, event);
+            }
+
+            table->setCurrentCell(table->currentRow() + 1, table->currentColumn());
+        }
+    }
+
+    return QObject::eventFilter(object, event);
+}
 
 void SheetWidget::showOpenFileDialog()
 {
