@@ -258,6 +258,11 @@ void SheetWidget::buildMenus()
     pasteAction->setIcon(QIcon(":/images/edit-paste.png"));
     connect(pasteAction, &QAction::triggered, this, &SheetWidget::paste);
 
+    pasteInvertedAction = new QAction("Paste Inverted", this);
+    pasteInvertedAction->setShortcut(QKeySequence("Ctrl+B"));
+    pasteInvertedAction->setIcon(QIcon(":/images/edit-paste.png"));
+    connect(pasteInvertedAction, &QAction::triggered, this, &SheetWidget::pasteInverted);
+
     clearAction = new QAction("Clear", this);
     clearAction->setShortcut(Qt::Key_Delete);
     clearAction->setIcon(QIcon(":/images/edit-clear.png"));
@@ -345,6 +350,7 @@ void SheetWidget::buildMenus()
     sheetEditMenu->addAction(cutAction);
     sheetEditMenu->addAction(copyAction);
     sheetEditMenu->addAction(pasteAction);
+    sheetEditMenu->addAction(pasteInvertedAction);
     sheetEditMenu->addSeparator();
     sheetEditMenu->addAction(clearAction);
 
@@ -382,6 +388,7 @@ void SheetWidget::buildMenus()
     addAction(cutAction);
     addAction(copyAction);
     addAction(pasteAction);
+    addAction(pasteInvertedAction);
 
     QAction *separatorThree = new QAction(this);
     separatorThree->setSeparator(true);
@@ -715,22 +722,45 @@ void SheetWidget::paste()
     int nRows = pasteRows.count();
     int nCols = pasteRows.first().count('\t') + 1;
 
-    if (range.rowCount() * range.columnCount() != 1
-            && (range.rowCount() != nRows
-                || range.columnCount() != nCols)) {
-
-        QMessageBox::information(this, tr("Spreadsheet"),
-                tr("The information cannot be pasted because the copy "
-                   "and paste areas aren't the same size."));
-        return;
-    }
-
     for (int i = 0; i < nRows; ++i) {
         QStringList columns = pasteRows[i].split('\t');
 
         for (int j = 0; j < nCols; ++j) {
             int row = range.topRow() + i;
             int column = range.leftColumn() + j;
+
+            if (row < 10000 && column < 10000)
+            {
+                if (table->item(row, column) != NULL)
+                {
+                    table->item(row, column)->setText(columns[j]);
+                }
+                else
+                {
+                    table->setItem(row, column, new QTableWidgetItem(columns[j]));
+                }
+            }
+        }
+    }
+
+    table->viewport()->update();
+}
+
+void SheetWidget::pasteInverted()
+{
+    QTableWidgetSelectionRange range = table->selectedRanges().first();
+    QString pasteString = QApplication::clipboard()->text();
+    QStringList pasteRows = pasteString.split('\n');
+
+    int nRows = pasteRows.count();
+    int nCols = pasteRows.first().count('\t') + 1;
+
+    for (int i = 0; i < nRows; ++i) {
+        QStringList columns = pasteRows[i].split('\t');
+
+        for (int j = 0; j < nCols; ++j) {
+            int row = range.topRow() + j;
+            int column = range.leftColumn() + i;
 
             if (row < 10000 && column < 10000)
             {

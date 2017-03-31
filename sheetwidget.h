@@ -114,6 +114,7 @@ public slots:
     void cut();
     void copy();
     void paste();
+    void pasteInverted();
     void clear();
 
     bool eventFilter(QObject *object, QEvent *event);
@@ -167,6 +168,7 @@ private:
     QAction *cutAction;
     QAction *copyAction;
     QAction *pasteAction;
+    QAction *pasteInvertedAction;
     QAction *clearAction;
 
     QAction *openDiscountingAreaWindow;
