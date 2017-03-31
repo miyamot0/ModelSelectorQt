@@ -336,6 +336,12 @@ void SheetWidget::buildMenus()
     maxValueAction->setIcon(QIcon(":/images/system-run.png"));
     connect(maxValueAction, &QAction::triggered, this, &SheetWidget::updateMaxValueModalWindow);
 
+    for (int i = 0; i < MaxRecentFiles; ++i) {
+        recentFileActs[i] = new QAction(this);
+        recentFileActs[i]->setVisible(false);
+        connect(recentFileActs[i], SIGNAL(triggered()), this, SLOT(openRecentFile()));
+    }
+
     /** Menu area below
      * @brief
      */
@@ -344,7 +350,19 @@ void SheetWidget::buildMenus()
     sheetOptionsMenu->addAction(newSheetAction);
     sheetOptionsMenu->addAction(openSheetAction);
     sheetOptionsMenu->addAction(saveSheetAction);
+
+    separatorAct = sheetOptionsMenu->addSeparator();
+
+    for (int i = 0; i < MaxRecentFiles; ++i)
+    {
+        sheetOptionsMenu->addAction(recentFileActs[i]);
+    }
+
+    sheetOptionsMenu->addSeparator();
+
     sheetOptionsMenu->addAction(exitSheetAction);
+
+    updateRecentFileActions();
 
     QMenu *sheetEditMenu = menuBar()->addMenu(tr("&Edit"));
     sheetEditMenu->addAction(cutAction);
@@ -400,7 +418,79 @@ void SheetWidget::buildMenus()
 
 void SheetWidget::clearSheet()
 {
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
     table->clearContents();
+
+    curFile = "";
+    setWindowFilePath(curFile);
+
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+}
+
+/** Window methods
+ * @brief
+ */
+
+void SheetWidget::closeEvent(QCloseEvent* event)
+{
+    saveSettings();
+}
+
+void SheetWidget::openRecentFile()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action)
+    {
+        QString mFile = action->data().toString();
+
+        if (QFile::exists(mFile))
+        {
+            Document xlsx2(mFile);
+            QStringList sheets = xlsx2.sheetNames();
+
+            sheetSelectDialog = new SheetSelectDialog(this);
+            sheetSelectDialog->UpdateUI(sheets);
+            sheetSelectDialog->setModal(true);
+
+            if(sheetSelectDialog->exec())
+            {
+                table->clearContents();
+
+                xlsx2.selectSheet(sheetSelectDialog->GetSelected());
+
+                for (int w = 0; w < xlsx2.dimension().lastColumn() + 1; w++)
+                {
+                    for (int h = 0; h < xlsx2.dimension().lastRow() + 1; h++)
+                    {
+                        if (QXlsx::Cell *cell = xlsx2.cellAt(h, w))
+                        {
+                            if (cell->cellType() == Cell::NumberType || cell->cellType() == Cell::StringType || cell->cellType() == Cell::SharedStringType)
+                            {
+                                table->setItem(h-1, w-1, new QTableWidgetItem(cell->value().toString()));
+                            }
+                        }
+                    }
+                }
+
+                setCurrentFile(mFile);
+                statusBar()->showMessage(tr("File loaded"), 2000);
+            }
+        }
+    }
+}
+
+void SheetWidget::saveSettings()
+{
+    QSettings settings(QSettings::UserScope, QLatin1String("Discounting Model Selector"));
+    settings.beginGroup(QLatin1String("SheetWindow"));
+
+    QStringList files = settings.value("recentFileList").toStringList();
+
+    settings.setValue(QLatin1String("recentFileList"), files);
+    settings.endGroup();
+
+    settings.sync();
 }
 
 /** Window methods
@@ -445,6 +535,8 @@ void SheetWidget::showOpenFileDialog()
 
     if(!file_name.trimmed().isEmpty())
     {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+
         Document xlsx2(file_name);
         QStringList sheets = xlsx2.sheetNames();
 
@@ -471,8 +563,62 @@ void SheetWidget::showOpenFileDialog()
                     }
                 }
             }
+
+            setCurrentFile(file_name);
+            statusBar()->showMessage(tr("File loaded"), 2000);
         }
+
+        QApplication::restoreOverrideCursor();
     }
+}
+
+void SheetWidget::setCurrentFile(const QString &fileName)
+{
+    curFile = fileName;
+    setWindowFilePath(curFile);
+
+    QSettings settings(QSettings::UserScope, QLatin1String("Discounting Model Selector"));
+    settings.beginGroup(QLatin1String("SheetWindow"));
+
+    QStringList files = settings.value(QLatin1String("recentFileList")).toStringList();
+    files.removeAll(fileName);
+    files.prepend(fileName);
+
+    while (files.size() > MaxRecentFiles)
+    {
+        files.removeLast();
+    }
+
+    settings.setValue("recentFileList", files);
+    settings.endGroup();
+    settings.sync();
+
+    updateRecentFileActions();
+}
+
+void SheetWidget::updateRecentFileActions()
+{
+    QSettings settings(QSettings::UserScope, QLatin1String("Discounting Model Selector"));
+    settings.beginGroup(QLatin1String("SheetWindow"));
+    QStringList files = settings.value("recentFileList").toStringList();
+
+    int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
+
+    qDebug() << numRecentFiles;
+
+    for (int i = 0; i < numRecentFiles; ++i) {
+        QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
+        recentFileActs[i]->setText(text);
+        recentFileActs[i]->setData(files[i]);
+        recentFileActs[i]->setVisible(true);
+    }
+
+    for (int j = numRecentFiles; j < MaxRecentFiles; ++j)
+    {
+        recentFileActs[j]->setVisible(false);
+    }
+
+    separatorAct->setVisible(numRecentFiles > 0);
 }
 
 void SheetWidget::showSaveFileDialog()
@@ -481,25 +627,27 @@ void SheetWidget::showSaveFileDialog()
     QString file_name;
     QString fileFilter = "Spreadsheet (*.xlsx)";
 
-    #ifdef _WIN32
+#ifdef _WIN32
 
-    file_name = QFileDialog::getSaveFileName(this, "Open spreadsheet file", QDir::homePath(),
-                                             fileFilter);
+        file_name = QFileDialog::getSaveFileName(this, "Open spreadsheet file", QDir::homePath(),
+                                         fileFilter);
 
-    #elif TARGET_OS_MAC
+#elif TARGET_OS_MAC
 
-    file_name = QFileDialog::getSaveFileName(this, "Open spreadsheet file", QDir::homePath(),
-                                             fileFilter, &fileFilter, QFileDialog::Option::DontUseNativeDialog);
+        file_name = QFileDialog::getSaveFileName(this, "Open spreadsheet file", QDir::homePath(),
+                                         fileFilter, &fileFilter, QFileDialog::Option::DontUseNativeDialog);
 
-    if (!file_name.contains(".xlsx"))
-    {
-        file_name.append(".xlxs");
-    }
+        if (!file_name.contains(".xlsx"))
+        {
+            file_name.append(".xlxs");
+        }
 
-    #endif
+#endif
 
     if(!file_name.trimmed().isEmpty())
     {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+
         QXlsx::Document xlsx;
 
         int rows = table->rowCount();
@@ -522,6 +670,11 @@ void SheetWidget::showSaveFileDialog()
         }
 
         xlsx.saveAs(file_name);
+        setCurrentFile(file_name);
+
+        QApplication::restoreOverrideCursor();
+
+        statusBar()->showMessage(tr("File saved"), 2000);
     }
 }
 
@@ -1274,6 +1427,11 @@ void SheetWidget::areValuePointsValid(QStringList &valuePoints, QStringList &tem
 QString SheetWidget::convert_bool(bool value)
 {
     return (value) ? QString("1") : QString("0");
+}
+
+QString SheetWidget::strippedName(const QString &fullFileName)
+{
+    return QFileInfo(fullFileName).fileName();
 }
 
 void SheetWidget::convertExcelColumn(QString &mString, int column)

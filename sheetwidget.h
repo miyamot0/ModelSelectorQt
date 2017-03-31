@@ -117,11 +117,15 @@ public slots:
     void pasteInverted();
     void clear();
 
+    void openRecentFile();
+
     bool eventFilter(QObject *object, QEvent *event);
 
     void updateDelayModalWindow();
     void updateValueModalWindow();
     void updateMaxValueModalWindow();
+
+    void saveSettings();
 
     void clearSheet();
     void showOpenFileDialog();
@@ -158,6 +162,10 @@ public slots:
 
     void WorkUpdate(QStringList status);
     void WorkFinished();
+
+    void closeEvent(QCloseEvent* event);
+    void setCurrentFile(const QString &fileName);
+    void updateRecentFileActions();
 
 private:
     QAction *newSheetAction;
@@ -231,6 +239,16 @@ private:
     bool tripRMSE;
 
     bool displayFigures;
+
+    QString settingsFile;
+
+    enum { MaxRecentFiles = 5 };
+    QAction *recentFileActs[MaxRecentFiles];
+
+    QString strippedName(const QString &fullFileName);
+    QString curFile;
+
+    QAction *separatorAct;
 };
 
 
