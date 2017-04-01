@@ -34,7 +34,11 @@ GraphicalOutputDialog::GraphicalOutputDialog(QWidget *parent) :
     ui->setupUi(this);
 
     mSVG = new QSvgWidget();
-    ui->verticalLayout->addWidget(mSVG);
+
+    QSizePolicy qsp(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    mSVG->setSizePolicy(qsp);
+
+    ui->gridLayout->addWidget(mSVG);
 
     currentIndexShown = 0;
 }
@@ -42,6 +46,12 @@ GraphicalOutputDialog::GraphicalOutputDialog(QWidget *parent) :
 GraphicalOutputDialog::~GraphicalOutputDialog()
 {
     delete ui;
+}
+
+void GraphicalOutputDialog::resizeEvent(QResizeEvent *)
+{
+    int winSizeDim = qMax(this->width(), this->height());
+    resize(winSizeDim, winSizeDim);
 }
 
 void GraphicalOutputDialog::on_NextButton_clicked()

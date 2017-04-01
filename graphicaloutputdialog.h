@@ -70,6 +70,8 @@ private slots:
      */
     void displayPlot();
 
+    void resizeEvent(QResizeEvent *);
+
 private:
     Ui::GraphicalOutputDialog *ui;
 
