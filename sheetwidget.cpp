@@ -78,9 +78,10 @@
 
 QTXLSX_USE_NAMESPACE
 
-SheetWidget::SheetWidget(bool rInstalled, QString commandString, QWidget *parent) : QMainWindow(parent)
+SheetWidget::SheetWidget(bool rInstalled, bool isSVGinstalled, QString commandString, QWidget *parent) : QMainWindow(parent)
 {
     isCoreRPresent = rInstalled;
+    isCoreSVGSupportPresent = isSVGinstalled;
     commandParameter = commandString;
 
     table = new QTableWidget(10000, 10000, this);
@@ -185,7 +186,7 @@ SheetWidget::SheetWidget(bool rInstalled, QString commandString, QWidget *parent
 
     #endif
 
-    statusDialog = new StatusDialog(isCoreRPresent, commandParameter, this);
+    statusDialog = new StatusDialog(isCoreRPresent, isCoreSVGSupportPresent, commandParameter, this);
     statusDialog->setModal(true);
     statusDialog->show();
 
@@ -195,6 +196,19 @@ SheetWidget::SheetWidget(bool rInstalled, QString commandString, QWidget *parent
         rMessageBox.setWindowTitle("Please install/setup R");
         rMessageBox.setTextFormat(Qt::RichText);
         rMessageBox.setText("<p>The R program was not found on your machine (at least within the normal path). If installed already, please add the binary to your path. If not yet installed, you can download the R program from this location:<br/><br/> <a href='https://www.r-project.org//'>The R Project</a><p>");
+        rMessageBox.setStandardButtons(QMessageBox::Ok);
+        rMessageBox.exec();
+    }
+
+    if (!isCoreSVGSupportPresent)
+    {
+        QMessageBox rMessageBox;
+        rMessageBox.setWindowTitle("Please install/setup xQuartz");
+        rMessageBox.setTextFormat(Qt::RichText);
+        rMessageBox.setText("<p>The R program uses xQuartz on OSX to to generate high quality images. This was not found "
+                            "on your machine (at least within the normal path). If not yet installed, you "
+                            "can download and install xQuartz from this location:<br/><br/> <a href='https://www.xquartz.org/'>"
+                            "The xQuartz Project</a><p>");
         rMessageBox.setStandardButtons(QMessageBox::Ok);
         rMessageBox.exec();
     }
@@ -690,6 +704,21 @@ void SheetWidget::showDiscountingAreaWindow()
         return;
     }
 
+    if (!isCoreSVGSupportPresent)
+    {
+        QMessageBox rMessageBox;
+        rMessageBox.setWindowTitle("Please install/setup xQuartz");
+        rMessageBox.setTextFormat(Qt::RichText);
+        rMessageBox.setText("<p>The R program uses xQuartz on OSX to to generate high quality images. This was not found "
+                            "on your machine (at least within the normal path). If not yet installed, you "
+                            "can download and install xQuartz from this location:<br/><br/> <a href='https://www.xquartz.org/'>"
+                            "The xQuartz Project</a><p>");
+        rMessageBox.setStandardButtons(QMessageBox::Ok);
+        rMessageBox.exec();
+
+        return;
+    }
+
     if (isToolWindowShown())
     {
         return;
@@ -709,6 +738,21 @@ void SheetWidget::showDiscountingED50Window()
         rMessageBox.setWindowTitle("Please install/setup up");
         rMessageBox.setTextFormat(Qt::RichText);
         rMessageBox.setText("<p>The R program was not found on your machine (at least within the normal path). If installed already, please add the binary to your path. If not yet installed, you can download the R program from this location:<br/><br/> <a href='https://www.r-project.org//'>The R Project</a><p>");
+        rMessageBox.setStandardButtons(QMessageBox::Ok);
+        rMessageBox.exec();
+
+        return;
+    }
+
+    if (!isCoreSVGSupportPresent)
+    {
+        QMessageBox rMessageBox;
+        rMessageBox.setWindowTitle("Please install/setup xQuartz");
+        rMessageBox.setTextFormat(Qt::RichText);
+        rMessageBox.setText("<p>The R program uses xQuartz on OSX to to generate high quality images. This was not found "
+                            "on your machine (at least within the normal path). If not yet installed, you "
+                            "can download and install xQuartz from this location:<br/><br/> <a href='https://www.xquartz.org/'>"
+                            "The xQuartz Project</a><p>");
         rMessageBox.setStandardButtons(QMessageBox::Ok);
         rMessageBox.exec();
 
@@ -1132,7 +1176,7 @@ void SheetWidget::Calculate(QString scriptName, int topDelay, int leftDelay, int
 
         QString scriptDir = "\"" + QCoreApplication::applicationDirPath() + "/";
 
-        mArgList << scriptName + scriptName + "\"";
+        mArgList << scriptDir + scriptName + "\"";
 
         #endif
 

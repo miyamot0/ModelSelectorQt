@@ -97,7 +97,7 @@ class SheetWidget : public QMainWindow
     Q_OBJECT
 
 public:
-    SheetWidget(bool rInstalled, QString commandString, QWidget *parent = 0);
+    SheetWidget(bool rInstalled, bool isSVGinstalled, QString commandString, QWidget *parent = 0);
 
     void convertExcelColumn(QString &mString, int column);
     QString convert_bool(bool value);
@@ -218,6 +218,7 @@ private:
     QString commandParameter;
     QStringList mInstallCommands;
     bool isCoreRPresent;
+    bool isCoreSVGSupportPresent;
 
     /**
      * @brief Thread object which will let us manipulate the running thread

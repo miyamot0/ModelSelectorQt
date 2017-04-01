@@ -12,7 +12,8 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     QString commandString;
-    bool isRActive = false;
+    bool isRActive = false;    
+    bool isSVGsupported = false;
 
     #ifdef _WIN32
 
@@ -27,6 +28,8 @@ int main(int argc, char *argv[])
         isRActive = true;
     }
 
+    isSVGsupported = true;
+
     #elif TARGET_OS_MAC
 
     if(QFile::exists("/usr/local/bin/Rscript"))
@@ -36,9 +39,31 @@ int main(int argc, char *argv[])
         commandString = "/usr/local/bin/Rscript";
     }
 
+    QDir myDir("/Applications");
+    QList<QFileInfo> mFiles = myDir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries);
+
+    foreach (QFileInfo fileInfo, mFiles) {
+
+        if (fileInfo.fileName().contains("xquartz", Qt::CaseInsensitive))
+        {
+            isSVGsupported = true;
+        }
+    }
+
+    myDir = QString("/Applications/Utilities");
+    mFiles = myDir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries);
+
+    foreach (QFileInfo fileInfo, mFiles) {
+
+        if (fileInfo.fileName().contains("xquartz", Qt::CaseInsensitive))
+        {
+            isSVGsupported = true;
+        }
+    }
+
     #endif
 
-    SheetWidget mNewSheet(isRActive, commandString);
+    SheetWidget mNewSheet(isRActive, isSVGsupported, commandString);
     mNewSheet.setWindowIcon(QPixmap(":/images/applications-other.png"));
     mNewSheet.show();
 

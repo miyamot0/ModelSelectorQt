@@ -43,7 +43,7 @@ public:
      * @param commandParameter - Location of command
      * @param parent
      */
-    explicit StatusDialog(bool rInstalled, QString commandParameter, QWidget *parent = 0);
+    explicit StatusDialog(bool rInstalled, bool isSVGsupported, QString commandParameter, QWidget *parent = 0);
     ~StatusDialog();
 
 public slots:

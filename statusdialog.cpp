@@ -23,10 +23,12 @@
 
 #include <QProcess>
 #include <QDesktopWidget>
+#include <QDir>
+#include <QDebug>
 #include "statusdialog.h"
 #include "ui_statusdialog.h"
 
-StatusDialog::StatusDialog(bool rInstalled, QString commandParameter, QWidget *parent) :
+StatusDialog::StatusDialog(bool rInstalled, bool isSVGsupported, QString commandParameter, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::StatusDialog)
 {
@@ -51,6 +53,17 @@ StatusDialog::StatusDialog(bool rInstalled, QString commandParameter, QWidget *p
     {
         ui->statusR->setText("R found!");
         ui->statusR->setStyleSheet("QLabel { color : green; }");
+    }
+
+    if (!isSVGsupported)
+    {
+        ui->statusSVG->setText("Install xQuartz to continue!");
+        ui->statusSVG->setStyleSheet("QLabel { color : red; }");
+    }
+    else
+    {
+        ui->statusSVG->setText("SVG methods found!");
+        ui->statusSVG->setStyleSheet("QLabel { color : green; }");
     }
 
     QStringList mPackageInstall;
