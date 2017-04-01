@@ -52,6 +52,8 @@ public slots:
      */
     void ToggleButton(bool status);
 
+    void RachlinToggleButton(bool status);
+
 private slots:
     /** Slot, fired calculation button
      * @brief on_pushButton_clicked

@@ -20,6 +20,8 @@ DiscountingModelSelectionED50Dialog::DiscountingModelSelectionED50Dialog(QWidget
     );
 
     this->setWindowFlags(Qt::Tool);
+
+    connect(ui->checkBoxRachlin, SIGNAL(clicked(bool)), this, SLOT(RachlinToggleButton(bool)));
 }
 
 DiscountingModelSelectionED50Dialog::~DiscountingModelSelectionED50Dialog()
@@ -55,6 +57,26 @@ void DiscountingModelSelectionED50Dialog::UpdateMaxValue(QString label)
 void DiscountingModelSelectionED50Dialog::ToggleButton(bool status)
 {
     ui->pushButton->setEnabled(status);
+}
+
+void DiscountingModelSelectionED50Dialog::RachlinToggleButton(bool status)
+{
+    if (status)
+    {
+        QMessageBox::StandardButton reply;
+
+        reply = QMessageBox::question(this, "Confirm Rachlin Bounding",
+                                      "Bounding the Rachlin model violates the assumptions necessary for approximate Bayesian model selection. If the Rachlin model's s parameter exceeds 1, it will be dropped as a candidate for that series. Do you wish to continue with this?",
+                                      QMessageBox::Yes|QMessageBox::No);
+        if (reply == QMessageBox::Yes)
+        {
+            ui->checkBoxRachlin->setChecked(true);
+        }
+        else
+        {
+            ui->checkBoxRachlin->setChecked(false);
+        }
+    }
 }
 
 void DiscountingModelSelectionED50Dialog::on_pushButton_clicked()
