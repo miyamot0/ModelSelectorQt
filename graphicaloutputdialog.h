@@ -24,6 +24,8 @@
 #ifndef GRAPHICALOUTPUTDIALOG_H
 #define GRAPHICALOUTPUTDIALOG_H
 
+#include <QMenu>
+#include <QMenuBar>
 #include <QDialog>
 #include <QSvgWidget>
 #include <QFile>
@@ -72,6 +74,10 @@ private slots:
 
     void resizeEvent(QResizeEvent *);
 
+    void contextMenuRequested(const QPoint& point);
+
+    void saveSVGasPNG();
+
 private:
     Ui::GraphicalOutputDialog *ui;
 
@@ -82,6 +88,9 @@ private:
     int currentIndexShown;
 
     QSvgWidget *mSVG;
+
+    QMenu *dialogMenu;
+    QAction *savePNG;
 
 };
 

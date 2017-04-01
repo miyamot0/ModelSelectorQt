@@ -41,6 +41,55 @@ GraphicalOutputDialog::GraphicalOutputDialog(QWidget *parent) :
     ui->gridLayout->addWidget(mSVG);
 
     currentIndexShown = 0;
+
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
+    dialogMenu = new QMenu(this);
+    savePNG = dialogMenu->addAction("Save PNG");
+
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint)),this, SLOT(contextMenuRequested(const QPoint&)));
+    connect(savePNG, SIGNAL(triggered()), this, SLOT(saveSVGasPNG()));
+}
+
+void GraphicalOutputDialog::contextMenuRequested(const QPoint& point)
+{
+     dialogMenu->popup(mapToGlobal(point));
+}
+
+void GraphicalOutputDialog::saveSVGasPNG()
+{
+    qDebug() << "Png save";
+
+    QString file_name;
+    QString fileFilter = "PNG (*.png)";
+
+#ifdef _WIN32
+
+        file_name = QFileDialog::getSaveFileName(this, "Open spreadsheet file", QDir::homePath(),
+                                         fileFilter);
+
+#elif TARGET_OS_MAC
+
+        file_name = QFileDialog::getSaveFileName(this, "Save PNG", QDir::homePath(),
+                                         fileFilter, &fileFilter, QFileDialog::Option::DontUseNativeDialog);
+
+        if (!file_name.contains(".png"))
+        {
+            file_name.append(".png");
+        }
+
+#endif
+
+    if(!file_name.trimmed().isEmpty())
+    {
+        QSvgRenderer *renderer = mSVG->renderer();
+        QImage image(600, 600, QImage::Format_RGB32);
+        QPainter painter;
+        painter.begin(&image);
+        renderer->render(&painter);
+        painter.end();
+        image.save(file_name, "PNG", 9);
+    }
 }
 
 GraphicalOutputDialog::~GraphicalOutputDialog()
