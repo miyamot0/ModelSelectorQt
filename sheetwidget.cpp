@@ -19,7 +19,7 @@
 
    Email: shawn(dot)gilroy(at)temple.edu
 
-   The SheetWidget class was inspired by the Qt 5.8 Spreadsheet example, its license is below:
+   The SheetWidget class was inspired by the Qt 5.8 Spreadsheet example and Recent Files example, its license is below:
 
    =======================================================================================================
 
@@ -480,6 +480,30 @@ void SheetWidget::openRecentFile()
     }
 }
 
+void SheetWidget::setCurrentFile(const QString &fileName)
+{
+    curFile = fileName;
+    setWindowFilePath(curFile);
+
+    QSettings settings(QSettings::UserScope, QLatin1String("Discounting Model Selector"));
+    settings.beginGroup(QLatin1String("SheetWindow"));
+
+    QStringList files = settings.value(QLatin1String("recentFileList")).toStringList();
+    files.removeAll(fileName);
+    files.prepend(fileName);
+
+    while (files.size() > MaxRecentFiles)
+    {
+        files.removeLast();
+    }
+
+    settings.setValue("recentFileList", files);
+    settings.endGroup();
+    settings.sync();
+
+    updateRecentFileActions();
+}
+
 void SheetWidget::saveSettings()
 {
     QSettings settings(QSettings::UserScope, QLatin1String("Discounting Model Selector"));
@@ -570,30 +594,6 @@ void SheetWidget::showOpenFileDialog()
 
         QApplication::restoreOverrideCursor();
     }
-}
-
-void SheetWidget::setCurrentFile(const QString &fileName)
-{
-    curFile = fileName;
-    setWindowFilePath(curFile);
-
-    QSettings settings(QSettings::UserScope, QLatin1String("Discounting Model Selector"));
-    settings.beginGroup(QLatin1String("SheetWindow"));
-
-    QStringList files = settings.value(QLatin1String("recentFileList")).toStringList();
-    files.removeAll(fileName);
-    files.prepend(fileName);
-
-    while (files.size() > MaxRecentFiles)
-    {
-        files.removeLast();
-    }
-
-    settings.setValue("recentFileList", files);
-    settings.endGroup();
-    settings.sync();
-
-    updateRecentFileActions();
 }
 
 void SheetWidget::updateRecentFileActions()
