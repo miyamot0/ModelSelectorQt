@@ -81,6 +81,7 @@ StatusDialog::StatusDialog(bool rInstalled, QString commandParameter, QWidget *p
     connect(rWorker, SIGNAL(workStarted()), thread, SLOT(start()));
     connect(thread, SIGNAL(started()), rWorker, SLOT(working()));
     connect(rWorker, SIGNAL(workingResult(QString)), this, SLOT(WorkUpdate(QString)));
+    connect(rWorker, SIGNAL(workFinished()), this, SLOT(DiagnosticsComplete()));
     connect(rWorker, SIGNAL(workFinished()), thread, SLOT(quit()), Qt::DirectConnection);
 
     thread->wait();
@@ -99,7 +100,7 @@ void StatusDialog::WorkUpdate(QString status)
         }
         else
         {
-            ui->statusReshape->setText("reshape installed!");
+            ui->statusReshape->setText("reshape installed and ready!");
             ui->statusReshape->setStyleSheet("QLabel { color : green; }");
         }
     }
@@ -111,7 +112,7 @@ void StatusDialog::WorkUpdate(QString status)
         }
         else
         {
-            ui->statusBase64->setText("base64enc installed!");
+            ui->statusBase64->setText("base64enc installed and ready!");
             ui->statusBase64->setStyleSheet("QLabel { color : green; }");
         }
     }
@@ -123,12 +124,28 @@ void StatusDialog::WorkUpdate(QString status)
         }
         else
         {
-            ui->statusJson->setText("jsonlite installed!");
+            ui->statusJson->setText("jsonlite installed and ready!");
             ui->statusJson->setStyleSheet("QLabel { color : green; }");
         }
     }
 
     orderVar++;
+}
+
+void StatusDialog::DiagnosticsComplete()
+{
+    if (ui->statusR->text().contains("not") ||
+        ui->statusReshape->text().contains("not") ||
+        ui->statusBase64->text().contains("not") ||
+        ui->statusJson->text().contains("not"))
+    {
+        ui->statusDiagnostics->setText("DMS is not yet functional!");
+    }
+    else
+    {
+        ui->statusDiagnostics->setText("DMS is installed and ready!");
+        ui->statusDiagnostics->setStyleSheet("QLabel { color : green; }");
+    }
 }
 
 StatusDialog::~StatusDialog()

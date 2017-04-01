@@ -52,6 +52,7 @@ public slots:
      * @param status - returned response from R
      */
     void WorkUpdate(QString status);
+    void DiagnosticsComplete();
 
 private:
     Ui::StatusDialog *ui;
