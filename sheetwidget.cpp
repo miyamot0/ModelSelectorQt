@@ -604,8 +604,6 @@ void SheetWidget::updateRecentFileActions()
 
     int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
 
-    qDebug() << numRecentFiles;
-
     for (int i = 0; i < numRecentFiles; ++i) {
         QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
         recentFileActs[i]->setText(text);
