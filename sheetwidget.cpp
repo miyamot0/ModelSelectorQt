@@ -641,12 +641,12 @@ void SheetWidget::showSaveFileDialog()
 
 #ifdef _WIN32
 
-        file_name = QFileDialog::getSaveFileName(this, "Open spreadsheet file", QDir::homePath(),
+        file_name = QFileDialog::getSaveFileName(this, "Save spreadsheet file", QDir::homePath(),
                                          fileFilter);
 
 #elif TARGET_OS_MAC
 
-        file_name = QFileDialog::getSaveFileName(this, "Open spreadsheet file", QDir::homePath(),
+        file_name = QFileDialog::getSaveFileName(this, "Save spreadsheet file", QDir::homePath(),
                                          fileFilter, &fileFilter, QFileDialog::Option::DontUseNativeDialog);
 
         if (!file_name.contains(".xlsx"))
