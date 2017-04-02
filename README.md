@@ -20,8 +20,9 @@ Features include:
 ### Referenced Works (F/OSS software)
 The Small N Stats Discounting Model Selector uses a number of open source projects to work properly:
 * R Statistical Package - GPLv2+ Licensed. Copyright (C) 2000-16. The R Core Team [Site](https://www.r-project.org/)
-* Qt Framework (5.8) - LGPL 3.0 (GPL 3.0 Licensed). Copyright (c). Qt Team [Site](https://www.qt.io/)
-* Qt Examples (Spreadsheet, Recent Files) - BSD-3 Clause. Copyright (c). Qt Team [Site](https://www.qt.io/)
+* Qt Framework (5.8) - LGPL 3.0 (GPL 3.0 Licensed). Copyright (C). Qt Team [Site](https://www.qt.io/)
+* Qt Examples (Spreadsheet, Recent Files) - BSD-3 Clause. Copyright (C). Qt Team [Site](https://www.qt.io/)
+* Gnome icons - GPLv3 Licensed. Copyright (C) "GNOME Project" [Site](http://www.gnome.org)
 
 ### Referenced Works (R packages/scripts)
 The Discounting Model Selector accesses the following R packages to perform statistical methods:
