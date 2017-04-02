@@ -13,7 +13,6 @@
         <file>images/SNS.png</file>
         <file>images/system-run.png</file>
         <file>images/text-x-generic.png</file>
-        <file>scripts/FranckComputation.R</file>
         <file>scripts/installDependencyBase64.R</file>
         <file>scripts/installDependencyJsonlite.R</file>
         <file>scripts/installDependencyReshape.R</file>
