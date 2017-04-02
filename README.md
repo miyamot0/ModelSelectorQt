@@ -35,6 +35,7 @@ The Discounting Model Selector accesses the following R packages to perform stat
 ### Referenced Works (academic works)
 The Small N Stats Discounting Model Selector is based on the following academic works:
 * Franck, C. T., Koffarnus, M. N., House, L. L. & Bickel W. K. (2015). Accurate characterization of delay discounting: a multiple model approach using approximate Bayesian model selection and a unified discounting measure. Journal of the Experimental Analysis of Behavior, 103, 218-33.
+* Gilroy, S. P., Franck, C. T. & Hantula, D. A. (accepted with revisions). The Discounting Model Selector: Statistical software for delay discounting applications. Journal of the Experimental Analysis of Behavior.
 
 ### Acknowledgements and Credits
 * Donald A. Hantula, Decision Making Laboratory, Temple University [Site](http://astro.temple.edu/~hantula/)
@@ -44,9 +45,10 @@ The Small N Stats Discounting Model Selector is based on the following academic 
 You will need the R open-source statistical package for model fitting/charting to be performed.
 Once Discounting Model Selector is installed, it will perform a one-time install the necessary R packages (internet required).
 Discounting Model Selector is a C++ application, installer binaries can be downloaded or the source can be compiled at your leisure.
+OSX users, depending on their version, may need to install xQuartz so that vector graphics can be supported.
 
 ### Download
-All downloads, if/when posted, will be hosted at [Small N Stats](http://www.smallnstats.com).
+All downloadable binaries, if/when posted, will be hosted at [Small N Stats](http://www.smallnstats.com).
 
 ### Development
 Want to contribute? Great! Emails or PM's are welcome.
