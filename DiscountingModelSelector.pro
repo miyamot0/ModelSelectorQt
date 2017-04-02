@@ -78,11 +78,20 @@ FORMS    += \
 RESOURCES += \
     spreadsheet.qrc
 
+win32 {
+    DMS_FILES.files = scripts/DiscountingAreaComputation.R \
+                    scripts/DiscountingED50Computation.R scripts/installDependencyBase64.R \
+                    scripts/installDependencyJsonlite.R scripts/installDependencyReshape.R
+    DMS_FILES.path = Contents/Resources
+
+    INSTALLS += target dlltarget
+}
 macx {
     DMS_FILES.files = scripts/DiscountingAreaComputation.R \
                     scripts/DiscountingED50Computation.R scripts/installDependencyBase64.R \
                     scripts/installDependencyJsonlite.R scripts/installDependencyReshape.R
     DMS_FILES.path = Contents/Resources
+
     QMAKE_BUNDLE_DATA += DMS_FILES
 }
 

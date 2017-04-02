@@ -152,6 +152,7 @@ SheetWidget::SheetWidget(bool rInstalled, bool isSVGinstalled, QString commandSt
 
     #elif TARGET_OS_MAC
 
+    /*
     QString scriptDir = QCoreApplication::applicationDirPath() + "/";
 
     if (!QFile::exists(scriptDir + "FranckComputation.R"))
@@ -183,6 +184,7 @@ SheetWidget::SheetWidget(bool rInstalled, bool isSVGinstalled, QString commandSt
     {
         QFile::copy(":/scripts/installDependencyReshape.R", scriptDir + "installDependencyReshape.R");
     }
+    */
 
     #endif
 
@@ -1151,6 +1153,10 @@ void SheetWidget::Calculate(QString scriptName, int topDelay, int leftDelay, int
 
     mSeriesCommands.clear();
 
+    QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
+    runDirectory.cdUp();
+    runDirectory.cd("Resources");
+
     for (int i = 0; i < nSeries; i++)
     {
         valuePoints.clear();
@@ -1174,7 +1180,7 @@ void SheetWidget::Calculate(QString scriptName, int topDelay, int leftDelay, int
 
         #elif TARGET_OS_MAC
 
-        QString scriptDir = "\"" + QCoreApplication::applicationDirPath() + "/";
+        QString scriptDir = "\"" + runDirectory.path() + "/";
 
         mArgList << scriptDir + scriptName + "\"";
 

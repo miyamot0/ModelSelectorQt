@@ -78,7 +78,11 @@ StatusDialog::StatusDialog(bool rInstalled, bool isSVGsupported, QString command
 
     #ifdef TARGET_OS_MAC
 
-    QString scriptDir = "\"" +QCoreApplication::applicationDirPath() + "/";
+    QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
+    runDirectory.cdUp();
+    runDirectory.cd("Resources");
+
+    QString scriptDir = "\"" + runDirectory.path() + "/";
 
     mPackageInstall << scriptDir + "installDependencyReshape.R\"";
     mPackageInstall << scriptDir + "installDependencyBase64.R\"";
