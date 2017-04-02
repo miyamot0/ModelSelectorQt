@@ -860,11 +860,17 @@ void SheetWidget::paste()
             {
                 if (table->item(row, column) != NULL)
                 {
-                    table->item(row, column)->setText(columns[j]);
+                    if (j < columns.length())
+                    {
+                        table->item(row, column)->setText(columns[j]);
+                    }
                 }
                 else
                 {
-                    table->setItem(row, column, new QTableWidgetItem(columns[j]));
+                    if (j < columns.length())
+                    {
+                        table->setItem(row, column, new QTableWidgetItem(columns[j]));
+                    }
                 }
             }
         }
@@ -893,11 +899,17 @@ void SheetWidget::pasteInverted()
             {
                 if (table->item(row, column) != NULL)
                 {
-                    table->item(row, column)->setText(columns[j]);
+                    if (j < columns.length())
+                    {
+                        table->item(row, column)->setText(columns[j]);
+                    }
                 }
                 else
                 {
-                    table->setItem(row, column, new QTableWidgetItem(columns[j]));
+                    if (j < columns.length())
+                    {
+                        table->setItem(row, column, new QTableWidgetItem(columns[j]));
+                    }
                 }
             }
         }
