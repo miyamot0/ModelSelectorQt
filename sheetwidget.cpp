@@ -105,11 +105,7 @@ SheetWidget::SheetWidget(bool rInstalled, bool isSVGinstalled, QString commandSt
 
     resize(QDesktopWidget().availableGeometry(this).size() * 0.7);
 
-    QString cwd = QDir::currentPath();
-
     #ifdef _WIN32
-
-    cwd = QDir::currentPath();
 
     this->window()->setGeometry(
         QStyle::alignedRect(
@@ -119,72 +115,6 @@ SheetWidget::SheetWidget(bool rInstalled, bool isSVGinstalled, QString commandSt
             qApp->desktop()->availableGeometry()
         )
     );
-
-    if (!QDir(cwd).exists("FranckComputation.R"))
-    {
-        QFile::copy(":/scripts/FranckComputation.R", cwd + "/FranckComputation.R");
-    }
-
-    if (!QDir(cwd).exists("DiscountingAreaComputation.R"))
-    {
-        QFile::copy(":/scripts/DiscountingAreaComputation.R", cwd + "/DiscountingAreaComputation.R");
-    }
-
-    if (!QDir(cwd).exists("DiscountingED50Computation.R"))
-    {
-        QFile::copy(":/scripts/DiscountingED50Computation.R", cwd + "/DiscountingED50Computation.R");
-    }
-
-    if (!QDir(cwd).exists("installDependencyBase64.R"))
-    {
-        QFile::copy(":/scripts/installDependencyBase64.R", cwd + "/installDependencyBase64.R");
-    }
-
-    if (!QDir(cwd).exists("installDependencyJsonlite.R"))
-    {
-        QFile::copy(":/scripts/installDependencyJsonlite.R", cwd + "/installDependencyJsonlite.R");
-    }
-
-    if (!QDir(cwd).exists("installDependencyReshape.R"))
-    {
-        QFile::copy(":/scripts/installDependencyReshape.R", cwd + "/installDependencyReshape.R");
-    }
-
-    #elif TARGET_OS_MAC
-
-    /*
-    QString scriptDir = QCoreApplication::applicationDirPath() + "/";
-
-    if (!QFile::exists(scriptDir + "FranckComputation.R"))
-    {
-        QFile::copy(":/scripts/FranckComputation.R", scriptDir + "FranckComputation.R");
-    }
-
-    if (!QFile::exists(scriptDir + "DiscountingED50Computation.R"))
-    {
-        QFile::copy(":/scripts/DiscountingED50Computation.R", scriptDir + "DiscountingED50Computation.R");
-    }
-
-    if (!QFile::exists(scriptDir + "DiscountingAreaComputation.R"))
-    {
-        QFile::copy(":/scripts/DiscountingAreaComputation.R", scriptDir + "DiscountingAreaComputation.R");
-    }
-
-    if (!QFile::exists(scriptDir + "installDependencyBase64.R"))
-    {
-        QFile::copy(":/scripts/installDependencyBase64.R", scriptDir + "installDependencyBase64.R");
-    }
-
-    if (!QFile::exists(scriptDir + "installDependencyJsonlite.R"))
-    {
-        QFile::copy(":/scripts/installDependencyJsonlite.R", scriptDir + "installDependencyJsonlite.R");
-    }
-
-    if (!QFile::exists(scriptDir + "installDependencyReshape.R"))
-    {
-        QFile::copy(":/scripts/installDependencyReshape.R", scriptDir + "installDependencyReshape.R");
-    }
-    */
 
     #endif
 

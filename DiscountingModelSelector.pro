@@ -88,9 +88,12 @@ win32 {
                     License_R.txt \
                     License_reshape.txt
 
-    DMS_FILES.path = Contents/Resources
+    release: DESTDIR = $$OUT_PWD/build/release
+    debug:   DESTDIR = $$OUT_PWD/build/debug
 
-    INSTALLS += target dlltarget
+    DMS_FILES.path = $$DESTDIR
+
+    INSTALLS += DMS_FILES
 }
 macx {
     DMS_FILES.files = scripts/DiscountingAreaComputation.R \
