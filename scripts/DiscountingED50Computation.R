@@ -419,63 +419,19 @@ chartFunction<-function(mDelays, mValues, samuelsonK=0,ainslieK=0,betaConstant=0
 
   svg(tempf2 <- tempfile(fileext = '.svg'))
 
-  if (probModel == "Noise") {
-    plot(totalFrame$Delays, totalFrame$Noise, type = "l", ylim = c(0,1),
-         main = paste("Discounting Model Selection\nMost Probable Model: ", probModel, "\nln(ed50)=", round(ED50, 5), "", sep = ""),
-         xlab = "Delays",
-         ylab = "Value",
-         col = "red",
-         lwd = 3,
-         log = "x")
-  } else {
-    plot(totalFrame$Delays, totalFrame$Noise, type = "l", ylim = c(0,1),
-         main = paste("Discounting Model Selection\nMost Probable Model: ", probModel, "\nln(ed50)=", round(ED50, 5), "", sep = ""),
-         xlab = "Delays",
-         ylab = "Value",
-         col = "red",
-         lwd = 1,
-         log = "x")
-  }
+  plot(totalFrame$Delays, totalFrame$Noise, type = "l", ylim = c(0,1),
+     main = paste("Discounting Model Selection\nMost Probable Model: ", probModel, "\nln(ed50)=", round(ED50, 5), "", sep = ""),
+     xlab = "Delays",
+     ylab = "Value",
+     col = "red",
+     lwd = 1,
+     log = "x")
 
-  if (probModel == "Exponential") {
-    lines(totalFrame$Delays, totalFrame$Exponential, col = "blue", lwd = 3)
-
-  } else {
-    lines(totalFrame$Delays, totalFrame$Exponential, col = "blue", lwd = 1)
-
-  }
-
-  if (probModel == "Mazur") {
-    lines(totalFrame$Delays, totalFrame$Hyperbolic, col = "green", lwd = 3)
-
-  } else {
-    lines(totalFrame$Delays, totalFrame$Hyperbolic, col = "green", lwd = 1)
-
-  }
-
-  if (probModel == "BD") {
-    lines(totalFrame$Delays, totalFrame$QuasiHyperbolic, col = "brown", lwd = 3)
-
-  } else {
-    lines(totalFrame$Delays, totalFrame$QuasiHyperbolic, col = "brown", lwd = 1)
-
-  }
-
-  if (probModel == "GreenMyerson") {
-    lines(totalFrame$Delays, totalFrame$HyperboloidM, col = "purple", lwd = 3)
-
-  } else  {
-    lines(totalFrame$Delays, totalFrame$HyperboloidM, col = "purple", lwd = 1)
-
-  }
-
-  if (probModel == "Rachlin") {
-    lines(totalFrame$Delays, totalFrame$HyperboloidR, col = "orange", lwd = 3)
-
-  } else {
-    lines(totalFrame$Delays, totalFrame$HyperboloidR, col = "orange", lwd = 1)
-
-  }
+  lines(totalFrame$Delays, totalFrame$Exponential, col = "blue", lwd = 1)
+  lines(totalFrame$Delays, totalFrame$Hyperbolic, col = "green", lwd = 1)
+  lines(totalFrame$Delays, totalFrame$QuasiHyperbolic, col = "brown", lwd = 1)
+  lines(totalFrame$Delays, totalFrame$HyperboloidM, col = "purple", lwd = 1)
+  lines(totalFrame$Delays, totalFrame$HyperboloidR, col = "orange", lwd = 1)
 
   points(mDelays, mValues, type = "p", cex = 2, pch = 18)
 
