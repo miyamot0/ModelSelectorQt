@@ -274,7 +274,7 @@ void SheetWidget::buildMenus()
     pasteAction->setIcon(QIcon(":/images/edit-paste.png"));
     connect(pasteAction, &QAction::triggered, this, &SheetWidget::paste);
 
-    pasteInvertedAction = new QAction("Paste Inverted", this);
+    pasteInvertedAction = new QAction("Paste Transposed", this);
     pasteInvertedAction->setShortcut(QKeySequence("Ctrl+B"));
     pasteInvertedAction->setIcon(QIcon(":/images/edit-paste.png"));
     connect(pasteInvertedAction, &QAction::triggered, this, &SheetWidget::pasteInverted);
