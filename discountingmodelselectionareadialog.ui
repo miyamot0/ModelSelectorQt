@@ -167,7 +167,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Instructions: Discounting Model Selection is performed by highlighting data from the spreadsheet and using the Context Menu to send the necessary data to the modeling window. &lt;span style=&quot; font-weight:600;&quot;&gt;Only one row or column of delay points can be selected&lt;/span&gt;. A matrix of value points can be selected, though the data will be treated as rows if a row of delays are selected or columns if a column of delays are selected. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Instructions: Discounting Model Selection is performed by highlighting data from the spreadsheet and using &amp;quot;right-click&amp;quot; to send the necessary data to the modeling window. &lt;span style=&quot; font-weight:600;&quot;&gt;Only one row or column of delay points can be selected&lt;/span&gt;. A matrix of value points can be selected, though the data will be treated as rows if a row of delays are selected or columns if a column of delays are selected. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="textFormat">
           <enum>Qt::RichText</enum>

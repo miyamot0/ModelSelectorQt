@@ -1,7 +1,7 @@
 #-------------------------------------------------
 #
 # Discounting Model Selector, Qt Port
-# Copyright 2007, Shawn P. Gilroy
+# Copyright 2017, Shawn P. Gilroy
 # Released under the GPL-V3 license
 #
 # Source code for project hosted at:
