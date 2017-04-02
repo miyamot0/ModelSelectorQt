@@ -30,7 +30,6 @@ The Discounting Model Selector accesses the following R packages to perform stat
 * base64enc R Package - GPLv2+ Licensed. Copyright (c) 2015, Simon Urbanek
 * reshape R Package - MIT Licensed. Copyright (c) 2014, Hadley Wickham.
 * jsonlite R Package - MIT Licensed. Copyright (c) 2017, Jeroen Ooms.
-
 * BDS R Script - GPLv2+ Licensed. Copyright (c) 2016, Dr. Chris Franck, Virginia Tech - Department of Statistics.
 
 ### Referenced Works (academic works)
