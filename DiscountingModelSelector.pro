@@ -78,7 +78,16 @@ RESOURCES += \
 win32 {
     DMS_FILES.files = scripts/DiscountingAreaComputation.R \
                     scripts/DiscountingED50Computation.R scripts/installDependencyBase64.R \
-                    scripts/installDependencyJsonlite.R scripts/installDependencyReshape.R
+                    scripts/installDependencyJsonlite.R scripts/installDependencyReshape.R \
+                    License_base64enc.txt \
+                    License_BDS.txt \
+                    License_gnome_icons.txt \
+                    License_jsonlite.txt \
+                    License_NLS.txt \
+                    License_Qt.txt \
+                    License_R.txt \
+                    License_reshape.txt
+
     DMS_FILES.path = Contents/Resources
 
     INSTALLS += target dlltarget
@@ -86,7 +95,16 @@ win32 {
 macx {
     DMS_FILES.files = scripts/DiscountingAreaComputation.R \
                     scripts/DiscountingED50Computation.R scripts/installDependencyBase64.R \
-                    scripts/installDependencyJsonlite.R scripts/installDependencyReshape.R
+                    scripts/installDependencyJsonlite.R scripts/installDependencyReshape.R \
+                    License_base64enc.txt \
+                    License_BDS.txt \
+                    License_gnome_icons.txt \
+                    License_jsonlite.txt \
+                    License_NLS.txt \
+                    License_Qt.txt \
+                    License_R.txt \
+                    License_reshape.txt
+
     DMS_FILES.path = Contents/Resources
 
     QMAKE_BUNDLE_DATA += DMS_FILES
