@@ -35,10 +35,11 @@ GraphicalOutputDialog::GraphicalOutputDialog(QWidget *parent) :
 
     mSVG = new QSvgWidget();
 
-    QSizePolicy qsp(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    QSizePolicy qsp(QSizePolicy::Fixed, QSizePolicy::Fixed);
     mSVG->setSizePolicy(qsp);
+    mSVG->resize(500, 500);
 
-    ui->gridLayout->addWidget(mSVG);
+    ui->verticalLayout->insertWidget(0, mSVG, 0, Qt::AlignCenter);
 
     currentIndexShown = 0;
 
@@ -58,8 +59,6 @@ void GraphicalOutputDialog::contextMenuRequested(const QPoint& point)
 
 void GraphicalOutputDialog::saveSVGasPNG()
 {
-    qDebug() << "Png save";
-
     QString file_name;
     QString fileFilter = "PNG (*.png)";
 
@@ -95,12 +94,6 @@ void GraphicalOutputDialog::saveSVGasPNG()
 GraphicalOutputDialog::~GraphicalOutputDialog()
 {
     delete ui;
-}
-
-void GraphicalOutputDialog::resizeEvent(QResizeEvent *)
-{
-    int winSizeDim = qMax(this->width(), this->height());
-    resize(winSizeDim, winSizeDim);
 }
 
 void GraphicalOutputDialog::on_NextButton_clicked()
@@ -177,5 +170,12 @@ void GraphicalOutputDialog::displayPlot()
 
     mSVG->load(QByteArray::fromBase64(chartString.toUtf8()));
 
+    //mSVG->resize(mSVG->sizeHint()) ;
+
     ui->currentItem->setText("Showing #" + QString::number(currentIndexShown + 1) + " of " + QString::number(mDisplayData.count()) + " plots");
+}
+
+void GraphicalOutputDialog::on_pushButton_clicked()
+{
+    saveSVGasPNG();
 }

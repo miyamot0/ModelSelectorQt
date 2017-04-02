@@ -72,11 +72,11 @@ private slots:
      */
     void displayPlot();
 
-    void resizeEvent(QResizeEvent *);
-
     void contextMenuRequested(const QPoint& point);
 
     void saveSVGasPNG();
+
+    void on_pushButton_clicked();
 
 private:
     Ui::GraphicalOutputDialog *ui;
@@ -91,7 +91,6 @@ private:
 
     QMenu *dialogMenu;
     QAction *savePNG;
-
 };
 
 #endif // GRAPHICALOUTPUTDIALOG_H
