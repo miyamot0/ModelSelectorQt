@@ -93,4 +93,9 @@ macx {
 }
 
 DISTFILES += \
-    README.md
+    README.md \
+    scripts/DiscountingAreaComputation.R \
+    scripts/DiscountingED50Computation.R \
+    scripts/installDependencyJsonlite.R \
+    scripts/installDependencyBase64.R \
+    scripts/installDependencyReshape.R

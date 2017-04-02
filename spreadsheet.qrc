@@ -13,9 +13,6 @@
         <file>images/SNS.png</file>
         <file>images/system-run.png</file>
         <file>images/text-x-generic.png</file>
-        <file>scripts/installDependencyBase64.R</file>
-        <file>scripts/installDependencyJsonlite.R</file>
-        <file>scripts/installDependencyReshape.R</file>
         <file>COPYING.txt</file>
         <file>License_base64enc.txt</file>
         <file>License_BDS.txt</file>
@@ -25,7 +22,5 @@
         <file>License_Qt.txt</file>
         <file>License_R.txt</file>
         <file>License_reshape.txt</file>
-        <file>scripts/DiscountingAreaComputation.R</file>
-        <file>scripts/DiscountingED50Computation.R</file>
     </qresource>
 </RCC>
