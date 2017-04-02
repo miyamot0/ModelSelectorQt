@@ -356,7 +356,7 @@ BDS<-function(dat,Noise=1,Mazur=1,Exponential=1,Rachlin=1,GreenMyerson=1,BD=1){
     AUK <- integrate(integrandBetaDelta, lower = min(mData$Y), upper = maximumArea, beta = BD.frame$BD.beta, delta = BD.frame$BD.delta)$value/maximumArea
 
   } else {
-    AUK <- noiseMean
+    AUK <- noise.frame$noise.mean
   }
 
   lnED50res<-data.frame(prob.frame$probmodel,lnED50.mostprob,lnED50.Mazur,Mazur.frame$Mazur.lnk)
@@ -463,7 +463,7 @@ chartFunction<-function(mDelays, mValues, samuelsonK=0,ainslieK=0,betaConstant=0
     totalFrame$QuasiHyperbolic = quaSeries
 
   } else {
-    totalFrame$NoiseModel = noiseMean
+    totalFrame$NoiseModel = mean(mValues)
 
   }
 
