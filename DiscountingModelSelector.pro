@@ -78,5 +78,13 @@ FORMS    += \
 RESOURCES += \
     spreadsheet.qrc
 
+macx {
+    DMS_FILES.files = scripts/DiscountingAreaComputation.R \
+                    scripts/DiscountingED50Computation.R scripts/installDependencyBase64.R \
+                    scripts/installDependencyJsonlite.R scripts/installDependencyReshape.R
+    DMS_FILES.path = Contents/Resources
+    QMAKE_BUNDLE_DATA += DMS_FILES
+}
+
 DISTFILES += \
     README.md
