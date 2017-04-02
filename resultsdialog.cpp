@@ -46,7 +46,7 @@ ResultsDialog::ResultsDialog(QWidget *parent) :
     );
 }
 
-void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool cbBF)
+void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool cbBF, QString metric)
 {
     SheetWidget *temp = qobject_cast <SheetWidget *>(parent());
 
@@ -127,7 +127,8 @@ void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool 
     columnList << "noise.prob";
 
     columnList << "probmodel";
-    columnList << "lnED50.mostprob";
+    //columnList << "lnED50.mostprob";
+    columnList << metric;
 
     // Create columns
     for(int i=0; i<columnList.count();i++)

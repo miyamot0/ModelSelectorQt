@@ -77,6 +77,7 @@ void FitWorker::working()
     QJsonArray jsonArr;
     QJsonValue jsonVal;
     QJsonObject jsonObj;
+    QString cmdParameterString;
 
     for (int i=0; i<commandParameterList.count(); i++)
     {
@@ -85,6 +86,8 @@ void FitWorker::working()
         mArgList.clear();
         mArgList << command;
         mArgList << commandParameterList.at(i);
+
+        cmdParameterString = QString(commandParameterList.at(i));
 
         process.start(mArgList.join(" "));
         process.waitForFinished(-1);
@@ -104,6 +107,7 @@ void FitWorker::working()
             QString mListString1 = commandParameterList.at(i);
             QStringList mList1   = mListString1.split(" ");
             QString scriptString = mList1.at(0);
+
             QString delayString = mList1.at(1);
             QString valueString = mList1.at(2);
             QString mListString2 = mList1.at(3);
@@ -195,7 +199,16 @@ void FitWorker::working()
         resultsList << QString::number(jsonObj["noise.prob"].toDouble());
 
         resultsList << jsonObj["prob.frame.probmodel"].toString();
-        resultsList << QString::number(jsonObj["lnED50.mostprob"].toDouble());
+
+        if (cmdParameterString.contains("DiscountingAreaComputation.R", Qt::CaseInsensitive))
+        {
+            resultsList << QString::number(jsonObj["CurveArea"].toDouble());
+        }
+        else
+        {
+            resultsList << QString::number(jsonObj["lnED50.mostprob"].toDouble());
+        }
+
         resultsList << jsonObj["chart"].toString();
 
         emit workingResult(resultsList);

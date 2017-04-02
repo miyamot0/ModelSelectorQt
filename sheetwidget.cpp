@@ -1084,8 +1084,6 @@ void SheetWidget::Calculate(QString scriptName, int topDelay, int leftDelay, int
     mSeriesCommands.clear();
 
     QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
-    runDirectory.cdUp();
-    runDirectory.cd("Resources");
 
     for (int i = 0; i < nSeries; i++)
     {
@@ -1110,6 +1108,8 @@ void SheetWidget::Calculate(QString scriptName, int topDelay, int leftDelay, int
 
         #elif TARGET_OS_MAC
 
+        runDirectory.cdUp();
+        runDirectory.cd("Resources");
         QString scriptDir = "\"" + runDirectory.path() + "/";
 
         mArgList << scriptDir + scriptName + "\"";
@@ -1173,8 +1173,6 @@ void SheetWidget::WorkUpdate(QStringList status)
 
 void SheetWidget::WorkFinished()
 {
-    resultsDialog->ImportDataAndShow(tripBIC, tripAIC, tripRMSE, tripBF);
-
     if (displayFigures)
     {
         graphicalOutputDialog->show();
@@ -1184,11 +1182,15 @@ void SheetWidget::WorkFinished()
     {
         discountingAreaDialog->ToggleButton(true);
         discountingAreaDialog->setEnabled(true);
+        resultsDialog->ImportDataAndShow(tripBIC, tripAIC, tripRMSE, tripBF, "AUC.mostprob");
+
     }
     else if (discountingED50Dialog->isVisible())
     {
         discountingED50Dialog->ToggleButton(true);
         discountingED50Dialog->setEnabled(true);
+        resultsDialog->ImportDataAndShow(tripBIC, tripAIC, tripRMSE, tripBF, "lnED50.mostprob");
+
     }
 }
 

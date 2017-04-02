@@ -313,14 +313,60 @@ BDS<-function(dat,Noise=1,Mazur=1,Exponential=1,Rachlin=1,GreenMyerson=1,BD=1){
     if(prob.frame$probmodel[h]=="BD"){lnED50.mostprob[h]<- log(log( (1/(2*BD.frame$BD.beta[h])),base=BD.frame$BD.delta[h]  ))}
   }
 
+  integrandExp <- function(x, lnK) { exp(-exp(lnK)*x) }
+  integrandHyp <- function(x, lnK) { (1+exp(lnK)*x)^(-1) }
+  integrandMyerson <- function(x, lnK, s) { (1+exp(lnK)*x)^(-s) }
+  integrandRachlin <- function(x, lnK, s) { (1+exp(lnK)*(x^s))^(-1) }
+  integrandBetaDelta <- function(x, beta, delta) { beta*delta^x }
+
+  ### AUC Here
+  currentArea <- 0.0
+
+  mData <- data.frame(X=x, Y=y)
+  maximumArea <- max(mData$X)
+
+  #start one leg in
+  for(i in 2:nrow(mData)) {
+    yDelta <- (mData[i,]$Y + mData[i-1,]$Y)/2.0
+    xDelta <- mData[i,]$X - mData[i-1,]$X
+
+    trap <- yDelta * xDelta
+    currentArea = currentArea + trap
+  }
+
+  maximumArea <- max(mData$X) - min(mData$Y)
+
+  AUC <- currentArea/maximumArea
+
+  AUK <- NULL
+
+  if (prob.frame$probmodel == "Rachlin") {
+    AUK <- integrate(integrandRachlin, lower = min(mData$Y), upper = maximumArea, lnK = Rachlin.frame$Rachlin.lnk, s = Rachlin.frame$Rachlin.s)$value/maximumArea
+
+  } else if (prob.frame$probmodel == "Exponential") {
+    AUK <- integrate(integrandExp, lower = min(mData$Y), upper = maximumArea, lnK = exp.frame$exp.lnk)$value/maximumArea
+
+  } else if (prob.frame$probmodel == "Mazur") {
+    AUK <- integrate(integrandHyp, lower = min(mData$Y), upper = maximumArea, lnK = Mazur.frame$Mazur.lnk)$value/maximumArea
+
+  } else if (prob.frame$probmodel == "GreenMyerson") {
+    AUK <- integrate(integrandMyerson, lower = min(mData$Y), upper = maximumArea, lnK = MG.frame$MG.lnk, s = MG.frame$MG.s)$value/maximumArea
+
+  } else if (prob.frame$probmodel == "BD") {
+    AUK <- integrate(integrandBetaDelta, lower = min(mData$Y), upper = maximumArea, beta = BD.frame$BD.beta, delta = BD.frame$BD.delta)$value/maximumArea
+
+  } else {
+    AUK <- noiseMean
+  }
+
   lnED50res<-data.frame(prob.frame$probmodel,lnED50.mostprob,lnED50.Mazur,Mazur.frame$Mazur.lnk)
 
   chartFrame<-data.frame(chart=chartFunction(X, Y, exp.frame$exp.lnk,Mazur.frame$Mazur.lnk,
                                              BD.frame$BD.beta,BD.frame$BD.delta,
                                              MG.frame$MG.lnk,MG.frame$MG.s,
                                              Rachlin.frame$Rachlin.lnk,Rachlin.frame$Rachlin.s,
-                                             noise.frame$noise.mean,prob.frame$probmodel))
-
+                                             noise.frame$noise.mean,prob.frame$probmodel,
+                                             AUC,AUK), PointArea=AUC, CurveArea=AUK)
 
   return(list(noise.frame,Mazur.frame,exp.frame,MG.frame,Rachlin.frame,prob.frame,startstore,lnED50res,BD.frame, chartFrame))
 }
@@ -329,7 +375,8 @@ BDS<-function(dat,Noise=1,Mazur=1,Exponential=1,Rachlin=1,GreenMyerson=1,BD=1){
 #
 # Shawn P. Gilroy, 2017 (aut)
 chartFunction<-function(mDelays, mValues, samuelsonK=0,ainslieK=0,betaConstant=0,deltaConstant=0,
-                        myerK=0,myerS=0,rachK=0,rachS=0,noiseMean=0,probModel=0,probability=0){
+                        myerK=0,myerS=0,rachK=0,rachS=0,noiseMean=0,probModel=0,
+                        AUC=0,AUK=0){
 
   endDelay <- max(mDelays)
 
@@ -400,56 +447,24 @@ chartFunction<-function(mDelays, mValues, samuelsonK=0,ainslieK=0,betaConstant=0
 
   totalFrame = data.frame(Delays=delaySeries)
 
-  integrandExp <- function(x, lnK) { exp(-exp(lnK)*x) }
-  integrandHyp <- function(x, lnK) { (1+exp(lnK)*x)^(-1) }
-  integrandMyerson <- function(x, lnK, s) { (1+exp(lnK)*x)^(-s) }
-  integrandRachlin <- function(x, lnK, s) { (1+exp(lnK)*(x^s))^(-1) }
-  integrandBetaDelta <- function(x, beta, delta) { beta*delta^x }
-
-  ### AUC Here
-  currentArea <- 0.0
-
-  mData <- data.frame(X=mDelays, Y=mValues)
-  maximumArea <- max(mData$X)
-
-  #start one leg in
-  for(i in 2:nrow(mData)) {
-    yDelta <- (mData[i,]$Y + mData[i-1,]$Y)/2.0
-    xDelta <- mData[i,]$X - mData[i-1,]$X
-
-    trap <- yDelta * xDelta
-    currentArea = currentArea + trap
-  }
-
-  maximumArea <- max(mData$X) - min(mData$Y)
-
-  AUC <- currentArea/maximumArea
-
-  AUK <- NULL
-
   if (probModel == "Rachlin") {
     totalFrame$RachlinModel = rachSeries
-    AUK <- integrate(integrandRachlin, lower = min(mData$Y), upper = maximumArea, lnK = rachK, s = rachS)$value/maximumArea
 
   } else if (probModel == "Exponential") {
     totalFrame$ExponentialModel = expSeries
-    AUK <- integrate(integrandExp, lower = min(mData$Y), upper = maximumArea, lnK = samuelsonK)$value/maximumArea
 
   } else if (probModel == "Mazur") {
     totalFrame$HyperbolicModel = hypSeries
-    AUK <- integrate(integrandHyp, lower = min(mData$Y), upper = maximumArea, lnK = ainslieK)$value/maximumArea
 
   } else if (probModel == "GreenMyerson") {
     totalFrame$MyersonGreenModel = myerSeries
-    AUK <- integrate(integrandMyerson, lower = min(mData$Y), upper = maximumArea, lnK = myerK, s = myerS)$value/maximumArea
 
   } else if (probModel == "BD") {
     totalFrame$QuasiHyperbolic = quaSeries
-    AUK <- integrate(integrandBetaDelta, lower = min(mData$Y), upper = maximumArea, beta = betaConstant, delta = deltaConstant)$value/maximumArea
 
   } else {
     totalFrame$NoiseModel = noiseMean
-    AUK <- noiseMean
+
   }
 
   textModel = paste("Probable model: ", probModel, sep = "")
