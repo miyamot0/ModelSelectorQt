@@ -64,14 +64,17 @@ public:
      * @param mCommandArgs - Arguments to pass to Rscript
      * @param boundRachlin - Rachlin, special case conditions
      */
-    explicit FitWorker(QString mCommand, QStringList mCommandArgs, bool boundRachlin);
+    explicit FitWorker(QString mCommand, QStringList mCommandArgs, bool boundRachlin, bool isLogNormal);
 
 private:
     bool boundRachlinS;
+    bool transformNormal;
 
     QString command;
 
     QStringList commandParameterList;
+
+    QString formatStringResult(double value, bool returnLogNormal);
 
 signals:
     /** Begin work signal

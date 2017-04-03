@@ -87,6 +87,7 @@ SheetWidget::SheetWidget(bool rInstalled, bool isSVGinstalled, QString commandSt
     table = new QTableWidget(10000, 10000, this);
     table->setSizeAdjustPolicy(QTableWidget::AdjustToContents);
 
+
     QString value;
 
     for (int c = 0; c < 10000; ++c)
@@ -1047,13 +1048,14 @@ bool SheetWidget::isToolWindowShown()
 void SheetWidget::Calculate(QString scriptName, int topDelay, int leftDelay, int bottomDelay, int rightDelay, int topValue, int leftValue, int bottomValue, int rightValue,
                             double maxValue, bool cbBIC, bool cbAIC, bool cbRMSE, bool cbBF, bool cbRachlin,
                             bool modelExponential, bool modelHyperbolic, bool modelQuasiHyperbolic, bool modelMyersonGreen, bool modelRachlin,
-                            bool showCharts)
+                            bool showCharts, bool logNormalParameters)
 {
 
     tripAIC = cbAIC;
     tripBIC = cbBIC;
     tripBF = cbBF;
     tripRMSE = cbRMSE;
+    tripLogNormal = logNormalParameters;
 
     if (discountingAreaDialog->isVisible())
     {
@@ -1138,7 +1140,7 @@ void SheetWidget::Calculate(QString scriptName, int topDelay, int leftDelay, int
     allResults.clear();
 
     thread = new QThread();
-    worker = new FitWorker(commandParameter, mSeriesCommands, cbRachlin);
+    worker = new FitWorker(commandParameter, mSeriesCommands, cbRachlin, logNormalParameters);
 
     worker->moveToThread(thread);
 
@@ -1194,14 +1196,14 @@ void SheetWidget::WorkFinished()
     {
         discountingAreaDialog->ToggleButton(true);
         discountingAreaDialog->setEnabled(true);
-        resultsDialog->ImportDataAndShow(tripBIC, tripAIC, tripRMSE, tripBF, "AUC.mostprob");
+        resultsDialog->ImportDataAndShow(tripBIC, tripAIC, tripRMSE, tripBF, tripLogNormal, "AUC.mostprob");
 
     }
     else if (discountingED50Dialog->isVisible())
     {
         discountingED50Dialog->ToggleButton(true);
         discountingED50Dialog->setEnabled(true);
-        resultsDialog->ImportDataAndShow(tripBIC, tripAIC, tripRMSE, tripBF, "lnED50.mostprob");
+        resultsDialog->ImportDataAndShow(tripBIC, tripAIC, tripRMSE, tripBF, tripLogNormal, "lnED50.mostprob");
 
     }
 }

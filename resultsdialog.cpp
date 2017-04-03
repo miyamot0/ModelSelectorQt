@@ -44,9 +44,16 @@ ResultsDialog::ResultsDialog(QWidget *parent) :
             qApp->desktop()->availableGeometry()
         )
     );
+
+    copyAction = new QAction("Copy", this);
+    copyAction->setShortcut(QKeySequence("Ctrl+C"));
+    copyAction->setIcon(QIcon(":/images/edit-copy.png"));
+    connect(copyAction, &QAction::triggered, this, &ResultsDialog::copy);
+
+    addAction(copyAction);
 }
 
-void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool cbBF, QString metric)
+void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool cbBF, bool tripLogNormal, QString metric)
 {
     SheetWidget *temp = qobject_cast <SheetWidget *>(parent());
 
@@ -78,7 +85,15 @@ void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool 
 
     columnList << "Series";
 
-    columnList << "Mazur.lnk";
+    if (tripLogNormal)
+    {
+        columnList << "Mazur.k";
+    }
+    else
+    {
+        columnList << "Mazur.lnk";
+    }
+
     columnList << "";
     columnList << "Mazur.RMSE";
     columnList << "Mazur.BIC";
@@ -86,7 +101,15 @@ void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool 
     columnList << "Mazur.BF";
     columnList << "Mazur.prob";
 
-    columnList << "exp.lnk";
+    if (tripLogNormal)
+    {
+        columnList << "exp.k";
+    }
+    else
+    {
+        columnList << "exp.lnk";
+    }
+
     columnList << "";
     columnList << "exp.RMSE";
     columnList << "exp.BIC";
@@ -102,7 +125,15 @@ void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool 
     columnList << "BD.BF";
     columnList << "BD.prob";
 
-    columnList << "MG.lnk";
+    if (tripLogNormal)
+    {
+        columnList << "MG.k";
+    }
+    else
+    {
+        columnList << "MG.lnk";
+    }
+
     columnList << "MG.s";
     columnList << "MG.RMSE";
     columnList << "MG.BIC";
@@ -110,7 +141,15 @@ void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool 
     columnList << "MG.BF";
     columnList << "MG.prob";
 
-    columnList << "Rachlin.lnk";
+    if (tripLogNormal)
+    {
+        columnList << "Rachlin.k";
+    }
+    else
+    {
+        columnList << "Rachlin.lnk";
+    }
+
     columnList << "Rachlin.s";
     columnList << "Rachlin.RMSE";
     columnList << "Rachlin.BIC";
@@ -127,7 +166,6 @@ void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool 
     columnList << "noise.prob";
 
     columnList << "probmodel";
-    //columnList << "lnED50.mostprob";
     columnList << metric;
 
     // Create columns
@@ -173,6 +211,40 @@ ResultsDialog::~ResultsDialog()
 {
     delete ui;
 }
+
+void ResultsDialog::copy()
+{
+    QList<QTableWidgetSelectionRange> range = ui->tableWidget->selectedRanges();
+    QTableWidgetSelectionRange mRange = range.first();
+
+    QString str;
+
+    for (int i = 0; i < mRange.rowCount(); ++i) {
+        if (i > 0)
+        {
+            str += "\n";
+        }
+
+        for (int j = 0; j < mRange.columnCount(); ++j) {
+            if (j > 0)
+            {
+                str += "\t";
+            }
+
+            if (ui->tableWidget->item(mRange.topRow() + i, mRange.leftColumn() + j) == NULL)
+            {
+                str += "";
+            }
+            else
+            {
+                str += ui->tableWidget->item(mRange.topRow() + i, mRange.leftColumn() + j)->data(Qt::DisplayRole).toString();
+            }
+        }
+    }
+
+    QApplication::clipboard()->setText(str);
+}
+
 
 void ResultsDialog::on_pushButton_2_clicked()
 {

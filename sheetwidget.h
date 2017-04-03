@@ -158,7 +158,7 @@ public slots:
                    int topValue, int leftValue, int bottomValue, int rightValue,
                    double maxValue, bool cbBIC, bool cbAIC, bool cbRMSE, bool cbBF, bool cbRachlin,
                    bool modelExponential, bool modelHyperbolic, bool modelQuasiHyperbolic,
-                   bool modelMyersonGreen, bool modelRachlin, bool showCharts);
+                   bool modelMyersonGreen, bool modelRachlin, bool showCharts, bool logNormalParameters);
 
     void WorkUpdate(QStringList status);
     void WorkFinished();
@@ -238,6 +238,7 @@ private:
     bool tripBIC;
     bool tripBF;
     bool tripRMSE;
+    bool tripLogNormal;
 
     bool displayFigures;
 

@@ -100,5 +100,6 @@ void DiscountingModelSelectionAreaDialog::on_pushButton_clicked()
                     ui->checkBoxBF->isChecked(), ui->checkBoxRachlin->isChecked(),
                     ui->checkBoxExponential->isChecked(), ui->checkBoxHyperbolic->isChecked(), ui->checkBoxQuasiHyperbolic->isChecked(),
                     ui->checkBoxMyersonHyperboloid->isChecked(), ui->checkBoxRachlinHyperboloid->isChecked(),
-                    ui->displayPlotFigures->isChecked());
+                    ui->displayPlotFigures->isChecked(),
+                    ui->checkBoxLog->isChecked());
 }

@@ -50,11 +50,12 @@
 
 #include "fitworker.h"
 
-FitWorker::FitWorker(QString mCommand, QStringList mCommandArgs, bool boundRachlin)
+FitWorker::FitWorker(QString mCommand, QStringList mCommandArgs, bool boundRachlin, bool isLogNormal)
 {
     command = mCommand;
     commandParameterList = mCommandArgs;
     boundRachlinS = boundRachlin;
+    transformNormal = isLogNormal;
 }
 
 void FitWorker::startWork()
@@ -137,37 +138,37 @@ void FitWorker::working()
         QStringList resultsList;
 
         resultsList << QString::number(i+1);
-        resultsList << QString::number(jsonObj["Mazur.lnk"].toDouble());
+        resultsList << formatStringResult(jsonObj["Mazur.lnk"].toDouble(), transformNormal);
         resultsList << "";
-        resultsList << QString::number(jsonObj["Mazur.RMSE"].toDouble());
-        resultsList << QString::number(jsonObj["Mazur.BIC"].toDouble());
-        resultsList << QString::number(jsonObj["Mazur.AIC"].toDouble());
-        resultsList << QString::number(jsonObj["Mazur.BF"].toDouble());
-        resultsList << QString::number(jsonObj["Mazur.prob"].toDouble());
+        resultsList << formatStringResult(jsonObj["Mazur.RMSE"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["Mazur.BIC"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["Mazur.AIC"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["Mazur.BF"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["Mazur.prob"].toDouble(), false);
 
-        resultsList << QString::number(jsonObj["exp.lnk"].toDouble());
+        resultsList << formatStringResult(jsonObj["exp.lnk"].toDouble(), transformNormal);
         resultsList << "";
-        resultsList << QString::number(jsonObj["exp.RMSE"].toDouble());
-        resultsList << QString::number(jsonObj["exp.BIC"].toDouble());
-        resultsList << QString::number(jsonObj["exp.AIC"].toDouble());
-        resultsList << QString::number(jsonObj["exp.BF"].toDouble());
-        resultsList << QString::number(jsonObj["exp.prob"].toDouble());
+        resultsList << formatStringResult(jsonObj["exp.RMSE"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["exp.BIC"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["exp.AIC"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["exp.BF"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["exp.prob"].toDouble(), false);
 
-        resultsList << QString::number(jsonObj["BD.beta"].toDouble());
-        resultsList << QString::number(jsonObj["BD.delta"].toDouble());
-        resultsList << QString::number(jsonObj["BD.RMSE"].toDouble());
-        resultsList << QString::number(jsonObj["BD.BIC"].toDouble());
-        resultsList << QString::number(jsonObj["BD.AIC"].toDouble());
-        resultsList << QString::number(jsonObj["BD.BF"].toDouble());
-        resultsList << QString::number(jsonObj["BD.prob"].toDouble());
+        resultsList << formatStringResult(jsonObj["BD.beta"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["BD.delta"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["BD.RMSE"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["BD.BIC"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["BD.AIC"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["BD.BF"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["BD.prob"].toDouble(), false);
 
-        resultsList << QString::number(jsonObj["MG.lnk"].toDouble());
-        resultsList << QString::number(jsonObj["MG.s"].toDouble());
-        resultsList << QString::number(jsonObj["MG.RMSE"].toDouble());
-        resultsList << QString::number(jsonObj["MG.BIC"].toDouble());
-        resultsList << QString::number(jsonObj["MG.AIC"].toDouble());
-        resultsList << QString::number(jsonObj["MG.BF"].toDouble());
-        resultsList << QString::number(jsonObj["MG.prob"].toDouble());
+        resultsList << formatStringResult(jsonObj["MG.lnk"].toDouble(), transformNormal);
+        resultsList << formatStringResult(jsonObj["MG.s"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["MG.RMSE"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["MG.BIC"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["MG.AIC"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["MG.BF"].toDouble(), false);
+        resultsList << formatStringResult(jsonObj["MG.prob"].toDouble(), false);
 
         if (rachlinNotation)
         {
@@ -181,13 +182,13 @@ void FitWorker::working()
         }
         else
         {
-            resultsList << QString::number(jsonObj["Rachlin.lnk"].toDouble());
-            resultsList << QString::number(jsonObj["Rachlin.s"].toDouble());
-            resultsList << QString::number(jsonObj["Rachlin.RMSE"].toDouble());
-            resultsList << QString::number(jsonObj["Rachlin.BIC"].toDouble());
-            resultsList << QString::number(jsonObj["Rachlin.AIC"].toDouble());
-            resultsList << QString::number(jsonObj["Rachlin.BF"].toDouble());
-            resultsList << QString::number(jsonObj["Rachlin.prob"].toDouble());
+            resultsList << formatStringResult(jsonObj["Rachlin.lnk"].toDouble(), transformNormal);
+            resultsList << formatStringResult(jsonObj["Rachlin.s"].toDouble(), false);
+            resultsList << formatStringResult(jsonObj["Rachlin.RMSE"].toDouble(), false);
+            resultsList << formatStringResult(jsonObj["Rachlin.BIC"].toDouble(), false);
+            resultsList << formatStringResult(jsonObj["Rachlin.AIC"].toDouble(), false);
+            resultsList << formatStringResult(jsonObj["Rachlin.BF"].toDouble(), false);
+            resultsList << formatStringResult(jsonObj["Rachlin.prob"].toDouble(), false);
         }
 
         resultsList << QString::number(jsonObj["noise.mean"].toDouble());
@@ -215,4 +216,28 @@ void FitWorker::working()
     }
 
     emit workFinished();
+}
+
+QString FitWorker::formatStringResult(double value, bool returnLogNormal)
+{
+    if (!isnan(value))
+    {
+        if (value == 0)
+        {
+            return QString("NA");
+        }
+        else if (returnLogNormal)
+        {
+            qreal res = qExp(value);
+            return QString::number(res);
+        }
+        else
+        {
+            return QString::number(value);
+        }
+    }
+    else
+    {
+        return QString("NA");
+    }
 }
