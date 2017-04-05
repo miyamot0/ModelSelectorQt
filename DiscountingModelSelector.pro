@@ -130,4 +130,5 @@ DISTFILES += \
     License_base64enc.txt \
     License_gnome_icons.txt \
     License_jsonlite.txt \
-    License_reshape.txt
+    License_reshape.txt \
+    manifest.json
