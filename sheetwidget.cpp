@@ -381,7 +381,16 @@ void SheetWidget::clearSheet()
 
 void SheetWidget::closeEvent(QCloseEvent* event)
 {
-    saveSettings();
+    QMessageBox::StandardButton confirm = QMessageBox::question( this, "Discounting Model Selector",
+                                                                tr("Are you sure you want to quit?\n"),
+                                                                QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
+                                                                QMessageBox::Yes);
+    if (confirm != QMessageBox::Yes) {
+        event->ignore();
+    } else {
+        saveSettings();
+        event->accept();
+    }
 }
 
 void SheetWidget::openRecentFile()
