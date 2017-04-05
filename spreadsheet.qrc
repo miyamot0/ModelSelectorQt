@@ -13,14 +13,5 @@
         <file>images/SNS.png</file>
         <file>images/system-run.png</file>
         <file>images/text-x-generic.png</file>
-        <file>COPYING.txt</file>
-        <file>License_base64enc.txt</file>
-        <file>License_BDS.txt</file>
-        <file>License_gnome_icons.txt</file>
-        <file>License_jsonlite.txt</file>
-        <file>License_NLS.txt</file>
-        <file>License_Qt.txt</file>
-        <file>License_R.txt</file>
-        <file>License_reshape.txt</file>
     </qresource>
 </RCC>

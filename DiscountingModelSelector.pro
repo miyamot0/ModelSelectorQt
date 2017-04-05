@@ -86,7 +86,8 @@ win32 {
                     License_NLS.txt \
                     License_Qt.txt \
                     License_R.txt \
-                    License_reshape.txt
+                    License_reshape.txt \
+                    COPYING
 
     release: DESTDIR = $$OUT_PWD/build/release
     debug:   DESTDIR = $$OUT_PWD/build/debug
@@ -106,7 +107,8 @@ macx {
                     License_NLS.txt \
                     License_Qt.txt \
                     License_R.txt \
-                    License_reshape.txt
+                    License_reshape.txt \
+                    COPYING
 
     DMS_FILES.path = Contents/Resources
 
@@ -119,4 +121,13 @@ DISTFILES += \
     scripts/DiscountingED50Computation.R \
     scripts/installDependencyJsonlite.R \
     scripts/installDependencyBase64.R \
-    scripts/installDependencyReshape.R
+    scripts/installDependencyReshape.R \
+    COPYING \
+    License_BDS.txt \
+    License_NLS.txt \
+    License_Qt.txt \
+    License_R.txt \
+    License_base64enc.txt \
+    License_gnome_icons.txt \
+    License_jsonlite.txt \
+    License_reshape.txt
