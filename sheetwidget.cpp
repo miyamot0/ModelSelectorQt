@@ -100,7 +100,7 @@ SheetWidget::SheetWidget(bool rInstalled, bool isSVGinstalled, QString commandSt
     buildMenus();
     setCentralWidget(table);
 
-    setWindowTitle("Discounting Model Selector");
+    setWindowTitle("Discounting Model Selector v 1.0.0.0");
 
     this->layout()->setSizeConstraint(QLayout::SetNoConstraint);
 
