@@ -722,9 +722,9 @@ void SheetWidget::showDMSLicenseWindow()
             QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
             runDirectory.cdUp();
             runDirectory.cd("Resources");
-            mFilePath = "\"" + runDirectory.path() + "/";
+            mFilePath = runDirectory.path() + "/";
 
-            mFilePath = mFilePath + "COPYING\"";
+            mFilePath = mFilePath + "COPYING";
 
     #endif
 
@@ -744,9 +744,9 @@ void SheetWidget::showRLicenseWindow()
             QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
             runDirectory.cdUp();
             runDirectory.cd("Resources");
-            mFilePath = "\"" + runDirectory.path() + "/";
+            mFilePath = runDirectory.path() + "/";
 
-            mFilePath = mFilePath + "License_R.txt\"";
+            mFilePath = mFilePath + "License_R.txt";
 
     #endif
 
@@ -766,9 +766,9 @@ void SheetWidget::showNLSLicenseWindow()
             QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
             runDirectory.cdUp();
             runDirectory.cd("Resources");
-            mFilePath = "\"" + runDirectory.path() + "/";
+            mFilePath = runDirectory.path() + "/";
 
-            mFilePath = mFilePath + "License_NLS.txt\"";
+            mFilePath = mFilePath + "License_NLS.txt";
 
     #endif
 
@@ -788,10 +788,8 @@ void SheetWidget::showBase64LicenseWindow()
             QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
             runDirectory.cdUp();
             runDirectory.cd("Resources");
-            mFilePath = "\"" + runDirectory.path() + "/";
-
-            mFilePath = mFilePath + "License_base64enc.txt\"";
-
+            mFilePath = runDirectory.path() + "/";
+            mFilePath = mFilePath + "License_base64enc.txt";
     #endif
 
     licenseDialog = new LicenseDialog(mFilePath, this);
@@ -810,10 +808,8 @@ void SheetWidget::showGridextraLicenseWindow()
             QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
             runDirectory.cdUp();
             runDirectory.cd("Resources");
-            mFilePath = "\"" + runDirectory.path() + "/";
-
-            mFilePath = mFilePath + "License_R.txt\"";
-
+            mFilePath = runDirectory.path() + "/";
+            mFilePath = mFilePath + "License_R.txt";
     #endif
 
     licenseDialog = new LicenseDialog(mFilePath, this);
@@ -832,9 +828,9 @@ void SheetWidget::showJsonliteLicenseWindow()
             QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
             runDirectory.cdUp();
             runDirectory.cd("Resources");
-            mFilePath = "\"" + runDirectory.path() + "/";
+            mFilePath = runDirectory.path() + "/";
 
-            mFilePath = mFilePath + "License_jsonlite.txt\"";
+            mFilePath = mFilePath + "License_jsonlite.txt";
 
     #endif
 
@@ -854,9 +850,9 @@ void SheetWidget::showReshapeLicenseWindow()
             QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
             runDirectory.cdUp();
             runDirectory.cd("Resources");
-            mFilePath = "\"" + runDirectory.path() + "/";
+            mFilePath = runDirectory.path() + "/";
 
-            mFilePath = mFilePath + "License_reshape.txt\"";
+            mFilePath = mFilePath + "License_reshape.txt";
 
     #endif
 
@@ -876,9 +872,9 @@ void SheetWidget::showBDSLicenseWindow()
             QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
             runDirectory.cdUp();
             runDirectory.cd("Resources");
-            mFilePath = "\"" + runDirectory.path() + "/";
+            mFilePath = runDirectory.path() + "/";
 
-            mFilePath = mFilePath + "License_BDS.txt\"";
+            mFilePath = mFilePath + "License_BDS.txt";
 
     #endif
 
@@ -898,9 +894,9 @@ void SheetWidget::showQTLicenseWindow()
             QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
             runDirectory.cdUp();
             runDirectory.cd("Resources");
-            mFilePath = "\"" + runDirectory.path() + "/";
+            mFilePath = runDirectory.path() + "/";
 
-            mFilePath = mFilePath + "License_Qt.txt\"";
+            mFilePath = mFilePath + "License_Qt.txt";
 
     #endif
 
@@ -920,9 +916,9 @@ void SheetWidget::showGnomeLicenseWindow()
             QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
             runDirectory.cdUp();
             runDirectory.cd("Resources");
-            mFilePath = "\"" + runDirectory.path() + "/";
+            mFilePath = runDirectory.path() + "/";
 
-            mFilePath = mFilePath + "License_gnome_icons.txt\"";
+            mFilePath = mFilePath + "License_gnome_icons.txt";
 
     #endif
 
