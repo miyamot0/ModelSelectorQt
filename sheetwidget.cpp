@@ -724,7 +724,7 @@ void SheetWidget::showDMSLicenseWindow()
             runDirectory.cd("Resources");
             mFilePath = "\"" + runDirectory.path() + "/";
 
-            mFilePath = mFilePath + scriptName + "COPYING\"";
+            mFilePath = mFilePath + "COPYING\"";
 
     #endif
 
@@ -746,7 +746,7 @@ void SheetWidget::showRLicenseWindow()
             runDirectory.cd("Resources");
             mFilePath = "\"" + runDirectory.path() + "/";
 
-            mFilePath = mFilePath + scriptName + "License_R.txt\"";
+            mFilePath = mFilePath + "License_R.txt\"";
 
     #endif
 
@@ -768,7 +768,7 @@ void SheetWidget::showNLSLicenseWindow()
             runDirectory.cd("Resources");
             mFilePath = "\"" + runDirectory.path() + "/";
 
-            mFilePath = mFilePath + scriptName + "License_NLS.txt\"";
+            mFilePath = mFilePath + "License_NLS.txt\"";
 
     #endif
 
@@ -790,7 +790,7 @@ void SheetWidget::showBase64LicenseWindow()
             runDirectory.cd("Resources");
             mFilePath = "\"" + runDirectory.path() + "/";
 
-            mFilePath = mFilePath + scriptName + "License_base64enc.txt\"";
+            mFilePath = mFilePath + "License_base64enc.txt\"";
 
     #endif
 
@@ -812,7 +812,7 @@ void SheetWidget::showGridextraLicenseWindow()
             runDirectory.cd("Resources");
             mFilePath = "\"" + runDirectory.path() + "/";
 
-            mFilePath = mFilePath + scriptName + "License_R.txt\"";
+            mFilePath = mFilePath + "License_R.txt\"";
 
     #endif
 
@@ -834,7 +834,7 @@ void SheetWidget::showJsonliteLicenseWindow()
             runDirectory.cd("Resources");
             mFilePath = "\"" + runDirectory.path() + "/";
 
-            mFilePath = mFilePath + scriptName + "License_jsonlite.txt\"";
+            mFilePath = mFilePath + "License_jsonlite.txt\"";
 
     #endif
 
@@ -856,7 +856,7 @@ void SheetWidget::showReshapeLicenseWindow()
             runDirectory.cd("Resources");
             mFilePath = "\"" + runDirectory.path() + "/";
 
-            mFilePath = mFilePath + scriptName + "License_reshape.txt\"";
+            mFilePath = mFilePath + "License_reshape.txt\"";
 
     #endif
 
@@ -878,7 +878,7 @@ void SheetWidget::showBDSLicenseWindow()
             runDirectory.cd("Resources");
             mFilePath = "\"" + runDirectory.path() + "/";
 
-            mFilePath = mFilePath + scriptName + "License_BDS.txt\"";
+            mFilePath = mFilePath + "License_BDS.txt\"";
 
     #endif
 
@@ -900,7 +900,7 @@ void SheetWidget::showQTLicenseWindow()
             runDirectory.cd("Resources");
             mFilePath = "\"" + runDirectory.path() + "/";
 
-            mFilePath = mFilePath + scriptName + "License_Qt.txt\"";
+            mFilePath = mFilePath + "License_Qt.txt\"";
 
     #endif
 
@@ -922,7 +922,7 @@ void SheetWidget::showGnomeLicenseWindow()
             runDirectory.cd("Resources");
             mFilePath = "\"" + runDirectory.path() + "/";
 
-            mFilePath = mFilePath + scriptName + "License_gnome_icons.txt\"";
+            mFilePath = mFilePath + "License_gnome_icons.txt\"";
 
     #endif
 
