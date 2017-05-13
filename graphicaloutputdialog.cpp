@@ -50,11 +50,25 @@ GraphicalOutputDialog::GraphicalOutputDialog(QWidget *parent) :
 
     connect(this, SIGNAL(customContextMenuRequested(const QPoint)),this, SLOT(contextMenuRequested(const QPoint&)));
     connect(savePNG, SIGNAL(triggered()), this, SLOT(saveSVGasPNG()));
+
+    installEventFilter(this);
 }
 
 void GraphicalOutputDialog::contextMenuRequested(const QPoint& point)
 {
      dialogMenu->popup(mapToGlobal(point));
+}
+
+bool GraphicalOutputDialog::eventFilter(QObject *object, QEvent *e)
+{
+    if (e->type() == QEvent::KeyPress)
+    {
+        //QKeyEvent *keyEvent = static_cast<QKeyEvent *>(e);
+        //qDebug() << keyEvent;
+        //QKeyEvent *keyEvent = static_cast<QKeyEvent *>(e);
+        //std::cout << event->key() << "\n";
+    }
+    return false;
 }
 
 void GraphicalOutputDialog::saveSVGasPNG()

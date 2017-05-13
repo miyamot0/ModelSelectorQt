@@ -52,6 +52,8 @@ public:
      */
     void appendBase64(QString chartData);
 
+    bool eventFilter(QObject *object, QEvent *e);
+
     QStringList mDisplayData;
 
     ~GraphicalOutputDialog();
