@@ -86,7 +86,7 @@ SheetWidget::SheetWidget(bool rInstalled, bool isSVGinstalled, QString commandSt
 
     table = new QTableWidget(10000, 10000, this);
     table->setSizeAdjustPolicy(QTableWidget::AdjustToContents);
-
+    table->setStyleSheet("QTableView {selection-background-color: #73E2A7; selection-color: #73E2A7;}");
 
     QString value;
 
