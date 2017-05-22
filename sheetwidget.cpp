@@ -78,11 +78,11 @@
 
 QTXLSX_USE_NAMESPACE
 
-SheetWidget::SheetWidget(bool rInstalled, bool isSVGinstalled, QString commandString, QWidget *parent) : QMainWindow(parent)
+SheetWidget::SheetWidget(QWidget *parent) : QMainWindow(parent)
 {
-    isCoreRPresent = rInstalled;
-    isCoreSVGSupportPresent = isSVGinstalled;
-    commandParameter = commandString;
+    //isCoreRPresent = rInstalled;
+    //isCoreSVGSupportPresent = isSVGinstalled;
+    //commandParameter = commandString;
 
     table = new QTableWidget(10000, 10000, this);
     table->setSizeAdjustPolicy(QTableWidget::AdjustToContents);
@@ -122,6 +122,7 @@ SheetWidget::SheetWidget(bool rInstalled, bool isSVGinstalled, QString commandSt
 
     #endif
 
+    /*
     statusDialog = new StatusDialog(isCoreRPresent, isCoreSVGSupportPresent, commandParameter, this);
     statusDialog->setModal(true);
     statusDialog->show();
@@ -148,6 +149,7 @@ SheetWidget::SheetWidget(bool rInstalled, bool isSVGinstalled, QString commandSt
         rMessageBox.setStandardButtons(QMessageBox::Ok);
         rMessageBox.exec();
     }
+    */
 
     table->installEventFilter( this );
 }
@@ -637,6 +639,7 @@ void SheetWidget::showSaveFileDialog()
 
 void SheetWidget::showDiscountingAreaWindow()
 {
+    /*
     if (!isCoreRPresent)
     {
         QMessageBox rMessageBox;
@@ -663,6 +666,7 @@ void SheetWidget::showDiscountingAreaWindow()
 
         return;
     }
+    */
 
     if (isToolWindowShown())
     {
@@ -677,6 +681,7 @@ void SheetWidget::showDiscountingAreaWindow()
 
 void SheetWidget::showDiscountingED50Window()
 {
+    /*
     if (!isCoreRPresent)
     {
         QMessageBox rMessageBox;
@@ -703,6 +708,7 @@ void SheetWidget::showDiscountingED50Window()
 
         return;
     }
+    */
 
     if (isToolWindowShown())
     {

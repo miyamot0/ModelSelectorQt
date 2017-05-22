@@ -97,7 +97,7 @@ class SheetWidget : public QMainWindow
     Q_OBJECT
 
 public:
-    SheetWidget(bool rInstalled, bool isSVGinstalled, QString commandString, QWidget *parent = 0);
+    SheetWidget(QWidget *parent = 0);
 
     void convertExcelColumn(QString &mString, int column);
     QString convert_bool(bool value);

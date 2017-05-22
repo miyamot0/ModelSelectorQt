@@ -34,6 +34,8 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
+    /*
+
     QString commandString;
     bool isRActive = false;    
     bool isSVGsupported = false;
@@ -92,7 +94,10 @@ int main(int argc, char *argv[])
 
     #endif
 
-    SheetWidget mNewSheet(isRActive, isSVGsupported, commandString);
+    */
+
+    //SheetWidget mNewSheet(isRActive, isSVGsupported, commandString);
+    SheetWidget mNewSheet;
     mNewSheet.setWindowIcon(QPixmap(":/images/applications-other.png"));
     mNewSheet.show();
 
