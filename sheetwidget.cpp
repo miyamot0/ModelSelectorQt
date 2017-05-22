@@ -1227,8 +1227,6 @@ void SheetWidget::Calculate(QString scriptName,
     QStringList valuePoints;
     QStringList delayPointsTemp;
 
-    //mSeriesCommands.clear();
-
     QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
 
     statusBar()->showMessage("Beginning calculations...", 3000);
@@ -1287,14 +1285,13 @@ void SheetWidget::Calculate(QString scriptName,
             mObj->mBicList.append(QPair<QString, double>("Hyperbolic", mObj->GetBIC()));
         }
 
-        //resultsList << formatStringResult(jsonObj["Mazur.lnk"].toDouble(), transformNormal);
-        resultsList << QString::number(mObj->GetParams()[0]);
+        resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
         resultsList << "---";
-        resultsList << QString::number(mObj->GetReport().rmserror); //formatStringResult(jsonObj["Mazur.RMSE"].toDouble(), false);
-        resultsList << QString::number(mObj->GetBIC()); //formatStringResult(jsonObj["Mazur.BIC"].toDouble(), false);
+        resultsList << QString::number(mObj->GetReport().rmserror);
+        resultsList << QString::number(mObj->GetBIC());
         resultsList << ""; //formatStringResult(jsonObj["Mazur.AIC"].toDouble(), false);
-        resultsList << ""; //formatStringResult(jsonObj["Mazur.BF"].toDouble(), false);
-        resultsList << ""; //formatStringResult(jsonObj["Mazur.prob"].toDouble(), false);
+        resultsList << "";
+        resultsList << "";
 
         mObj->FitExponential("[0.3]");
 
@@ -1303,13 +1300,13 @@ void SheetWidget::Calculate(QString scriptName,
             mObj->mBicList.append(QPair<QString, double>("Exponential", mObj->GetBIC()));
         }
 
-        resultsList << QString::number(mObj->GetParams()[0]); //formatStringResult(jsonObj["exp.lnk"].toDouble(), transformNormal);
+        resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
         resultsList << "---";
-        resultsList << QString::number(mObj->GetReport().rmserror); //formatStringResult(jsonObj["exp.RMSE"].toDouble(), false);
-        resultsList << QString::number(mObj->GetBIC()); //formatStringResult(jsonObj["exp.BIC"].toDouble(), false);
+        resultsList << QString::number(mObj->GetReport().rmserror);
+        resultsList << QString::number(mObj->GetBIC());
         resultsList << ""; //formatStringResult(jsonObj["exp.AIC"].toDouble(), false);
-        resultsList << ""; //formatStringResult(jsonObj["exp.BF"].toDouble(), false);
-        resultsList << ""; //formatStringResult(jsonObj["exp.prob"].toDouble(), false);
+        resultsList << "";
+        resultsList << "";
 
         mObj->FitQuasiHyperbolic("[0.3, 0.3]");
 
@@ -1318,13 +1315,13 @@ void SheetWidget::Calculate(QString scriptName,
             mObj->mBicList.append(QPair<QString, double>("Beta Delta", mObj->GetBIC()));
         }
 
-        resultsList << QString::number(mObj->GetParams()[0]); //formatStringResult(jsonObj["BD.beta"].toDouble(), false);
-        resultsList << QString::number(mObj->GetParams()[1]); //formatStringResult(jsonObj["BD.delta"].toDouble(), false);
-        resultsList << QString::number(mObj->GetReport().rmserror); //formatStringResult(jsonObj["BD.RMSE"].toDouble(), false);
-        resultsList << QString::number(mObj->GetBIC()); //formatStringResult(jsonObj["BD.BIC"].toDouble(), false);
+        resultsList << QString::number(mObj->GetParams()[0]);
+        resultsList << QString::number(mObj->GetParams()[1]);
+        resultsList << QString::number(mObj->GetReport().rmserror);
+        resultsList << QString::number(mObj->GetBIC());
         resultsList << ""; //formatStringResult(jsonObj["BD.AIC"].toDouble(), false);
-        resultsList << ""; //formatStringResult(jsonObj["BD.BF"].toDouble(), false);
-        resultsList << ""; //formatStringResult(jsonObj["BD.prob"].toDouble(), false);
+        resultsList << "";
+        resultsList << "";
 
         mObj->FitMyerson("[0.3, 0.3]");
 
@@ -1333,13 +1330,13 @@ void SheetWidget::Calculate(QString scriptName,
             mObj->mBicList.append(QPair<QString, double>("Myerson Hyperbola", mObj->GetBIC()));
         }
 
-        resultsList << QString::number(mObj->GetParams()[0]); //formatStringResult(jsonObj["MG.lnk"].toDouble(), transformNormal);
-        resultsList << QString::number(mObj->GetParams()[0]); //formatStringResult(jsonObj["MG.s"].toDouble(), false);
-        resultsList << QString::number(mObj->GetReport().rmserror); //formatStringResult(jsonObj["MG.RMSE"].toDouble(), false);
-        resultsList << QString::number(mObj->GetBIC()); //formatStringResult(jsonObj["MG.BIC"].toDouble(), false);
+        resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
+        resultsList << QString::number(mObj->GetParams()[0]);
+        resultsList << QString::number(mObj->GetReport().rmserror);
+        resultsList << QString::number(mObj->GetBIC());
         resultsList << ""; //formatStringResult(jsonObj["MG.AIC"].toDouble(), false);
-        resultsList << ""; //formatStringResult(jsonObj["MG.BF"].toDouble(), false);
-        resultsList << ""; //formatStringResult(jsonObj["MG.prob"].toDouble(), false);
+        resultsList << "";
+        resultsList << "";
 
         mObj->FitRachlin("[0.3, 0.3]");
 
@@ -1348,13 +1345,13 @@ void SheetWidget::Calculate(QString scriptName,
             mObj->mBicList.append(QPair<QString, double>("Rachlin Hyperbola", mObj->GetBIC()));
         }
 
-        resultsList << QString::number(mObj->GetParams()[0]); //formatStringResult(jsonObj["Rachlin.lnk"].toDouble(), transformNormal);
-        resultsList << QString::number(mObj->GetParams()[1]); //formatStringResult(jsonObj["Rachlin.s"].toDouble(), false);
-        resultsList << QString::number(mObj->GetReport().rmserror); //formatStringResult(jsonObj["Rachlin.RMSE"].toDouble(), false);
-        resultsList << QString::number(mObj->GetBIC()); //formatStringResult(jsonObj["Rachlin.BIC"].toDouble(), false);
+        resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
+        resultsList << QString::number(mObj->GetParams()[1]);
+        resultsList << QString::number(mObj->GetReport().rmserror);
+        resultsList << QString::number(mObj->GetBIC());
         resultsList << ""; //formatStringResult(jsonObj["Rachlin.AIC"].toDouble(), false);
-        resultsList << ""; //formatStringResult(jsonObj["Rachlin.BF"].toDouble(), false);
-        resultsList << ""; //formatStringResult(jsonObj["Rachlin.prob"].toDouble(), false);
+        resultsList << "";
+        resultsList << "";
 
         statusBar()->showMessage("Calculating #" + QString::number(i + 1) + " of " + QString::number(nSeries), 3000);
 
@@ -1384,13 +1381,13 @@ void SheetWidget::Calculate(QString scriptName,
         mObj->FitNoise();
         mObj->NoiseBIC = mObj->GetBIC();
 
-        resultsList << QString::number(mObj->GetNoiseMean()); //QString::number(jsonObj["noise.mean"].toDouble());
+        resultsList << QString::number(mObj->GetNoiseMean());
         resultsList << "";
-        resultsList << QString::number(mObj->GetReport().rmserror); //QString::number(jsonObj["noise.RMSE"].toDouble());
-        resultsList << QString::number(mObj->GetBIC()); //QString::number(jsonObj["noise.BIC"].toDouble());
+        resultsList << QString::number(mObj->GetReport().rmserror);
+        resultsList << QString::number(mObj->GetBIC());
         resultsList << ""; //QString::number(jsonObj["noise.AIC"].toDouble());
-        resultsList << ""; //QString::number(jsonObj["noise.BF"].toDouble());
-        resultsList << ""; //QString::number(jsonObj["noise.prob"].toDouble());
+        resultsList << "";
+        resultsList << "";
 
         mObj->PrepareProbabilities();
 
