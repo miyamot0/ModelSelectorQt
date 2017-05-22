@@ -53,7 +53,20 @@ SOURCES += main.cpp\
     creditsdialog.cpp \
     rworker.cpp \
     discountingmodelselectioned50dialog.cpp \
-    discountingmodelselectionareadialog.cpp
+    discountingmodelselectionareadialog.cpp \
+    Libraries/alglib-3.11.0/src/alglibinternal.cpp \
+    Libraries/alglib-3.11.0/src/alglibmisc.cpp \
+    Libraries/alglib-3.11.0/src/ap.cpp \
+    Libraries/alglib-3.11.0/src/dataanalysis.cpp \
+    Libraries/alglib-3.11.0/src/diffequations.cpp \
+    Libraries/alglib-3.11.0/src/fasttransforms.cpp \
+    Libraries/alglib-3.11.0/src/integration.cpp \
+    Libraries/alglib-3.11.0/src/interpolation.cpp \
+    Libraries/alglib-3.11.0/src/linalg.cpp \
+    Libraries/alglib-3.11.0/src/optimization.cpp \
+    Libraries/alglib-3.11.0/src/solvers.cpp \
+    Libraries/alglib-3.11.0/src/specialfunctions.cpp \
+    Libraries/alglib-3.11.0/src/statistics.cpp
 
 HEADERS  += \
     sheetselectdialog.h \
@@ -67,7 +80,21 @@ HEADERS  += \
     creditsdialog.h \
     rworker.h \
     discountingmodelselectioned50dialog.h \
-    discountingmodelselectionareadialog.h
+    discountingmodelselectionareadialog.h \
+    Libraries/alglib-3.11.0/src/alglibinternal.h \
+    Libraries/alglib-3.11.0/src/alglibmisc.h \
+    Libraries/alglib-3.11.0/src/ap.h \
+    Libraries/alglib-3.11.0/src/dataanalysis.h \
+    Libraries/alglib-3.11.0/src/diffequations.h \
+    Libraries/alglib-3.11.0/src/fasttransforms.h \
+    Libraries/alglib-3.11.0/src/integration.h \
+    Libraries/alglib-3.11.0/src/interpolation.h \
+    Libraries/alglib-3.11.0/src/linalg.h \
+    Libraries/alglib-3.11.0/src/optimization.h \
+    Libraries/alglib-3.11.0/src/solvers.h \
+    Libraries/alglib-3.11.0/src/specialfunctions.h \
+    Libraries/alglib-3.11.0/src/statistics.h \
+    Libraries/alglib-3.11.0/src/stdafx.h
 
 FORMS    += \
     sheetselectdialog.ui \
