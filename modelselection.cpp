@@ -327,6 +327,7 @@ void ModelSelection::PrepareProbabilities()
         }
     }
 
+    mProbList.clear();
     mProbList.append(QPair<QString, double>("Noise Model", bfNoise/sumBayesFactors));
 
     for (int i=0; i<mBicList.length(); i++)
