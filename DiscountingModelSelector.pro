@@ -66,7 +66,8 @@ SOURCES += main.cpp\
     Libraries/alglib-3.11.0/src/optimization.cpp \
     Libraries/alglib-3.11.0/src/solvers.cpp \
     Libraries/alglib-3.11.0/src/specialfunctions.cpp \
-    Libraries/alglib-3.11.0/src/statistics.cpp
+    Libraries/alglib-3.11.0/src/statistics.cpp \
+    modelselection.cpp
 
 HEADERS  += \
     sheetselectdialog.h \
@@ -94,7 +95,8 @@ HEADERS  += \
     Libraries/alglib-3.11.0/src/solvers.h \
     Libraries/alglib-3.11.0/src/specialfunctions.h \
     Libraries/alglib-3.11.0/src/statistics.h \
-    Libraries/alglib-3.11.0/src/stdafx.h
+    Libraries/alglib-3.11.0/src/stdafx.h \
+    modelselection.h
 
 FORMS    += \
     sheetselectdialog.ui \
