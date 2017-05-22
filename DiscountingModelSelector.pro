@@ -44,7 +44,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
     sheetselectdialog.cpp \
     resultsdialog.cpp \
-    statusdialog.cpp \
     fitworker.cpp \
     sheetwidget.cpp \
     graphicaloutputdialog.cpp \
@@ -72,7 +71,6 @@ SOURCES += main.cpp\
 HEADERS  += \
     sheetselectdialog.h \
     resultsdialog.h \
-    statusdialog.h \
     fitworker.h \
     sheetwidget.h \
     graphicaloutputdialog.h \
@@ -101,7 +99,6 @@ HEADERS  += \
 FORMS    += \
     sheetselectdialog.ui \
     resultsdialog.ui \
-    statusdialog.ui \
     graphicaloutputdialog.ui \
     licensedialog.ui \
     aboutdialog.ui \

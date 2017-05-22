@@ -83,7 +83,6 @@
 #include "modelselection.h"
 
 #include "resultsdialog.h"
-#include "statusdialog.h"
 
 #include "fitworker.h"
 
@@ -204,7 +203,6 @@ private:
     DiscountingModelSelectionAreaDialog *discountingAreaDialog;
     DiscountingModelSelectionED50Dialog *discountingED50Dialog;
 
-    StatusDialog *statusDialog;
     LicenseDialog *licenseDialog;
 
     AboutDialog *aboutDialog;

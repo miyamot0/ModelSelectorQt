@@ -85,6 +85,11 @@ double ModelSelection::GetBIC()
     return BIC;
 }
 
+double ModelSelection::GetNoiseMean()
+{
+    return AVE;
+}
+
 /** Calculate Noise BIC
  * @brief ModelSelection::FitNoise
  */
@@ -327,8 +332,15 @@ void ModelSelection::PrepareProbabilities()
         }
     }
 
+    probsNoise = bfNoise/sumBayesFactors;
+    probsHyperbolic = -1;
+    probsExponential = -1;
+    probsQuasiHyperbolic = -1;
+    probsMyerson = -1;
+    probsRachlin = -1;
+
     mProbList.clear();
-    mProbList.append(QPair<QString, double>("Noise Model", bfNoise/sumBayesFactors));
+    mProbList.append(QPair<QString, double>("Noise Model", probsNoise));
 
     for (int i=0; i<mBicList.length(); i++)
     {
@@ -336,23 +348,28 @@ void ModelSelection::PrepareProbabilities()
 
         if (mModel.contains("Exponential", Qt::CaseInsensitive))
         {
-            mProbList.append(QPair<QString, double>("Exponential Model", bfExponential/sumBayesFactors));
+            probsExponential = bfExponential/sumBayesFactors;
+            mProbList.append(QPair<QString, double>("Exponential Model", probsExponential));
         }
         else if (mModel.contains("Hyperbolic", Qt::CaseInsensitive))
         {
-            mProbList.append(QPair<QString, double>("Hyperbolic Model", bfHyperbolic/sumBayesFactors));
+            probsHyperbolic = bfHyperbolic/sumBayesFactors;
+            mProbList.append(QPair<QString, double>("Hyperbolic Model", probsHyperbolic));
         }
         else if (mModel.contains("Beta", Qt::CaseInsensitive))
         {
-            mProbList.append(QPair<QString, double>("Beta Delta Model", bfQuasiHyperbolic/sumBayesFactors));
+            probsQuasiHyperbolic = bfQuasiHyperbolic/sumBayesFactors;
+            mProbList.append(QPair<QString, double>("Beta Delta Model", probsQuasiHyperbolic));
         }
         else if (mModel.contains("Myerson", Qt::CaseInsensitive))
         {
-            mProbList.append(QPair<QString, double>("Myerson Model", bfMyerson/sumBayesFactors));
+            probsMyerson = bfMyerson/sumBayesFactors;
+            mProbList.append(QPair<QString, double>("Myerson Model", probsMyerson));
         }
         else if (mModel.contains("Rachlin", Qt::CaseInsensitive))
         {
-            mProbList.append(QPair<QString, double>("Rachlin Model", bfRachlin/sumBayesFactors));
+            probsRachlin = bfRachlin/sumBayesFactors;
+            mProbList.append(QPair<QString, double>("Rachlin Model", probsRachlin));
         }
     }
 }

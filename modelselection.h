@@ -29,6 +29,7 @@ public:
     ae_int_t GetInfo();
     lsfitreport GetReport();
     double GetBIC();
+    double GetNoiseMean();
 
     void FitNoise();
     void FitExponential(const char *mStarts);
@@ -43,6 +44,26 @@ public:
 
     QList<QPair<QString, double>> mBicList;
     QList<QPair<QString, double>> mProbList;
+
+    /** Bayes Factors
+      *
+      */
+    double bfNoise = -1;
+    double bfHyperbolic = -1;
+    double bfExponential = -1;
+    double bfQuasiHyperbolic = -1;
+    double bfMyerson = -1;
+    double bfRachlin = -1;
+
+    /** Probs
+      *
+      */
+    double probsNoise = -1;
+    double probsHyperbolic = -1;
+    double probsExponential = -1;
+    double probsQuasiHyperbolic = -1;
+    double probsMyerson = -1;
+    double probsRachlin = -1;
 
 private:
     real_2d_array x;
@@ -74,15 +95,7 @@ private:
 
     double BIC = 0;
 
-    /** Bayes Factors
-      *
-      */
-    double bfNoise = -1;
-    double bfHyperbolic = -1;
-    double bfExponential = -1;
-    double bfQuasiHyperbolic = -1;
-    double bfMyerson = -1;
-    double bfRachlin = -1;
+
 
     double sumBayesFactors = 0;
 };
