@@ -225,6 +225,7 @@ private:
     QAction *recentFileActs[MaxRecentFiles];
 
     QString strippedName(const QString &fullFileName);
+    QString formatStringResult(double value, bool returnLogNormal);
     QString curFile;
 
     QAction *separatorAct;

@@ -1340,23 +1340,7 @@ void SheetWidget::Calculate(QString scriptName,
 
         mObj->FitRachlin("[0.3, 0.3]");
 
-        if ((int) mObj->GetInfo() == 2)
-        {
-            mObj->mBicList.append(QPair<QString, double>("Rachlin Hyperbola", mObj->GetBIC()));
-        }
-
-        resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
-        resultsList << QString::number(mObj->GetParams()[1]);
-        resultsList << QString::number(mObj->GetReport().rmserror);
-        resultsList << QString::number(mObj->GetBIC());
-        resultsList << ""; //formatStringResult(jsonObj["Rachlin.AIC"].toDouble(), false);
-        resultsList << "";
-        resultsList << "";
-
-        statusBar()->showMessage("Calculating #" + QString::number(i + 1) + " of " + QString::number(nSeries), 3000);
-
-        /*
-        if (rachlinNotation)
+        if (cbRachlin && mObj->GetParams()[1] > 1)
         {
             resultsList << "Exceeded Bounds";
             resultsList << "Exceeded Bounds";
@@ -1368,15 +1352,27 @@ void SheetWidget::Calculate(QString scriptName,
         }
         else
         {
-            resultsList << formatStringResult(jsonObj["Rachlin.lnk"].toDouble(), transformNormal);
-            resultsList << formatStringResult(jsonObj["Rachlin.s"].toDouble(), false);
-            resultsList << formatStringResult(jsonObj["Rachlin.RMSE"].toDouble(), false);
-            resultsList << formatStringResult(jsonObj["Rachlin.BIC"].toDouble(), false);
-            resultsList << formatStringResult(jsonObj["Rachlin.AIC"].toDouble(), false);
-            resultsList << formatStringResult(jsonObj["Rachlin.BF"].toDouble(), false);
-            resultsList << formatStringResult(jsonObj["Rachlin.prob"].toDouble(), false);
+            if ((int) mObj->GetInfo() == 2)
+            {
+                mObj->mBicList.append(QPair<QString, double>("Rachlin Hyperbola", mObj->GetBIC()));
+            }
+
+            resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
+            resultsList << QString::number(mObj->GetParams()[1]);
+            resultsList << QString::number(mObj->GetReport().rmserror);
+            resultsList << QString::number(mObj->GetBIC());
+            resultsList << ""; //formatStringResult(jsonObj["Rachlin.AIC"].toDouble(), false);
+            resultsList << "";
+            resultsList << "";
         }
-        */
+
+
+
+
+
+        statusBar()->showMessage("Calculating #" + QString::number(i + 1) + " of " + QString::number(nSeries), 3000);
+
+
 
         mObj->FitNoise();
         mObj->NoiseBIC = mObj->GetBIC();
@@ -1698,6 +1694,30 @@ QString SheetWidget::convert_bool(bool value)
 QString SheetWidget::strippedName(const QString &fullFileName)
 {
     return QFileInfo(fullFileName).fileName();
+}
+
+QString SheetWidget::formatStringResult(double value, bool returnLogNormal)
+{
+    if (!isnan(value))
+    {
+        if (value == 0)
+        {
+            return QString("NA");
+        }
+        else if (returnLogNormal)
+        {
+            qreal res = qExp(value);
+            return QString::number(res);
+        }
+        else
+        {
+            return QString::number(value);
+        }
+    }
+    else
+    {
+        return QString("NA");
+    }
 }
 
 void SheetWidget::convertExcelColumn(QString &mString, int column)
