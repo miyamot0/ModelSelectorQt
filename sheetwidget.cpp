@@ -78,6 +78,15 @@
 
 QTXLSX_USE_NAMESPACE
 
+struct QPairSecondComparer
+{
+    template<typename T1, typename T2>
+    bool operator()(const QPair<T1,T2> & a, const QPair<T1,T2> & b) const
+    {
+        return a.second > b.second;
+    }
+};
+
 SheetWidget::SheetWidget(QWidget *parent) : QMainWindow(parent)
 {
     //isCoreRPresent = rInstalled;
@@ -121,6 +130,8 @@ SheetWidget::SheetWidget(QWidget *parent) : QMainWindow(parent)
     );
 
     #endif
+
+    mObj = new ModelSelection();
 
     /*
     statusDialog = new StatusDialog(isCoreRPresent, isCoreSVGSupportPresent, commandParameter, this);
@@ -1251,9 +1262,11 @@ void SheetWidget::Calculate(QString scriptName,
     QStringList valuePoints;
     QStringList delayPointsTemp;
 
-    mSeriesCommands.clear();
+    //mSeriesCommands.clear();
 
     QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
+
+    statusBar()->showMessage("Beginning calculations...", 3000);
 
     for (int i = 0; i < nSeries; i++)
     {
@@ -1262,60 +1275,101 @@ void SheetWidget::Calculate(QString scriptName,
 
         areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData, topValue, leftValue, bottomValue, rightValue, i, maxValue);
 
-        QStringList modelArgs;
-        modelArgs << "1";
-        modelArgs << convert_bool(modelHyperbolic);
-        modelArgs << convert_bool(modelExponential);
-        modelArgs << convert_bool(modelRachlin);
-        modelArgs << convert_bool(modelMyersonGreen);
-        modelArgs << convert_bool(modelQuasiHyperbolic);
+        mXString = "[";
 
-        QStringList mArgList;
+        for (int i=0; i<delayPointsTemp.length(); i++)
+        {
+            if (i == 0)
+            {
+                mXString.append("[" + delayPointsTemp[i] + "]");
+            }
+            else
+            {
+                mXString.append(",[" + delayPointsTemp[i] + "]");
+            }
+        }
 
-        #ifdef _WIN32
+        mXString.append("]");
 
-        mArgList << scriptName;
+        mYString = "[";
 
-        #elif TARGET_OS_MAC
+        for (int i=0; i<valuePoints.length(); i++)
+        {
+            if (i == 0)
+            {
+                mYString.append(valuePoints[i]);
+            }
+            else
+            {
+                mYString.append("," + valuePoints[i]);
+            }
+        }
 
-        runDirectory.cdUp();
-        runDirectory.cd("Resources");
-        QString scriptDir = "\"" + runDirectory.path() + "/";
+        mYString.append("]");
 
-        mArgList << scriptDir + scriptName + "\"";
+        mObj->SetX(mXString.toUtf8().constData());
+        mObj->SetY(mYString.toUtf8().constData());
+        mObj->mBicList.clear();
 
-        #endif
+        mObj->FitNoise();
+        mObj->NoiseBIC = mObj->GetBIC();
 
-        mArgList << delayPointsTemp.join(",");
-        mArgList << valuePoints.join(",");
-        mArgList << modelArgs.join(",");
+        mObj->FitExponential("[0.3]");
 
-        mSeriesCommands << mArgList.join(" ");
+        if ((int) mObj->GetInfo() == 2)
+        {
+            mObj->mBicList.append(QPair<QString, double>("Exponential", mObj->GetBIC()));
+        }
+
+        mObj->FitHyperbolic("[0.3]");
+
+        if ((int) mObj->GetInfo() == 2)
+        {
+            mObj->mBicList.append(QPair<QString, double>("Hyperbolic", mObj->GetBIC()));
+        }
+
+        mObj->FitQuasiHyperbolic("[0.3, 0.3]");
+
+        if ((int) mObj->GetInfo() == 2)
+        {
+            mObj->mBicList.append(QPair<QString, double>("Beta Delta", mObj->GetBIC()));
+        }
+
+        mObj->FitMyerson("[0.3, 0.3]");
+
+        if ((int) mObj->GetInfo() == 2)
+        {
+            mObj->mBicList.append(QPair<QString, double>("Myerson Hyperbola", mObj->GetBIC()));
+        }
+
+        mObj->FitRachlin("[0.3, 0.3]");
+
+        if ((int) mObj->GetInfo() == 2)
+        {
+            mObj->mBicList.append(QPair<QString, double>("Rachlin Hyperbola", mObj->GetBIC()));
+        }
+
+        mObj->PrepareProbabilities();
+
+        qSort(mObj->mProbList.begin(), mObj->mProbList.end(), QPairSecondComparer());
+
+        for (int i=0; i<mObj->mProbList.length(); i++)
+        {
+            qDebug() << mObj->mProbList.at(i).first << "" << mObj->mProbList.at(i).second;
+        }
+
+        statusBar()->showMessage("Calculating #" + QString::number(i + 1) + " of " + QString::number(nSeries), 3000);
+
+        //allResults.append(status);
+        //
+        //if (displayFigures)
+        //{
+        //    graphicalOutputDialog->appendBase64(status.at(status.count() - 1));
+        //}
     }
 
     allResults.clear();
 
-    thread = new QThread();
-    worker = new FitWorker(commandParameter, mSeriesCommands, cbRachlin, logNormalParameters);
-
-    worker->moveToThread(thread);
-
-    connect(worker, SIGNAL(workStarted()), thread, SLOT(start()));
-    connect(thread, SIGNAL(started()), worker, SLOT(working()));
-    connect(worker, SIGNAL(workingResult(QStringList)), this, SLOT(WorkUpdate(QStringList)));
-    connect(worker, SIGNAL(workFinished()), thread, SLOT(quit()), Qt::DirectConnection);
-    connect(worker, SIGNAL(workFinished()), this, SLOT(WorkFinished()));
-
-    orderVar = 0;
-    finalVar = nSeries;
-
-    thread->wait();
-    worker->startWork();
-
-    graphicalOutputDialog = new GraphicalOutputDialog(this);
-    graphicalOutputDialog->mDisplayData.clear();
-
-    statusBar()->showMessage("Beginning calculations...", 3000);
 
     if (discountingAreaDialog->isVisible())
     {
@@ -1325,24 +1379,9 @@ void SheetWidget::Calculate(QString scriptName,
     {
         discountingED50Dialog->setEnabled(false);
     }
-}
 
-void SheetWidget::WorkUpdate(QStringList status)
-{
-    statusBar()->showMessage("Calculating set " + QString::number(orderVar + 1) + " of " + QString::number(finalVar), 3000);
+    /*
 
-    orderVar++;
-
-    allResults.append(status);
-
-    if (displayFigures)
-    {
-        graphicalOutputDialog->appendBase64(status.at(status.count() - 1));
-    }
-}
-
-void SheetWidget::WorkFinished()
-{
     if (displayFigures)
     {
         graphicalOutputDialog->show();
@@ -1362,6 +1401,8 @@ void SheetWidget::WorkFinished()
         resultsDialog->ImportDataAndShow(tripBIC, tripAIC, tripRMSE, tripBF, tripLogNormal, "lnED50.mostprob");
 
     }
+
+    */
 }
 
 bool SheetWidget::areDelayPointsValid(QStringList &delayPoints, bool isRowData, int topDelay, int leftDelay, int bottomDelay, int rightDelay)

@@ -80,6 +80,7 @@
 #include "sheetselectdialog.h"
 #include "discountingmodelselectioned50dialog.h"
 #include "discountingmodelselectionareadialog.h"
+#include "modelselection.h"
 
 #include "resultsdialog.h"
 #include "statusdialog.h"
@@ -160,9 +161,6 @@ public slots:
                    bool modelExponential, bool modelHyperbolic, bool modelQuasiHyperbolic,
                    bool modelMyersonGreen, bool modelRachlin, bool showCharts, bool logNormalParameters);
 
-    void WorkUpdate(QStringList status);
-    void WorkFinished();
-
     void closeEvent(QCloseEvent* event);
     void setCurrentFile(const QString &fileName);
     void updateRecentFileActions();
@@ -215,25 +213,6 @@ private:
     ResultsDialog *resultsDialog;
     GraphicalOutputDialog *graphicalOutputDialog;
 
-    QString commandParameter;
-    QStringList mInstallCommands;
-    bool isCoreRPresent;
-    bool isCoreSVGSupportPresent;
-
-    /**
-     * @brief Thread object which will let us manipulate the running thread
-     */
-    QThread *thread;
-
-    /**
-     * @brief Object which contains methods that should be runned in another thread
-     */
-    FitWorker *worker;
-    int orderVar;
-    int finalVar;
-
-    QStringList mSeriesCommands;
-
     bool tripAIC;
     bool tripBIC;
     bool tripBF;
@@ -251,6 +230,11 @@ private:
     QString curFile;
 
     QAction *separatorAct;
+
+    ModelSelection *mObj;
+
+    QString mXString;
+    QString mYString;
 };
 
 

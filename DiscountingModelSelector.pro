@@ -113,6 +113,8 @@ RESOURCES += \
     spreadsheet.qrc
 
 win32 {
+    INCLUDEPATH += Libraries/alglib-3.11.0/src
+
     DMS_FILES.files = scripts/DiscountingAreaComputation.R \
                     scripts/DiscountingED50Computation.R scripts/installDependencyBase64.R \
                     scripts/installDependencyJsonlite.R scripts/installDependencyReshape.R \
