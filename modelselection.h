@@ -31,6 +31,7 @@ public:
     double GetNoiseMean();
     QString formatStringResult(int value);
     QString getED50BestModel(QString model);
+    QString getAUCBestModel(QString model);
 
     void FitNoise();
     void FitExponential(const char *mStarts);

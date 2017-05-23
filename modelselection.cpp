@@ -1,7 +1,6 @@
 #include "modelselection.h"
 
 #include <QDebug>
-//#include <cassert>
 #include <iostream>
 #include "interpolation.h"
 
@@ -11,6 +10,7 @@
 #include <math.h>
 #include <QtMath>
 #include "optimization.h"
+#include "integration.h"
 
 using namespace alglib;
 
@@ -19,9 +19,23 @@ void exponential_discounting(const real_1d_array &c, const real_1d_array &x, dou
     func = exp(-exp(c[0])*x[0]);
 }
 
-void hyperbolic_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+void exponential_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+{
+    QList<double> *param = (QList<double> *) ptr;
+    double k = param->at(0);
+    y = exp(-exp(k)*x);
+}
+
+void hyperbolic(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
 {
     func = pow((1+exp(c[0])*x[0]), -1);
+}
+
+void hyperbolic_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+{
+    QList<double> *param = (QList<double> *) ptr;
+    double k = param->at(0);
+    y = pow((1+exp(k)*x), -1);
 }
 
 void hyperboloid_myerson(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
@@ -29,14 +43,38 @@ void hyperboloid_myerson(const real_1d_array &c, const real_1d_array &x, double 
     func = pow((1+exp(c[0])*x[0]), -c[1]);
 }
 
+void hyperboloid_myerson_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+{
+    QList<double> *param = (QList<double> *) ptr;
+    double k = param->at(0);
+    double s = param->at(1);
+    y = pow((1+exp(k)*x), -s);
+}
+
 void hyperboloid_rachlin(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
 {
     func = pow((1+exp(c[0])*pow(x[0], c[1])), -1);
 }
 
+void hyperboloid_rachlin_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+{
+    QList<double> *param = (QList<double> *) ptr;
+    double k = param->at(0);
+    double s = param->at(1);
+    y = pow((1+exp(k)*pow(x, s)), -1);
+}
+
 void quasi_hyperboloid(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
 {
     func = c[0] * pow(c[1], x[0]);
+}
+
+void quasi_hyperboloid_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+{
+    QList<double> *param = (QList<double> *) ptr;
+    double b = param->at(0);
+    double d = param->at(1);
+    y = b * pow(d, x);
 }
 
 void ModelSelection::SetX(const char *mString)
@@ -161,7 +199,7 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
     lsfitcreatef(x, y, c, diffstep, state);
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, hyperbolic_discounting);
+    alglib::lsfitfit(state, hyperbolic);
 
     lsfitresults(state, info, c, rep);
 
@@ -361,6 +399,100 @@ QString ModelSelection::getED50BestModel(QString model)
     {
         return QString("NA");
     }
+}
+
+QString ModelSelection::getAUCBestModel(QString model)
+{
+    double result = -1;
+    double a = x[0][0];
+    double b = x[x.rows() - 1][0];
+
+    QList<double> mParams;
+    autogkstate s;
+    double v;
+    autogkreport rep;
+
+    if (model.contains("Exponential", Qt::CaseInsensitive))
+    {
+        mParams << fitExponentialK;
+
+        autogksmooth(a, b, s);
+        alglib::autogkintegrate(s, exponential_integration, &mParams);
+        autogkresults(s, v, rep);
+
+        result = double(v) / (b - a);
+
+        return QString::number(result);
+    }
+    else if (model.contains("Hyperbolic", Qt::CaseInsensitive))
+    {
+        mParams << fitHyperbolicK;
+
+        autogksmooth(a, b, s);
+        alglib::autogkintegrate(s, hyperbolic_integration, &mParams);
+        autogkresults(s, v, rep);
+
+        result = double(v) / (b - a);
+
+        return QString::number(result);
+    }
+    else if (model.contains("Beta", Qt::CaseInsensitive))
+    {
+        mParams << fitQuasiHyperbolicBeta;
+        mParams << fitQuasiHyperbolicDelta;
+
+        autogksmooth(a, b, s);
+        alglib::autogkintegrate(s, quasi_hyperboloid_integration, &mParams);
+        autogkresults(s, v, rep);
+
+        result = double(v) / (b - a);
+
+        return QString::number(result);
+    }
+    else if (model.contains("Myerson", Qt::CaseInsensitive))
+    {
+        mParams << fitMyersonK;
+        mParams << fitMyersonS;
+
+        autogksmooth(a, b, s);
+        alglib::autogkintegrate(s, hyperboloid_myerson_integration, &mParams);
+        autogkresults(s, v, rep);
+
+        result = double(v) / (b - a);
+
+        return QString::number(result);
+    }
+    else if (model.contains("Rachlin", Qt::CaseInsensitive))
+    {
+        mParams << fitRachlinK;
+        mParams << fitRachlinS;
+
+        autogksmooth(a, b, s);
+        alglib::autogkintegrate(s, hyperboloid_rachlin_integration, &mParams);
+        autogkresults(s, v, rep);
+
+        result = double(v) / (b - a);
+
+        return QString::number(result);
+    }
+    else
+    {
+        return QString("NA");
+    }
+
+
+
+
+
+
+
+    autogksmooth(a, b, s);
+    alglib::autogkintegrate(s, hyperbolic_integration, &mParams);
+    autogkresults(s, v, rep);
+
+    qDebug() << "current: " << double(v);
+
+    //return QString::number(double(v));
 }
 
 void ModelSelection::PrepareProbabilities()

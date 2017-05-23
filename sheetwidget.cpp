@@ -1403,39 +1403,17 @@ void SheetWidget::Calculate(QString scriptName,
         QString model = mObj->mProbList.first().first;
 
         resultsList << model;
-        resultsList << mObj->getED50BestModel(model);
 
-        /*
-
-         TODO add ed50
-
-        if (cmdParameterString.contains("DiscountingAreaComputation.R", Qt::CaseInsensitive))
+        if (scriptName.contains("DiscountingAreaComputation.R", Qt::CaseInsensitive))
         {
-            resultsList << QString::number(jsonObj["CurveArea"].toDouble());
+            resultsList << mObj->getAUCBestModel(model);
         }
         else
         {
-            resultsList << QString::number(jsonObj["lnED50.mostprob"].toDouble());
+            resultsList << mObj->getED50BestModel(model);
         }
 
-        resultsList << jsonObj["chart"].toString();
-        */
-
         allResults.append(resultsList);
-        //
-        //if (displayFigures)
-        //{
-        //    graphicalOutputDialog->appendBase64(status.at(status.count() - 1));
-        //}
-    }
-
-    if (discountingAreaDialog->isVisible())
-    {
-        discountingAreaDialog->setEnabled(false);
-    }
-    else if (discountingED50Dialog->isVisible())
-    {
-        discountingED50Dialog->setEnabled(false);
     }
 
     /*
