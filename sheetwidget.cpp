@@ -1276,96 +1276,164 @@ void SheetWidget::Calculate(QString scriptName,
         QStringList resultsList;
         resultsList << QString::number(i+1);
 
-        mObj->FitHyperbolic("[0.3]");
-
-        if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
+        if (modelHyperbolic)
         {
-            mObj->mBicList.append(QPair<QString, double>("Hyperbolic", mObj->bicHyperbolic));
-        }
+            mObj->FitHyperbolic("[0.3]");
 
-        resultsList << formatStringResult(mObj->fitHyperbolicK, tripLogNormal);
-        resultsList << QString::number(mObj->GetReport().rmserror);
-        resultsList << QString::number(mObj->bicHyperbolic);
-        resultsList << QString::number(mObj->aicHyperbolic);
-        resultsList << "";
-        resultsList << "";
-        resultsList << mObj->formatStringResult((int) mObj->GetInfo());
-
-        mObj->FitExponential("[0.3]");
-
-        if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
-        {
-            mObj->mBicList.append(QPair<QString, double>("Exponential", mObj->bicExponential));
-        }
-
-        resultsList << formatStringResult(mObj->fitExponentialK, tripLogNormal);
-        resultsList << QString::number(mObj->GetReport().rmserror);
-        resultsList << QString::number(mObj->bicExponential);
-        resultsList << QString::number(mObj->aicExponential);
-        resultsList << "";
-        resultsList << "";
-        resultsList << mObj->formatStringResult((int) mObj->GetInfo());
-
-        mObj->FitQuasiHyperbolic("[0.3, 0.3]");
-
-        if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
-        {
-            mObj->mBicList.append(QPair<QString, double>("Beta Delta", mObj->bicQuasiHyperbolic));
-        }
-
-        resultsList << QString::number(mObj->fitQuasiHyperbolicBeta);
-        resultsList << QString::number(mObj->fitQuasiHyperbolicDelta);
-        resultsList << QString::number(mObj->GetReport().rmserror);
-        resultsList << QString::number(mObj->bicQuasiHyperbolic);
-        resultsList << QString::number(mObj->aicQuasiHyperbolic);
-        resultsList << "";
-        resultsList << "";
-        resultsList << mObj->formatStringResult((int) mObj->GetInfo());
-
-        mObj->FitMyerson("[0.3, 0.3]");
-
-        if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
-        {
-            mObj->mBicList.append(QPair<QString, double>("Myerson Hyperbola", mObj->bicMyerson));
-        }
-
-        resultsList << formatStringResult(mObj->fitMyersonK, tripLogNormal);
-        resultsList << QString::number(mObj->fitMyersonS);
-        resultsList << QString::number(mObj->GetReport().rmserror);
-        resultsList << QString::number(mObj->bicMyerson);
-        resultsList << QString::number(mObj->aicMyerson);
-        resultsList << "";
-        resultsList << "";
-        resultsList << mObj->formatStringResult((int) mObj->GetInfo());
-
-        mObj->FitRachlin("[0.3, 0.3]");
-
-        if (cbRachlin && mObj->GetParams()[1] > 1)
-        {
-            resultsList << "Exceeded Bounds";
-            resultsList << "Exceeded Bounds";
-            resultsList << "Exceeded Bounds";
-            resultsList << "Exceeded Bounds";
-            resultsList << "Exceeded Bounds";
-            resultsList << "Exceeded Bounds";
-            resultsList << "Exceeded Bounds";
-            resultsList << "Exceeded Bounds";
-        }
-        else
-        {
             if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
             {
-                mObj->mBicList.append(QPair<QString, double>("Rachlin Hyperbola", mObj->bicRachlin));
+                mObj->mBicList.append(QPair<QString, double>("Hyperbolic", mObj->bicHyperbolic));
             }
 
-            resultsList << formatStringResult(mObj->fitRachlinK, tripLogNormal);
-            resultsList << QString::number(mObj->fitRachlinS);
+            resultsList << formatStringResult(mObj->fitHyperbolicK, tripLogNormal);
             resultsList << QString::number(mObj->GetReport().rmserror);
-            resultsList << QString::number(mObj->bicRachlin);
-            resultsList << QString::number(mObj->aicRachlin);
+            resultsList << QString::number(mObj->bicHyperbolic);
+            resultsList << QString::number(mObj->aicHyperbolic);
             resultsList << "";
             resultsList << "";
             resultsList << mObj->formatStringResult((int) mObj->GetInfo());
+        }
+        else
+        {
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+        }
+
+        if (modelExponential)
+        {
+            mObj->FitExponential("[0.3]");
+
+            if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
+            {
+                mObj->mBicList.append(QPair<QString, double>("Exponential", mObj->bicExponential));
+            }
+
+            resultsList << formatStringResult(mObj->fitExponentialK, tripLogNormal);
+            resultsList << QString::number(mObj->GetReport().rmserror);
+            resultsList << QString::number(mObj->bicExponential);
+            resultsList << QString::number(mObj->aicExponential);
+            resultsList << "";
+            resultsList << "";
+            resultsList << mObj->formatStringResult((int) mObj->GetInfo());
+        }
+        else
+        {
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+        }
+
+        if (modelQuasiHyperbolic)
+        {
+            mObj->FitQuasiHyperbolic("[0.3, 0.3]");
+
+            if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
+            {
+                mObj->mBicList.append(QPair<QString, double>("Beta Delta", mObj->bicQuasiHyperbolic));
+            }
+
+            resultsList << QString::number(mObj->fitQuasiHyperbolicBeta);
+            resultsList << QString::number(mObj->fitQuasiHyperbolicDelta);
+            resultsList << QString::number(mObj->GetReport().rmserror);
+            resultsList << QString::number(mObj->bicQuasiHyperbolic);
+            resultsList << QString::number(mObj->aicQuasiHyperbolic);
+            resultsList << "";
+            resultsList << "";
+            resultsList << mObj->formatStringResult((int) mObj->GetInfo());
+        }
+        else
+        {
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+        }
+
+        if (modelMyersonGreen)
+        {
+            mObj->FitMyerson("[0.3, 0.3]");
+
+            if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
+            {
+                mObj->mBicList.append(QPair<QString, double>("Myerson Hyperbola", mObj->bicMyerson));
+            }
+
+            resultsList << formatStringResult(mObj->fitMyersonK, tripLogNormal);
+            resultsList << QString::number(mObj->fitMyersonS);
+            resultsList << QString::number(mObj->GetReport().rmserror);
+            resultsList << QString::number(mObj->bicMyerson);
+            resultsList << QString::number(mObj->aicMyerson);
+            resultsList << "";
+            resultsList << "";
+            resultsList << mObj->formatStringResult((int) mObj->GetInfo());
+        }
+        else
+        {
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+        }
+
+        if (modelRachlin)
+        {
+            mObj->FitRachlin("[0.3, 0.3]");
+
+            if (cbRachlin && mObj->GetParams()[1] > 1)
+            {
+                resultsList << "Exceeded Bounds";
+                resultsList << "Exceeded Bounds";
+                resultsList << "Exceeded Bounds";
+                resultsList << "Exceeded Bounds";
+                resultsList << "Exceeded Bounds";
+                resultsList << "Exceeded Bounds";
+                resultsList << "Exceeded Bounds";
+                resultsList << "Exceeded Bounds";
+            }
+            else
+            {
+                if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
+                {
+                    mObj->mBicList.append(QPair<QString, double>("Rachlin Hyperbola", mObj->bicRachlin));
+                }
+
+                resultsList << formatStringResult(mObj->fitRachlinK, tripLogNormal);
+                resultsList << QString::number(mObj->fitRachlinS);
+                resultsList << QString::number(mObj->GetReport().rmserror);
+                resultsList << QString::number(mObj->bicRachlin);
+                resultsList << QString::number(mObj->aicRachlin);
+                resultsList << "";
+                resultsList << "";
+                resultsList << mObj->formatStringResult((int) mObj->GetInfo());
+            }
+        }
+        else
+        {
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
+            resultsList << "---";
         }
 
         mObj->FitNoise();
@@ -1382,20 +1450,35 @@ void SheetWidget::Calculate(QString scriptName,
 
         qSort(mObj->mProbList.begin(), mObj->mProbList.end(), QPairSecondComparer());
 
-        resultsList[5] = QString::number(mObj->bfHyperbolic);
-        resultsList[6] = QString::number(mObj->probsHyperbolic);
+        if (modelHyperbolic)
+        {
+            resultsList[5] = QString::number(mObj->bfHyperbolic);
+            resultsList[6] = QString::number(mObj->probsHyperbolic);
+        }
 
-        resultsList[12] = QString::number(mObj->bfExponential);
-        resultsList[13] = QString::number(mObj->probsExponential);
+        if (modelExponential)
+        {
+            resultsList[12] = QString::number(mObj->bfExponential);
+            resultsList[13] = QString::number(mObj->probsExponential);
+        }
 
-        resultsList[20] = QString::number(mObj->bfQuasiHyperbolic);
-        resultsList[21] = QString::number(mObj->probsQuasiHyperbolic);
+        if (modelQuasiHyperbolic)
+        {
+            resultsList[20] = QString::number(mObj->bfQuasiHyperbolic);
+            resultsList[21] = QString::number(mObj->probsQuasiHyperbolic);
+        }
 
-        resultsList[28] = QString::number(mObj->bfMyerson);
-        resultsList[29] = QString::number(mObj->probsMyerson);
+        if (modelMyersonGreen)
+        {
+            resultsList[28] = QString::number(mObj->bfMyerson);
+            resultsList[29] = QString::number(mObj->probsMyerson);
+        }
 
-        resultsList[36] = QString::number(mObj->bfRachlin);
-        resultsList[37] = QString::number(mObj->probsRachlin);
+        if (modelRachlin)
+        {
+            resultsList[36] = QString::number(mObj->bfRachlin);
+            resultsList[37] = QString::number(mObj->probsRachlin);
+        }
 
         resultsList[43] = QString::number(mObj->bfNoise);
         resultsList[44] = QString::number(mObj->probsNoise);
