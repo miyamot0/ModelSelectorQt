@@ -44,6 +44,16 @@ public:
     QList<QPair<QString, double>> mBicList;
     QList<QPair<QString, double>> mProbList;
 
+    /** AICs
+     *
+     */
+    double aicNoise = -1;
+    double aicHyperbolic = -1;
+    double aicExponential = -1;
+    double aicQuasiHyperbolic = -1;
+    double aicMyerson = -1;
+    double aicRachlin = -1;
+
     /** BICs
      *
      */

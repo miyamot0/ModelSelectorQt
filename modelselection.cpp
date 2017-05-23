@@ -112,6 +112,7 @@ void ModelSelection::FitNoise()
 
     DF = 2;
 
+    aicNoise = (-2 * qLn(L)) + (2 * DF);
     bicNoise = -2 * qLn(L) + qLn(N) * DF;
 }
 
@@ -145,6 +146,7 @@ void ModelSelection::FitExponential(const char *mStarts)
 
     DF = 2;
 
+    aicExponential = (-2 * qLn(L)) + (2 * DF);
     bicExponential = -2 * qLn(L) + qLn(N) * DF;
 }
 
@@ -177,6 +179,7 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
     DF = 2;
 
+    aicHyperbolic = (-2 * qLn(L)) + (2 * DF);
     bicHyperbolic = -2 * qLn(L) + qLn(N) * DF;
 }
 
@@ -209,6 +212,7 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
     DF = 3;
 
+    aicMyerson = (-2 * qLn(L)) + (2 * DF);
     bicMyerson = -2 * qLn(L) + qLn(N) * DF;
 }
 
@@ -243,6 +247,7 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
     DF = 3;
 
+    aicQuasiHyperbolic = (-2 * qLn(L)) + (2 * DF);
     bicQuasiHyperbolic = -2 * qLn(L) + qLn(N) * DF;
 }
 
@@ -275,6 +280,7 @@ void ModelSelection::FitRachlin(const char *mStarts)
 
     DF = 3;
 
+    aicRachlin = (-2 * qLn(L)) + (2 * DF);
     bicRachlin = -2 * qLn(L) + qLn(N) * DF;
 }
 

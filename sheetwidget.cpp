@@ -1291,7 +1291,7 @@ void SheetWidget::Calculate(QString scriptName,
         resultsList << "---";
         resultsList << QString::number(mObj->GetReport().rmserror);
         resultsList << QString::number(mObj->bicHyperbolic);
-        resultsList << ""; //formatStringResult(jsonObj["Mazur.AIC"].toDouble(), false);
+        resultsList << QString::number(mObj->aicHyperbolic);
         resultsList << "";
         resultsList << "";
 
@@ -1306,7 +1306,7 @@ void SheetWidget::Calculate(QString scriptName,
         resultsList << "---";
         resultsList << QString::number(mObj->GetReport().rmserror);
         resultsList << QString::number(mObj->bicExponential);
-        resultsList << ""; //formatStringResult(jsonObj["exp.AIC"].toDouble(), false);
+        resultsList << QString::number(mObj->aicExponential);
         resultsList << "";
         resultsList << "";
 
@@ -1321,7 +1321,7 @@ void SheetWidget::Calculate(QString scriptName,
         resultsList << QString::number(mObj->GetParams()[1]);
         resultsList << QString::number(mObj->GetReport().rmserror);
         resultsList << QString::number(mObj->bicQuasiHyperbolic);
-        resultsList << ""; //formatStringResult(jsonObj["BD.AIC"].toDouble(), false);
+        resultsList << QString::number(mObj->aicQuasiHyperbolic);
         resultsList << "";
         resultsList << "";
 
@@ -1336,7 +1336,7 @@ void SheetWidget::Calculate(QString scriptName,
         resultsList << QString::number(mObj->GetParams()[0]);
         resultsList << QString::number(mObj->GetReport().rmserror);
         resultsList << QString::number(mObj->bicMyerson);
-        resultsList << ""; //formatStringResult(jsonObj["MG.AIC"].toDouble(), false);
+        resultsList << QString::number(mObj->aicMyerson);
         resultsList << "";
         resultsList << "";
 
@@ -1363,7 +1363,7 @@ void SheetWidget::Calculate(QString scriptName,
             resultsList << QString::number(mObj->GetParams()[1]);
             resultsList << QString::number(mObj->GetReport().rmserror);
             resultsList << QString::number(mObj->bicRachlin);
-            resultsList << ""; //formatStringResult(jsonObj["Rachlin.AIC"].toDouble(), false);
+            resultsList << QString::number(mObj->aicRachlin);
             resultsList << "";
             resultsList << "";
         }
@@ -1375,18 +1375,13 @@ void SheetWidget::Calculate(QString scriptName,
         resultsList << "---";
         resultsList << QString::number(mObj->GetReport().rmserror);
         resultsList << QString::number(mObj->bicNoise);
-        resultsList << ""; //QString::number(jsonObj["noise.AIC"].toDouble());
+        resultsList << QString::number(mObj->aicNoise);
         resultsList << "";
         resultsList << "";
 
         mObj->PrepareProbabilities();
 
         qSort(mObj->mProbList.begin(), mObj->mProbList.end(), QPairSecondComparer());
-
-        for (int i=0; i<mObj->mProbList.length(); i++)
-        {
-            qDebug() << mObj->mProbList.at(i).first << "" << mObj->mProbList.at(i).second;
-        }
 
         resultsList[6] = QString::number(mObj->bfHyperbolic);
         resultsList[7] = QString::number(mObj->probsHyperbolic);
