@@ -289,6 +289,11 @@ double ScaleFactor(double modelBic, double noiseBic)
     return qExp(-0.5 * (modelBic - noiseBic));
 }
 
+QString ModelSelection::formatStringResult(int value)
+{
+    return QString("NA");
+}
+
 void ModelSelection::PrepareProbabilities()
 {
     bfNoise = ScaleFactor(NoiseBIC, NoiseBIC);

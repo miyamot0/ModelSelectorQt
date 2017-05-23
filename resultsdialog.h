@@ -48,7 +48,7 @@ public:
      * @param cbRMSE - add RMSE
      * @param cbBF - add Bayes Factors
      */
-    void ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool cbBF, bool tripLogNormal, QString metric);
+    void ImportDataAndShow(bool tripLogNormal, QString metric);
 
     /** Convert indices to Excel-friendly equivalents
      * @brief convertExcelColumn

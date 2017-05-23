@@ -29,6 +29,7 @@ public:
     ae_int_t GetInfo();
     lsfitreport GetReport();
     double GetNoiseMean();
+    QString formatStringResult(int value);
 
     void FitNoise();
     void FitExponential(const char *mStarts);
@@ -92,7 +93,7 @@ private:
     real_1d_array bndl;
     real_1d_array bndu;
 
-    ae_int_t maxits = 50;
+    ae_int_t maxits = 100;
     ae_int_t info;
     lsfitstate state;
     lsfitreport rep;

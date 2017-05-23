@@ -53,36 +53,44 @@ ResultsDialog::ResultsDialog(QWidget *parent) :
     addAction(copyAction);
 }
 
-void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool cbBF, bool tripLogNormal, QString metric)
+void ResultsDialog::ImportDataAndShow(bool tripLogNormal, QString metric)
 {
     SheetWidget *temp = qobject_cast <SheetWidget *>(parent());
 
     QList<int> skipList;
 
-    skipList << 2 << 9 << 37;
+    //skipList << 2 << 9 << 37;
 
+    /*
+    // Done
     if (!cbRMSE)
     {
-        skipList << 3 << 10 << 17 << 24 << 31 << 38;
+        //skipList << 3 << 12 << 21 << 30 << 37 << 45;
+        skipList << 3 << 11 << 19 << 27 << 35 << 43;
     }
 
     if (!cbBIC)
     {
-        skipList << 4 << 11 << 18 << 25 << 32 << 39;
+        //skipList << 4 << 13 << 22 << 31 << 38 << 46;
+        skipList << 4 << 12 << 20 << 28 << 36 << 44;
     }
 
     if (!cbAIC)
     {
-        skipList << 5 << 12 << 19 << 26 << 33 << 40;
+        //skipList << 5 << 14 << 23 << 32 << 39 << 47;
+        skipList << 5 << 13 << 21 << 29 << 37 << 45;
     }
 
     if (!cbBF)
     {
-        skipList << 6 << 13 << 20 << 27 << 34 << 41;
+        //skipList << 6 << 15 << 24 << 33 << 40 << 48;
+        skipList << 6 << 14 << 22 << 30 << 38 << 46;
     }
+    */
 
     QStringList columnList;
 
+    // 0
     columnList << "Series";
 
     if (tripLogNormal)
@@ -94,13 +102,14 @@ void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool 
         columnList << "Mazur.lnk";
     }
 
-    columnList << "";
     columnList << "Mazur.RMSE";
     columnList << "Mazur.BIC";
     columnList << "Mazur.AIC";
     columnList << "Mazur.BF";
     columnList << "Mazur.prob";
+    columnList << "Mazur.notes";
 
+    // 10
     if (tripLogNormal)
     {
         columnList << "exp.k";
@@ -110,13 +119,14 @@ void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool 
         columnList << "exp.lnk";
     }
 
-    columnList << "";
     columnList << "exp.RMSE";
     columnList << "exp.BIC";
     columnList << "exp.AIC";
     columnList << "exp.BF";
     columnList << "exp.prob";
+    columnList << "exp.notes";
 
+    //19
     columnList << "BD.beta";
     columnList << "BD.delta";
     columnList << "BD.RMSE";
@@ -124,7 +134,9 @@ void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool 
     columnList << "BD.AIC";
     columnList << "BD.BF";
     columnList << "BD.prob";
+    columnList << "BD.notes";
 
+    // 27
     if (tripLogNormal)
     {
         columnList << "MG.k";
@@ -140,7 +152,9 @@ void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool 
     columnList << "MG.AIC";
     columnList << "MG.BF";
     columnList << "MG.prob";
+    columnList << "MG.notes";
 
+    // 35
     if (tripLogNormal)
     {
         columnList << "Rachlin.k";
@@ -156,9 +170,10 @@ void ResultsDialog::ImportDataAndShow(bool cbBIC, bool cbAIC, bool cbRMSE, bool 
     columnList << "Rachlin.AIC";
     columnList << "Rachlin.BF";
     columnList << "Rachlin.prob";
+    columnList << "Rachlin.notes";
 
+    // 43
     columnList << "noise.mean";
-    columnList << "";
     columnList << "noise.RMSE";
     columnList << "noise.BIC";
     columnList << "noise.AIC";

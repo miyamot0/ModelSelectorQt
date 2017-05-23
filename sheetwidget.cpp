@@ -1282,37 +1282,37 @@ void SheetWidget::Calculate(QString scriptName,
 
         mObj->FitHyperbolic("[0.3]");
 
-        if ((int) mObj->GetInfo() == 2)
+        if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
         {
             mObj->mBicList.append(QPair<QString, double>("Hyperbolic", mObj->bicHyperbolic));
         }
 
         resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
-        resultsList << "---";
         resultsList << QString::number(mObj->GetReport().rmserror);
         resultsList << QString::number(mObj->bicHyperbolic);
         resultsList << QString::number(mObj->aicHyperbolic);
         resultsList << "";
         resultsList << "";
+        resultsList << mObj->formatStringResult((int) mObj->GetInfo());
 
         mObj->FitExponential("[0.3]");
 
-        if ((int) mObj->GetInfo() == 2)
+        if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
         {
             mObj->mBicList.append(QPair<QString, double>("Exponential", mObj->bicExponential));
         }
 
         resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
-        resultsList << "---";
         resultsList << QString::number(mObj->GetReport().rmserror);
         resultsList << QString::number(mObj->bicExponential);
         resultsList << QString::number(mObj->aicExponential);
         resultsList << "";
         resultsList << "";
+        resultsList << mObj->formatStringResult((int) mObj->GetInfo());
 
         mObj->FitQuasiHyperbolic("[0.3, 0.3]");
 
-        if ((int) mObj->GetInfo() == 2)
+        if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
         {
             mObj->mBicList.append(QPair<QString, double>("Beta Delta", mObj->bicQuasiHyperbolic));
         }
@@ -1324,10 +1324,11 @@ void SheetWidget::Calculate(QString scriptName,
         resultsList << QString::number(mObj->aicQuasiHyperbolic);
         resultsList << "";
         resultsList << "";
+        resultsList << mObj->formatStringResult((int) mObj->GetInfo());
 
         mObj->FitMyerson("[0.3, 0.3]");
 
-        if ((int) mObj->GetInfo() == 2)
+        if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
         {
             mObj->mBicList.append(QPair<QString, double>("Myerson Hyperbola", mObj->bicMyerson));
         }
@@ -1339,6 +1340,7 @@ void SheetWidget::Calculate(QString scriptName,
         resultsList << QString::number(mObj->aicMyerson);
         resultsList << "";
         resultsList << "";
+        resultsList << mObj->formatStringResult((int) mObj->GetInfo());
 
         mObj->FitRachlin("[0.3, 0.3]");
 
@@ -1351,10 +1353,11 @@ void SheetWidget::Calculate(QString scriptName,
             resultsList << "Exceeded Bounds";
             resultsList << "Exceeded Bounds";
             resultsList << "Exceeded Bounds";
+            resultsList << "Exceeded Bounds";
         }
         else
         {
-            if ((int) mObj->GetInfo() == 2)
+            if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
             {
                 mObj->mBicList.append(QPair<QString, double>("Rachlin Hyperbola", mObj->bicRachlin));
             }
@@ -1366,13 +1369,13 @@ void SheetWidget::Calculate(QString scriptName,
             resultsList << QString::number(mObj->aicRachlin);
             resultsList << "";
             resultsList << "";
+            resultsList << mObj->formatStringResult((int) mObj->GetInfo());
         }
 
         mObj->FitNoise();
         mObj->NoiseBIC = mObj->bicNoise;
 
         resultsList << QString::number(mObj->GetNoiseMean());
-        resultsList << "---";
         resultsList << QString::number(mObj->GetReport().rmserror);
         resultsList << QString::number(mObj->bicNoise);
         resultsList << QString::number(mObj->aicNoise);
@@ -1383,23 +1386,23 @@ void SheetWidget::Calculate(QString scriptName,
 
         qSort(mObj->mProbList.begin(), mObj->mProbList.end(), QPairSecondComparer());
 
-        resultsList[6] = QString::number(mObj->bfHyperbolic);
-        resultsList[7] = QString::number(mObj->probsHyperbolic);
+        resultsList[5] = QString::number(mObj->bfHyperbolic);
+        resultsList[6] = QString::number(mObj->probsHyperbolic);
 
-        resultsList[13] = QString::number(mObj->bfExponential);
-        resultsList[14] = QString::number(mObj->probsExponential);
+        resultsList[12] = QString::number(mObj->bfExponential);
+        resultsList[13] = QString::number(mObj->probsExponential);
 
         resultsList[20] = QString::number(mObj->bfQuasiHyperbolic);
         resultsList[21] = QString::number(mObj->probsQuasiHyperbolic);
 
-        resultsList[27] = QString::number(mObj->bfMyerson);
-        resultsList[28] = QString::number(mObj->probsMyerson);
+        resultsList[28] = QString::number(mObj->bfMyerson);
+        resultsList[29] = QString::number(mObj->probsMyerson);
 
-        resultsList[34] = QString::number(mObj->bfRachlin);
-        resultsList[35] = QString::number(mObj->probsRachlin);
+        resultsList[36] = QString::number(mObj->bfRachlin);
+        resultsList[37] = QString::number(mObj->probsRachlin);
 
-        resultsList[41] = QString::number(mObj->bfNoise);
-        resultsList[42] = QString::number(mObj->probsNoise);
+        resultsList[43] = QString::number(mObj->bfNoise);
+        resultsList[44] = QString::number(mObj->probsNoise);
 
         resultsList << mObj->mProbList.first().first;
 
@@ -1449,13 +1452,13 @@ void SheetWidget::Calculate(QString scriptName,
     {
         discountingAreaDialog->ToggleButton(true);
         discountingAreaDialog->setEnabled(true);
-        resultsDialog->ImportDataAndShow(tripBIC, tripAIC, tripRMSE, tripBF, tripLogNormal, "AUC.mostprob");
+        resultsDialog->ImportDataAndShow(tripLogNormal, "AUC.mostprob");
     }
     else if (discountingED50Dialog->isVisible())
     {
         discountingED50Dialog->ToggleButton(true);
         discountingED50Dialog->setEnabled(true);
-        resultsDialog->ImportDataAndShow(tripBIC, tripAIC, tripRMSE, tripBF, tripLogNormal, "lnED50.mostprob");
+        resultsDialog->ImportDataAndShow(tripLogNormal, "lnED50.mostprob");
     }
 }
 
