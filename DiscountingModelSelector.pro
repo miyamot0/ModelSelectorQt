@@ -24,7 +24,7 @@ DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
        "VERSION_MINOR=$$VERSION_MINOR"\
        "VERSION_BUILD=$$VERSION_BUILD"
 
-QT += core gui widgets xlsx svg
+QT += core gui widgets xlsx
 
 TARGET = DiscountingModelSelector
 
@@ -112,17 +112,9 @@ RESOURCES += \
 win32 {
     INCLUDEPATH += Libraries/alglib-3.11.0/src
 
-    DMS_FILES.files = scripts/DiscountingAreaComputation.R \
-                    scripts/DiscountingED50Computation.R scripts/installDependencyBase64.R \
-                    scripts/installDependencyJsonlite.R scripts/installDependencyReshape.R \
-                    License_base64enc.txt \
-                    License_BDS.txt \
+    DMS_FILES.files = License_BDS.txt \
                     License_gnome_icons.txt \
-                    License_jsonlite.txt \
-                    License_NLS.txt \
                     License_Qt.txt \
-                    License_R.txt \
-                    License_reshape.txt \
                     COPYING
 
     release: DESTDIR = $$OUT_PWD/build/release
@@ -133,17 +125,9 @@ win32 {
     INSTALLS += DMS_FILES
 }
 macx {
-    DMS_FILES.files = scripts/DiscountingAreaComputation.R \
-                    scripts/DiscountingED50Computation.R scripts/installDependencyBase64.R \
-                    scripts/installDependencyJsonlite.R scripts/installDependencyReshape.R \
-                    License_base64enc.txt \
-                    License_BDS.txt \
+    DMS_FILES.files = License_BDS.txt \
                     License_gnome_icons.txt \
-                    License_jsonlite.txt \
-                    License_NLS.txt \
                     License_Qt.txt \
-                    License_R.txt \
-                    License_reshape.txt \
                     COPYING
 
     DMS_FILES.path = Contents/Resources
@@ -153,11 +137,6 @@ macx {
 
 DISTFILES += \
     README.md \
-    scripts/DiscountingAreaComputation.R \
-    scripts/DiscountingED50Computation.R \
-    scripts/installDependencyJsonlite.R \
-    scripts/installDependencyBase64.R \
-    scripts/installDependencyReshape.R \
     COPYING \
     License_BDS.txt \
     License_Qt.txt \
