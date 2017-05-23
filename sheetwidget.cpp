@@ -208,31 +208,11 @@ void SheetWidget::buildMenus()
     openLicenseDMS->setIcon(QIcon(":/images/text-x-generic.png"));
     connect(openLicenseDMS, &QAction::triggered, this, &SheetWidget::showDMSLicenseWindow);
 
-    openLicenseR = new QAction("R License (GPL-V3)", this);
-    openLicenseR->setIcon(QIcon(":/images/text-x-generic.png"));
-    connect(openLicenseR, &QAction::triggered, this, &SheetWidget::showRLicenseWindow);
-
-    openLicenseNls = new QAction("nls License (GPL-V3)", this);
-    openLicenseNls->setIcon(QIcon(":/images/text-x-generic.png"));
-    connect(openLicenseNls, &QAction::triggered, this, &SheetWidget::showNLSLicenseWindow);
-
-    openLicenseBase64 = new QAction("base64enc License (GPL-V3)", this);
-    openLicenseBase64->setIcon(QIcon(":/images/text-x-generic.png"));
-    connect(openLicenseBase64, &QAction::triggered, this, &SheetWidget::showBase64LicenseWindow);
-
-    openLicenseJsonlite = new QAction("jsonlite License (MIT)", this);
-    openLicenseJsonlite->setIcon(QIcon(":/images/text-x-generic.png"));
-    connect(openLicenseJsonlite, &QAction::triggered, this, &SheetWidget::showJsonliteLicenseWindow);
-
-    openLicenseReshape = new QAction("reshape License (MIT)", this);
-    openLicenseReshape->setIcon(QIcon(":/images/text-x-generic.png"));
-    connect(openLicenseReshape, &QAction::triggered, this, &SheetWidget::showReshapeLicenseWindow);
-
-    openLicenseBDS = new QAction("DMS License (GPL-V3)", this);
+    openLicenseBDS = new QAction("BDS License (GPL-V3)", this);
     openLicenseBDS->setIcon(QIcon(":/images/text-x-generic.png"));
     connect(openLicenseBDS, &QAction::triggered, this, &SheetWidget::showBDSLicenseWindow);
 
-    openLicenseQt = new QAction("Qt License (LGPL-V3)", this);
+    openLicenseQt = new QAction("Qt License (GPL-V3)", this);
     openLicenseQt->setIcon(QIcon(":/images/text-x-generic.png"));
     connect(openLicenseQt, &QAction::triggered, this, &SheetWidget::showQTLicenseWindow);
 
@@ -306,11 +286,6 @@ void SheetWidget::buildMenus()
 
     QMenu *sheetLicensesMenu = menuBar()->addMenu(tr("&Licenses"));
     sheetLicensesMenu->addAction(openLicenseDMS);
-    sheetLicensesMenu->addAction(openLicenseR);
-    sheetLicensesMenu->addAction(openLicenseNls);
-    sheetLicensesMenu->addAction(openLicenseBase64);
-    sheetLicensesMenu->addAction(openLicenseJsonlite);
-    sheetLicensesMenu->addAction(openLicenseReshape);
     sheetLicensesMenu->addAction(openLicenseBDS);
     sheetLicensesMenu->addAction(openLicenseQt);
     sheetLicensesMenu->addAction(openLicenseGnome);
@@ -715,134 +690,6 @@ void SheetWidget::showDMSLicenseWindow()
 
     licenseDialog = new LicenseDialog(mFilePath, this);
     licenseDialog->setWindowTitle("DMS License (GPL-V3)");
-    licenseDialog->setModal(true);
-    licenseDialog->show();
-}
-
-void SheetWidget::showRLicenseWindow()
-{
-    QString mFilePath = "";
-
-    #ifdef _WIN32
-            mFilePath = "License_R.txt";
-    #elif TARGET_OS_MAC
-            QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
-            runDirectory.cdUp();
-            runDirectory.cd("Resources");
-            mFilePath = runDirectory.path() + "/";
-
-            mFilePath = mFilePath + "License_R.txt";
-
-    #endif
-
-    licenseDialog = new LicenseDialog(mFilePath, this);
-    licenseDialog->setWindowTitle("R License (GPL-V3)");
-    licenseDialog->setModal(true);
-    licenseDialog->show();
-}
-
-void SheetWidget::showNLSLicenseWindow()
-{
-    QString mFilePath = "";
-
-    #ifdef _WIN32
-            mFilePath = "License_NLS.txt";
-    #elif TARGET_OS_MAC
-            QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
-            runDirectory.cdUp();
-            runDirectory.cd("Resources");
-            mFilePath = runDirectory.path() + "/";
-
-            mFilePath = mFilePath + "License_NLS.txt";
-
-    #endif
-
-    licenseDialog = new LicenseDialog(mFilePath, this);
-    licenseDialog->setWindowTitle("nls License (GPL-V3)");
-    licenseDialog->setModal(true);
-    licenseDialog->show();
-}
-
-void SheetWidget::showBase64LicenseWindow()
-{
-    QString mFilePath = "";
-
-    #ifdef _WIN32
-            mFilePath = "License_base64enc.txt";
-    #elif TARGET_OS_MAC
-            QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
-            runDirectory.cdUp();
-            runDirectory.cd("Resources");
-            mFilePath = runDirectory.path() + "/";
-            mFilePath = mFilePath + "License_base64enc.txt";
-    #endif
-
-    licenseDialog = new LicenseDialog(mFilePath, this);
-    licenseDialog->setWindowTitle("base64enc License (GPL-V3)");
-    licenseDialog->setModal(true);
-    licenseDialog->show();
-}
-
-void SheetWidget::showGridextraLicenseWindow()
-{
-    QString mFilePath = "";
-
-    #ifdef _WIN32
-            mFilePath = "License_R.txt";
-    #elif TARGET_OS_MAC
-            QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
-            runDirectory.cdUp();
-            runDirectory.cd("Resources");
-            mFilePath = runDirectory.path() + "/";
-            mFilePath = mFilePath + "License_R.txt";
-    #endif
-
-    licenseDialog = new LicenseDialog(mFilePath, this);
-    licenseDialog->setWindowTitle("gridExtra License (MIT)");
-    licenseDialog->setModal(true);
-    licenseDialog->show();
-}
-
-void SheetWidget::showJsonliteLicenseWindow()
-{
-    QString mFilePath = "";
-
-    #ifdef _WIN32
-            mFilePath = "License_jsonlite.txt";
-    #elif TARGET_OS_MAC
-            QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
-            runDirectory.cdUp();
-            runDirectory.cd("Resources");
-            mFilePath = runDirectory.path() + "/";
-
-            mFilePath = mFilePath + "License_jsonlite.txt";
-
-    #endif
-
-    licenseDialog = new LicenseDialog(mFilePath, this);
-    licenseDialog->setWindowTitle("jsonlite License (MIT)");
-    licenseDialog->setModal(true);
-    licenseDialog->show();
-}
-
-void SheetWidget::showReshapeLicenseWindow()
-{
-    QString mFilePath = "";
-
-    #ifdef _WIN32
-            mFilePath = "License_reshape.txt";
-    #elif TARGET_OS_MAC
-            QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
-            runDirectory.cdUp();
-            runDirectory.cd("Resources");
-            mFilePath = runDirectory.path() + "/";
-
-            mFilePath = mFilePath + "License_reshape.txt";
-
-    #endif
-
-    licenseDialog = new LicenseDialog(mFilePath, this);
-    licenseDialog->setWindowTitle("reshape License (MIT)");
     licenseDialog->setModal(true);
     licenseDialog->show();
 }

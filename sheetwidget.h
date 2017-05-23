@@ -138,12 +138,6 @@ public slots:
     void showFAQWindow();
 
     void showDMSLicenseWindow();
-    void showRLicenseWindow();
-    void showNLSLicenseWindow();
-    void showBase64LicenseWindow();
-    void showGridextraLicenseWindow();
-    void showJsonliteLicenseWindow();
-    void showReshapeLicenseWindow();
     void showBDSLicenseWindow();
     void showQTLicenseWindow();
     void showGnomeLicenseWindow();
@@ -180,11 +174,6 @@ private:
     QAction *openDiscountingED50Window;
 
     QAction *openLicenseDMS;
-    QAction *openLicenseR;
-    QAction *openLicenseNls;
-    QAction *openLicenseBase64;
-    QAction *openLicenseJsonlite;
-    QAction *openLicenseReshape;
     QAction *openLicenseBDS;
     QAction *openLicenseQt;
     QAction *openLicenseGnome;
