@@ -28,7 +28,6 @@ public:
     lsfitstate GetState();
     ae_int_t GetInfo();
     lsfitreport GetReport();
-    double GetBIC();
     double GetNoiseMean();
 
     void FitNoise();
@@ -44,6 +43,16 @@ public:
 
     QList<QPair<QString, double>> mBicList;
     QList<QPair<QString, double>> mProbList;
+
+    /** BICs
+     *
+     */
+    double bicNoise = -1;
+    double bicHyperbolic = -1;
+    double bicExponential = -1;
+    double bicQuasiHyperbolic = -1;
+    double bicMyerson = -1;
+    double bicRachlin = -1;
 
     /** Bayes Factors
       *
@@ -92,10 +101,6 @@ private:
     double DF = 0;
     double PROJ = 0;
     double holder = 0;
-
-    double BIC = 0;
-
-
 
     double sumBayesFactors = 0;
 };

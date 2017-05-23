@@ -80,11 +80,6 @@ lsfitreport ModelSelection::GetReport()
     return rep;
 }
 
-double ModelSelection::GetBIC()
-{
-    return BIC;
-}
-
 double ModelSelection::GetNoiseMean()
 {
     return AVE;
@@ -117,7 +112,7 @@ void ModelSelection::FitNoise()
 
     DF = 2;
 
-    BIC = -2 * qLn(L) + qLn(N) * DF;
+    bicNoise = -2 * qLn(L) + qLn(N) * DF;
 }
 
 /** Exponentials
@@ -150,7 +145,7 @@ void ModelSelection::FitExponential(const char *mStarts)
 
     DF = 2;
 
-    BIC = -2 * qLn(L) + qLn(N) * DF;
+    bicExponential = -2 * qLn(L) + qLn(N) * DF;
 }
 
 /** Hyperbolics
@@ -182,7 +177,7 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
     DF = 2;
 
-    BIC = -2 * qLn(L) + qLn(N) * DF;
+    bicHyperbolic = -2 * qLn(L) + qLn(N) * DF;
 }
 
 /** Hyperboloid Myerson
@@ -214,7 +209,7 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
     DF = 3;
 
-    BIC = -2 * qLn(L) + qLn(N) * DF;
+    bicMyerson = -2 * qLn(L) + qLn(N) * DF;
 }
 
 /** Beta delta
@@ -248,7 +243,7 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
     DF = 3;
 
-    BIC = -2 * qLn(L) + qLn(N) * DF;
+    bicQuasiHyperbolic = -2 * qLn(L) + qLn(N) * DF;
 }
 
 /** Hyperboloid Rachlin
@@ -280,7 +275,7 @@ void ModelSelection::FitRachlin(const char *mStarts)
 
     DF = 3;
 
-    BIC = -2 * qLn(L) + qLn(N) * DF;
+    bicRachlin = -2 * qLn(L) + qLn(N) * DF;
 }
 
 double ScaleFactor(double modelBic, double noiseBic)

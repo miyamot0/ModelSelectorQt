@@ -1234,10 +1234,12 @@ void SheetWidget::Calculate(QString scriptName,
 
     for (int i = 0; i < nSeries; i++)
     {
+        statusBar()->showMessage("Calculating #" + QString::number(i + 1) + " of " + QString::number(nSeries), 3000);
+
         valuePoints.clear();
         delayPointsTemp.clear();
 
-        areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData, topValue, leftValue, bottomValue, rightValue, i, maxValue);
+        areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData, topValue, leftValue, bottomValue, rightValue, i, maxValue);      
 
         mXString = "[";
 
@@ -1282,13 +1284,13 @@ void SheetWidget::Calculate(QString scriptName,
 
         if ((int) mObj->GetInfo() == 2)
         {
-            mObj->mBicList.append(QPair<QString, double>("Hyperbolic", mObj->GetBIC()));
+            mObj->mBicList.append(QPair<QString, double>("Hyperbolic", mObj->bicHyperbolic));
         }
 
         resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
         resultsList << "---";
         resultsList << QString::number(mObj->GetReport().rmserror);
-        resultsList << QString::number(mObj->GetBIC());
+        resultsList << QString::number(mObj->bicHyperbolic);
         resultsList << ""; //formatStringResult(jsonObj["Mazur.AIC"].toDouble(), false);
         resultsList << "";
         resultsList << "";
@@ -1297,13 +1299,13 @@ void SheetWidget::Calculate(QString scriptName,
 
         if ((int) mObj->GetInfo() == 2)
         {
-            mObj->mBicList.append(QPair<QString, double>("Exponential", mObj->GetBIC()));
+            mObj->mBicList.append(QPair<QString, double>("Exponential", mObj->bicExponential));
         }
 
         resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
         resultsList << "---";
         resultsList << QString::number(mObj->GetReport().rmserror);
-        resultsList << QString::number(mObj->GetBIC());
+        resultsList << QString::number(mObj->bicExponential);
         resultsList << ""; //formatStringResult(jsonObj["exp.AIC"].toDouble(), false);
         resultsList << "";
         resultsList << "";
@@ -1312,13 +1314,13 @@ void SheetWidget::Calculate(QString scriptName,
 
         if ((int) mObj->GetInfo() == 2)
         {
-            mObj->mBicList.append(QPair<QString, double>("Beta Delta", mObj->GetBIC()));
+            mObj->mBicList.append(QPair<QString, double>("Beta Delta", mObj->bicQuasiHyperbolic));
         }
 
         resultsList << QString::number(mObj->GetParams()[0]);
         resultsList << QString::number(mObj->GetParams()[1]);
         resultsList << QString::number(mObj->GetReport().rmserror);
-        resultsList << QString::number(mObj->GetBIC());
+        resultsList << QString::number(mObj->bicQuasiHyperbolic);
         resultsList << ""; //formatStringResult(jsonObj["BD.AIC"].toDouble(), false);
         resultsList << "";
         resultsList << "";
@@ -1327,13 +1329,13 @@ void SheetWidget::Calculate(QString scriptName,
 
         if ((int) mObj->GetInfo() == 2)
         {
-            mObj->mBicList.append(QPair<QString, double>("Myerson Hyperbola", mObj->GetBIC()));
+            mObj->mBicList.append(QPair<QString, double>("Myerson Hyperbola", mObj->bicMyerson));
         }
 
         resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
         resultsList << QString::number(mObj->GetParams()[0]);
         resultsList << QString::number(mObj->GetReport().rmserror);
-        resultsList << QString::number(mObj->GetBIC());
+        resultsList << QString::number(mObj->bicMyerson);
         resultsList << ""; //formatStringResult(jsonObj["MG.AIC"].toDouble(), false);
         resultsList << "";
         resultsList << "";
@@ -1354,33 +1356,25 @@ void SheetWidget::Calculate(QString scriptName,
         {
             if ((int) mObj->GetInfo() == 2)
             {
-                mObj->mBicList.append(QPair<QString, double>("Rachlin Hyperbola", mObj->GetBIC()));
+                mObj->mBicList.append(QPair<QString, double>("Rachlin Hyperbola", mObj->bicRachlin));
             }
 
             resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
             resultsList << QString::number(mObj->GetParams()[1]);
             resultsList << QString::number(mObj->GetReport().rmserror);
-            resultsList << QString::number(mObj->GetBIC());
+            resultsList << QString::number(mObj->bicRachlin);
             resultsList << ""; //formatStringResult(jsonObj["Rachlin.AIC"].toDouble(), false);
             resultsList << "";
             resultsList << "";
         }
 
-
-
-
-
-        statusBar()->showMessage("Calculating #" + QString::number(i + 1) + " of " + QString::number(nSeries), 3000);
-
-
-
         mObj->FitNoise();
-        mObj->NoiseBIC = mObj->GetBIC();
+        mObj->NoiseBIC = mObj->bicNoise;
 
         resultsList << QString::number(mObj->GetNoiseMean());
-        resultsList << "";
+        resultsList << "---";
         resultsList << QString::number(mObj->GetReport().rmserror);
-        resultsList << QString::number(mObj->GetBIC());
+        resultsList << QString::number(mObj->bicNoise);
         resultsList << ""; //QString::number(jsonObj["noise.AIC"].toDouble());
         resultsList << "";
         resultsList << "";
@@ -1438,9 +1432,6 @@ void SheetWidget::Calculate(QString scriptName,
         //}
     }
 
-    //
-
-
     if (discountingAreaDialog->isVisible())
     {
         discountingAreaDialog->setEnabled(false);
@@ -1464,16 +1455,13 @@ void SheetWidget::Calculate(QString scriptName,
         discountingAreaDialog->ToggleButton(true);
         discountingAreaDialog->setEnabled(true);
         resultsDialog->ImportDataAndShow(tripBIC, tripAIC, tripRMSE, tripBF, tripLogNormal, "AUC.mostprob");
-
     }
     else if (discountingED50Dialog->isVisible())
     {
         discountingED50Dialog->ToggleButton(true);
         discountingED50Dialog->setEnabled(true);
         resultsDialog->ImportDataAndShow(tripBIC, tripAIC, tripRMSE, tripBF, tripLogNormal, "lnED50.mostprob");
-
     }
-
 }
 
 bool SheetWidget::areDelayPointsValid(QStringList &delayPoints, bool isRowData, int topDelay, int leftDelay, int bottomDelay, int rightDelay)
