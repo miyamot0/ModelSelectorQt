@@ -160,10 +160,5 @@ DISTFILES += \
     scripts/installDependencyReshape.R \
     COPYING \
     License_BDS.txt \
-    License_NLS.txt \
     License_Qt.txt \
-    License_R.txt \
-    License_base64enc.txt \
-    License_gnome_icons.txt \
-    License_jsonlite.txt \
-    License_reshape.txt
+    License_gnome_icons.txt
