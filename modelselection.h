@@ -30,6 +30,7 @@ public:
     lsfitreport GetReport();
     double GetNoiseMean();
     QString formatStringResult(int value);
+    QString getED50BestModel(QString model);
 
     void FitNoise();
     void FitExponential(const char *mStarts);
@@ -84,6 +85,18 @@ public:
     double probsQuasiHyperbolic = -1;
     double probsMyerson = -1;
     double probsRachlin = -1;
+
+    /** Fits
+      *
+      */
+    double fitHyperbolicK = -1;
+    double fitExponentialK = -1;
+    double fitQuasiHyperbolicBeta = -1;
+    double fitQuasiHyperbolicDelta = -1;
+    double fitMyersonK = -1;
+    double fitMyersonS = -1;
+    double fitRachlinK = -1;
+    double fitRachlinS = -1;
 
 private:
     real_2d_array x;

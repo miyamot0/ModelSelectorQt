@@ -1283,7 +1283,7 @@ void SheetWidget::Calculate(QString scriptName,
             mObj->mBicList.append(QPair<QString, double>("Hyperbolic", mObj->bicHyperbolic));
         }
 
-        resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
+        resultsList << formatStringResult(mObj->fitHyperbolicK, tripLogNormal);
         resultsList << QString::number(mObj->GetReport().rmserror);
         resultsList << QString::number(mObj->bicHyperbolic);
         resultsList << QString::number(mObj->aicHyperbolic);
@@ -1298,7 +1298,7 @@ void SheetWidget::Calculate(QString scriptName,
             mObj->mBicList.append(QPair<QString, double>("Exponential", mObj->bicExponential));
         }
 
-        resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
+        resultsList << formatStringResult(mObj->fitExponentialK, tripLogNormal);
         resultsList << QString::number(mObj->GetReport().rmserror);
         resultsList << QString::number(mObj->bicExponential);
         resultsList << QString::number(mObj->aicExponential);
@@ -1313,8 +1313,8 @@ void SheetWidget::Calculate(QString scriptName,
             mObj->mBicList.append(QPair<QString, double>("Beta Delta", mObj->bicQuasiHyperbolic));
         }
 
-        resultsList << QString::number(mObj->GetParams()[0]);
-        resultsList << QString::number(mObj->GetParams()[1]);
+        resultsList << QString::number(mObj->fitQuasiHyperbolicBeta);
+        resultsList << QString::number(mObj->fitQuasiHyperbolicDelta);
         resultsList << QString::number(mObj->GetReport().rmserror);
         resultsList << QString::number(mObj->bicQuasiHyperbolic);
         resultsList << QString::number(mObj->aicQuasiHyperbolic);
@@ -1329,8 +1329,8 @@ void SheetWidget::Calculate(QString scriptName,
             mObj->mBicList.append(QPair<QString, double>("Myerson Hyperbola", mObj->bicMyerson));
         }
 
-        resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
-        resultsList << QString::number(mObj->GetParams()[0]);
+        resultsList << formatStringResult(mObj->fitMyersonK, tripLogNormal);
+        resultsList << QString::number(mObj->fitMyersonS);
         resultsList << QString::number(mObj->GetReport().rmserror);
         resultsList << QString::number(mObj->bicMyerson);
         resultsList << QString::number(mObj->aicMyerson);
@@ -1358,8 +1358,8 @@ void SheetWidget::Calculate(QString scriptName,
                 mObj->mBicList.append(QPair<QString, double>("Rachlin Hyperbola", mObj->bicRachlin));
             }
 
-            resultsList << formatStringResult(mObj->GetParams()[0], tripLogNormal);
-            resultsList << QString::number(mObj->GetParams()[1]);
+            resultsList << formatStringResult(mObj->fitRachlinK, tripLogNormal);
+            resultsList << QString::number(mObj->fitRachlinS);
             resultsList << QString::number(mObj->GetReport().rmserror);
             resultsList << QString::number(mObj->bicRachlin);
             resultsList << QString::number(mObj->aicRachlin);
@@ -1400,7 +1400,10 @@ void SheetWidget::Calculate(QString scriptName,
         resultsList[43] = QString::number(mObj->bfNoise);
         resultsList[44] = QString::number(mObj->probsNoise);
 
-        resultsList << mObj->mProbList.first().first;
+        QString model = mObj->mProbList.first().first;
+
+        resultsList << model;
+        resultsList << mObj->getED50BestModel(model);
 
         /*
 

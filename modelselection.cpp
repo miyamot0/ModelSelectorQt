@@ -148,6 +148,7 @@ void ModelSelection::FitExponential(const char *mStarts)
 
     aicExponential = (-2 * qLn(L)) + (2 * DF);
     bicExponential = -2 * qLn(L) + qLn(N) * DF;
+    fitExponentialK = (double) c[0];
 }
 
 /** Hyperbolics
@@ -181,6 +182,7 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
     aicHyperbolic = (-2 * qLn(L)) + (2 * DF);
     bicHyperbolic = -2 * qLn(L) + qLn(N) * DF;
+    fitHyperbolicK = (double) c[0];
 }
 
 /** Hyperboloid Myerson
@@ -214,6 +216,8 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
     aicMyerson = (-2 * qLn(L)) + (2 * DF);
     bicMyerson = -2 * qLn(L) + qLn(N) * DF;
+    fitMyersonK = (double) c[0];
+    fitMyersonS = (double) c[1];
 }
 
 /** Beta delta
@@ -249,6 +253,8 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
     aicQuasiHyperbolic = (-2 * qLn(L)) + (2 * DF);
     bicQuasiHyperbolic = -2 * qLn(L) + qLn(N) * DF;
+    fitQuasiHyperbolicBeta = (double) c[0];
+    fitQuasiHyperbolicDelta = (double) c[1];
 }
 
 /** Hyperboloid Rachlin
@@ -282,6 +288,8 @@ void ModelSelection::FitRachlin(const char *mStarts)
 
     aicRachlin = (-2 * qLn(L)) + (2 * DF);
     bicRachlin = -2 * qLn(L) + qLn(N) * DF;
+    fitRachlinK = (double) c[0];
+    fitRachlinS = (double) c[1];
 }
 
 double ScaleFactor(double modelBic, double noiseBic)
@@ -314,6 +322,44 @@ QString ModelSelection::formatStringResult(int value)
     else
     {
         return QString("No notes supplied");
+    }
+}
+
+QString ModelSelection::getED50BestModel(QString model)
+{
+    if (model.contains("Exponential", Qt::CaseInsensitive))
+    {
+        double result = qLn(1/(qExp(fitExponentialK)));
+
+        return QString::number(result);
+    }
+    else if (model.contains("Hyperbolic", Qt::CaseInsensitive))
+    {
+        double result = qLn(1/(qExp(fitHyperbolicK)));
+
+        return QString::number(result);
+    }
+    else if (model.contains("Beta", Qt::CaseInsensitive))
+    {
+        double result = log(log((1/(2*fitQuasiHyperbolicBeta)))/log(fitQuasiHyperbolicDelta));
+
+        return QString::number(result);
+    }
+    else if (model.contains("Myerson", Qt::CaseInsensitive))
+    {
+        double result = qLn((qPow(2, (1/fitMyersonS))-1)/qExp(fitMyersonK));
+
+        return QString::number(result);
+    }
+    else if (model.contains("Rachlin", Qt::CaseInsensitive))
+    {
+        double result = qLn( qPow( (1/ (qExp(fitRachlinK))), (1/fitRachlinS)));
+
+        return QString::number(result);
+    }
+    else
+    {
+        return QString("NA");
     }
 }
 

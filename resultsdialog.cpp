@@ -59,35 +59,6 @@ void ResultsDialog::ImportDataAndShow(bool tripLogNormal, QString metric)
 
     QList<int> skipList;
 
-    //skipList << 2 << 9 << 37;
-
-    /*
-    // Done
-    if (!cbRMSE)
-    {
-        //skipList << 3 << 12 << 21 << 30 << 37 << 45;
-        skipList << 3 << 11 << 19 << 27 << 35 << 43;
-    }
-
-    if (!cbBIC)
-    {
-        //skipList << 4 << 13 << 22 << 31 << 38 << 46;
-        skipList << 4 << 12 << 20 << 28 << 36 << 44;
-    }
-
-    if (!cbAIC)
-    {
-        //skipList << 5 << 14 << 23 << 32 << 39 << 47;
-        skipList << 5 << 13 << 21 << 29 << 37 << 45;
-    }
-
-    if (!cbBF)
-    {
-        //skipList << 6 << 15 << 24 << 33 << 40 << 48;
-        skipList << 6 << 14 << 22 << 30 << 38 << 46;
-    }
-    */
-
     QStringList columnList;
 
     // 0
