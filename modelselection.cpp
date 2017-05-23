@@ -291,7 +291,30 @@ double ScaleFactor(double modelBic, double noiseBic)
 
 QString ModelSelection::formatStringResult(int value)
 {
-    return QString("NA");
+    if (value == -7)
+    {
+        return QString("gradient verification failed");
+
+    }
+    else if (value == 2)
+    {
+        return QString("Success: relative step is no more than EpsX");
+
+    }
+    else if (value == 5)
+    {
+        return QString("MaxIts steps was taken");
+
+    }
+    else if (value == 7)
+    {
+        return QString("stopping conditions are too stringent, further improvement is impossible");
+
+    }
+    else
+    {
+        return QString("No notes supplied");
+    }
 }
 
 void ModelSelection::PrepareProbabilities()
