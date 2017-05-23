@@ -119,8 +119,7 @@ void DiscountingModelSelectionED50Dialog::on_pushButton_clicked()
 
     SheetWidget *temp = qobject_cast <SheetWidget *>(parent());
     temp->Calculate("DiscountingED50Computation.R", topDelay, leftDelay, bottomDelay, rightDelay, topValue, leftValue, bottomValue, rightValue, maxValue,
-                    ui->checkBoxBIC->isChecked(), ui->checkBoxAIC->isChecked(), ui->checkBoxRMSE->isChecked(),
-                    ui->checkBoxBF->isChecked(), ui->checkBoxRachlin->isChecked(),
+                    ui->checkBoxRachlin->isChecked(),
                     ui->checkBoxExponential->isChecked(), ui->checkBoxHyperbolic->isChecked(), ui->checkBoxQuasiHyperbolic->isChecked(),
                     ui->checkBoxMyersonHyperboloid->isChecked(), ui->checkBoxRachlinHyperboloid->isChecked(),
                     ui->displayPlotFigures->isChecked(),

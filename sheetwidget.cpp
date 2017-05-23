@@ -1178,15 +1178,11 @@ void SheetWidget::Calculate(QString scriptName,
                             int topDelay, int leftDelay, int bottomDelay, int rightDelay,
                             int topValue, int leftValue, int bottomValue, int rightValue,
                             double maxValue,
-                            bool cbBIC, bool cbAIC, bool cbRMSE, bool cbBF, bool cbRachlin,
+                            bool cbRachlin,
                             bool modelExponential, bool modelHyperbolic, bool modelQuasiHyperbolic, bool modelMyersonGreen, bool modelRachlin,
                             bool showCharts, bool logNormalParameters)
 {
 
-    tripAIC = cbAIC;
-    tripBIC = cbBIC;
-    tripBF = cbBF;
-    tripRMSE = cbRMSE;
     tripLogNormal = logNormalParameters;
 
     if (discountingAreaDialog->isVisible())
