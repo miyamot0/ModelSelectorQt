@@ -28,10 +28,10 @@
      <widget class="QWidget" name="scrollAreaWidgetContents">
       <property name="geometry">
        <rect>
-        <x>32</x>
-        <y>0</y>
-        <width>352</width>
-        <height>977</height>
+        <x>44</x>
+        <y>-236</y>
+        <width>328</width>
+        <height>661</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -104,7 +104,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The program says R isn't installed?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The program doesn't provide any results?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -114,7 +114,7 @@
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The program queries the registry (or bash) to see if the R program is installed. This will tell the program where to find your installed version of R. You need to manually install R prior to starting this program, and let R know where to keep your installed packages. Starting this program without R will pretty much prevent all functionality.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The program submits data from a core module and occasionally references some files on your hard drive when performing work. If you have an error, re-installing the program would likely be the most reliably way to fix this issue (e.g., missing file).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -124,7 +124,7 @@
        <item>
         <widget class="QLabel" name="label_4">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;When first loading up, a window asks me about using a 'Personal Library'?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;My results don't look like I would expect them to?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -134,7 +134,7 @@
        <item>
         <widget class="QLabel" name="label_5">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is R asking where to install packages to.  If you didn't install R as an administrator, R isn't going to be able to write to the Program Files location. This isn't a major deal, if you select 'Yes' to using a personal library, R will use a folder in 'My Documents' to the same end.  Either way works, as long as one of them can be installed to.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This program fits and works with models on the log scale. This a relatively trivial manipulation--its largely to help the curve fitting methods work with a relatively &amp;quot;straighter&amp;quot; and more predictable function. You can, at your leisure, have the returned outputs presented in the log-normal scale if so desired.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -144,7 +144,7 @@
        <item>
         <widget class="QLabel" name="label_6">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Items on the startup window are still colored red?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Why are there so many models to pick from?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -154,7 +154,7 @@
        <item>
         <widget class="QLabel" name="label_7">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The program will talk to R to check that it has the packages it needs to run. The DMS will install these packages at the outset, so that future use will not need the internet for anything except to update.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This program will attempt to fit a range of models to the data. Using the Bayesian Information Criteria (BIC), we can mathematically approximate the probability of a &amp;quot;true&amp;quot; model for that data.  It is recommended that you fit as many of the models as possible, to offer the most informed probability.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -164,7 +164,7 @@
        <item>
         <widget class="QLabel" name="label_8">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;I get an error in the output?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Why isn't Rachlin bounded between 0-1 by default?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -174,27 +174,7 @@
        <item>
         <widget class="QLabel" name="label_9">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The DMS operates in a general fashion with R.  There are literally hundreds of R versions out there and depending your particular version, there may be variability in how it behaves. Generally, you should attempt to re-start the program so that it has a chance to fetch the needed packages.  If this doesn't help, email shawn(dot)gilroy(at)temple(dot)edu your specific log.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_11">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;My data is highlighted in yellow?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_10">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The model selection procedures work in a relative fashion-- All models are compared against one another.  In this way, there isn't a 'wrong' model but simply models that are more favorable than others. Data characterized according to the 'Noise Model' are series that don't appear to fit typical models and does not appear systematic. These series are highlighted so that users may orient to the data and inspect before drawing conclusions from other model parameters.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The DMS uses the BIC to approximate model probabilities.  The BIC has certain assumptions that must be met and the Rachlin Hyperboloid exists at the boundary of the Mazur Hyperbola when S = 1.  When S = 1, the Rachlin model reduces to the Mazur model and this violates the assumptions underlying model selection (with BIC). You may, at your leisure, have the program drop the Rachlin model from consideration when S &amp;gt;= 1.  Used in this way, assumptions are met and instances where the Rachlin Hyperboloid optimized with S &amp;gt;= 1 are not considered desired results.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
