@@ -85,10 +85,6 @@
 #include "resultsdialog.h"
 #include "chartwindow.h"
 
-#include "fitworker.h"
-
-#include "graphicaloutputdialog.h"
-
 #include "licensedialog.h"
 #include "creditsdialog.h"
 #include "aboutdialog.h"
@@ -202,10 +198,7 @@ private:
     CreditsDialog *creditsDialog;
 
     ResultsDialog *resultsDialog;
-    GraphicalOutputDialog *graphicalOutputDialog;
     ChartWindow *graphicsWindow;
-
-
 
     bool tripAIC;
     bool tripBIC;

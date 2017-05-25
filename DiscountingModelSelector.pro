@@ -44,13 +44,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
     sheetselectdialog.cpp \
     resultsdialog.cpp \
-    fitworker.cpp \
     sheetwidget.cpp \
-    graphicaloutputdialog.cpp \
     licensedialog.cpp \
     aboutdialog.cpp \
     creditsdialog.cpp \
-    rworker.cpp \
     discountingmodelselectioned50dialog.cpp \
     discountingmodelselectionareadialog.cpp \
     Libraries/alglib-3.11.0/src/alglibinternal.cpp \
@@ -72,13 +69,10 @@ SOURCES += main.cpp\
 HEADERS  += \
     sheetselectdialog.h \
     resultsdialog.h \
-    fitworker.h \
     sheetwidget.h \
-    graphicaloutputdialog.h \
     licensedialog.h \
     aboutdialog.h \
     creditsdialog.h \
-    rworker.h \
     discountingmodelselectioned50dialog.h \
     discountingmodelselectionareadialog.h \
     Libraries/alglib-3.11.0/src/alglibinternal.h \
@@ -101,7 +95,6 @@ HEADERS  += \
 FORMS    += \
     sheetselectdialog.ui \
     resultsdialog.ui \
-    graphicaloutputdialog.ui \
     licensedialog.ui \
     aboutdialog.ui \
     creditsdialog.ui \
