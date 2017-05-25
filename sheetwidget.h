@@ -83,6 +83,7 @@
 #include "modelselection.h"
 
 #include "resultsdialog.h"
+#include "chartwindow.h"
 
 #include "fitworker.h"
 
@@ -116,6 +117,8 @@ public slots:
     void paste();
     void pasteInverted();
     void clear();
+
+    void checkUpdatesAction();
 
     void openRecentFile();
 
@@ -162,6 +165,7 @@ private:
     QAction *newSheetAction;
     QAction *openSheetAction;
     QAction *saveSheetAction;
+    QAction *updateProgramAction;
     QAction *exitSheetAction;
 
     QAction *cutAction;
@@ -199,6 +203,9 @@ private:
 
     ResultsDialog *resultsDialog;
     GraphicalOutputDialog *graphicalOutputDialog;
+    ChartWindow *graphicsWindow;
+
+
 
     bool tripAIC;
     bool tripBIC;

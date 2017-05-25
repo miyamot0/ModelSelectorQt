@@ -27,9 +27,11 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QDialog>
-#include <QSvgWidget>
 #include <QFile>
 #include <QTextStream>
+#include <QtCharts>
+
+#include "modelselection.h"
 
 namespace Ui {
 class GraphicalOutputDialog;
@@ -44,13 +46,17 @@ public:
      * @brief GraphicalOutputDialog
      * @param parent
      */
-    explicit GraphicalOutputDialog(QWidget *parent = 0);
+    explicit GraphicalOutputDialog(QList<QStringList> mData, QWidget *parent = 0);
 
     /** Method for adding base64 strings to list
      * @brief appendBase64
      * @param chartData - Base data
      */
     void appendBase64(QString chartData);
+    void displayChart();
+    void plotSeries(QString model);
+
+    double exponential_plotting(double k, double x);
 
     bool eventFilter(QObject *object, QEvent *e);
 
@@ -59,20 +65,10 @@ public:
     ~GraphicalOutputDialog();
 
 private slots:
-    /** UI behavior slot
-     * @brief on_NextButton_clicked
-     */
     void on_NextButton_clicked();
-
-    /** UI behavior slot
-     * @brief on_PreviousButton_clicked
-     */
     void on_PreviousButton_clicked();
-
-    /** UI update slot, with current plot
-     * @brief displayPlot
-     */
     void displayPlot();
+    //void plotSeries(QString model);
 
     void contextMenuRequested(const QPoint& point);
 
@@ -83,13 +79,15 @@ private slots:
 private:
     Ui::GraphicalOutputDialog *ui;
 
+    QChart *chart;
+    QValueAxis *axisX;
+    QValueAxis *axisY;
+
     QString chartString;
 
     QImage img;
 
     int currentIndexShown;
-
-    QSvgWidget *mSVG;
 
     QMenu *dialogMenu;
     QAction *savePNG;

@@ -71,9 +71,11 @@
 #include <QtWidgets>
 #include <QtXlsx>
 #include <QTableWidgetItem>
+#include <QtCharts>
 
 #include "sheetwidget.h"
 #include "resultsdialog.h"
+#include "chartwindow.h"
 
 QTXLSX_USE_NAMESPACE
 
@@ -107,7 +109,7 @@ SheetWidget::SheetWidget(QWidget *parent) : QMainWindow(parent)
     buildMenus();
     setCentralWidget(table);
 
-    setWindowTitle("Discounting Model Selector v 1.0.0.0");
+    setWindowTitle("Discounting Model Selector v" + QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD));
 
     this->layout()->setSizeConstraint(QLayout::SetNoConstraint);
 
@@ -149,6 +151,10 @@ void SheetWidget::buildMenus()
     saveSheetAction->setShortcut(QKeySequence("Ctrl+S"));
     saveSheetAction->setIcon(QIcon(":/images/document-save.png"));
     connect(saveSheetAction, &QAction::triggered, this, &SheetWidget::showSaveFileDialog);
+
+    updateProgramAction = new QAction("C&heck Updates", this);
+    updateProgramAction->setIcon(QIcon(":/images/view-refresh.png"));
+    connect(updateProgramAction, &QAction::triggered, this, &SheetWidget::checkUpdatesAction);
 
     exitSheetAction = new QAction("E&xit", this);
     exitSheetAction->setShortcut(QKeySequence("Ctrl+Q"));
@@ -267,7 +273,8 @@ void SheetWidget::buildMenus()
     }
 
     sheetOptionsMenu->addSeparator();
-
+    sheetOptionsMenu->addAction(updateProgramAction);
+    sheetOptionsMenu->addSeparator();
     sheetOptionsMenu->addAction(exitSheetAction);
 
     updateRecentFileActions();
@@ -317,6 +324,32 @@ void SheetWidget::buildMenus()
 
     addAction(clearAction);
     setContextMenuPolicy(Qt::ActionsContextMenu);
+}
+
+void SheetWidget::checkUpdatesAction()
+{
+    QString mCommand = "";
+
+#ifdef _WIN32
+    mCommand = "maintenancetool.exe";
+#elif TARGET_OS_MAC
+    QDir mDir = QDir(QCoreApplication::applicationDirPath());
+    mDir.cdUp();
+    mDir.cdUp();
+    mDir.cdUp();
+
+    mCommand = QDir::cleanPath(mDir.path() + QDir::separator() + "maintenancetool.app");
+#endif
+
+    if (QFile::exists(mCommand))
+    {
+        QProcess p;
+        QStringList args;
+        args << "--updater";
+        p.start(mCommand, args);
+        p.waitForStarted();
+        p.waitForFinished(-1);
+    }
 }
 
 void SheetWidget::clearSheet()
@@ -1334,6 +1367,9 @@ void SheetWidget::Calculate(QString scriptName,
 
         resultsList << model;
 
+        resultsList << delayPointsTemp.join(",");
+        resultsList << valuePoints.join(",");
+
         if (scriptName.contains("DiscountingAreaComputation.R", Qt::CaseInsensitive))
         {
             resultsList << mObj->getAUCBestModel(model);
@@ -1346,14 +1382,22 @@ void SheetWidget::Calculate(QString scriptName,
         allResults.append(resultsList);
     }
 
-    /*
-
     if (displayFigures)
     {
-        graphicalOutputDialog->show();
-    }
+        statusBar()->showMessage("Drawing figures...", 3000);
 
-    */
+        if (discountingAreaDialog->isVisible())
+        {
+            graphicsWindow = new ChartWindow(allResults, true, this);
+
+        }
+        else if (discountingED50Dialog->isVisible())
+        {
+            graphicsWindow = new ChartWindow(allResults, false, this);
+        }
+
+        graphicsWindow->show();
+    }
 
     if (discountingAreaDialog->isVisible())
     {

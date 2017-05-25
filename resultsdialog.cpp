@@ -152,6 +152,8 @@ void ResultsDialog::ImportDataAndShow(bool tripLogNormal, QString metric)
     columnList << "noise.prob";
 
     columnList << "probmodel";
+    columnList << "delays";
+    columnList << "values";
     columnList << metric;
 
     // Create columns

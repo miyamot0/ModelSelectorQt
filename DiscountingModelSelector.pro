@@ -17,14 +17,14 @@
 #-------------------------------------------------
 
 VERSION_MAJOR = 1
-VERSION_MINOR = 0
+VERSION_MINOR = 1
 VERSION_BUILD = 1
 
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
        "VERSION_MINOR=$$VERSION_MINOR"\
        "VERSION_BUILD=$$VERSION_BUILD"
 
-QT += core gui widgets xlsx
+QT += core gui widgets xlsx charts
 
 TARGET = DiscountingModelSelector
 
@@ -66,7 +66,8 @@ SOURCES += main.cpp\
     Libraries/alglib-3.11.0/src/solvers.cpp \
     Libraries/alglib-3.11.0/src/specialfunctions.cpp \
     Libraries/alglib-3.11.0/src/statistics.cpp \
-    modelselection.cpp
+    modelselection.cpp \
+    chartwindow.cpp
 
 HEADERS  += \
     sheetselectdialog.h \
@@ -94,7 +95,8 @@ HEADERS  += \
     Libraries/alglib-3.11.0/src/specialfunctions.h \
     Libraries/alglib-3.11.0/src/statistics.h \
     Libraries/alglib-3.11.0/src/stdafx.h \
-    modelselection.h
+    modelselection.h \
+    chartwindow.h
 
 FORMS    += \
     sheetselectdialog.ui \
@@ -124,6 +126,7 @@ win32 {
 
     INSTALLS += DMS_FILES
 }
+
 macx {
     DMS_FILES.files = License_BDS.txt \
                     License_gnome_icons.txt \
