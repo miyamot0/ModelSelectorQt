@@ -55,10 +55,17 @@ ChartWindow::ChartWindow(QList<QStringList> stringList, bool isAUC, QWidget *par
     QFont mTitle("Serif", 14, -1, false);
     chart->setTitleFont(mTitle);
 
+    auto mLegend = chart->legend();
+
+    QFont mLegendFont("Serif", 10, -1, false);
+    mLegend->setFont(mLegendFont);
+    mLegend->setAlignment(Qt::AlignBottom);
+
     axisX = new QLogValueAxis;
     axisX->setGridLineColor(Qt::transparent);
     axisX->setTitleText("Delay");
     axisX->setBase(10);
+    axisX->setLabelsFont(mLegendFont);
     axisX->setLinePenColor(Qt::black);
     axisX->setLinePen(QPen(Qt::black));
 
@@ -66,6 +73,7 @@ ChartWindow::ChartWindow(QList<QStringList> stringList, bool isAUC, QWidget *par
     axisY->setGridLineColor(Qt::transparent);
     axisY->setTitleText("Value");
     axisY->setTickCount(5);
+    axisY->setLabelsFont(mLegendFont);
     axisY->setMin(0);
     axisY->setMax(1);
     axisY->setLinePenColor(Qt::black);
@@ -105,7 +113,7 @@ ChartWindow::ChartWindow(QList<QStringList> stringList, bool isAUC, QWidget *par
     tb->addAction(nextAction);
 
     windowLayout->setMenuBar(tb);
-    resize(500, 500);
+    resize(650, 650);
     setCentralWidget(window);
 
     setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -176,6 +184,8 @@ void ChartWindow::buildAUCPlot()
 
     chart->setAxisX(axisX, empiricalSeries);
     chart->setAxisY(axisY, empiricalSeries);
+
+    installEventFilter(this);
 }
 
 void ChartWindow::buildED50Plot()
@@ -512,13 +522,20 @@ double ChartWindow::rachlin_plotting(double k, double s, double x)
 
 bool ChartWindow::eventFilter(QObject *object, QEvent *e)
 {
-    if (e->type() == QEvent::KeyPress)
+    if (e->type() == QEvent::ShortcutOverride)
     {
-        //QKeyEvent *keyEvent = static_cast<QKeyEvent *>(e);
-        //qDebug() << keyEvent;
-        //QKeyEvent *keyEvent = static_cast<QKeyEvent *>(e);
-        //std::cout << event->key() << "\n";
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(e);
+
+        if (keyEvent->key() == Qt::Key::Key_Left)
+        {
+            on_PreviousButton_clicked();
+        }
+        else if (keyEvent->key() == Qt::Key::Key_Right)
+        {
+            on_NextButton_clicked();
+        }
     }
+
     return false;
 }
 
@@ -526,11 +543,10 @@ void ChartWindow::saveSVGasPNG()
 {
     QString file_name;
     QString fileFilter = "PNG (*.png)";
-    /*
 
 #ifdef _WIN32
 
-        file_name = QFileDialog::getSaveFileName(this, "Open spreadsheet file", QDir::homePath(),
+        file_name = QFileDialog::getSaveFileName(this, "Save PNG", QDir::homePath(),
                                          fileFilter);
 
 #elif TARGET_OS_MAC
@@ -547,16 +563,8 @@ void ChartWindow::saveSVGasPNG()
 
     if(!file_name.trimmed().isEmpty())
     {
-        QSvgRenderer *renderer = mSVG->renderer();
-        QImage image(600, 600, QImage::Format_RGB32);
-        QPainter painter;
-        painter.begin(&image);
-        renderer->render(&painter);
-        painter.end();
-        image.save(file_name, "PNG", 9);
+        chartView->grab().save(file_name, "PNG", 9);
     }
-        */
-
 }
 
 void ChartWindow::on_NextButton_clicked()
