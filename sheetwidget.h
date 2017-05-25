@@ -77,14 +77,13 @@
 #include <QTableWidget>
 #include <QtGui>
 
+#include "modelselection.h"
+
 #include "sheetselectdialog.h"
 #include "discountingmodelselectioned50dialog.h"
 #include "discountingmodelselectionareadialog.h"
-#include "modelselection.h"
-
 #include "resultsdialog.h"
 #include "chartwindow.h"
-
 #include "licensedialog.h"
 #include "creditsdialog.h"
 #include "aboutdialog.h"
@@ -97,7 +96,6 @@ public:
     SheetWidget(QWidget *parent = 0);
 
     void convertExcelColumn(QString &mString, int column);
-    QString convert_bool(bool value);
 
     QList<QStringList> allResults;
     QList<QStringList> allCharts;

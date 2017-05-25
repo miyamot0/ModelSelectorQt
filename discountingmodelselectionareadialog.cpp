@@ -118,7 +118,7 @@ void DiscountingModelSelectionAreaDialog::on_pushButton_clicked()
     }
 
     SheetWidget *temp = qobject_cast <SheetWidget *>(parent());
-    temp->Calculate("DiscountingAreaComputation.R", topDelay, leftDelay, bottomDelay, rightDelay, topValue, leftValue, bottomValue, rightValue, maxValue,
+    temp->Calculate("Area", topDelay, leftDelay, bottomDelay, rightDelay, topValue, leftValue, bottomValue, rightValue, maxValue,
                     ui->checkBoxRachlin->isChecked(),
                     ui->checkBoxExponential->isChecked(), ui->checkBoxHyperbolic->isChecked(), ui->checkBoxQuasiHyperbolic->isChecked(),
                     ui->checkBoxMyersonHyperboloid->isChecked(), ui->checkBoxRachlinHyperboloid->isChecked(),

@@ -405,6 +405,12 @@ void SheetWidget::closeEvent(QCloseEvent* event)
         event->ignore();
     } else {
         saveSettings();
+
+        if (graphicsWindow->isVisible())
+        {
+            graphicsWindow->close();
+        }
+
         event->accept();
     }
 }
@@ -650,35 +656,6 @@ void SheetWidget::showSaveFileDialog()
 
 void SheetWidget::showDiscountingAreaWindow()
 {
-    /*
-    if (!isCoreRPresent)
-    {
-        QMessageBox rMessageBox;
-        rMessageBox.setWindowTitle("Please install/setup up");
-        rMessageBox.setTextFormat(Qt::RichText);
-        rMessageBox.setText("<p>The R program was not found on your machine (at least within the normal path). If installed already, please add the binary to your path. If not yet installed, you can download the R program from this location:<br/><br/> <a href='https://www.r-project.org//'>The R Project</a><p>");
-        rMessageBox.setStandardButtons(QMessageBox::Ok);
-        rMessageBox.exec();
-
-        return;
-    }
-
-    if (!isCoreSVGSupportPresent)
-    {
-        QMessageBox rMessageBox;
-        rMessageBox.setWindowTitle("Please install/setup xQuartz");
-        rMessageBox.setTextFormat(Qt::RichText);
-        rMessageBox.setText("<p>The R program uses xQuartz on OSX to to generate high quality images. This was not found "
-                            "on your machine (at least within the normal path). If not yet installed, you "
-                            "can download and install xQuartz from this location:<br/><br/> <a href='https://www.xquartz.org/'>"
-                            "The xQuartz Project</a><p>");
-        rMessageBox.setStandardButtons(QMessageBox::Ok);
-        rMessageBox.exec();
-
-        return;
-    }
-    */
-
     if (isToolWindowShown())
     {
         return;
@@ -686,41 +663,11 @@ void SheetWidget::showDiscountingAreaWindow()
 
     discountingAreaDialog = new DiscountingModelSelectionAreaDialog(this);
     discountingAreaDialog->setModal(false);
-
     discountingAreaDialog->show();
 }
 
 void SheetWidget::showDiscountingED50Window()
 {
-    /*
-    if (!isCoreRPresent)
-    {
-        QMessageBox rMessageBox;
-        rMessageBox.setWindowTitle("Please install/setup up");
-        rMessageBox.setTextFormat(Qt::RichText);
-        rMessageBox.setText("<p>The R program was not found on your machine (at least within the normal path). If installed already, please add the binary to your path. If not yet installed, you can download the R program from this location:<br/><br/> <a href='https://www.r-project.org//'>The R Project</a><p>");
-        rMessageBox.setStandardButtons(QMessageBox::Ok);
-        rMessageBox.exec();
-
-        return;
-    }
-
-    if (!isCoreSVGSupportPresent)
-    {
-        QMessageBox rMessageBox;
-        rMessageBox.setWindowTitle("Please install/setup xQuartz");
-        rMessageBox.setTextFormat(Qt::RichText);
-        rMessageBox.setText("<p>The R program uses xQuartz on OSX to to generate high quality images. This was not found "
-                            "on your machine (at least within the normal path). If not yet installed, you "
-                            "can download and install xQuartz from this location:<br/><br/> <a href='https://www.xquartz.org/'>"
-                            "The xQuartz Project</a><p>");
-        rMessageBox.setStandardButtons(QMessageBox::Ok);
-        rMessageBox.exec();
-
-        return;
-    }
-    */
-
     if (isToolWindowShown())
     {
         return;
@@ -728,7 +675,6 @@ void SheetWidget::showDiscountingED50Window()
 
     discountingED50Dialog = new DiscountingModelSelectionED50Dialog(this);
     discountingED50Dialog->setModal(false);
-
     discountingED50Dialog->show();
 }
 
@@ -1419,7 +1365,7 @@ void SheetWidget::Calculate(QString scriptName,
         resultsList << delayPointsTemp.join(",");
         resultsList << valuePoints.join(",");
 
-        if (scriptName.contains("DiscountingAreaComputation.R", Qt::CaseInsensitive))
+        if (scriptName.contains("Area", Qt::CaseInsensitive))
         {
             resultsList << mObj->getAUCBestModel(model);
         }
@@ -1671,11 +1617,6 @@ void SheetWidget::areValuePointsValid(QStringList &valuePoints, QStringList &tem
 /** Utilities
  * @brief
  */
-
-QString SheetWidget::convert_bool(bool value)
-{
-    return (value) ? QString("1") : QString("0");
-}
 
 QString SheetWidget::strippedName(const QString &fullFileName)
 {
