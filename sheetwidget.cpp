@@ -104,9 +104,9 @@ QTXLSX_USE_NAMESPACE
 struct QPairSecondComparer
 {
     template<typename T1, typename T2>
-    bool operator()(const QPair<T1,T2> & a, const QPair<T1,T2> & b) const
+    bool operator()(const QPair<T1,T2> &one, const QPair<T1,T2> &two) const
     {
-        return a.second > b.second;
+        return one.second > two.second;
     }
 };
 
@@ -236,6 +236,10 @@ void SheetWidget::buildMenus()
     openLicenseDMS->setIcon(QIcon(":/images/text-x-generic.png"));
     connect(openLicenseDMS, &QAction::triggered, this, &SheetWidget::showDMSLicenseWindow);
 
+    openLicenseALGLIB = new QAction("ALGLIB License (GPL-V3)", this);
+    openLicenseALGLIB->setIcon(QIcon(":/images/text-x-generic.png"));
+    connect(openLicenseALGLIB, &QAction::triggered, this, &SheetWidget::showALGLIBLicenseWindow);
+
     openLicenseBDS = new QAction("BDS License (GPL-V3)", this);
     openLicenseBDS->setIcon(QIcon(":/images/text-x-generic.png"));
     connect(openLicenseBDS, &QAction::triggered, this, &SheetWidget::showBDSLicenseWindow);
@@ -314,6 +318,7 @@ void SheetWidget::buildMenus()
     sheetCalculationsMenu->addAction(openDiscountingED50Window);
 
     QMenu *sheetLicensesMenu = menuBar()->addMenu(tr("&Licenses"));
+    sheetLicensesMenu->addAction(openLicenseALGLIB);
     sheetLicensesMenu->addAction(openLicenseDMS);
     sheetLicensesMenu->addAction(openLicenseBDS);
     sheetLicensesMenu->addAction(openLicenseQt);
@@ -740,6 +745,28 @@ void SheetWidget::showDMSLicenseWindow()
             mFilePath = runDirectory.path() + "/";
 
             mFilePath = mFilePath + "COPYING";
+
+    #endif
+
+    licenseDialog = new LicenseDialog(mFilePath, this);
+    licenseDialog->setWindowTitle("DMS License (GPL-V3)");
+    licenseDialog->setModal(true);
+    licenseDialog->show();
+}
+
+void SheetWidget::showALGLIBLicenseWindow()
+{
+    QString mFilePath = "";
+
+    #ifdef _WIN32
+            mFilePath = "License_ALGLIB.txt";
+    #elif TARGET_OS_MAC
+            QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
+            runDirectory.cdUp();
+            runDirectory.cd("Resources");
+            mFilePath = runDirectory.path() + "/";
+
+            mFilePath = mFilePath + "License_ALGLIB.txt";
 
     #endif
 

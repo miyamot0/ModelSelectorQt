@@ -136,6 +136,7 @@ public slots:
     void showCreditsWindow();
     void showFAQWindow();
 
+    void showALGLIBLicenseWindow();
     void showDMSLicenseWindow();
     void showBDSLicenseWindow();
     void showQTLicenseWindow();
@@ -175,6 +176,7 @@ private:
 
     QAction *openLicenseDMS;
     QAction *openLicenseBDS;
+    QAction *openLicenseALGLIB;
     QAction *openLicenseQt;
     QAction *openLicenseGnome;
 

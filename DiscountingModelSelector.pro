@@ -110,6 +110,7 @@ win32 {
     DMS_FILES.files = License_BDS.txt \
                     License_gnome_icons.txt \
                     License_Qt.txt \
+                    License_ALGLIB.txt \
                     COPYING
 
     release: DESTDIR = $$OUT_PWD/build/release
@@ -124,6 +125,7 @@ macx {
     DMS_FILES.files = License_BDS.txt \
                     License_gnome_icons.txt \
                     License_Qt.txt \
+                    License_ALGLIB.txt \
                     COPYING
 
     DMS_FILES.path = Contents/Resources
@@ -136,4 +138,5 @@ DISTFILES += \
     COPYING \
     License_BDS.txt \
     License_Qt.txt \
-    License_gnome_icons.txt
+    License_gnome_icons.txt \
+    License_ALGLIB.txt
