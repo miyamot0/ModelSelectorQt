@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>412</width>
     <height>523</height>
    </rect>
   </property>
@@ -16,6 +16,12 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QScrollArea" name="scrollArea">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -26,9 +32,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-204</y>
-        <width>363</width>
-        <height>678</height>
+        <y>-163</y>
+        <width>375</width>
+        <height>652</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -77,9 +83,9 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The &lt;span style=&quot; font-weight:600;&quot;&gt;Discounting Model Selection&lt;/span&gt; procedure is an implementation of earlier work by Chris Franck et al., 2015 and was designed to aid in the selection of temporal discounting models. This work utilized the Bayesian Information Criterion as a metric for comparing between fitted discounting models.&lt;/p&gt;&lt;p&gt;The &lt;a href=&quot;http://www.smallnstats.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Small n Stats&lt;/span&gt;&lt;/a&gt; project references an on-going endeavor to expand upon the tools available to researchers and practitioners in the behavioral sciences. Small n Stats is developed and maintained by Shawn P. Gilroy.&lt;/p&gt;&lt;p&gt;A link to the original Franck et al., 2015 work is included in the credits and acknowledgment section below:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Source Code Licenses:&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Qt Framework (5.8) - LGPL 3.0 (GPL 3.0 Licensed). Copyright (C). Qt Team &lt;a href=&quot;https://www.qt.io/&quot;&gt;Site&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Qt Examples (Spreadsheet, Recent Files) - BSD-3 Clause. Copyright (C). Qt Team &lt;a href=&quot;https://www.qt.io/&quot;&gt;Site&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot; font-family:'Arial'; color:#000000;&quot;&gt;ALGLIB (3.11.0) - GPLv3 Licensed. Copyright 1994-2017 ALGLIB Project. &lt;a href=&quot;www.alglib.net&quot;&gt;Site&lt;/a&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style=&quot; font-family:'Arial'; color:#000000;&quot;&gt;ALGLIB (3.11.0) - GPLv3 Licensed. Copyright 1994-2017 ALGLIB Project. &lt;a href=&quot;www.alglib.net&quot;&gt;Site&lt;/a&gt;&lt;/span&gt;&lt;/p&gt; 
 &lt;p&gt;Gnome icons - GPLv3 Licensed. Copyright (C) &amp;quot;GNOME Project&amp;quot; &lt;a href=&quot;http://www.gnome.org&quot;&gt;Site&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;BDS R Script - GPLv2+ (GPL 3.0 Licensed). Copyright (c) 2016, Dr. Chris Franck, Virginia Tech - Department of Statistics.&lt;a href=&quot;www.github.com/miyamot0&quot;&gt;Github&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;BDS R Script - GPLv2+ (GPL 3.0 Licensed). Copyright (c) 2016, Dr. Chris Franck, Virginia Tech - Department of Statistics. &lt;a href=&quot;www.github.com/miyamot0&quot;&gt;Github&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Credits and Acknowledgements:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://onlinelibrary.wiley.com/doi/10.1002/jeab.128/abstract&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;• Franck, C. T., Koffarnus, M. N., House, L. L., Bickel, W. (2015). Accurate characterization of delay discounting: A multiple model approach using approximate bayesian model selection and a unified discounting measure, Journal of the Experimental Analysis of Behavior, 103, 218-233. &lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
