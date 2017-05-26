@@ -17,8 +17,8 @@
 #-------------------------------------------------
 
 VERSION_MAJOR = 1
-VERSION_MINOR = 1
-VERSION_BUILD = 1
+VERSION_MINOR = 2
+VERSION_BUILD = 0
 
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
        "VERSION_MINOR=$$VERSION_MINOR"\

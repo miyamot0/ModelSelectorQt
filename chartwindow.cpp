@@ -113,8 +113,8 @@ ChartWindow::ChartWindow(QList<QStringList> stringList, bool isAUC, QWidget *par
     tb->addAction(nextAction);
 
     windowLayout->setMenuBar(tb);
-    resize(650, 650);
     setCentralWidget(window);
+    resize(800, 600);
 
     setWindowFlags(Qt::WindowStaysOnTopHint);
 }
@@ -250,14 +250,7 @@ void ChartWindow::buildED50Plot()
 void ChartWindow::plotAUCSeries(int index)
 {
     mList = mDisplayData.at(index);
-
-    QString title;
-    title.append("Participant #");
-    title.append(QString::number(currentIndexShown + 1));
-    title.append(" (");
-    title.append(mList[45]);
-    title.append(")");
-    chart->setTitle(title);
+    chart->setTitle(QString("Participant #%1: %2 AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(mList[45]).arg(mList[48]));
 
     expSeries->clear();
     hypSeries->clear();
@@ -391,21 +384,20 @@ void ChartWindow::plotAUCSeries(int index)
 void ChartWindow::plotED50Series(int index)
 {
     mList = mDisplayData.at(index);
-
-    QString title;
-    title.append("Participant #");
-    title.append(QString::number(currentIndexShown + 1));
-    title.append(" (");
-    title.append(mList[45]);
-    title.append(")");
-    chart->setTitle(title);
+    chart->setTitle(QString("Participant #%1: %2 ED50 = %3").arg(QString::number(currentIndexShown + 1)).arg(mList[45]).arg(mList[48]));
 
     expSeries->clear();
+    //expSeries->setName(QString("Exponential<br>(%1)").arg(mList[13]));
     hypSeries->clear();
+    //hypSeries->setName(QString("Hyperbolic<br>(%1)").arg(mList[6]));
     quasiSeries->clear();
+    //quasiSeries->setName(QString("Beta Delta<br>(%1)").arg(mList[21]));
     myerSeries->clear();
+    //myerSeries->setName(QString("Myerson<br>(%1)").arg(mList[29]));
     rachSeries->clear();
+    //rachSeries->setName(QString("Rachlin<br>(%1)").arg(mList[37]));
     noiseSeries->clear();
+    //noiseSeries->setName(QString("Noise<br>(%1)").arg(mList[44]));
     dataPoints->clear();
 
     expK = mList[8].toDouble(&expCheck);

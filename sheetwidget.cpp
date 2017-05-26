@@ -814,6 +814,11 @@ void SheetWidget::cut()
 
 void SheetWidget::copy()
 {
+    if (table->selectedItems().count() < 1)
+    {
+        return;
+    }
+
     QList<QTableWidgetSelectionRange> range = table->selectedRanges();
     QTableWidgetSelectionRange mRange = range.first();
 
@@ -925,6 +930,12 @@ void SheetWidget::pasteInverted()
 
 void SheetWidget::clear()
 {
+    if (table->selectedItems().count() < 1)
+    {
+        return;
+    }
+
+
     foreach (QTableWidgetItem *i, table->selectedItems())
     {
         i->setText("");
