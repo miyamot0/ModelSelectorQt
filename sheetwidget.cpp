@@ -405,12 +405,6 @@ void SheetWidget::closeEvent(QCloseEvent* event)
         event->ignore();
     } else {
         saveSettings();
-
-        if (graphicsWindow->isVisible())
-        {
-            graphicsWindow->close();
-        }
-
         event->accept();
     }
 }
@@ -934,7 +928,6 @@ void SheetWidget::clear()
     {
         return;
     }
-
 
     foreach (QTableWidgetItem *i, table->selectedItems())
     {
