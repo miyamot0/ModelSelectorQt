@@ -384,7 +384,7 @@ void ChartWindow::plotAUCSeries(int index)
 void ChartWindow::plotED50Series(int index)
 {
     mList = mDisplayData.at(index);
-    chart->setTitle(QString("Participant #%1: %2 ED50 = %3").arg(QString::number(currentIndexShown + 1)).arg(mList[45]).arg(mList[48]));
+    chart->setTitle(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(mList[45]).arg(mList[48]));
 
     expSeries->clear();
     //expSeries->setName(QString("Exponential<br>(%1)").arg(mList[13]));
