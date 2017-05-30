@@ -125,6 +125,8 @@ win32 {
 }
 
 macx {
+    INCLUDEPATH += Libraries/alglib-3.11.0/src
+
     DMS_FILES.files = License_BDS.txt \
                     License_gnome_icons.txt \
                     License_Qt.txt \
