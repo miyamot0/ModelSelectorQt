@@ -16,13 +16,19 @@
 #
 #-------------------------------------------------
 
+TEST_FEATURES = 0
+
 VERSION_MAJOR = 1
 VERSION_MINOR = 2
 VERSION_BUILD = 1
 
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
        "VERSION_MINOR=$$VERSION_MINOR"\
-       "VERSION_BUILD=$$VERSION_BUILD"
+       "VERSION_BUILD=$$VERSION_BUILD"\
+       "VERSION_TESTING=$$TEST_FEATURES"
+
+
+//DEFINES += VERSION=\\\"$$VERSION\\\"
 
 QT += core gui widgets xlsx charts
 
