@@ -45,7 +45,6 @@
 
 #include "modelselection.h"
 
-#include <QDebug>
 #include <iostream>
 #include "interpolation.h"
 
@@ -524,20 +523,6 @@ QString ModelSelection::getAUCBestModel(QString model)
     {
         return QString("NA");
     }
-
-
-
-
-
-
-
-    autogksmooth(a, b, s);
-    alglib::autogkintegrate(s, hyperbolic_integration, &mParams);
-    autogkresults(s, v, rep);
-
-    qDebug() << "current: " << double(v);
-
-    //return QString::number(double(v));
 }
 
 void ModelSelection::PrepareProbabilities()

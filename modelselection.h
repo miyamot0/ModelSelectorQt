@@ -24,7 +24,6 @@
 #ifndef MODELSELECTION_H
 #define MODELSELECTION_H
 
-#include <QDebug>
 #include <QMap>
 #include <iostream>
 #include "interpolation.h"
