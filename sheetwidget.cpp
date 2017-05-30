@@ -314,8 +314,12 @@ void SheetWidget::buildMenus()
     sheetEditMenu->addAction(clearAction);
 
     QMenu *sheetCalculationsMenu = menuBar()->addMenu(tr("&Discounting"));
-    sheetCalculationsMenu->addAction(openDiscountingAreaWindow);
     sheetCalculationsMenu->addAction(openDiscountingED50Window);
+
+    if (VERSION_TESTING == 1)
+    {
+        sheetCalculationsMenu->addAction(openDiscountingAreaWindow);
+    }
 
     QMenu *sheetLicensesMenu = menuBar()->addMenu(tr("&Licenses"));
     sheetLicensesMenu->addAction(openLicenseALGLIB);
@@ -1117,6 +1121,10 @@ void SheetWidget::Calculate(QString scriptName,
     QStringList valuePoints;
     QStringList delayPointsTemp;
 
+    int mSeriesScoring = 0;
+
+    mJohnsonBickelResults.clear();
+
     if (johnsonBickelTest)
     {
         checkDialog = new SystematicChekDialog(this);
@@ -1156,14 +1164,16 @@ void SheetWidget::Calculate(QString scriptName,
             criteriaOneStr = (criteriaOne) ? "Pass" : "Fail";
             criteriaTwoStr = (criteriaTwo) ? "Pass" : "Fail";
 
+            mJohnsonBickelResults.append(QPair<QString, QString>(criteriaOneStr, criteriaTwoStr));
+
             checkDialog->appendRow(QString::number(i + 1), criteriaOneStr, criteriaTwoStr);
         }
 
         checkDialog->exec();
+        mSeriesScoring = checkDialog->getIndexOption();
 
         if (!checkDialog->canProceed)
         {
-
             if (discountingAreaDialog->isVisible())
             {
                 discountingAreaDialog->ToggleButton(true);
@@ -1180,7 +1190,6 @@ void SheetWidget::Calculate(QString scriptName,
     resultsDialog = new ResultsDialog(this);
     resultsDialog->setModal(false);
 
-
     QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
 
     statusBar()->showMessage("Beginning calculations...", 3000);
@@ -1188,6 +1197,33 @@ void SheetWidget::Calculate(QString scriptName,
 
     for (int i = 0; i < nSeries; i++)
     {
+        QStringList resultsList;
+        resultsList << QString::number(i+1);
+
+
+        if (mSeriesScoring == 1)
+        {
+            if (mJohnsonBickelResults[i].first.contains("Fail", Qt::CaseInsensitive) || mJohnsonBickelResults[i].second.contains("Fail", Qt::CaseInsensitive))
+            {
+                resultsList[0] = resultsList[0] + " (Dropped)";
+
+                allResults.append(resultsList);
+
+                continue;
+            }
+        }
+        else if (mSeriesScoring == 2)
+        {
+            if (!checkDialog->mJonhsonBickelSelections[i])
+            {
+                resultsList[0] = resultsList[0] + " (Dropped)";
+
+                allResults.append(resultsList);
+
+                continue;
+            }
+        }
+
         statusBar()->showMessage("Calculating #" + QString::number(i + 1) + " of " + QString::number(nSeries), 3000);
 
         valuePoints.clear();
@@ -1231,8 +1267,6 @@ void SheetWidget::Calculate(QString scriptName,
         mObj->SetY(mYString.toUtf8().constData());
         mObj->mBicList.clear();
 
-        QStringList resultsList;
-        resultsList << QString::number(i+1);
 
         if (modelHyperbolic)
         {

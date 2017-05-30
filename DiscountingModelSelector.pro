@@ -128,9 +128,6 @@ win32 {
         DESTDIR = $$OUT_PWD/build/release
     }
 
-    #release: DESTDIR = $$OUT_PWD/build/release
-    #debug:   DESTDIR = $$OUT_PWD/build/debug
-
     DMS_FILES.path = $$DESTDIR
 
     INSTALLS += DMS_FILES

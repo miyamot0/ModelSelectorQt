@@ -89,6 +89,10 @@
 #include "creditsdialog.h"
 #include "aboutdialog.h"
 
+#if VERSION_TESTING == 1
+    #include <QDebug>
+#endif
+
 class SheetWidget : public QMainWindow
 {
     Q_OBJECT
@@ -226,6 +230,8 @@ private:
 
     QString mXString;
     QString mYString;
+
+    QList<QPair<QString, QString>> mJohnsonBickelResults;
 };
 
 
