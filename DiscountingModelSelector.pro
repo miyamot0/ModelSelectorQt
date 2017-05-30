@@ -18,7 +18,7 @@
 
 VERSION_MAJOR = 1
 VERSION_MINOR = 2
-VERSION_BUILD = 0
+VERSION_BUILD = 1
 
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
        "VERSION_MINOR=$$VERSION_MINOR"\
@@ -39,7 +39,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+# DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += main.cpp\
     sheetselectdialog.cpp \
@@ -64,7 +64,8 @@ SOURCES += main.cpp\
     Libraries/alglib-3.11.0/src/specialfunctions.cpp \
     Libraries/alglib-3.11.0/src/statistics.cpp \
     modelselection.cpp \
-    chartwindow.cpp
+    chartwindow.cpp \
+    systematicchekdialog.cpp
 
 HEADERS  += \
     sheetselectdialog.h \
@@ -90,7 +91,8 @@ HEADERS  += \
     Libraries/alglib-3.11.0/src/statistics.h \
     Libraries/alglib-3.11.0/src/stdafx.h \
     modelselection.h \
-    chartwindow.h
+    chartwindow.h \
+    systematicchekdialog.h
 
 FORMS    += \
     sheetselectdialog.ui \
@@ -99,7 +101,8 @@ FORMS    += \
     aboutdialog.ui \
     creditsdialog.ui \
     discountingmodelselectioned50dialog.ui \
-    discountingmodelselectionareadialog.ui
+    discountingmodelselectionareadialog.ui \
+    systematicchekdialog.ui
 
 RESOURCES += \
     spreadsheet.qrc

@@ -78,6 +78,7 @@
 #include <QtGui>
 
 #include "modelselection.h"
+#include "systematicchekdialog.h"
 
 #include "sheetselectdialog.h"
 #include "discountingmodelselectioned50dialog.h"
@@ -186,6 +187,8 @@ private:
     QAction *maxValueAction;
 
     QTableWidget *table;
+
+    SystematicChekDialog *checkDialog;
 
     SheetSelectDialog *sheetSelectDialog;
 

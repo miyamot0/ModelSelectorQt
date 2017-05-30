@@ -1086,6 +1086,15 @@ void SheetWidget::Calculate(QString scriptName,
 
     if (!areDimensionsValid(isRowData, dWidth, vWidth, dLength, vLength))
     {
+        if (discountingAreaDialog->isVisible())
+        {
+            discountingAreaDialog->ToggleButton(true);
+        }
+        else if (discountingED50Dialog->isVisible())
+        {
+            discountingED50Dialog->ToggleButton(true);
+        }
+
         return;
     }
 
@@ -1093,14 +1102,85 @@ void SheetWidget::Calculate(QString scriptName,
 
     if(!areDelayPointsValid(delayPoints, isRowData, topDelay, leftDelay, bottomDelay, rightDelay))
     {
+        if (discountingAreaDialog->isVisible())
+        {
+            discountingAreaDialog->ToggleButton(true);
+        }
+        else if (discountingED50Dialog->isVisible())
+        {
+            discountingED50Dialog->ToggleButton(true);
+        }
+
         return;
+    }
+
+    QStringList valuePoints;
+    QStringList delayPointsTemp;
+
+    // is checking
+    if (true)
+    {
+        checkDialog = new SystematicChekDialog(this);
+        double prev, curr;
+        bool criteriaOne, criteriaTwo;
+        QString criteriaOneStr, criteriaTwoStr;
+
+        for (int i = 0; i < nSeries; i++)
+        {
+            criteriaOne = true;
+            criteriaTwo = true;
+
+            valuePoints.clear();
+            delayPointsTemp.clear();
+
+            areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData, topValue, leftValue, bottomValue, rightValue, i, maxValue);
+
+            for (int i=1; i<valuePoints.length(); i++)
+            {
+                prev = valuePoints[i-1].toDouble();
+                curr = valuePoints[i].toDouble();
+
+                if ((curr - prev) > 0.2)
+                {
+                    criteriaOne = false;
+                }
+            }
+
+            prev = valuePoints[0].toDouble();
+            curr = valuePoints[valuePoints.count() - 1].toDouble();
+
+            if ((prev - curr) < 0.1)
+            {
+                criteriaTwo = false;
+            }
+
+            criteriaOneStr = (criteriaOne) ? "Pass" : "Fail";
+            criteriaTwoStr = (criteriaTwo) ? "Pass" : "Fail";
+
+            checkDialog->appendRow(QString::number(i + 1), criteriaOneStr, criteriaTwoStr);
+        }
+
+        checkDialog->exec();
+
+        if (!checkDialog->canProceed)
+        {
+
+            if (discountingAreaDialog->isVisible())
+            {
+                discountingAreaDialog->ToggleButton(true);
+            }
+            else if (discountingED50Dialog->isVisible())
+            {
+                discountingED50Dialog->ToggleButton(true);
+            }
+
+            return;
+        }
     }
 
     resultsDialog = new ResultsDialog(this);
     resultsDialog->setModal(false);
 
-    QStringList valuePoints;
-    QStringList delayPointsTemp;
 
     QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
 
@@ -1114,7 +1194,7 @@ void SheetWidget::Calculate(QString scriptName,
         valuePoints.clear();
         delayPointsTemp.clear();
 
-        areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData, topValue, leftValue, bottomValue, rightValue, i, maxValue);      
+        areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData, topValue, leftValue, bottomValue, rightValue, i, maxValue);
 
         mXString = "[";
 
