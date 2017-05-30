@@ -112,6 +112,7 @@ ChartWindow::ChartWindow(QList<QStringList> stringList, bool isAUC, QWidget *par
     tb->addAction(prevAction);
     tb->addAction(nextAction);
 
+    setWindowTitle("Discounting Model Selection Plots");
     windowLayout->setMenuBar(tb);
     setCentralWidget(window);
     resize(800, 600);

@@ -342,6 +342,16 @@
            <enum>QLayout::SetDefaultConstraint</enum>
           </property>
           <item>
+           <widget class="QCheckBox" name="checkBoxJohnson">
+            <property name="text">
+             <string>Perform Johnson Bickel Tests</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="checkBoxLog">
             <property name="text">
              <string>Output log-normal parameters</string>

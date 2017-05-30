@@ -151,7 +151,7 @@ public slots:
                    int topValue, int leftValue, int bottomValue, int rightValue,
                    double maxValue, bool cbRachlin,
                    bool modelExponential, bool modelHyperbolic, bool modelQuasiHyperbolic,
-                   bool modelMyersonGreen, bool modelRachlin, bool showCharts, bool logNormalParameters);
+                   bool modelMyersonGreen, bool modelRachlin, bool johnsonBickelTest, bool showCharts, bool logNormalParameters);
 
     void closeEvent(QCloseEvent* event);
     void setCurrentFile(const QString &fileName);

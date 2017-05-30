@@ -1059,7 +1059,7 @@ void SheetWidget::Calculate(QString scriptName,
                             double maxValue,
                             bool cbRachlin,
                             bool modelExponential, bool modelHyperbolic, bool modelQuasiHyperbolic, bool modelMyersonGreen, bool modelRachlin,
-                            bool showCharts, bool logNormalParameters)
+                            bool johnsonBickelTest, bool showCharts, bool logNormalParameters)
 {
 
     tripLogNormal = logNormalParameters;
@@ -1117,8 +1117,7 @@ void SheetWidget::Calculate(QString scriptName,
     QStringList valuePoints;
     QStringList delayPointsTemp;
 
-    // is checking
-    if (true)
+    if (johnsonBickelTest)
     {
         checkDialog = new SystematicChekDialog(this);
         double prev, curr;

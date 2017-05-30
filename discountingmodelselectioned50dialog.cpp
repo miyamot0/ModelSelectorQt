@@ -122,6 +122,7 @@ void DiscountingModelSelectionED50Dialog::on_pushButton_clicked()
                     ui->checkBoxRachlin->isChecked(),
                     ui->checkBoxExponential->isChecked(), ui->checkBoxHyperbolic->isChecked(), ui->checkBoxQuasiHyperbolic->isChecked(),
                     ui->checkBoxMyersonHyperboloid->isChecked(), ui->checkBoxRachlinHyperboloid->isChecked(),
+                    ui->checkBoxJohnson->isChecked(),
                     ui->displayPlotFigures->isChecked(),
                     ui->checkBoxLog->isChecked());
 }
