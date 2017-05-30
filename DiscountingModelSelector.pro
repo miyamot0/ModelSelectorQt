@@ -27,9 +27,6 @@ DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
        "VERSION_BUILD=$$VERSION_BUILD"\
        "VERSION_TESTING=$$TEST_FEATURES"
 
-
-//DEFINES += VERSION=\\\"$$VERSION\\\"
-
 QT += core gui widgets xlsx charts
 
 TARGET = DiscountingModelSelector
@@ -115,6 +112,8 @@ RESOURCES += \
 
 win32 {
     INCLUDEPATH += Libraries/alglib-3.11.0/src
+
+    win32:RC_ICONS += SNS.ico
 
     DMS_FILES.files = License_BDS.txt \
                     License_gnome_icons.txt \
