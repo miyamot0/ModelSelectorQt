@@ -122,8 +122,14 @@ win32 {
                     COPYING \
                     SNS.ico
 
-    release: DESTDIR = $$OUT_PWD/build/release
-    debug:   DESTDIR = $$OUT_PWD/build/debug
+    CONFIG(debug, debug|release) {
+        DESTDIR = $$OUT_PWD/build/debug
+    } else {
+        DESTDIR = $$OUT_PWD/build/release
+    }
+
+    #release: DESTDIR = $$OUT_PWD/build/release
+    #debug:   DESTDIR = $$OUT_PWD/build/debug
 
     DMS_FILES.path = $$DESTDIR
 
