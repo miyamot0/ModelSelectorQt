@@ -120,7 +120,8 @@ win32 {
                     License_gnome_icons.txt \
                     License_Qt.txt \
                     License_ALGLIB.txt \
-                    COPYING
+                    COPYING \
+                    SNS.ico
 
     release: DESTDIR = $$OUT_PWD/build/release
     debug:   DESTDIR = $$OUT_PWD/build/debug
@@ -137,7 +138,8 @@ macx {
                     License_gnome_icons.txt \
                     License_Qt.txt \
                     License_ALGLIB.txt \
-                    COPYING
+                    COPYING \
+                    SNS.ico
 
     DMS_FILES.path = Contents/Resources
 
@@ -150,4 +152,5 @@ DISTFILES += \
     License_BDS.txt \
     License_Qt.txt \
     License_gnome_icons.txt \
-    License_ALGLIB.txt
+    License_ALGLIB.txt \
+    SNS.ico
