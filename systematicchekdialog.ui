@@ -36,7 +36,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Directions: The above data is an application of Johnson and Bickel's tests for non-systematic discounting data. For each series, individual criteria will be described as &quot;Passes&quot; or &quot;Fails.&quot;  If you agree with the current data included, you can click &quot;OK&quot; to continue with the assessment.  If you click &quot;Cancel&quot;, you will return to the previous window.</string>
+      <string>Directions: The above data are the result of the Johnson and Bickel tests for non-systematic discounting data. For each series, individual criteria are described as &quot;Passes&quot; or &quot;Fails.&quot;  If you agree with the current data included, you can click &quot;OK&quot; to continue with the fittings.  If you click &quot;Cancel&quot;, you will return to the previous window.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
