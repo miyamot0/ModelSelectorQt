@@ -110,6 +110,11 @@ FORMS    += \
 RESOURCES += \
     spreadsheet.qrc
 
+###
+#
+# Win macro's, route to appropriate directories for installation prep
+#
+###
 win32 {
     INCLUDEPATH += Libraries/alglib-3.11.0/src
 
@@ -133,6 +138,11 @@ win32 {
     INSTALLS += DMS_FILES
 }
 
+###
+#
+# Mac macro's, route to appropriate directories for installation prep
+#
+###
 macx {
     INCLUDEPATH += Libraries/alglib-3.11.0/src
 
