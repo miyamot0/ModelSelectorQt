@@ -116,7 +116,7 @@ SheetWidget::SheetWidget(QWidget *parent) : QMainWindow(parent)
     table->setSizeAdjustPolicy(QTableWidget::AdjustToContents);
 
     #ifdef TARGET_OS_MAC
-        table->setStyleSheet("QTableView {selection-background-color: #73E2A7; selection-color: #73E2A7;}");
+        table->setStyleSheet("QTableView {selection-background-color: #73E2A7; }");
     #endif
 
     QString value;
