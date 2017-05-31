@@ -147,13 +147,15 @@ win32 {
 macx {
     INCLUDEPATH += Libraries/alglib-3.11.0/src
 
+    macx:ICON = $${PWD}/SNS.icns
+
     DMS_FILES.files = License_BDS.txt \
                     License_gnome_icons.txt \
                     License_Qt.txt \
                     License_ALGLIB.txt \
                     License_Tango.txt \
                     COPYING \
-                    SNS.ico
+                    SNS.icns
 
     DMS_FILES.path = Contents/Resources
 
@@ -167,4 +169,5 @@ DISTFILES += \
     License_Qt.txt \
     License_ALGLIB.txt \
     License_Tango.txt \
-    SNS.ico
+    SNS.ico \
+    SNS.icns
