@@ -48,6 +48,9 @@ SystematicChekDialog::SystematicChekDialog(QWidget *parent) :
 
     ui->tableWidget->insertColumn(ui->tableWidget->columnCount());
     ui->tableWidget->setHorizontalHeaderItem(ui->tableWidget->columnCount() - 1, new QTableWidgetItem("Criteria #1/#2"));
+
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode (QHeaderView::Fixed);
+    ui->tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 }
 
 void SystematicChekDialog::appendRow(QString participant, QString criteriaOne, QString criteriaTwo)
