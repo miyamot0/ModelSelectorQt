@@ -292,9 +292,9 @@ void SheetWidget::buildMenus()
     openLicenseQt->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openLicenseQt, &QAction::triggered, this, &SheetWidget::showQTLicenseWindow);
 
-    openLicenseGnome = new QAction("Gnome Icons License (GPL-V3)", this);
-    openLicenseGnome->setIcon(QIcon(":/images/format-justify-center.png"));
-    connect(openLicenseGnome, &QAction::triggered, this, &SheetWidget::showGnomeLicenseWindow);
+    openLicenseTango = new QAction("Tango Icons License (GPL-V3)", this);
+    openLicenseTango->setIcon(QIcon(":/images/format-justify-center.png"));
+    connect(openLicenseTango, &QAction::triggered, this, &SheetWidget::showTangoLicenseWindow);
 
     openAbout = new QAction("Credits", this);
     openAbout->setIcon(QIcon(":/images/format-justify-center.png"));
@@ -371,7 +371,7 @@ void SheetWidget::buildMenus()
     sheetLicensesMenu->addAction(openLicenseDMS);
     sheetLicensesMenu->addAction(openLicenseBDS);
     sheetLicensesMenu->addAction(openLicenseQt);
-    sheetLicensesMenu->addAction(openLicenseGnome);
+    sheetLicensesMenu->addAction(openLicenseTango);
     sheetLicensesMenu->addAction(openAbout);
 
     QMenu *sheetAboutMenu = menuBar()->addMenu(tr("&Help"));
@@ -809,24 +809,24 @@ void SheetWidget::showQTLicenseWindow()
     licenseDialog->show();
 }
 
-void SheetWidget::showGnomeLicenseWindow()
+void SheetWidget::showTangoLicenseWindow()
 {
     QString mFilePath = "";
 
     #ifdef _WIN32
-            mFilePath = "License_gnome_icons.txt";
+            mFilePath = "License_Tango.txt";
     #elif TARGET_OS_MAC
             QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
             runDirectory.cdUp();
             runDirectory.cd("Resources");
             mFilePath = runDirectory.path() + "/";
 
-            mFilePath = mFilePath + "License_gnome_icons.txt";
+            mFilePath = mFilePath + "License_Tango.txt";
 
     #endif
 
     licenseDialog = new LicenseDialog(mFilePath, this);
-    licenseDialog->setWindowTitle("Gnome Icon Set License (GPL-V3)");
+    licenseDialog->setWindowTitle("Tango Icon Set License (Public Domain)");
     licenseDialog->setModal(true);
     licenseDialog->show();
 }

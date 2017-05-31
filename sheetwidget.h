@@ -147,7 +147,7 @@ public slots:
     void showDMSLicenseWindow();
     void showBDSLicenseWindow();
     void showQTLicenseWindow();
-    void showGnomeLicenseWindow();
+    void showTangoLicenseWindow();
 
     bool isToolWindowShown();
 
@@ -185,7 +185,7 @@ private:
     QAction *openLicenseBDS;
     QAction *openLicenseALGLIB;
     QAction *openLicenseQt;
-    QAction *openLicenseGnome;
+    QAction *openLicenseTango;
 
     QAction *openAbout;
     QAction *openFAQ;

@@ -124,6 +124,7 @@ win32 {
                     License_gnome_icons.txt \
                     License_Qt.txt \
                     License_ALGLIB.txt \
+                    License_Tango.txt \
                     COPYING \
                     SNS.ico
 
@@ -150,6 +151,7 @@ macx {
                     License_gnome_icons.txt \
                     License_Qt.txt \
                     License_ALGLIB.txt \
+                    License_Tango.txt \
                     COPYING \
                     SNS.ico
 
@@ -163,6 +165,6 @@ DISTFILES += \
     COPYING \
     License_BDS.txt \
     License_Qt.txt \
-    License_gnome_icons.txt \
     License_ALGLIB.txt \
+    License_Tango.txt \
     SNS.ico
