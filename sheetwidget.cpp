@@ -225,7 +225,7 @@ void SheetWidget::buildMenus()
 
     exitSheetAction = new QAction("E&xit", this);
     exitSheetAction->setShortcut(QKeySequence("Ctrl+Q"));
-    exitSheetAction->setIcon(QIcon(":/images/application-exit.png"));
+    exitSheetAction->setIcon(QIcon(":/images/system-log-out.png"));
     connect(exitSheetAction, &QAction::triggered, qApp, &QCoreApplication::quit);
 
     /** Window actions
@@ -233,11 +233,11 @@ void SheetWidget::buildMenus()
      */
 
     openDiscountingAreaWindow = new QAction("M&odel Selection (AUC)", this);
-    openDiscountingAreaWindow->setIcon(QIcon(":/images/applications-other.png"));
+    openDiscountingAreaWindow->setIcon(QIcon(":/images/applications-system.png"));
     connect(openDiscountingAreaWindow, &QAction::triggered, this, &SheetWidget::showDiscountingAreaWindow);
 
     openDiscountingED50Window = new QAction("M&odel Selection (ED50)", this);
-    openDiscountingED50Window->setIcon(QIcon(":/images/applications-other.png"));
+    openDiscountingED50Window->setIcon(QIcon(":/images/applications-system.png"));
     connect(openDiscountingED50Window, &QAction::triggered, this, &SheetWidget::showDiscountingED50Window);
 
     /** Edit actions
@@ -274,35 +274,34 @@ void SheetWidget::buildMenus()
      */
 
     discountingAreaDialog = new DiscountingModelSelectionAreaDialog(this);
-
     discountingED50Dialog = new DiscountingModelSelectionED50Dialog(this);
 
     openLicenseDMS = new QAction("DMS License (GPL-V3)", this);
-    openLicenseDMS->setIcon(QIcon(":/images/text-x-generic.png"));
+    openLicenseDMS->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openLicenseDMS, &QAction::triggered, this, &SheetWidget::showDMSLicenseWindow);
 
     openLicenseALGLIB = new QAction("ALGLIB License (GPL-V3)", this);
-    openLicenseALGLIB->setIcon(QIcon(":/images/text-x-generic.png"));
+    openLicenseALGLIB->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openLicenseALGLIB, &QAction::triggered, this, &SheetWidget::showALGLIBLicenseWindow);
 
     openLicenseBDS = new QAction("BDS License (GPL-V3)", this);
-    openLicenseBDS->setIcon(QIcon(":/images/text-x-generic.png"));
+    openLicenseBDS->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openLicenseBDS, &QAction::triggered, this, &SheetWidget::showBDSLicenseWindow);
 
     openLicenseQt = new QAction("Qt License (GPL-V3)", this);
-    openLicenseQt->setIcon(QIcon(":/images/text-x-generic.png"));
+    openLicenseQt->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openLicenseQt, &QAction::triggered, this, &SheetWidget::showQTLicenseWindow);
 
     openLicenseGnome = new QAction("Gnome Icons License (GPL-V3)", this);
-    openLicenseGnome->setIcon(QIcon(":/images/text-x-generic.png"));
+    openLicenseGnome->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openLicenseGnome, &QAction::triggered, this, &SheetWidget::showGnomeLicenseWindow);
 
     openAbout = new QAction("Credits", this);
-    openAbout->setIcon(QIcon(":/images/text-x-generic.png"));
+    openAbout->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openAbout, &QAction::triggered, this, &SheetWidget::showCreditsWindow);
 
     openFAQ = new QAction("FAQ", this);
-    openFAQ->setIcon(QIcon(":/images/text-x-generic.png"));
+    openFAQ->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openFAQ, &QAction::triggered, this, &SheetWidget::showFAQWindow);
 
     /** Window helper actions
@@ -310,20 +309,21 @@ void SheetWidget::buildMenus()
      */
 
     delayAction = new QAction("Set Delays", this);
-    delayAction->setIcon(QIcon(":/images/system-run.png"));
+    delayAction->setIcon(QIcon(":/images/preferences-system.png"));
     connect(delayAction, &QAction::triggered, this, &SheetWidget::updateDelayModalWindow);
 
     valueAction = new QAction("Set Values", this);
-    valueAction->setIcon(QIcon(":/images/system-run.png"));
+    valueAction->setIcon(QIcon(":/images/preferences-system.png"));
     connect(valueAction, &QAction::triggered, this, &SheetWidget::updateValueModalWindow);
 
     maxValueAction = new QAction("Set Max Value", this);
-    maxValueAction->setIcon(QIcon(":/images/system-run.png"));
+    maxValueAction->setIcon(QIcon(":/images/preferences-system.png"));
     connect(maxValueAction, &QAction::triggered, this, &SheetWidget::updateMaxValueModalWindow);
 
     for (int i = 0; i < MaxRecentFiles; ++i) {
         recentFileActs[i] = new QAction(this);
         recentFileActs[i]->setVisible(false);
+        recentFileActs[i]->setIcon(QIcon(":/images/format-justify-center.png"));
         connect(recentFileActs[i], SIGNAL(triggered()), this, SLOT(openRecentFile()));
     }
 

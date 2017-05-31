@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     SheetWidget mNewSheet;
-    mNewSheet.setWindowIcon(QPixmap(":/images/applications-other.png"));
+    mNewSheet.setWindowIcon(QPixmap(":/images/x-office-spreadsheet.png"));
     mNewSheet.show();
 
     return app.exec();
