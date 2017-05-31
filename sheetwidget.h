@@ -76,7 +76,10 @@
 #include <QWidget>
 #include <QTableWidget>
 #include <QtGui>
-
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QDomDocument>
 #include "modelselection.h"
 #include "systematicchekdialog.h"
 
@@ -106,6 +109,7 @@ public:
     QList<QStringList> allCharts;
 
 public slots:
+    void downloadedFile(QNetworkReply *reply);
 
 protected:
     void buildMenus();
@@ -232,6 +236,7 @@ private:
     QString mYString;
 
     QList<QPair<QString, QString>> mJohnsonBickelResults;
+    QNetworkAccessManager *manager;
 };
 
 

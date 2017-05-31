@@ -152,6 +152,51 @@ SheetWidget::SheetWidget(QWidget *parent) : QMainWindow(parent)
 
     mObj = new ModelSelection();
     table->installEventFilter( this );
+
+    manager = new QNetworkAccessManager(this);
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadedFile(QNetworkReply*)) );
+    manager->get(QNetworkRequest(QUrl("http://www.smallnstats.com/ModelSelectionRepository/Updates.xml")));
+}
+
+void SheetWidget::downloadedFile(QNetworkReply *reply) {
+    QByteArray data = reply->readAll();
+
+    QDomDocument versionXML;
+
+    if(!versionXML.setContent(data))
+    {
+        return;
+    }
+
+    QDomElement root = versionXML.documentElement();
+    QDomElement mNode = root.namedItem("PackageUpdate").toElement();
+    QDomElement mNode2 = mNode.namedItem("Version").toElement();
+
+    QStringList mVersionList = mNode2.text().split('.');
+
+    bool hasUpdate = false;
+
+    if (mVersionList[0].toInt() > VERSION_MAJOR)
+    {
+        hasUpdate = true;
+    }
+    else if (mVersionList[1].toInt() > VERSION_MINOR)
+    {
+        hasUpdate = true;
+    }
+    else if (mVersionList[2].toInt() > VERSION_BUILD)
+    {
+        hasUpdate = true;
+    }
+
+    if (hasUpdate)
+    {
+        QMessageBox *msgBox = new QMessageBox;
+        msgBox->setWindowTitle("Updates");
+        msgBox->setText("There is an update available!");
+        msgBox->setWindowModality(Qt::NonModal);
+        msgBox->show();
+    }
 }
 
 void SheetWidget::buildMenus()

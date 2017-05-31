@@ -20,14 +20,14 @@ TEST_FEATURES = 0
 
 VERSION_MAJOR = 1
 VERSION_MINOR = 2
-VERSION_BUILD = 1
+VERSION_BUILD = 4
 
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
        "VERSION_MINOR=$$VERSION_MINOR"\
        "VERSION_BUILD=$$VERSION_BUILD"\
        "VERSION_TESTING=$$TEST_FEATURES"
 
-QT += core gui widgets xlsx charts
+QT += core gui widgets xlsx charts network xml
 
 TARGET = DiscountingModelSelector
 
