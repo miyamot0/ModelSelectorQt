@@ -24,8 +24,8 @@ The Small N Stats Discounting Model Selector uses a number of open source projec
 * ALGLIB (3.11.0) - GPLv3 Licensed. Copyright 1994-2017 ALGLIB Project. [Site](http://www.alglib.net)
 * Qt Framework (5.8) - LGPL 3.0 (GPL 3.0 Licensed). Copyright (C). Qt Team [Site](https://www.qt.io/)
 * Qt Examples (Spreadsheet, Recent Files) - BSD-3 Clause. Copyright (C). Qt Team [Site](https://www.qt.io/)
-* Gnome icons - GPLv3 Licensed. Copyright (C) "GNOME Project" [Site](http://www.gnome.org)
-* BDS R Script - GPLv2+ (GPL 3.0 Licensed). Copyright (c) 2016, Dr. Chris Franck, Virginia Tech - Department of Statistics.
+* Tango icon set - Public Domain Licensed. Copyright (C) 2009, "Tango Desktop Project" [Site](http://tango.freedesktop.org/Tango_Desktop_Project)
+* BDS R Script - GPLv2+ (GPL 3.0 Licensed). Copyright (C) 2016, Dr. Chris Franck, Virginia Tech - Department of Statistics.
 
 ### Referenced Works (academic works)
 The Small N Stats Discounting Model Selector is based on the following academic works:
