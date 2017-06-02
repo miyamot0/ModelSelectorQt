@@ -1551,12 +1551,12 @@ void SheetWidget::Calculate(QString scriptName,
 
         if (discountingAreaDialog->isVisible())
         {
-            graphicsWindow = new ChartWindow(allResults, true, this);
+            graphicsWindow = new ChartWindow(allResults, tripLogNormal, true, this);
 
         }
         else if (discountingED50Dialog->isVisible())
         {
-            graphicsWindow = new ChartWindow(allResults, false, this);
+            graphicsWindow = new ChartWindow(allResults, tripLogNormal, false, this);
         }
 
         graphicsWindow->show();

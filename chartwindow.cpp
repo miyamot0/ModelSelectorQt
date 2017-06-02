@@ -27,9 +27,10 @@
 #include <QHBoxLayout>
 #include "chartwindow.h"
 
-ChartWindow::ChartWindow(QList<QStringList> stringList, bool isAUC, QWidget *parent)
+ChartWindow::ChartWindow(QList<QStringList> stringList, bool isLogNormal, bool isAUC, QWidget *parent)
 {
     mDisplayData = stringList;
+    isLogNormalParamerized = isLogNormal;
     isAUCFigure = isAUC;
 
     for (int i=0; i<mDisplayData.length(); i++)
@@ -506,12 +507,26 @@ void ChartWindow::plotED50Series(int index)
 
 double ChartWindow::exponential_plotting(double k, double x)
 {
-    return exp(-exp(k)*x);
+    if (isLogNormalParamerized)
+    {
+        return exp(-exp(log(k))*x);
+    }
+    else
+    {
+        return exp(-exp(k)*x);
+    }
 }
 
 double ChartWindow::hyperbolic_plotting(double k, double x)
 {
-    return pow((1+exp(k)*x), -1);
+    if (isLogNormalParamerized)
+    {
+        return pow((1+exp(log(k))*x), -1);
+    }
+    else
+    {
+        return pow((1+exp(k)*x), -1);
+    }
 }
 
 double ChartWindow::quasi_hyperbolic_plotting(double beta, double delta, double x)
@@ -521,12 +536,26 @@ double ChartWindow::quasi_hyperbolic_plotting(double beta, double delta, double 
 
 double ChartWindow::myerson_plotting(double k, double s, double x)
 {
-    return pow((1+exp(k)*x), -s);
+    if (isLogNormalParamerized)
+    {
+        return pow((1+exp(log(k))*x), -s);
+    }
+    else
+    {
+        return pow((1+exp(k)*x), -s);
+    }
 }
 
 double ChartWindow::rachlin_plotting(double k, double s, double x)
 {
-    return pow((1+exp(k)*pow(x, s)), -1);
+    if (isLogNormalParamerized)
+    {
+        return pow((1+exp(log(k))*pow(x, s)), -1);
+    }
+    else
+    {
+        return pow((1+exp(k)*pow(x, s)), -1);
+    }
 }
 
 bool ChartWindow::eventFilter(QObject *object, QEvent *e)

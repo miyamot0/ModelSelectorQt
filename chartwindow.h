@@ -39,8 +39,7 @@
 class ChartWindow : public QMainWindow
 {
 public:
-    explicit ChartWindow(QList<QStringList> stringList, bool isAUC, QWidget *parent = 0);
-    //void drawFigure(int index);
+    explicit ChartWindow(QList<QStringList> stringList, bool isLogNormal, bool isAUC, QWidget *parent = 0);
 
     void buildED50Plot();
     void plotED50Series(int index);
@@ -95,6 +94,8 @@ private:
 
     QScatterSeries *dataPoints;
     QLineSeries *empiricalSeries;
+
+    bool isLogNormalParamerized;
 
     bool expCheck;
     double expK;
