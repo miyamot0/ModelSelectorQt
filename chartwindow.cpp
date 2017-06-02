@@ -251,7 +251,6 @@ void ChartWindow::buildED50Plot()
 void ChartWindow::plotAUCSeries(int index)
 {
     mList = mDisplayData.at(index);
-    chart->setTitle(QString("Participant #%1: %2 AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(mList[45]).arg(mList[48]));
 
     expSeries->clear();
     hypSeries->clear();
@@ -261,6 +260,15 @@ void ChartWindow::plotAUCSeries(int index)
     noiseSeries->clear();
     dataPoints->clear();
     empiricalSeries->clear();
+
+    if (mList[0].contains("dropped", Qt::CaseInsensitive))
+    {
+        chart->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
+
+        return;
+    }
+
+    chart->setTitle(QString("Participant #%1: %2 AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(mList[45]).arg(mList[48]));
 
     expSeries->hide();
     hypSeries->hide();
@@ -385,7 +393,6 @@ void ChartWindow::plotAUCSeries(int index)
 void ChartWindow::plotED50Series(int index)
 {
     mList = mDisplayData.at(index);
-    chart->setTitle(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(mList[45]).arg(mList[48]));
 
     expSeries->clear();
     //expSeries->setName(QString("Exponential<br>(%1)").arg(mList[13]));
@@ -400,6 +407,15 @@ void ChartWindow::plotED50Series(int index)
     noiseSeries->clear();
     //noiseSeries->setName(QString("Noise<br>(%1)").arg(mList[44]));
     dataPoints->clear();
+
+    if (mList[0].contains("dropped", Qt::CaseInsensitive))
+    {
+        chart->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
+
+        return;
+    }
+
+    chart->setTitle(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(mList[45]).arg(mList[48]));
 
     expK = mList[8].toDouble(&expCheck);
 
