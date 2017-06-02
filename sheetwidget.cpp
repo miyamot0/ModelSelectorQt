@@ -155,7 +155,13 @@ SheetWidget::SheetWidget(QWidget *parent) : QMainWindow(parent)
 
     manager = new QNetworkAccessManager(this);
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadedFile(QNetworkReply*)) );
-    manager->get(QNetworkRequest(QUrl("http://www.smallnstats.com/ModelSelectionRepository/Updates.xml")));
+
+    #ifdef _WIN32
+        manager->get(QNetworkRequest(QUrl("http://www.smallnstats.com/ModelSelectionRepository/Updates.xml")));
+    #elif TARGET_OS_MAC
+        manager->get(QNetworkRequest(QUrl("http://www.smallnstats.com/ModelSelectionRepositoryMac/Updates.xml")));
+    #endif
+
 }
 
 void SheetWidget::downloadedFile(QNetworkReply *reply) {
