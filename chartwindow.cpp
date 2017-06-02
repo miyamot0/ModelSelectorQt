@@ -40,7 +40,7 @@ ChartWindow::ChartWindow(QList<QStringList> stringList, bool isAUC, QWidget *par
         {
             paramString1 = mList.at(46);
             QStringList delayPoints = paramString1.split(",");
-            lastDelay = delayPoints[delayPoints.length() - 1].toDouble();
+            lastDelay = delayPoints[delayPoints.length() - 1].toDouble() * 2;
         }
     }
 
