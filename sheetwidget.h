@@ -152,6 +152,7 @@ public slots:
     void showBDSLicenseWindow();
     void showQTLicenseWindow();
     void showTangoLicenseWindow();
+    void showTestingFeatures();
 
     bool isToolWindowShown();
 
@@ -201,6 +202,8 @@ private:
     QAction *delayAction;
     QAction *valueAction;
     QAction *maxValueAction;
+
+    QAction *unlockTesting;
 
     SystematicChekDialog *checkDialog;
 

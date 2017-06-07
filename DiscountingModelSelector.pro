@@ -16,7 +16,7 @@
 #
 #-------------------------------------------------
 
-TEST_FEATURES = 0
+TEST_FEATURES = 1
 
 VERSION_MAJOR = 1
 VERSION_MINOR = 2

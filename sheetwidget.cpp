@@ -252,6 +252,7 @@ void SheetWidget::buildMenus()
 
     openDiscountingAreaWindow = new QAction("M&odel Selection (AUC)", this);
     openDiscountingAreaWindow->setIcon(QIcon(":/images/applications-system.png"));
+    openDiscountingAreaWindow->setVisible(false);
     connect(openDiscountingAreaWindow, &QAction::triggered, this, &SheetWidget::showDiscountingAreaWindow);
 
     openDiscountingED50Window = new QAction("M&odel Selection (ED50)", this);
@@ -588,6 +589,10 @@ bool SheetWidget::eventFilter(QObject *object, QEvent *event)
 
             table->setCurrentCell(table->currentRow() + 1, table->currentColumn());
         }
+        else if (keyCode->key() == (int) Qt::Key_Space && keyCode->modifiers().testFlag(Qt::ControlModifier))
+        {
+            showTestingFeatures();
+        }
     }
 
     return QObject::eventFilter(object, event);
@@ -917,6 +922,15 @@ void SheetWidget::showFAQWindow()
     aboutDialog = new AboutDialog();
     aboutDialog->setModal(true);
     aboutDialog->show();
+}
+
+void SheetWidget::showTestingFeatures()
+{
+    if (!openDiscountingAreaWindow->isVisible())
+    {
+        statusBar()->showMessage(tr("Testing features now unlocked"), 5000);
+        openDiscountingAreaWindow->setVisible(true);
+    }
 }
 
 /** Edit methods
