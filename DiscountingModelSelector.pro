@@ -68,7 +68,9 @@ SOURCES += main.cpp\
     Libraries/alglib-3.11.0/src/statistics.cpp \
     modelselection.cpp \
     chartwindow.cpp \
-    systematicchekdialog.cpp
+    systematicchekdialog.cpp \
+    sheetdelegate.cpp \
+    commanding.cpp
 
 HEADERS  += \
     sheetselectdialog.h \
@@ -95,7 +97,9 @@ HEADERS  += \
     Libraries/alglib-3.11.0/src/stdafx.h \
     modelselection.h \
     chartwindow.h \
-    systematicchekdialog.h
+    systematicchekdialog.h \
+    sheetdelegate.h \
+    commanding.h
 
 FORMS    += \
     sheetselectdialog.ui \

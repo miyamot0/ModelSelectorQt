@@ -98,6 +98,8 @@
 #include "sheetwidget.h"
 #include "resultsdialog.h"
 #include "chartwindow.h"
+#include "commanding.h"
+#include "sheetdelegate.h"
 
 QTXLSX_USE_NAMESPACE
 
@@ -114,6 +116,9 @@ SheetWidget::SheetWidget(QWidget *parent) : QMainWindow(parent)
 {
     table = new QTableWidget(10000, 10000, this);
     table->setSizeAdjustPolicy(QTableWidget::AdjustToContents);
+
+    undoStack = new QUndoStack(this);
+    table->setItemDelegate(new SheetDelegate());
 
     #ifdef TARGET_OS_MAC
         table->setStyleSheet("QTableView {selection-background-color: #73E2A7; }");
@@ -180,17 +185,18 @@ void SheetWidget::downloadedFile(QNetworkReply *reply) {
 
     QStringList mVersionList = mNode2.text().split('.');
 
+    if (mVersionList.count() != 3)
+    {
+        return;
+    }
+
     bool hasUpdate = false;
 
-    if (mVersionList[0].toInt() > VERSION_MAJOR)
-    {
-        hasUpdate = true;
-    }
-    else if (mVersionList[1].toInt() > VERSION_MINOR)
-    {
-        hasUpdate = true;
-    }
-    else if (mVersionList[2].toInt() > VERSION_BUILD)
+    QString mNetworkVersionString = QString("%1%2%3").arg(mVersionList[0]).arg(mVersionList[1]).arg(mVersionList[2]);
+
+    QString mLocalVersionString = QString("%1%2%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
+
+    if (mNetworkVersionString.toInt() > mLocalVersionString.toInt())
     {
         hasUpdate = true;
     }
@@ -211,26 +217,32 @@ void SheetWidget::buildMenus()
      * @brief
      */
 
-    newSheetAction = new QAction("N&ew Sheet", this);
+    newSheetAction = new QAction("N&ew", this);
+    newSheetAction->setShortcut(QKeySequence::New);
     newSheetAction->setIcon(QIcon(":/images/document-new.png"));
     connect(newSheetAction, &QAction::triggered, this, &SheetWidget::clearSheet);
 
-    openSheetAction = new QAction("I&mport a Sheet", this);
-    openSheetAction->setShortcut(QKeySequence("Ctrl+O"));
+    openSheetAction = new QAction("I&mport", this);
+    openSheetAction->setShortcut(QKeySequence::Open);
     openSheetAction->setIcon(QIcon(":/images/document-open.png"));
     connect(openSheetAction, &QAction::triggered, this, &SheetWidget::showOpenFileDialog);
 
-    saveSheetAction = new QAction("S&ave Sheet", this);
-    saveSheetAction->setShortcut(QKeySequence("Ctrl+S"));
+    saveSheetAction = new QAction("S&ave", this);
+    saveSheetAction->setShortcut(QKeySequence::Save);
     saveSheetAction->setIcon(QIcon(":/images/document-save.png"));
     connect(saveSheetAction, &QAction::triggered, this, &SheetWidget::showSaveFileDialog);
+
+    saveAsSheetAction = new QAction("S&ave As", this);
+    saveAsSheetAction->setShortcut(QKeySequence::SaveAs);
+    saveAsSheetAction->setIcon(QIcon(":/images/document-save-as.png"));
+    connect(saveAsSheetAction, &QAction::triggered, this, &SheetWidget::showSaveAsFileDialog);
 
     updateProgramAction = new QAction("C&heck Updates", this);
     updateProgramAction->setIcon(QIcon(":/images/view-refresh.png"));
     connect(updateProgramAction, &QAction::triggered, this, &SheetWidget::checkUpdatesAction);
 
     exitSheetAction = new QAction("E&xit", this);
-    exitSheetAction->setShortcut(QKeySequence("Ctrl+Q"));
+    exitSheetAction->setShortcut(QKeySequence::Quit);
     exitSheetAction->setIcon(QIcon(":/images/system-log-out.png"));
     connect(exitSheetAction, &QAction::triggered, qApp, &QCoreApplication::quit);
 
@@ -251,22 +263,21 @@ void SheetWidget::buildMenus()
      */
 
     cutAction = new QAction("Cut", this);
-    cutAction->setShortcut(QKeySequence("Ctrl+X"));
+    cutAction->setShortcut(QKeySequence::Cut);
     cutAction->setIcon(QIcon(":/images/edit-cut.png"));
     connect(cutAction, &QAction::triggered, this, &SheetWidget::cut);
 
     copyAction = new QAction("Copy", this);
-    copyAction->setShortcut(QKeySequence("Ctrl+C"));
+    copyAction->setShortcut(QKeySequence::Copy);
     copyAction->setIcon(QIcon(":/images/edit-copy.png"));
     connect(copyAction, &QAction::triggered, this, &SheetWidget::copy);
 
     pasteAction = new QAction("Paste", this);
-    pasteAction->setShortcut(QKeySequence("Ctrl+V"));
+    pasteAction->setShortcut(QKeySequence::Paste);
     pasteAction->setIcon(QIcon(":/images/edit-paste.png"));
     connect(pasteAction, &QAction::triggered, this, &SheetWidget::paste);
 
     pasteInvertedAction = new QAction("Paste Transposed", this);
-    pasteInvertedAction->setShortcut(QKeySequence("Ctrl+B"));
     pasteInvertedAction->setIcon(QIcon(":/images/edit-paste.png"));
     connect(pasteInvertedAction, &QAction::triggered, this, &SheetWidget::pasteInverted);
 
@@ -274,6 +285,17 @@ void SheetWidget::buildMenus()
     clearAction->setShortcut(Qt::Key_Delete);
     clearAction->setIcon(QIcon(":/images/edit-clear.png"));
     connect(clearAction, &QAction::triggered, this, &SheetWidget::clear);
+
+    undoAction = undoStack->createUndoAction(this, tr("&Undo"));
+    undoAction->setShortcut(QKeySequence::Undo);
+    undoAction->setIcon(QIcon(":/images/edit-undo.png"));
+
+    redoAction = undoStack->createRedoAction(this, tr("&Redo"));
+    redoAction->setShortcut(QKeySequence::Redo);
+    redoAction->setIcon(QIcon(":/images/edit-redo.png"));
+
+    table->addAction(undoAction);
+    table->addAction(redoAction);
 
     /** Window actions
      * @brief
@@ -341,6 +363,7 @@ void SheetWidget::buildMenus()
     sheetOptionsMenu->addAction(newSheetAction);
     sheetOptionsMenu->addAction(openSheetAction);
     sheetOptionsMenu->addAction(saveSheetAction);
+    sheetOptionsMenu->addAction(saveAsSheetAction);
 
     separatorAct = sheetOptionsMenu->addSeparator();
 
@@ -361,6 +384,9 @@ void SheetWidget::buildMenus()
     sheetEditMenu->addAction(copyAction);
     sheetEditMenu->addAction(pasteAction);
     sheetEditMenu->addAction(pasteInvertedAction);
+    sheetEditMenu->addSeparator();
+    sheetEditMenu->addAction(redoAction);
+    sheetEditMenu->addAction(undoAction);
     sheetEditMenu->addSeparator();
     sheetEditMenu->addAction(clearAction);
 
@@ -648,6 +674,48 @@ void SheetWidget::updateRecentFileActions()
 
 void SheetWidget::showSaveFileDialog()
 {
+    if (curFile == "")
+    {
+        showSaveAsFileDialog();
+
+        return;
+    }
+
+    if(!curFile.trimmed().isEmpty())
+    {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+
+        QXlsx::Document xlsx;
+
+        int rows = table->rowCount();
+        int cols = table->columnCount();
+
+        QString temp;
+
+        for (int i=0; i<rows; i++)
+        {
+            for (int j=0; j<cols; j++)
+            {
+                QTableWidgetItem *item = table->item(i, j);
+
+                if (item != NULL && !item->text().isEmpty())
+                {
+                    temp = table->item(i, j)->data(Qt::DisplayRole).toString();
+                    xlsx.write(i + 1, j + 1, temp);
+                }
+            }
+        }
+
+        xlsx.saveAs(curFile);
+
+        QApplication::restoreOverrideCursor();
+
+        statusBar()->showMessage(tr("File saved"), 2000);
+    }
+}
+
+void SheetWidget::showSaveAsFileDialog()
+{
 
     QString file_name;
     QString fileFilter = "Spreadsheet (*.xlsx)";
@@ -664,7 +732,7 @@ void SheetWidget::showSaveFileDialog()
 
         if (!file_name.contains(".xlsx"))
         {
-            file_name.append(".xlxs");
+            file_name.append(".xlsx");
         }
 
 #endif
@@ -903,39 +971,67 @@ void SheetWidget::paste()
 {
     QTableWidgetSelectionRange range = table->selectedRanges().first();
     QString pasteString = QApplication::clipboard()->text();
+
     QStringList pasteRows = pasteString.split('\n');
 
     int nRows = pasteRows.count();
     int nCols = pasteRows.first().count('\t') + 1;
 
-    for (int i = 0; i < nRows; ++i) {
-        QStringList columns = pasteRows[i].split('\t');
+    if (nRows < 1 || nCols < 1)
+    {
+        return;
+    }
+    else if (nRows == 1 && nCols == 1)
+    {
+        const QModelIndex index = table->model()->index(range.topRow(), range.leftColumn(), QModelIndex());
+        QString mOldTest(table->model()->index(range.topRow(), range.leftColumn()).data(Qt::EditRole).toString());
+        QString mNewTest(pasteRows[0].split('\t')[0]);
 
-        for (int j = 0; j < nCols; ++j) {
-            int row = range.topRow() + i;
-            int column = range.leftColumn() + j;
+        undoStack->push(new UpdateCommand(&index, mOldTest, mNewTest));
+    }
+    else
+    {
+        QStringList mOlderHolder;
+        QStringList mTemp;
 
-            if (row < 10000 && column < 10000)
-            {
-                if (table->item(row, column) != NULL)
+        for (int i = 0; i < nRows; ++i)
+        {
+            QStringList columns = pasteRows[i].split('\t');
+
+            mTemp.clear();
+
+            for (int j = 0; j < nCols; ++j) {
+                int row = range.topRow() + i;
+                int column = range.leftColumn() + j;
+
+                if (row < 10000 && column < 10000)
                 {
-                    if (j < columns.length())
+                    if (table->item(row, column) != NULL)
                     {
-                        table->item(row, column)->setText(columns[j]);
+                        if (j < columns.length())
+                        {
+                            mTemp << table->item(row, column)->data(Qt::EditRole).toString();
+                        }
                     }
-                }
-                else
-                {
-                    if (j < columns.length())
+                    else
                     {
-                        table->setItem(row, column, new QTableWidgetItem(columns[j]));
+                        if (j < columns.length())
+                        {
+                            table->setItem(row, column, new QTableWidgetItem(""));
+
+                            mTemp << "";
+                        }
                     }
                 }
             }
-        }
-    }
 
-    table->viewport()->update();
+            mOlderHolder << mTemp.join('\t');
+        }
+
+        const QModelIndex index = table->model()->index(range.topRow(), range.leftColumn(), QModelIndex());
+
+        undoStack->push(new UpdateCommandBlock(&index, mOlderHolder, pasteRows));
+    }
 }
 
 void SheetWidget::pasteInverted()
@@ -947,46 +1043,126 @@ void SheetWidget::pasteInverted()
     int nRows = pasteRows.count();
     int nCols = pasteRows.first().count('\t') + 1;
 
-    for (int i = 0; i < nRows; ++i) {
-        QStringList columns = pasteRows[i].split('\t');
+    if (nRows < 1 || nCols < 1)
+    {
+        return;
+    }
+    else if (nRows == 1 && nCols == 1)
+    {
+        const QModelIndex index = table->model()->index(range.topRow(), range.leftColumn(), QModelIndex());
+        QString mOldTest(table->model()->index(range.topRow(), range.leftColumn()).data(Qt::EditRole).toString());
+        QString mNewTest(pasteRows[0].split('\t')[0]);
 
-        for (int j = 0; j < nCols; ++j) {
-            int row = range.topRow() + j;
-            int column = range.leftColumn() + i;
+        undoStack->push(new UpdateCommand(&index, mOldTest, mNewTest));
+    }
+    else
+    {
+        QStringList mOlderHolder;
+        QStringList mTemp;
 
-            if (row < 10000 && column < 10000)
+        for (int i = 0; i < nRows; ++i)
+        {
+            QStringList columns = pasteRows[i].split('\t');
+
+            mTemp.clear();
+
+            for (int j = 0; j < nCols; ++j)
             {
-                if (table->item(row, column) != NULL)
+                int row = range.topRow() + j;
+                int column = range.leftColumn() + i;
+
+                if (row < 10000 && column < 10000)
                 {
-                    if (j < columns.length())
+                    if (table->item(row, column) != NULL)
                     {
-                        table->item(row, column)->setText(columns[j]);
+                        if (j < columns.length())
+                        {
+                            mTemp << table->item(row, column)->data(Qt::EditRole).toString();
+                        }
                     }
-                }
-                else
-                {
-                    if (j < columns.length())
+                    else
                     {
-                        table->setItem(row, column, new QTableWidgetItem(columns[j]));
+                        if (j < columns.length())
+                        {
+                            table->setItem(row, column, new QTableWidgetItem(""));
+
+                            mTemp << "";
+                        }
                     }
                 }
             }
-        }
-    }
 
-    table->viewport()->update();
+            mOlderHolder << mTemp.join('\t');
+        }
+
+        const QModelIndex index = table->model()->index(range.topRow(), range.leftColumn(), QModelIndex());
+
+        undoStack->push(new UpdateCommandBlockInvert(&index, mOlderHolder, pasteRows));
+    }
 }
 
 void SheetWidget::clear()
 {
-    if (table->selectedItems().count() < 1)
+    QTableWidgetSelectionRange range = table->selectedRanges().first();
+
+    int nRows = range.rowCount();
+    int nCols = range.columnCount();
+
+    if (nRows < 1 || nCols < 1)
     {
         return;
     }
-
-    foreach (QTableWidgetItem *i, table->selectedItems())
+    else if (nRows == 1 && nCols == 1)
     {
-        i->setText("");
+        const QModelIndex index = table->model()->index(range.topRow(), range.leftColumn(), QModelIndex());
+        QString mOldTest(table->model()->index(range.topRow(), range.leftColumn()).data(Qt::EditRole).toString());
+        QString clear("");
+
+        undoStack->push(new UpdateCommand(&index, mOldTest, clear));
+    }
+    else
+    {
+        QStringList mNewerHolder;
+        QStringList mOlderHolder;
+
+        QStringList mTempNew;
+        QStringList mTemp;
+
+        for (int i = 0; i < nRows; ++i)
+        {
+            mTemp.clear();
+            mTempNew.clear();
+
+            for (int j = 0; j < nCols; ++j)
+            {
+                int row = range.topRow() + i;
+                int column = range.leftColumn() + j;
+
+                qDebug() << row << " " << column;
+
+                if (row < 10000 && column < 10000)
+                {
+                    if (table->item(row, column) != NULL)
+                    {
+                        mTemp << table->item(row, column)->data(Qt::EditRole).toString();
+                        mTempNew << "";
+                    }
+                    else
+                    {
+                        table->setItem(row, column, new QTableWidgetItem(""));
+
+                        mTemp << "";
+                        mTempNew << "";
+                    }
+                }
+            }
+
+            mOlderHolder << mTemp.join('\t');
+            mNewerHolder << mTempNew.join('\t');
+        }
+
+        const QModelIndex index = table->model()->index(range.topRow(), range.leftColumn(), QModelIndex());
+        undoStack->push(new UpdateCommandBlock(&index, mOlderHolder, mNewerHolder));
     }
 }
 

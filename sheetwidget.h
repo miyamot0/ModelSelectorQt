@@ -108,6 +108,9 @@ public:
     QList<QStringList> allResults;
     QList<QStringList> allCharts;
 
+    QUndoStack *undoStack;
+    QTableWidget *table;
+
 public slots:
     void downloadedFile(QNetworkReply *reply);
 
@@ -136,6 +139,7 @@ public slots:
     void clearSheet();
     void showOpenFileDialog();
     void showSaveFileDialog();
+    void showSaveAsFileDialog();
 
     void showDiscountingAreaWindow();
     void showDiscountingED50Window();
@@ -169,6 +173,7 @@ private:
     QAction *newSheetAction;
     QAction *openSheetAction;
     QAction *saveSheetAction;
+    QAction *saveAsSheetAction;
     QAction *updateProgramAction;
     QAction *exitSheetAction;
 
@@ -177,6 +182,9 @@ private:
     QAction *pasteAction;
     QAction *pasteInvertedAction;
     QAction *clearAction;
+
+    QAction *undoAction;
+    QAction *redoAction;
 
     QAction *openDiscountingAreaWindow;
     QAction *openDiscountingED50Window;
@@ -193,8 +201,6 @@ private:
     QAction *delayAction;
     QAction *valueAction;
     QAction *maxValueAction;
-
-    QTableWidget *table;
 
     SystematicChekDialog *checkDialog;
 
