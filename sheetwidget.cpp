@@ -790,6 +790,8 @@ void SheetWidget::showDiscountingAreaWindow()
 {
     if (isToolWindowShown())
     {
+        discountingAreaDialog->showNormal();
+
         return;
     }
 
@@ -802,6 +804,8 @@ void SheetWidget::showDiscountingED50Window()
 {
     if (isToolWindowShown())
     {
+        discountingED50Dialog->showNormal();
+
         return;
     }
 
@@ -1766,12 +1770,16 @@ void SheetWidget::Calculate(QString scriptName,
     {
         discountingAreaDialog->ToggleButton(true);
         discountingAreaDialog->setEnabled(true);
+        discountingAreaDialog->showMinimized();
+
         resultsDialog->ImportDataAndShow(tripLogNormal, "AUC.mostprob");
     }
     else if (discountingED50Dialog->isVisible())
     {
         discountingED50Dialog->ToggleButton(true);
         discountingED50Dialog->setEnabled(true);
+        discountingED50Dialog->showMinimized();
+
         resultsDialog->ImportDataAndShow(tripLogNormal, "lnED50.mostprob");
     }
 }

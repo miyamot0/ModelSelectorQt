@@ -51,6 +51,8 @@ ResultsDialog::ResultsDialog(QWidget *parent) :
     connect(copyAction, &QAction::triggered, this, &ResultsDialog::copy);
 
     addAction(copyAction);
+
+    setWindowFlags(windowFlags() | Qt::WindowMinimizeButtonHint);
 }
 
 void ResultsDialog::ImportDataAndShow(bool tripLogNormal, QString metric)
