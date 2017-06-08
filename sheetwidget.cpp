@@ -589,10 +589,20 @@ bool SheetWidget::eventFilter(QObject *object, QEvent *event)
 
             table->setCurrentCell(table->currentRow() + 1, table->currentColumn());
         }
+
+#ifdef _WIN32
         else if (keyCode->key() == (int) Qt::Key_Space && keyCode->modifiers().testFlag(Qt::ControlModifier))
         {
             showTestingFeatures();
         }
+#elif TARGET_OS_MAC
+        else if (keyCode->key() == (int) Qt::Key_Space && keyCode->modifiers().testFlag(Qt::ControlModifier) && keyCode->modifiers().testFlag(Qt::ShiftModifier))
+        {
+            showTestingFeatures();
+        }
+#endif
+
+
     }
 
     return QObject::eventFilter(object, event);
