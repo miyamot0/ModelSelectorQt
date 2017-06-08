@@ -130,6 +130,7 @@ win32 {
                     License_ALGLIB.txt \
                     License_Tango.txt \
                     COPYING \
+                    scripts/manualDiscountingEd50AreaComputation.R \
                     SNS.ico
 
     CONFIG(debug, debug|release) {
@@ -159,6 +160,7 @@ macx {
                     License_ALGLIB.txt \
                     License_Tango.txt \
                     COPYING \
+                    scripts/manualDiscountingEd50AreaComputation.R \
                     SNS.icns
 
     DMS_FILES.path = Contents/Resources
@@ -174,4 +176,5 @@ DISTFILES += \
     License_ALGLIB.txt \
     License_Tango.txt \
     SNS.ico \
-    SNS.icns
+    SNS.icns \
+    scripts/manualDiscountingEd50AreaComputation.R
