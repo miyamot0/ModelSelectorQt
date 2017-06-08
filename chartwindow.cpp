@@ -58,7 +58,7 @@ ChartWindow::ChartWindow(QList<QStringList> stringList, bool isLogNormal, bool i
 
     auto mLegend = chart->legend();
 
-    QFont mLegendFont("Serif", 10, -1, false);
+    QFont mLegendFont("Serif", 12, -1, false);
     mLegend->setFont(mLegendFont);
     mLegend->setAlignment(Qt::AlignBottom);
 
