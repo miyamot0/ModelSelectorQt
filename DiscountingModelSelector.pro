@@ -20,7 +20,7 @@ TEST_FEATURES = 1
 
 VERSION_MAJOR = 1
 VERSION_MINOR = 3
-VERSION_BUILD = 2
+VERSION_BUILD = 5
 
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
        "VERSION_MINOR=$$VERSION_MINOR"\
@@ -70,7 +70,8 @@ SOURCES += main.cpp\
     chartwindow.cpp \
     systematicchekdialog.cpp \
     sheetdelegate.cpp \
-    commanding.cpp
+    commanding.cpp \
+    calculationworker.cpp
 
 HEADERS  += \
     sheetselectdialog.h \
@@ -99,7 +100,8 @@ HEADERS  += \
     chartwindow.h \
     systematicchekdialog.h \
     sheetdelegate.h \
-    commanding.h
+    commanding.h \
+    calculationworker.h
 
 FORMS    += \
     sheetselectdialog.ui \

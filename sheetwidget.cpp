@@ -100,6 +100,7 @@
 #include "chartwindow.h"
 #include "commanding.h"
 #include "sheetdelegate.h"
+#include "calculationworker.h"
 
 QTXLSX_USE_NAMESPACE
 
@@ -114,7 +115,7 @@ struct QPairSecondComparer
 
 SheetWidget::SheetWidget(QWidget *parent) : QMainWindow(parent)
 {
-    table = new QTableWidget(10000, 10000, this);
+    table = new QTableWidget(10001, 10001, this);
     table->setSizeAdjustPolicy(QTableWidget::AdjustToContents);
 
     undoStack = new QUndoStack(this);
@@ -155,7 +156,7 @@ SheetWidget::SheetWidget(QWidget *parent) : QMainWindow(parent)
 
     #endif
 
-    mObj = new ModelSelection();
+    //mObj = new ModelSelection();
     table->installEventFilter( this );
 
     manager = new QNetworkAccessManager(this);
@@ -1166,8 +1167,6 @@ void SheetWidget::clear()
                 int row = range.topRow() + i;
                 int column = range.leftColumn() + j;
 
-                qDebug() << row << " " << column;
-
                 if (row < 10000 && column < 10000)
                 {
                     if (table->item(row, column) != NULL)
@@ -1450,37 +1449,11 @@ void SheetWidget::Calculate(QString scriptName,
     statusBar()->showMessage("Beginning calculations...", 3000);
     allResults.clear();
 
+    QList<QStringList> mStoredValues;
+    QStringList mStoredValueHolder;
+
     for (int i = 0; i < nSeries; i++)
     {
-        QStringList resultsList;
-        resultsList << QString::number(i+1);
-
-
-        if (mSeriesScoring == 1)
-        {
-            if (mJohnsonBickelResults[i].first.contains("Fail", Qt::CaseInsensitive) || mJohnsonBickelResults[i].second.contains("Fail", Qt::CaseInsensitive))
-            {
-                resultsList[0] = resultsList[0] + " (Dropped)";
-
-                allResults.append(resultsList);
-
-                continue;
-            }
-        }
-        else if (mSeriesScoring == 2)
-        {
-            if (!checkDialog->mJonhsonBickelSelections[i])
-            {
-                resultsList[0] = resultsList[0] + " (Dropped)";
-
-                allResults.append(resultsList);
-
-                continue;
-            }
-        }
-
-        statusBar()->showMessage("Calculating #" + QString::number(i + 1) + " of " + QString::number(nSeries), 3000);
-
         valuePoints.clear();
         delayPointsTemp.clear();
 
@@ -1518,236 +1491,44 @@ void SheetWidget::Calculate(QString scriptName,
 
         mYString.append("]");
 
-        mObj->SetX(mXString.toUtf8().constData());
-        mObj->SetY(mYString.toUtf8().constData());
-        mObj->mBicList.clear();
+        mStoredValueHolder.clear();
+        mStoredValueHolder << mXString << mYString << delayPointsTemp.join(",") << valuePoints.join(",");
 
+        //resultsList << delayPointsTemp.join(",");
+        //resultsList << valuePoints.join(",");
 
-        if (modelHyperbolic)
-        {
-            mObj->FitHyperbolic("[0.3]");
-
-            if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
-            {
-                mObj->mBicList.append(QPair<QString, double>("Hyperbolic", mObj->bicHyperbolic));
-            }
-
-            resultsList << formatStringResult(mObj->fitHyperbolicK, tripLogNormal);
-            resultsList << QString::number(mObj->GetReport().rmserror);
-            resultsList << QString::number(mObj->bicHyperbolic);
-            resultsList << QString::number(mObj->aicHyperbolic);
-            resultsList << "";
-            resultsList << "";
-            resultsList << mObj->formatStringResult((int) mObj->GetInfo());
-        }
-        else
-        {
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-        }
-
-        if (modelExponential)
-        {
-            mObj->FitExponential("[0.3]");
-
-            if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
-            {
-                mObj->mBicList.append(QPair<QString, double>("Exponential", mObj->bicExponential));
-            }
-
-            resultsList << formatStringResult(mObj->fitExponentialK, tripLogNormal);
-            resultsList << QString::number(mObj->GetReport().rmserror);
-            resultsList << QString::number(mObj->bicExponential);
-            resultsList << QString::number(mObj->aicExponential);
-            resultsList << "";
-            resultsList << "";
-            resultsList << mObj->formatStringResult((int) mObj->GetInfo());
-        }
-        else
-        {
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-        }
-
-        if (modelQuasiHyperbolic)
-        {
-            mObj->FitQuasiHyperbolic("[0.3, 0.3]");
-
-            if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
-            {
-                mObj->mBicList.append(QPair<QString, double>("Beta Delta", mObj->bicQuasiHyperbolic));
-            }
-
-            resultsList << QString::number(mObj->fitQuasiHyperbolicBeta);
-            resultsList << QString::number(mObj->fitQuasiHyperbolicDelta);
-            resultsList << QString::number(mObj->GetReport().rmserror);
-            resultsList << QString::number(mObj->bicQuasiHyperbolic);
-            resultsList << QString::number(mObj->aicQuasiHyperbolic);
-            resultsList << "";
-            resultsList << "";
-            resultsList << mObj->formatStringResult((int) mObj->GetInfo());
-        }
-        else
-        {
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-        }
-
-        if (modelMyersonGreen)
-        {
-            mObj->FitMyerson("[0.3, 0.3]");
-
-            if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
-            {
-                mObj->mBicList.append(QPair<QString, double>("Myerson Hyperbola", mObj->bicMyerson));
-            }
-
-            resultsList << formatStringResult(mObj->fitMyersonK, tripLogNormal);
-            resultsList << QString::number(mObj->fitMyersonS);
-            resultsList << QString::number(mObj->GetReport().rmserror);
-            resultsList << QString::number(mObj->bicMyerson);
-            resultsList << QString::number(mObj->aicMyerson);
-            resultsList << "";
-            resultsList << "";
-            resultsList << mObj->formatStringResult((int) mObj->GetInfo());
-        }
-        else
-        {
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-        }
-
-        if (modelRachlin)
-        {
-            mObj->FitRachlin("[0.3, 0.3]");
-
-            if (cbRachlin && mObj->GetParams()[1] > 1)
-            {
-                resultsList << "Exceeded Bounds";
-                resultsList << "Exceeded Bounds";
-                resultsList << "Exceeded Bounds";
-                resultsList << "Exceeded Bounds";
-                resultsList << "Exceeded Bounds";
-                resultsList << "Exceeded Bounds";
-                resultsList << "Exceeded Bounds";
-                resultsList << "Exceeded Bounds";
-            }
-            else
-            {
-                if ((int) mObj->GetInfo() == 2 || (int) mObj->GetInfo() == 5)
-                {
-                    mObj->mBicList.append(QPair<QString, double>("Rachlin Hyperbola", mObj->bicRachlin));
-                }
-
-                resultsList << formatStringResult(mObj->fitRachlinK, tripLogNormal);
-                resultsList << QString::number(mObj->fitRachlinS);
-                resultsList << QString::number(mObj->GetReport().rmserror);
-                resultsList << QString::number(mObj->bicRachlin);
-                resultsList << QString::number(mObj->aicRachlin);
-                resultsList << "";
-                resultsList << "";
-                resultsList << mObj->formatStringResult((int) mObj->GetInfo());
-            }
-        }
-        else
-        {
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-            resultsList << "---";
-        }
-
-        mObj->FitNoise();
-        mObj->NoiseBIC = mObj->bicNoise;
-
-        resultsList << QString::number(mObj->GetNoiseMean());
-        resultsList << QString::number(mObj->GetReport().rmserror);
-        resultsList << QString::number(mObj->bicNoise);
-        resultsList << QString::number(mObj->aicNoise);
-        resultsList << "";
-        resultsList << "";
-
-        mObj->PrepareProbabilities();
-
-        qSort(mObj->mProbList.begin(), mObj->mProbList.end(), QPairSecondComparer());
-
-        if (modelHyperbolic)
-        {
-            resultsList[5] = QString::number(mObj->bfHyperbolic);
-            resultsList[6] = QString::number(mObj->probsHyperbolic);
-        }
-
-        if (modelExponential)
-        {
-            resultsList[12] = QString::number(mObj->bfExponential);
-            resultsList[13] = QString::number(mObj->probsExponential);
-        }
-
-        if (modelQuasiHyperbolic)
-        {
-            resultsList[20] = QString::number(mObj->bfQuasiHyperbolic);
-            resultsList[21] = QString::number(mObj->probsQuasiHyperbolic);
-        }
-
-        if (modelMyersonGreen)
-        {
-            resultsList[28] = QString::number(mObj->bfMyerson);
-            resultsList[29] = QString::number(mObj->probsMyerson);
-        }
-
-        if (modelRachlin)
-        {
-            resultsList[36] = QString::number(mObj->bfRachlin);
-            resultsList[37] = QString::number(mObj->probsRachlin);
-        }
-
-        resultsList[43] = QString::number(mObj->bfNoise);
-        resultsList[44] = QString::number(mObj->probsNoise);
-
-        QString model = mObj->mProbList.first().first;
-
-        resultsList << model;
-
-        resultsList << delayPointsTemp.join(",");
-        resultsList << valuePoints.join(",");
-
-        if (scriptName.contains("Area", Qt::CaseInsensitive))
-        {
-            resultsList << mObj->getAUCBestModel(model);
-        }
-        else
-        {
-            resultsList << mObj->getED50BestModel(model);
-        }
-
-        allResults.append(resultsList);
+        mStoredValues << mStoredValueHolder;
     }
+
+    workerThread = new QThread();
+
+    worker = new CalculationWorker(mJohnsonBickelResults, &checkDialog->mJonhsonBickelSelections, mStoredValues,
+                                   modelHyperbolic, modelExponential, modelQuasiHyperbolic, modelMyersonGreen, modelRachlin,
+                                   tripLogNormal, cbRachlin, scriptName, mSeriesScoring);
+
+    worker->moveToThread(workerThread);
+
+    connect(worker, SIGNAL(workStarted()), workerThread, SLOT(start()));
+    connect(workerThread, SIGNAL(started()), worker, SLOT(working()));
+    connect(worker, SIGNAL(workingResult(QStringList)), this, SLOT(WorkUpdate(QStringList)));
+    connect(worker, SIGNAL(workFinished()), workerThread, SLOT(quit()), Qt::DirectConnection);
+    connect(worker, SIGNAL(workFinished()), this, SLOT(WorkFinished()));
+
+    allResults.clear();
+
+    workerThread->wait();
+    worker->startWork();
+}
+
+void SheetWidget::WorkUpdate(QStringList results)
+{
+    allResults.append(results);
+    statusBar()->showMessage(QString("Series #%1 Computed").arg(allResults.count()), 3000);
+}
+
+void SheetWidget::WorkFinished()
+{
+    statusBar()->showMessage("Calculations Complete.", 3000);
 
     if (displayFigures)
     {
@@ -1756,7 +1537,6 @@ void SheetWidget::Calculate(QString scriptName,
         if (discountingAreaDialog->isVisible())
         {
             graphicsWindow = new ChartWindow(allResults, tripLogNormal, true, this);
-
         }
         else if (discountingED50Dialog->isVisible())
         {
@@ -1770,7 +1550,7 @@ void SheetWidget::Calculate(QString scriptName,
     {
         discountingAreaDialog->ToggleButton(true);
         discountingAreaDialog->setEnabled(true);
-        discountingAreaDialog->showMinimized();
+        //discountingAreaDialog->showMinimized();
 
         resultsDialog->ImportDataAndShow(tripLogNormal, "AUC.mostprob");
     }
@@ -1778,7 +1558,7 @@ void SheetWidget::Calculate(QString scriptName,
     {
         discountingED50Dialog->ToggleButton(true);
         discountingED50Dialog->setEnabled(true);
-        discountingED50Dialog->showMinimized();
+        //discountingED50Dialog->showMinimized();
 
         resultsDialog->ImportDataAndShow(tripLogNormal, "lnED50.mostprob");
     }

@@ -54,6 +54,7 @@ public:
     QString formatStringResult(int value);
     QString getED50BestModel(QString model);
     QString getAUCBestModel(QString model);
+    QStringList getAUCAllModels();
 
     void FitNoise();
     void FitExponential(const char *mStarts);

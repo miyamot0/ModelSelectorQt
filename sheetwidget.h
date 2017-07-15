@@ -80,7 +80,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDomDocument>
-#include "modelselection.h"
+//#include "modelselection.h"
 #include "systematicchekdialog.h"
 
 #include "sheetselectdialog.h"
@@ -91,6 +91,7 @@
 #include "licensedialog.h"
 #include "creditsdialog.h"
 #include "aboutdialog.h"
+#include "calculationworker.h"
 
 #if VERSION_TESTING == 1
     #include <QDebug>
@@ -170,6 +171,9 @@ public slots:
     void setCurrentFile(const QString &fileName);
     void updateRecentFileActions();
 
+    void WorkUpdate(QStringList results);
+    void WorkFinished();
+
 private:
     QAction *newSheetAction;
     QAction *openSheetAction;
@@ -239,13 +243,16 @@ private:
 
     QAction *separatorAct;
 
-    ModelSelection *mObj;
+    //ModelSelection *mObj;
 
     QString mXString;
     QString mYString;
 
     QList<QPair<QString, QString>> mJohnsonBickelResults;
     QNetworkAccessManager *manager;
+
+    QThread *workerThread;
+    CalculationWorker *worker;
 };
 
 

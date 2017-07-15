@@ -56,6 +56,8 @@
 #include "optimization.h"
 #include "integration.h"
 
+#include <QDebug>
+
 using namespace alglib;
 
 void exponential_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
@@ -281,25 +283,29 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
     lsfitresults(state, info, c, rep);
 
-    N = y.length();
-    SSR = 0;
-
-    for (int i = 0; i < N; i++)
+    if ((int) info == 2 || (int) info == 5)
     {
-        holder = pow((1+exp( (double) c[0])* (double) x[i][0]),  (double) -c[1]);
-        SSR += qPow(((double) y[i] - holder), 2);
+        N = y.length();
+
+        SSR = 0;
+
+        for (int i = 0; i < N; i++)
+        {
+            holder = pow((1+exp( (double) c[0])* (double) x[i][0]),  (double) -c[1]);
+            SSR += qPow(((double) y[i] - holder), 2);
+        }
+
+        S2 = SSR / N;
+
+        L = qPow((1.0 / qSqrt(2 * M_PI * S2)), N) * qExp(-SSR / (S2 * 2.0));
+
+        DF = 3;
+
+        aicMyerson = (-2 * qLn(L)) + (2 * DF);
+        bicMyerson = -2 * qLn(L) + qLn(N) * DF;
+        fitMyersonK = (double) c[0];
+        fitMyersonS = (double) c[1];
     }
-
-    S2 = SSR / N;
-
-    L = qPow((1.0 / qSqrt(2 * M_PI * S2)), N) * qExp(-SSR / (S2 * 2.0));
-
-    DF = 3;
-
-    aicMyerson = (-2 * qLn(L)) + (2 * DF);
-    bicMyerson = -2 * qLn(L) + qLn(N) * DF;
-    fitMyersonK = (double) c[0];
-    fitMyersonS = (double) c[1];
 }
 
 /** Beta delta
@@ -443,6 +449,105 @@ QString ModelSelection::getED50BestModel(QString model)
     {
         return QString("NA");
     }
+}
+
+QStringList ModelSelection::getAUCAllModels()
+{
+    double a = x[0][0];
+    double b = x[x.rows() - 1][0];
+
+    QStringList mReturn;
+    mReturn.clear();
+
+    QString model = "";
+
+    QList<double> mParams;
+    autogkstate s;
+    double v;
+    autogkreport rep;
+
+    double result;
+
+    for (int i=0; i<mProbList.count(); i++)
+    {
+        model = mProbList[i].first;
+
+        if (model.contains("Exponential", Qt::CaseInsensitive))
+        {
+            mParams << fitExponentialK;
+
+            autogksmooth(a, b, s);
+            alglib::autogkintegrate(s, exponential_integration, &mParams);
+            autogkresults(s, v, rep);
+
+            result = double(v) / (b - a);
+
+            mReturn << QString::number(result, 'G', 6);
+            mReturn << QString::number(mProbList[i].second, 'G', 6);
+        }
+        else if (model.contains("Hyperbolic", Qt::CaseInsensitive))
+        {
+            mParams << fitHyperbolicK;
+
+            autogksmooth(a, b, s);
+            alglib::autogkintegrate(s, hyperbolic_integration, &mParams);
+            autogkresults(s, v, rep);
+
+            result = double(v) / (b - a);
+
+            mReturn << QString::number(result, 'G', 6);
+            mReturn << QString::number(mProbList[i].second, 'G', 6);
+        }
+        else if (model.contains("Beta", Qt::CaseInsensitive))
+        {
+            mParams << fitQuasiHyperbolicBeta;
+            mParams << fitQuasiHyperbolicDelta;
+
+            autogksmooth(a, b, s);
+            alglib::autogkintegrate(s, quasi_hyperboloid_integration, &mParams);
+            autogkresults(s, v, rep);
+
+            result = double(v) / (b - a);
+
+            mReturn << QString::number(result, 'G', 6);
+            mReturn << QString::number(mProbList[i].second, 'G', 6);
+        }
+        else if (model.contains("Myerson", Qt::CaseInsensitive))
+        {
+            mParams << fitMyersonK;
+            mParams << fitMyersonS;
+
+            autogksmooth(a, b, s);
+            alglib::autogkintegrate(s, hyperboloid_myerson_integration, &mParams);
+            autogkresults(s, v, rep);
+
+            result = double(v) / (b - a);
+
+            mReturn << QString::number(result, 'G', 6);
+            mReturn << QString::number(mProbList[i].second, 'G', 6);
+        }
+        else if (model.contains("Rachlin", Qt::CaseInsensitive))
+        {
+            mParams << fitRachlinK;
+            mParams << fitRachlinS;
+
+            autogksmooth(a, b, s);
+            alglib::autogkintegrate(s, hyperboloid_rachlin_integration, &mParams);
+            autogkresults(s, v, rep);
+
+            result = double(v) / (b - a);
+
+            mReturn << QString::number(result, 'G', 6);
+            mReturn << QString::number(mProbList[i].second, 'G', 6);
+        }
+        else
+        {
+            mReturn << QString::number(GetNoiseMean(), 'G', 6);
+            mReturn << QString::number(mProbList[i].second, 'G', 6);
+        }
+    }
+
+    return mReturn;
 }
 
 QString ModelSelection::getAUCBestModel(QString model)
