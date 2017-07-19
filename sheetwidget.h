@@ -80,7 +80,6 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDomDocument>
-//#include "modelselection.h"
 #include "systematicchekdialog.h"
 
 #include "sheetselectdialog.h"
@@ -242,8 +241,6 @@ private:
     QString curFile;
 
     QAction *separatorAct;
-
-    //ModelSelection *mObj;
 
     QString mXString;
     QString mYString;

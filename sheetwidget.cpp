@@ -104,15 +104,6 @@
 
 QTXLSX_USE_NAMESPACE
 
-struct QPairSecondComparer
-{
-    template<typename T1, typename T2>
-    bool operator()(const QPair<T1,T2> &one, const QPair<T1,T2> &two) const
-    {
-        return one.second > two.second;
-    }
-};
-
 SheetWidget::SheetWidget(QWidget *parent) : QMainWindow(parent)
 {
     table = new QTableWidget(10001, 10001, this);
@@ -156,7 +147,6 @@ SheetWidget::SheetWidget(QWidget *parent) : QMainWindow(parent)
 
     #endif
 
-    //mObj = new ModelSelection();
     table->installEventFilter( this );
 
     manager = new QNetworkAccessManager(this);
@@ -1494,9 +1484,6 @@ void SheetWidget::Calculate(QString scriptName,
         mStoredValueHolder.clear();
         mStoredValueHolder << mXString << mYString << delayPointsTemp.join(",") << valuePoints.join(",");
 
-        //resultsList << delayPointsTemp.join(",");
-        //resultsList << valuePoints.join(",");
-
         mStoredValues << mStoredValueHolder;
     }
 
@@ -1550,7 +1537,6 @@ void SheetWidget::WorkFinished()
     {
         discountingAreaDialog->ToggleButton(true);
         discountingAreaDialog->setEnabled(true);
-        //discountingAreaDialog->showMinimized();
 
         resultsDialog->ImportDataAndShow(tripLogNormal, "AUC.mostprob");
     }
@@ -1558,7 +1544,6 @@ void SheetWidget::WorkFinished()
     {
         discountingED50Dialog->ToggleButton(true);
         discountingED50Dialog->setEnabled(true);
-        //discountingED50Dialog->showMinimized();
 
         resultsDialog->ImportDataAndShow(tripLogNormal, "lnED50.mostprob");
     }
