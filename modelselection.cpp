@@ -873,6 +873,46 @@ QString ModelSelection::getAUCBestModel(QString model)
 
         return QString::number(result);
     }
+    else if (model.contains("Rodriguez", Qt::CaseInsensitive))
+    {
+        mParams << fitRodriguezLogueK;
+        mParams << fitRodriguezLogueBeta;
+
+        autogksmooth(a, b, s);
+        alglib::autogkintegrate(s, generalized_hyperboloid_integration, &mParams);
+        autogkresults(s, v, rep);
+
+        result = double(v) / (b - a);
+
+        return QString::number(result);
+    }
+    else if (model.contains("Ebert", Qt::CaseInsensitive))
+    {
+        mParams << fitEbertPrelecK;
+        mParams << fitEbertPrelecS;
+
+        autogksmooth(a, b, s);
+        alglib::autogkintegrate(s, ebert_prelec_integration, &mParams);
+        autogkresults(s, v, rep);
+
+        result = double(v) / (b - a);
+
+        return QString::number(result);
+    }
+    else if (model.contains("Bleichrodt", Qt::CaseInsensitive))
+    {
+        mParams << fitBleichrodtK;
+        mParams << fitBleichrodtS;
+        mParams << fitBleichrodtBeta;
+
+        autogksmooth(a, b, s);
+        alglib::autogkintegrate(s, bleichrodt_integration, &mParams);
+        autogkresults(s, v, rep);
+
+        result = double(v) / (b - a);
+
+        return QString::number(result);
+    }
     else
     {
         return QString("NA");
