@@ -49,6 +49,9 @@ CalculationWorker::CalculationWorker(QList<QPair<QString, QString> > mJohnsonBic
     runLocalBetaDelta = calculationSettings->modelQuasiHyperbolic;
     runLocalMyersonGreen = calculationSettings->modelMyersonGreen;
     runLocalRachlin = calculationSettings->modelRachlin;
+    runLocalRodriguezLogue = calculationSettings->modelRodriguezLogue;
+    runLocalEbertPrelec = calculationSettings->modelEbertPrelec;
+    runLocalBleicholdt = calculationSettings->modelBleichrodt;
 
     runLogarithmicResults = calculationSettings->logNormalParameters;
 
@@ -105,17 +108,14 @@ void CalculationWorker::working()
                 mFittingObject->mBicList.append(QPair<QString, double>("Exponential", mFittingObject->bicExponential));
             }
 
-            fitResult = new FitResult(ModelType::Exponential);
+            fitResultExponential = new FitResult(ModelType::Exponential);
 
             double lnK = (runLogarithmicResults) ? exp(mFittingObject->fitExponentialK) : mFittingObject->fitExponentialK;
-            fitResult->Params.append(QPair<QString, double>(QString("Exponential K"), lnK));
-            fitResult->RMS = mFittingObject->GetReport().rmserror;
-            fitResult->AIC = mFittingObject->aicExponential;
-            fitResult->BIC = mFittingObject->bicExponential;
-            fitResult->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
-
-            fitResults->FittingResults.append(fitResult);
-
+            fitResultExponential->Params.append(QPair<QString, double>(QString("Exponential K"), lnK));
+            fitResultExponential->RMS = mFittingObject->GetReport().rmserror;
+            fitResultExponential->AIC = mFittingObject->aicExponential;
+            fitResultExponential->BIC = mFittingObject->bicExponential;
+            fitResultExponential->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
         }
 
         if (runLocalHyperbolic)
@@ -127,16 +127,14 @@ void CalculationWorker::working()
                 mFittingObject->mBicList.append(QPair<QString, double>("Hyperbolic", mFittingObject->bicHyperbolic));
             }
 
-            fitResult = new FitResult(ModelType::Hyperbolic);
+            fitResultHyperbolic = new FitResult(ModelType::Hyperbolic);
 
             double lnK = (runLogarithmicResults) ? exp(mFittingObject->fitHyperbolicK) : mFittingObject->fitHyperbolicK;
-            fitResult->Params.append(QPair<QString, double>(QString("Hyperbolic K"), lnK));
-            fitResult->RMS = mFittingObject->GetReport().rmserror;
-            fitResult->AIC = mFittingObject->bicHyperbolic;
-            fitResult->BIC = mFittingObject->aicHyperbolic;
-            fitResult->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
-
-            fitResults->FittingResults.append(fitResult);
+            fitResultHyperbolic->Params.append(QPair<QString, double>(QString("Hyperbolic K"), lnK));
+            fitResultHyperbolic->RMS = mFittingObject->GetReport().rmserror;
+            fitResultHyperbolic->AIC = mFittingObject->bicHyperbolic;
+            fitResultHyperbolic->BIC = mFittingObject->aicHyperbolic;
+            fitResultHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
         }
 
         if (runLocalBetaDelta)
@@ -148,16 +146,14 @@ void CalculationWorker::working()
                 mFittingObject->mBicList.append(QPair<QString, double>("Beta Delta", mFittingObject->bicQuasiHyperbolic));
             }
 
-            fitResult = new FitResult(ModelType::BetaDelta);
+            fitResultBetaDelta = new FitResult(ModelType::BetaDelta);
 
-            fitResult->Params.append(QPair<QString, double>(QString("BetaDelta Beta"), mFittingObject->fitQuasiHyperbolicBeta));
-            fitResult->Params.append(QPair<QString, double>(QString("BetaDelta Delta"), mFittingObject->fitQuasiHyperbolicDelta));
-            fitResult->RMS = mFittingObject->GetReport().rmserror;
-            fitResult->AIC = mFittingObject->bicQuasiHyperbolic;
-            fitResult->BIC = mFittingObject->aicQuasiHyperbolic;
-            fitResult->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
-
-            fitResults->FittingResults.append(fitResult);
+            fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Beta"), mFittingObject->fitQuasiHyperbolicBeta));
+            fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Delta"), mFittingObject->fitQuasiHyperbolicDelta));
+            fitResultBetaDelta->RMS = mFittingObject->GetReport().rmserror;
+            fitResultBetaDelta->AIC = mFittingObject->bicQuasiHyperbolic;
+            fitResultBetaDelta->BIC = mFittingObject->aicQuasiHyperbolic;
+            fitResultBetaDelta->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
         }
 
         if (runLocalMyersonGreen)
@@ -169,16 +165,14 @@ void CalculationWorker::working()
                 mFittingObject->mBicList.append(QPair<QString, double>("Myerson Hyperbola", mFittingObject->bicMyerson));
             }
 
-            fitResult = new FitResult(ModelType::Myerson);
+            fitResultGreenMyerson = new FitResult(ModelType::Myerson);
 
-            fitResult->Params.append(QPair<QString, double>(QString("Myerson K"), mFittingObject->fitMyersonK));
-            fitResult->Params.append(QPair<QString, double>(QString("Myerson S"), mFittingObject->fitMyersonS));
-            fitResult->RMS = mFittingObject->GetReport().rmserror;
-            fitResult->AIC = mFittingObject->bicMyerson;
-            fitResult->BIC = mFittingObject->aicMyerson;
-            fitResult->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
-
-            fitResults->FittingResults.append(fitResult);
+            fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson K"), mFittingObject->fitMyersonK));
+            fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson S"), mFittingObject->fitMyersonS));
+            fitResultGreenMyerson->RMS = mFittingObject->GetReport().rmserror;
+            fitResultGreenMyerson->AIC = mFittingObject->bicMyerson;
+            fitResultGreenMyerson->BIC = mFittingObject->aicMyerson;
+            fitResultGreenMyerson->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
         }
 
         if (runLocalRachlin)
@@ -187,11 +181,9 @@ void CalculationWorker::working()
 
             if (boundRachlinModel && mFittingObject->GetParams()[1] > 1)
             {
-                fitResult = new FitResult(ModelType::Rachlin);
+                fitResultRachlin = new FitResult(ModelType::Rachlin);
 
-                fitResult->Status = "Exceeded Bounds";
-
-                fitResults->FittingResults.append(fitResult);
+                fitResultRachlin->Status = "Exceeded Bounds";
             }
             else
             {
@@ -200,72 +192,94 @@ void CalculationWorker::working()
                     mFittingObject->mBicList.append(QPair<QString, double>("Rachlin Hyperbola", mFittingObject->bicRachlin));
                 }
 
-                fitResult = new FitResult(ModelType::Rachlin);
+                fitResultRachlin = new FitResult(ModelType::Rachlin);
 
-                fitResult->Params.append(QPair<QString, double>(QString("Rachlin K"), mFittingObject->fitRachlinK));
-                fitResult->Params.append(QPair<QString, double>(QString("Rachlin S"), mFittingObject->fitRachlinS));
-                fitResult->RMS = mFittingObject->GetReport().rmserror;
-                fitResult->AIC = mFittingObject->bicRachlin;
-                fitResult->BIC = mFittingObject->aicRachlin;
-                fitResult->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
-
-                fitResults->FittingResults.append(fitResult);
+                fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin K"), mFittingObject->fitRachlinK));
+                fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin S"), mFittingObject->fitRachlinS));
+                fitResultRachlin->RMS = mFittingObject->GetReport().rmserror;
+                fitResultRachlin->AIC = mFittingObject->bicRachlin;
+                fitResultRachlin->BIC = mFittingObject->aicRachlin;
+                fitResultRachlin->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
+        }
+
+        if (runLocalRodriguezLogue)
+        {
+            mFittingObject->FitRodriguezLogue("[0.3, 0.3]");
+
+            if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
+            {
+                mFittingObject->mBicList.append(QPair<QString, double>("Rodriguez-Logue", mFittingObject->bicRodriguezLogue));
+            }
+
+            fitResultRodriguezLogue = new FitResult(ModelType::RodriguezLogue);
+
+            fitResultRodriguezLogue->Params.append(QPair<QString, double>(QString("Rodriguez-Logue K"), mFittingObject->fitRodriguezLogueK));
+            fitResultRodriguezLogue->Params.append(QPair<QString, double>(QString("Rodriguez-Logue Beta"), mFittingObject->fitRodriguezLogueBeta));
+            fitResultRodriguezLogue->RMS = mFittingObject->GetReport().rmserror;
+            fitResultRodriguezLogue->AIC = mFittingObject->bicRodriguezLogue;
+            fitResultRodriguezLogue->BIC = mFittingObject->aicRodriguezLogue;
+            fitResultRodriguezLogue->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
         }
 
         mFittingObject->FitNoise();
         mFittingObject->NoiseBIC = mFittingObject->bicNoise;
 
-        fitResult = new FitResult(ModelType::Noise);
-        fitResult->Params.append(QPair<QString, double>(QString("Noise mean"), mFittingObject->GetNoiseMean()));
-        fitResult->RMS = mFittingObject->GetReport().rmserror;
-        fitResult->AIC = mFittingObject->aicExponential;
-        fitResult->BIC = mFittingObject->bicExponential;
-        fitResult->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
-
-        fitResults->FittingResults.append(fitResult);
+        fitResultNoise = new FitResult(ModelType::Noise);
+        fitResultNoise->Params.append(QPair<QString, double>(QString("Noise mean"), mFittingObject->GetNoiseMean()));
+        fitResultNoise->RMS = mFittingObject->GetReport().rmserror;
+        fitResultNoise->AIC = mFittingObject->aicExponential;
+        fitResultNoise->BIC = mFittingObject->bicExponential;
+        fitResultNoise->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
 
         mFittingObject->PrepareProbabilities();
 
         qSort(mFittingObject->mProbList.begin(), mFittingObject->mProbList.end(), QPairSecondComparer());
 
-        for (int i=0; i<fitResults->FittingResults.length(); i++)
+        fitResultNoise->BF = mFittingObject->bfNoise;
+        fitResultNoise->Probability = mFittingObject->probsNoise;
+            fitResults->FittingResults.append(fitResultNoise);
+
+        if (runLocalExponential)
         {
-            if (fitResults->FittingResults[i]->Model == ModelType::Noise)
-            {
-                fitResults->FittingResults[i]->BF = mFittingObject->bfNoise;
-                fitResults->FittingResults[i]->Probability = mFittingObject->probsNoise;
-            }
+            fitResultExponential->BF = mFittingObject->bfExponential;
+            fitResultExponential->Probability = mFittingObject->probsExponential;
+                fitResults->FittingResults.append(fitResultExponential);
+        }
 
-            if (fitResults->FittingResults[i]->Model == ModelType::Exponential)
-            {
-                fitResults->FittingResults[i]->BF = mFittingObject->bfExponential;
-                fitResults->FittingResults[i]->Probability = mFittingObject->probsExponential;
-            }
+        if (runLocalHyperbolic)
+        {
+            fitResultHyperbolic->BF = mFittingObject->bfHyperbolic;
+            fitResultHyperbolic->Probability = mFittingObject->probsHyperbolic;
+                fitResults->FittingResults.append(fitResultHyperbolic);
+        }
 
-            if (fitResults->FittingResults[i]->Model == ModelType::Hyperbolic)
-            {
-                fitResults->FittingResults[i]->BF = mFittingObject->bfHyperbolic;
-                fitResults->FittingResults[i]->Probability = mFittingObject->probsHyperbolic;
-            }
+        if (runLocalBetaDelta)
+        {
+            fitResultBetaDelta->BF = mFittingObject->bfQuasiHyperbolic;
+            fitResultBetaDelta->Probability = mFittingObject->probsQuasiHyperbolic;
+                fitResults->FittingResults.append(fitResultBetaDelta);
+        }
 
-            if (fitResults->FittingResults[i]->Model == ModelType::BetaDelta)
-            {
-                fitResults->FittingResults[i]->BF = mFittingObject->bfQuasiHyperbolic;
-                fitResults->FittingResults[i]->Probability = mFittingObject->probsQuasiHyperbolic;
-            }
+        if (runLocalMyersonGreen)
+        {
+            fitResultGreenMyerson->BF = mFittingObject->bfMyerson;
+            fitResultGreenMyerson->Probability = mFittingObject->probsMyerson;
+                fitResults->FittingResults.append(fitResultGreenMyerson);
+        }
 
-            if (fitResults->FittingResults[i]->Model == ModelType::Myerson)
-            {
-                fitResults->FittingResults[i]->BF = mFittingObject->bfMyerson;
-                fitResults->FittingResults[i]->Probability = mFittingObject->probsMyerson;
-            }
+        if (runLocalRachlin)
+        {
+            fitResultRachlin->BF = mFittingObject->bfRachlin;
+            fitResultRachlin->Probability = mFittingObject->probsRachlin;
+                fitResults->FittingResults.append(fitResultRachlin);
+        }
 
-            if (fitResults->FittingResults[i]->Model == ModelType::Rachlin)
-            {
-                fitResults->FittingResults[i]->BF = mFittingObject->bfRachlin;
-                fitResults->FittingResults[i]->Probability = mFittingObject->probsRachlin;
-            }
+        if (runLocalRodriguezLogue)
+        {
+            fitResultRodriguezLogue->BF = mFittingObject->bfRodriguezLogue;
+            fitResultRodriguezLogue->Probability = mFittingObject->probsRodriguezLogue;
+                fitResults->FittingResults.append(fitResultRodriguezLogue);
         }
 
         QString model = mFittingObject->mProbList.first().first;

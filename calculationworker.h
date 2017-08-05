@@ -47,13 +47,23 @@ private:
     ModelSelection *mFittingObject;
 
     FitResults *fitResults;
-    FitResult *fitResult;
+
+    FitResult *fitResultExponential,
+              *fitResultHyperbolic,
+              *fitResultBetaDelta,
+              *fitResultGreenMyerson,
+              *fitResultRachlin,
+              *fitResultRodriguezLogue,
+              *fitResultNoise;
 
     bool runLocalHyperbolic,
          runLocalExponential,
          runLocalBetaDelta,
          runLocalMyersonGreen,
-         runLocalRachlin;
+         runLocalRachlin,
+         runLocalRodriguezLogue,
+         runLocalEbertPrelec,
+         runLocalBleicholdt;
 
     bool runLogarithmicResults;
     bool boundRachlinModel;

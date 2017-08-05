@@ -55,6 +55,8 @@
 #include "optimization.h"
 #include "integration.h"
 
+#include <QDebug>
+
 using namespace alglib;
 
 void exponential_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
@@ -391,7 +393,7 @@ void ModelSelection::FitRachlin(const char *mStarts)
     fitRachlinS = (double) c[1];
 }
 
-/** Hyperboloid Rachlin
+/** Rodriguez Logue Model
   *  @brief
   */
 void ModelSelection::FitRodriguezLogue(const char *mStarts)
@@ -684,6 +686,7 @@ void ModelSelection::PrepareProbabilities()
     bfQuasiHyperbolic = -1;
     bfMyerson = -1;
     bfRachlin = -1;
+    bfRodriguezLogue = -1;
 
     sumBayesFactors = 0;
 
@@ -731,6 +734,7 @@ void ModelSelection::PrepareProbabilities()
     probsQuasiHyperbolic = -1;
     probsMyerson = -1;
     probsRachlin = -1;
+    probsRodriguezLogue = -1;
 
     mProbList.clear();
     mProbList.append(QPair<QString, double>("Noise Model", probsNoise));
@@ -767,7 +771,7 @@ void ModelSelection::PrepareProbabilities()
         else if (mModel.contains("Rodriguez", Qt::CaseInsensitive))
         {
             probsRodriguezLogue = bfRodriguezLogue/sumBayesFactors;
-            mProbList.append(QPair<QString, double>("RodriguezLogue Model", probsRodriguezLogue));
+            mProbList.append(QPair<QString, double>("Rodriguez-Logue Model", probsRodriguezLogue));
         }
     }
 }
