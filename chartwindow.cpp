@@ -57,8 +57,6 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, bool is
         }
     }
 
-    qDebug() << "last delay: " << lastDelay;
-
     QVBoxLayout *windowLayout = new QVBoxLayout;
 
     currentIndexShown = 0;
@@ -226,6 +224,18 @@ void ChartWindow::buildED50Plot()
     rachSeries->setName("Rachlin");
     chart->addSeries(rachSeries);
 
+    rodriguezSeries = new QLineSeries();
+    rodriguezSeries->setName("Rodriguez");
+    chart->addSeries(rodriguezSeries);
+
+    ebertSeries = new QLineSeries();
+    ebertSeries->setName("Ebert");
+    chart->addSeries(ebertSeries);
+
+    bleichrodtSeries = new QLineSeries();
+    bleichrodtSeries->setName("Bleichrodt");
+    chart->addSeries(bleichrodtSeries);
+
     noiseSeries = new QLineSeries();
     noiseSeries->setName("Noise");
     noiseSeries->setPen(QPen(Qt::black));
@@ -255,6 +265,15 @@ void ChartWindow::buildED50Plot()
 
     chart->setAxisX(axisX, rachSeries);
     chart->setAxisY(axisY, rachSeries);
+
+    chart->setAxisX(axisX, rodriguezSeries);
+    chart->setAxisY(axisY, rodriguezSeries);
+
+    chart->setAxisX(axisX, ebertSeries);
+    chart->setAxisY(axisY, ebertSeries);
+
+    chart->setAxisX(axisX, bleichrodtSeries);
+    chart->setAxisY(axisY, bleichrodtSeries);
 
     chart->setAxisX(axisX, noiseSeries);
     chart->setAxisY(axisY, noiseSeries);
@@ -447,6 +466,9 @@ void ChartWindow::plotED50Series(int index)
     //rachSeries->setName(QString("Rachlin<br>(%1)").arg(mList[37]));
     noiseSeries->clear();
     //noiseSeries->setName(QString("Noise<br>(%1)").arg(mList[44]));
+    rodriguezSeries->clear();
+    ebertSeries->clear();
+    bleichrodtSeries->clear();
     dataPoints->clear();
 
     if (mList.Header.contains("dropped", Qt::CaseInsensitive))
@@ -458,14 +480,13 @@ void ChartWindow::plotED50Series(int index)
 
     chart->setTitle(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopED50));
 
-    expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = false;
+    expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
 
     for (int i=0; i<mList.FittingResults.length(); i++)
     {
         if (mList.FittingResults[i]->Model == ModelType::Noise)
         {
             noise = mList.FittingResults[i]->Params.first().second;
-            qDebug() << "found noise";
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Exponential)
@@ -500,6 +521,28 @@ void ChartWindow::plotED50Series(int index)
             rachK = mList.FittingResults[i]->Params.first().second;
             rachS = mList.FittingResults[i]->Params.last().second;
         }
+
+        if (mList.FittingResults[i]->Model == ModelType::RodriguezLogue)
+        {
+            rodriguezCheck = true;
+            rodriguezK = mList.FittingResults[i]->Params.first().second;
+            rodriguezS = mList.FittingResults[i]->Params.last().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::EbertPrelec)
+        {
+            ebertCheck = true;
+            ebertK = mList.FittingResults[i]->Params.first().second;
+            ebertS = mList.FittingResults[i]->Params.last().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Beleichrodt)
+        {
+            bleichrodtCheck = true;
+            bleichrodtK = mList.FittingResults[i]->Params.first().second;
+            bleichrodtS = mList.FittingResults[i]->Params[1].second;
+            bleichrodtBeta = mList.FittingResults[i]->Params.last().second;
+        }
     }
 
     for (int i = 1; i < int(lastDelay); i++)
@@ -531,6 +574,21 @@ void ChartWindow::plotED50Series(int index)
         if (rachCheck)
         {
             *rachSeries << QPointF(xParam, rachlin_plotting(rachK, rachS, xParam));
+        }
+
+        if (rodriguezCheck)
+        {
+            *rodriguezSeries << QPointF(xParam, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
+        }
+
+        if (ebertCheck)
+        {
+            *ebertSeries << QPointF(xParam, ebert_prelec_plotting(ebertK, ebertS, xParam));
+        }
+
+        if (bleichrodtCheck)
+        {
+            *bleichrodtSeries << QPointF(xParam, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
         }
 
         if (i > 10 && i < 100)
@@ -621,6 +679,21 @@ double ChartWindow::rachlin_plotting(double k, double s, double x)
     {
         return pow((1+exp(k)*pow(x, s)), -1);
     }
+}
+
+double ChartWindow::rodriguez_logue_plotting(double k, double s, double x)
+{
+    return pow((1 + x * exp(k)),(-exp(s) / exp(k)));
+}
+
+double ChartWindow::ebert_prelec_plotting(double k, double s, double x)
+{
+    return exp(-pow((exp(k)*x),s));
+}
+
+double ChartWindow::bleichrodt_plotting(double k, double s, double beta, double x)
+{
+    return beta * exp(-exp(k)*pow(x,s));
 }
 
 bool ChartWindow::eventFilter(QObject *object, QEvent *e)
