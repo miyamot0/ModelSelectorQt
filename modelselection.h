@@ -65,6 +65,7 @@ public:
     void FitMyerson(const char *mStarts);
     void FitRachlin(const char *mStarts);
     void FitRodriguezLogue(const char *mStarts);
+    void FitEbertPrelec(const char *mStarts);
 
     void PrepareProbabilities();
 
@@ -83,6 +84,7 @@ public:
     double aicMyerson = -1;
     double aicRachlin = -1;
     double aicRodriguezLogue  = -1;
+    double aicEbertPrelec  = -1;
 
     /** BICs
      *
@@ -94,6 +96,7 @@ public:
     double bicMyerson = -1;
     double bicRachlin = -1;
     double bicRodriguezLogue = -1;
+    double bicEbertPrelec  = -1;
 
     /** Bayes Factors
       *
@@ -105,6 +108,7 @@ public:
     double bfMyerson = -1;
     double bfRachlin = -1;
     double bfRodriguezLogue = -1;
+    double bfEbertPrelec  = -1;
 
     /** Probs
       *
@@ -116,6 +120,7 @@ public:
     double probsMyerson = -1;
     double probsRachlin = -1;
     double probsRodriguezLogue = -1;
+    double probsEbertPrelec  = -1;
 
     /** Fits
       *
@@ -130,6 +135,8 @@ public:
     double fitRachlinS = -1;
     double fitRodriguezLogueK = -1;
     double fitRodriguezLogueBeta = -1;
+    double fitEbertPrelecK = -1;
+    double fitEbertPrelecS = -1;
 
 private:
     real_2d_array x;

@@ -136,6 +136,19 @@ void hyperboloid_rachlin_integration(double x, double xminusa, double bminusx, d
     y = pow((1+exp(k)*pow(x, s)), -1);
 }
 
+void ebert_prelec_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+{
+    func = exp(-pow((exp(c[0])*x[0]),c[1]));
+}
+
+void ebert_prelec_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+{
+    QList<double> *param = (QList<double> *) ptr;
+    double k = param->at(0);
+    double s = param->at(1);
+    y = exp(pow(-(exp(k)*x), s));
+}
+
 void ModelSelection::SetX(const char *mString)
 {
     x = mString;
@@ -428,6 +441,41 @@ void ModelSelection::FitRodriguezLogue(const char *mStarts)
     fitRodriguezLogueBeta = (double) c[1];
 }
 
+/** Ebert Model
+  *  @brief
+  */
+void ModelSelection::FitEbertPrelec(const char *mStarts)
+{
+    SetStarts(mStarts);
+
+    lsfitcreatef(x, y, c, diffstep, state);
+    lsfitsetcond(state, epsx, maxits);
+
+    alglib::lsfitfit(state, ebert_prelec_discounting);
+
+    lsfitresults(state, info, c, rep);
+
+    N = y.length();
+    SSR = 0;
+
+    for (int i = 0; i < N; i++)
+    {
+        holder = exp(-pow((exp(c[0])*x[i][0]), c[1]));
+        SSR += pow(((double) y[i] - holder), 2);
+    }
+
+    S2 = SSR / N;
+
+    L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
+
+    DF = 3;
+
+    aicEbertPrelec = (-2 * log(L)) + (2 * DF);
+    bicEbertPrelec = -2 * log(L) + log(N) * DF;
+    fitEbertPrelecK = (double) c[0];
+    fitEbertPrelecS = (double) c[1];
+}
+
 double ScaleFactor(double modelBic, double noiseBic)
 {
     return exp(-0.5 * (modelBic - noiseBic));
@@ -687,6 +735,7 @@ void ModelSelection::PrepareProbabilities()
     bfMyerson = -1;
     bfRachlin = -1;
     bfRodriguezLogue = -1;
+    bfEbertPrelec = -1;
 
     sumBayesFactors = 0;
 
@@ -726,6 +775,11 @@ void ModelSelection::PrepareProbabilities()
             bfRodriguezLogue = ScaleFactor(mBicList[i].second, NoiseBIC);
             sumBayesFactors = sumBayesFactors + bfRodriguezLogue;
         }
+        else if (mModel.contains("Ebert", Qt::CaseInsensitive))
+        {
+            bfEbertPrelec = ScaleFactor(mBicList[i].second, NoiseBIC);
+            sumBayesFactors = sumBayesFactors + bfEbertPrelec;
+        }
     }
 
     probsNoise = bfNoise/sumBayesFactors;
@@ -735,6 +789,7 @@ void ModelSelection::PrepareProbabilities()
     probsMyerson = -1;
     probsRachlin = -1;
     probsRodriguezLogue = -1;
+    probsEbertPrelec = -1;
 
     mProbList.clear();
     mProbList.append(QPair<QString, double>("Noise Model", probsNoise));
@@ -772,6 +827,11 @@ void ModelSelection::PrepareProbabilities()
         {
             probsRodriguezLogue = bfRodriguezLogue/sumBayesFactors;
             mProbList.append(QPair<QString, double>("Rodriguez-Logue Model", probsRodriguezLogue));
+        }
+        else if (mModel.contains("Ebert", Qt::CaseInsensitive))
+        {
+            probsEbertPrelec = bfEbertPrelec/sumBayesFactors;
+            mProbList.append(QPair<QString, double>("Ebert-Prelec Model", probsEbertPrelec));
         }
     }
 }

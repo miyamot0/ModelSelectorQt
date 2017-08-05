@@ -101,7 +101,7 @@ void CalculationWorker::working()
 
         if (runLocalExponential)
         {
-            mFittingObject->FitExponential("[0.3]");
+            mFittingObject->FitExponential("[-5]");
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
@@ -120,7 +120,7 @@ void CalculationWorker::working()
 
         if (runLocalHyperbolic)
         {
-            mFittingObject->FitHyperbolic("[0.3]");
+            mFittingObject->FitHyperbolic("[-5]");
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
@@ -132,8 +132,8 @@ void CalculationWorker::working()
             double lnK = (runLogarithmicResults) ? exp(mFittingObject->fitHyperbolicK) : mFittingObject->fitHyperbolicK;
             fitResultHyperbolic->Params.append(QPair<QString, double>(QString("Hyperbolic K"), lnK));
             fitResultHyperbolic->RMS = mFittingObject->GetReport().rmserror;
-            fitResultHyperbolic->AIC = mFittingObject->bicHyperbolic;
-            fitResultHyperbolic->BIC = mFittingObject->aicHyperbolic;
+            fitResultHyperbolic->AIC = mFittingObject->aicHyperbolic;
+            fitResultHyperbolic->BIC = mFittingObject->bicHyperbolic;
             fitResultHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
         }
 
@@ -151,14 +151,14 @@ void CalculationWorker::working()
             fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Beta"), mFittingObject->fitQuasiHyperbolicBeta));
             fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Delta"), mFittingObject->fitQuasiHyperbolicDelta));
             fitResultBetaDelta->RMS = mFittingObject->GetReport().rmserror;
-            fitResultBetaDelta->AIC = mFittingObject->bicQuasiHyperbolic;
-            fitResultBetaDelta->BIC = mFittingObject->aicQuasiHyperbolic;
+            fitResultBetaDelta->AIC = mFittingObject->aicQuasiHyperbolic;
+            fitResultBetaDelta->BIC = mFittingObject->bicQuasiHyperbolic;
             fitResultBetaDelta->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
         }
 
         if (runLocalMyersonGreen)
         {
-            mFittingObject->FitMyerson("[0.3, 0.3]");
+            mFittingObject->FitMyerson("[-5, 0.3]");
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
@@ -170,14 +170,14 @@ void CalculationWorker::working()
             fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson K"), mFittingObject->fitMyersonK));
             fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson S"), mFittingObject->fitMyersonS));
             fitResultGreenMyerson->RMS = mFittingObject->GetReport().rmserror;
-            fitResultGreenMyerson->AIC = mFittingObject->bicMyerson;
-            fitResultGreenMyerson->BIC = mFittingObject->aicMyerson;
+            fitResultGreenMyerson->AIC = mFittingObject->aicMyerson;
+            fitResultGreenMyerson->BIC = mFittingObject->bicMyerson;
             fitResultGreenMyerson->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
         }
 
         if (runLocalRachlin)
         {
-            mFittingObject->FitRachlin("[0.3, 0.3]");
+            mFittingObject->FitRachlin("[-5, 0.3]");
 
             if (boundRachlinModel && mFittingObject->GetParams()[1] > 1)
             {
@@ -197,15 +197,15 @@ void CalculationWorker::working()
                 fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin K"), mFittingObject->fitRachlinK));
                 fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin S"), mFittingObject->fitRachlinS));
                 fitResultRachlin->RMS = mFittingObject->GetReport().rmserror;
-                fitResultRachlin->AIC = mFittingObject->bicRachlin;
-                fitResultRachlin->BIC = mFittingObject->aicRachlin;
+                fitResultRachlin->AIC = mFittingObject->aicRachlin;
+                fitResultRachlin->BIC = mFittingObject->bicRachlin;
                 fitResultRachlin->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
         }
 
         if (runLocalRodriguezLogue)
         {
-            mFittingObject->FitRodriguezLogue("[0.3, 0.3]");
+            mFittingObject->FitRodriguezLogue("[-5, 0.3]");
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
@@ -217,9 +217,28 @@ void CalculationWorker::working()
             fitResultRodriguezLogue->Params.append(QPair<QString, double>(QString("Rodriguez-Logue K"), mFittingObject->fitRodriguezLogueK));
             fitResultRodriguezLogue->Params.append(QPair<QString, double>(QString("Rodriguez-Logue Beta"), mFittingObject->fitRodriguezLogueBeta));
             fitResultRodriguezLogue->RMS = mFittingObject->GetReport().rmserror;
-            fitResultRodriguezLogue->AIC = mFittingObject->bicRodriguezLogue;
-            fitResultRodriguezLogue->BIC = mFittingObject->aicRodriguezLogue;
+            fitResultRodriguezLogue->AIC = mFittingObject->aicRodriguezLogue;
+            fitResultRodriguezLogue->BIC = mFittingObject->bicRodriguezLogue;
             fitResultRodriguezLogue->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+        }
+
+        if (runLocalEbertPrelec)
+        {
+            mFittingObject->FitEbertPrelec("[-5.0, 0.5]");
+
+            if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
+            {
+                mFittingObject->mBicList.append(QPair<QString, double>("Ebert-Prelec", mFittingObject->bicEbertPrelec));
+            }
+
+            fitResultEbertPrelec = new FitResult(ModelType::EbertPrelec);
+
+            fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec K"), mFittingObject->fitEbertPrelecK));
+            fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec S"), mFittingObject->fitEbertPrelecS));
+            fitResultEbertPrelec->RMS = mFittingObject->GetReport().rmserror;
+            fitResultEbertPrelec->AIC = mFittingObject->aicEbertPrelec;
+            fitResultEbertPrelec->BIC = mFittingObject->bicEbertPrelec;
+            fitResultEbertPrelec->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
         }
 
         mFittingObject->FitNoise();
@@ -280,6 +299,13 @@ void CalculationWorker::working()
             fitResultRodriguezLogue->BF = mFittingObject->bfRodriguezLogue;
             fitResultRodriguezLogue->Probability = mFittingObject->probsRodriguezLogue;
                 fitResults->FittingResults.append(fitResultRodriguezLogue);
+        }
+
+        if (runLocalEbertPrelec)
+        {
+            fitResultEbertPrelec->BF = mFittingObject->bfEbertPrelec;
+            fitResultEbertPrelec->Probability = mFittingObject->probsEbertPrelec;
+                fitResults->FittingResults.append(fitResultEbertPrelec);
         }
 
         QString model = mFittingObject->mProbList.first().first;

@@ -54,6 +54,7 @@ private:
               *fitResultGreenMyerson,
               *fitResultRachlin,
               *fitResultRodriguezLogue,
+              *fitResultEbertPrelec,
               *fitResultNoise;
 
     bool runLocalHyperbolic,
