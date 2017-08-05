@@ -146,7 +146,22 @@ void ebert_prelec_integration(double x, double xminusa, double bminusx, double &
     QList<double> *param = (QList<double> *) ptr;
     double k = param->at(0);
     double s = param->at(1);
-    y = exp(pow(-(exp(k)*x), s));
+    y = exp(-pow((exp(k)*x), s));
+}
+
+void bleichrodt_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+{
+    func = c[2] * exp(-exp(c[0])*pow(x[0],c[1]));
+}
+
+void bleichrodt_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+{
+    QList<double> *param = (QList<double> *) ptr;
+    double k = param->at(0);
+    double s = param->at(1);
+    double beta = param->at(2);
+
+    y = beta * exp(-exp(k)*pow(x,s));
 }
 
 void ModelSelection::SetX(const char *mString)
@@ -476,6 +491,42 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
     fitEbertPrelecS = (double) c[1];
 }
 
+/** Bleichrodt Model
+  *  @brief
+  */
+void ModelSelection::FitBleichrodt(const char *mStarts)
+{
+    SetStarts(mStarts);
+
+    lsfitcreatef(x, y, c, diffstep, state);
+    lsfitsetcond(state, epsx, maxits);
+
+    alglib::lsfitfit(state, bleichrodt_discounting);
+
+    lsfitresults(state, info, c, rep);
+
+    N = y.length();
+    SSR = 0;
+
+    for (int i = 0; i < N; i++)
+    {
+        holder = c[2] * exp(-exp(c[0])*pow(x[i][0], c[1]));
+        SSR += pow(((double) y[i] - holder), 2);
+    }
+
+    S2 = SSR / N;
+
+    L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
+
+    DF = 4;
+
+    aicBleichrodt = (-2 * log(L)) + (2 * DF);
+    bicBleichrodt = -2 * log(L) + log(N) * DF;
+    fitBleichrodtK = (double) c[0];
+    fitBleichrodtS = (double) c[1];
+    fitBleichrodtBeta = (double) c[2];
+}
+
 double ScaleFactor(double modelBic, double noiseBic)
 {
     return exp(-0.5 * (modelBic - noiseBic));
@@ -736,6 +787,7 @@ void ModelSelection::PrepareProbabilities()
     bfRachlin = -1;
     bfRodriguezLogue = -1;
     bfEbertPrelec = -1;
+    bfBleichrodt = -1;
 
     sumBayesFactors = 0;
 
@@ -779,6 +831,11 @@ void ModelSelection::PrepareProbabilities()
         {
             bfEbertPrelec = ScaleFactor(mBicList[i].second, NoiseBIC);
             sumBayesFactors = sumBayesFactors + bfEbertPrelec;
+        }
+        else if (mModel.contains("Bleichrodt", Qt::CaseInsensitive))
+        {
+            bfBleichrodt = ScaleFactor(mBicList[i].second, NoiseBIC);
+            sumBayesFactors = sumBayesFactors + bfBleichrodt;
         }
     }
 
@@ -832,6 +889,11 @@ void ModelSelection::PrepareProbabilities()
         {
             probsEbertPrelec = bfEbertPrelec/sumBayesFactors;
             mProbList.append(QPair<QString, double>("Ebert-Prelec Model", probsEbertPrelec));
+        }
+        else if (mModel.contains("Bleichrodt", Qt::CaseInsensitive))
+        {
+            probsBleichrodt = bfBleichrodt/sumBayesFactors;
+            mProbList.append(QPair<QString, double>("Bleichrodt Model", probsBleichrodt));
         }
     }
 }

@@ -163,6 +163,16 @@ void ResultsDialog::ImportDataAndShow(bool tripLogNormal, QString metric)
     columnList << "EbertPrelec.prob";
     columnList << "EbertPrelec.notes";
 
+    columnList << "Bleichrodt.k";
+    columnList << "Bleichrodt.s";
+    columnList << "Bleichrodt.beta";
+    columnList << "Bleichrodt.RMSE";
+    columnList << "Bleichrodt.BIC";
+    columnList << "Bleichrodt.AIC";
+    columnList << "Bleichrodt.BF";
+    columnList << "Bleichrodt.prob";
+    columnList << "Bleichrodt.notes";
+
     columnList << "noise.mean";
     columnList << "noise.RMSE";
     columnList << "noise.BIC";
@@ -437,57 +447,96 @@ void ResultsDialog::ImportDataAndShow(bool tripLogNormal, QString metric)
                 ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,54, item);
             }
 
-            if (mResults.FittingResults.at(j)->Model == ModelType::Noise)
+            if (mResults.FittingResults.at(j)->Model == ModelType::Beleichrodt)
             {
                 item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->Params.first().second));
                 item->setFlags(item->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,55, item);
 
-                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->RMS));
+                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->Params[1].second));
                 item->setFlags(item->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,56, item);
 
-                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->BIC));
+                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->Params.last().second));
                 item->setFlags(item->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,57, item);
 
-                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->AIC));
+                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->RMS));
                 item->setFlags(item->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,58, item);
 
-                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->BF));
+                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->BIC));
                 item->setFlags(item->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,59, item);
 
-                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->Probability));
+                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->AIC));
                 item->setFlags(item->flags() ^ Qt::ItemIsEditable);
                 ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,60, item);
+
+                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->BF));
+                item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,61, item);
+
+                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->Probability));
+                item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,62, item);
+
+                item = new QTableWidgetItem(mResults.FittingResults.at(j)->Status);
+                item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,63, item);
+            }
+
+            if (mResults.FittingResults.at(j)->Model == ModelType::Noise)
+            {
+                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->Params.first().second));
+                item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,64, item);
+
+                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->RMS));
+                item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,65, item);
+
+                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->BIC));
+                item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,66, item);
+
+                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->AIC));
+                item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,67, item);
+
+                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->BF));
+                item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,68, item);
+
+                item = new QTableWidgetItem(QString::number(mResults.FittingResults.at(j)->Probability));
+                item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+                ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,69, item);
             }
         }
 
         item = new QTableWidgetItem(mResults.TopModel);
         item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,61, item);
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,70, item);
 
         item = new QTableWidgetItem(mResults.TopED50);
         item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,62, item);
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,71, item);
 
         item = new QTableWidgetItem(mResults.TopAUC);
         item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,63, item);
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,72, item);
 
         item = new QTableWidgetItem(mResults.TopAUCLog);
         item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,64, item);
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,73, item);
 
         item = new QTableWidgetItem(mResults.ParticipantDelays);
         item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,65, item);
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,74, item);
 
         item = new QTableWidgetItem(mResults.ParticipantValues);
         item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,66, item);
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,75, item);
     }
 
     ui->tableWidget->viewport()->update();

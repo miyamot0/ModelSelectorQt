@@ -241,6 +241,26 @@ void CalculationWorker::working()
             fitResultEbertPrelec->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
         }
 
+        if (runLocalBleicholdt)
+        {
+            mFittingObject->FitBleichrodt("[-5.0, 0.5, 0.5]");
+
+            if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
+            {
+                mFittingObject->mBicList.append(QPair<QString, double>("Bleichrodt", mFittingObject->bicBleichrodt));
+            }
+
+            fitResultBleichrodt = new FitResult(ModelType::Beleichrodt);
+
+            fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt K"), mFittingObject->fitBleichrodtK));
+            fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt S"), mFittingObject->fitBleichrodtS));
+            fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt Beta"), mFittingObject->fitBleichrodtBeta));
+            fitResultBleichrodt->RMS = mFittingObject->GetReport().rmserror;
+            fitResultBleichrodt->AIC = mFittingObject->aicBleichrodt;
+            fitResultBleichrodt->BIC = mFittingObject->bicBleichrodt;
+            fitResultBleichrodt->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+        }
+
         mFittingObject->FitNoise();
         mFittingObject->NoiseBIC = mFittingObject->bicNoise;
 
@@ -306,6 +326,13 @@ void CalculationWorker::working()
             fitResultEbertPrelec->BF = mFittingObject->bfEbertPrelec;
             fitResultEbertPrelec->Probability = mFittingObject->probsEbertPrelec;
                 fitResults->FittingResults.append(fitResultEbertPrelec);
+        }
+
+        if (runLocalBleicholdt)
+        {
+            fitResultBleichrodt->BF = mFittingObject->bfBleichrodt;
+            fitResultBleichrodt->Probability = mFittingObject->probsBleichrodt;
+                fitResults->FittingResults.append(fitResultBleichrodt);
         }
 
         QString model = mFittingObject->mProbList.first().first;
