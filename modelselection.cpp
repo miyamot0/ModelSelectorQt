@@ -497,8 +497,10 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
 void ModelSelection::FitBleichrodt(const char *mStarts)
 {
     SetStarts(mStarts);
+    SetLowerUpperBounds("[Inf, Inf, 1.0]", "[-Inf, -Inf, 0.0]");
 
     lsfitcreatef(x, y, c, diffstep, state);
+    lsfitsetbc(state, bndl, bndu);
     lsfitsetcond(state, epsx, maxits);
 
     alglib::lsfitfit(state, bleichrodt_discounting);
