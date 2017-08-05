@@ -58,6 +58,10 @@ public:
     QString getAUCBestModel(QString model);
     QStringList getAUCAllModels();
 
+    double getED50ep();
+    double getED50crdi();
+    double getED50rodriguez();
+
     void FitNoise();
     void FitExponential(const char *mStarts);
     void FitHyperbolic(const char *mStarts);

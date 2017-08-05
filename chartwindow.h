@@ -54,9 +54,9 @@ public:
     double quasi_hyperbolic_plotting(double beta, double delta, double x);
     double myerson_plotting(double k, double s, double x);
     double rachlin_plotting(double k, double s, double x);
-    double rodriguez_logue_plotting(double k, double s, double x);
-    double ebert_prelec_plotting(double k, double s, double x);
-    double bleichrodt_plotting(double k, double s, double beta, double x);
+    double static rodriguez_logue_plotting(double k, double s, double x);
+    double static ebert_prelec_plotting(double k, double s, double x);
+    double static bleichrodt_plotting(double k, double s, double beta, double x);
 
     bool eventFilter(QObject *object, QEvent *e);
 

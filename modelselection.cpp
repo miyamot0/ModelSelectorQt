@@ -46,6 +46,7 @@
 #include "modelselection.h"
 
 #include <iostream>
+#include "chartwindow.h"
 #include "interpolation.h"
 
 #include "stdafx.h"
@@ -594,10 +595,109 @@ QString ModelSelection::getED50BestModel(QString model)
 
         return QString::number(result);
     }
+    else if (model.contains("Ebert", Qt::CaseInsensitive))
+    {
+        double result = getED50ep();
+
+        return QString::number(result);
+    }
+    else if (model.contains("Bleichrodt", Qt::CaseInsensitive))
+    {
+        double result = getED50crdi();
+
+        return QString::number(result);
+    }
+    else if (model.contains("Rodriguez", Qt::CaseInsensitive))
+    {
+        double result = getED50rodriguez();
+
+        return QString::number(result);
+    }
     else
     {
         return QString("NA");
     }
+}
+
+double ModelSelection::getED50ep () {
+    double lowDelay = 0;
+    double highDelay = x[x.rows()-1][0]*10;
+
+    while ((highDelay - lowDelay) > 0.001) {
+      double lowEst = ChartWindow::ebert_prelec_plotting(fitEbertPrelecK, fitEbertPrelecS, lowDelay);
+      double midEst = ChartWindow::ebert_prelec_plotting(fitEbertPrelecK, fitEbertPrelecS, (lowDelay+highDelay)/2);
+      double highEst = ChartWindow::ebert_prelec_plotting(fitEbertPrelecK, fitEbertPrelecS, highDelay);
+
+      if (lowEst > 0.5 && midEst > 0.5) {
+        //Above 50% mark range
+        lowDelay  = (lowDelay+highDelay)/2;
+        highDelay = highDelay;
+
+      } else if (highEst < 0.5 && midEst < 0.5) {
+        //Below 50% mark range
+        lowDelay  = lowDelay;
+        highDelay = (lowDelay+highDelay)/2;
+
+      }
+    }
+
+    double returnValue = log((lowDelay+highDelay)/2);
+
+    return returnValue;
+}
+
+double ModelSelection::getED50crdi () {
+    double lowDelay = 0;
+    double highDelay = x[x.rows()-1][0]*10;
+
+    while ((highDelay - lowDelay) > 0.001) {
+      double lowEst = ChartWindow::bleichrodt_plotting(fitBleichrodtK, fitBleichrodtS, fitBleichrodtBeta, lowDelay);
+      double midEst = ChartWindow::bleichrodt_plotting(fitBleichrodtK, fitBleichrodtS, fitBleichrodtBeta, (lowDelay+highDelay)/2);
+      double highEst = ChartWindow::bleichrodt_plotting(fitBleichrodtK, fitBleichrodtS, fitBleichrodtBeta, highDelay);
+
+      if (lowEst > 0.5 && midEst > 0.5) {
+        //Above 50% mark range
+        lowDelay  = (lowDelay+highDelay)/2;
+        highDelay = highDelay;
+
+      } else if (highEst < 0.5 && midEst < 0.5) {
+        //Below 50% mark range
+        lowDelay  = lowDelay;
+        highDelay = (lowDelay+highDelay)/2;
+
+      }
+    }
+
+    double returnValue = log((lowDelay+highDelay)/2);
+
+    return returnValue;
+}
+
+double ModelSelection::getED50rodriguez () {
+    double lowDelay = 0;
+    double highDelay = x[x.rows()-1][0]*10;
+
+    while ((highDelay - lowDelay) > 0.001) {
+      double lowEst = ChartWindow::rodriguez_logue_plotting(fitRodriguezLogueK, fitRodriguezLogueBeta, lowDelay);
+      double midEst = ChartWindow::rodriguez_logue_plotting(fitRodriguezLogueK, fitRodriguezLogueBeta, (lowDelay+highDelay)/2);
+      double highEst = ChartWindow::rodriguez_logue_plotting(fitRodriguezLogueK, fitRodriguezLogueBeta, highDelay);
+
+      if (lowEst > 0.5 && midEst > 0.5) {
+        //Above 50% mark range
+        lowDelay  = (lowDelay+highDelay)/2;
+        highDelay = highDelay;
+
+      } else if (highEst < 0.5 && midEst < 0.5) {
+        //Below 50% mark range
+        lowDelay  = lowDelay;
+        highDelay = (lowDelay+highDelay)/2;
+
+      }
+    }
+
+    double returnValue = log((lowDelay+highDelay)/2);
+
+    return returnValue;
 }
 
 QStringList ModelSelection::getAUCAllModels()
