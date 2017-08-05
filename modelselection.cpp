@@ -52,11 +52,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include <QtMath>
 #include "optimization.h"
 #include "integration.h"
-
-#include <QDebug>
 
 using namespace alglib;
 
@@ -72,7 +69,7 @@ void exponential_integration(double x, double xminusa, double bminusx, double &y
     y = exp(-exp(k)*x);
 }
 
-void hyperbolic(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+void hyperbolic_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
 {
     func = pow((1+exp(c[0])*x[0]), -1);
 }
@@ -84,7 +81,34 @@ void hyperbolic_integration(double x, double xminusa, double bminusx, double &y,
     y = pow((1+exp(k)*x), -1);
 }
 
-void hyperboloid_myerson(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+void generalized_hyperboloid_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+{
+    func = pow((1 + x[0] * exp(c[0])),(-exp(c[1]) / exp(c[0])));
+}
+
+void generalized_hyperboloid_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+{
+    QList<double> *param = (QList<double> *) ptr;
+    double lnk = param->at(0);
+    double beta = param->at(1);
+
+    y = pow((1 + x * exp(lnk)),(-exp(beta) / exp(lnk)));
+}
+
+void quasi_hyperboloid_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+{
+    func = c[0] * pow(c[1], x[0]);
+}
+
+void quasi_hyperboloid_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+{
+    QList<double> *param = (QList<double> *) ptr;
+    double b = param->at(0);
+    double d = param->at(1);
+    y = b * pow(d, x);
+}
+
+void hyperboloid_myerson_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
 {
     func = pow((1+exp(c[0])*x[0]), -c[1]);
 }
@@ -97,7 +121,7 @@ void hyperboloid_myerson_integration(double x, double xminusa, double bminusx, d
     y = pow((1+exp(k)*x), -s);
 }
 
-void hyperboloid_rachlin(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+void hyperboloid_rachlin_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
 {
     func = pow((1+exp(c[0])*pow(x[0], c[1])), -1);
 }
@@ -108,19 +132,6 @@ void hyperboloid_rachlin_integration(double x, double xminusa, double bminusx, d
     double k = param->at(0);
     double s = param->at(1);
     y = pow((1+exp(k)*pow(x, s)), -1);
-}
-
-void quasi_hyperboloid(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
-{
-    func = c[0] * pow(c[1], x[0]);
-}
-
-void quasi_hyperboloid_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
-{
-    QList<double> *param = (QList<double> *) ptr;
-    double b = param->at(0);
-    double d = param->at(1);
-    y = b * pow(d, x);
 }
 
 void ModelSelection::SetX(const char *mString)
@@ -187,17 +198,17 @@ void ModelSelection::FitNoise()
 
     for (int i = 0; i < N; i++)
     {
-        SSR += qPow(((double) y[i] - AVE), 2);
+        SSR += pow(((double) y[i] - AVE), 2);
     }
 
     S2 = SSR / N;
 
-    L = qPow((1.0 / qSqrt(2 * M_PI * S2)), N) * qExp(-SSR / (S2 * 2.0));
+    L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
 
     DF = 2;
 
-    aicNoise = (-2 * qLn(L)) + (2 * DF);
-    bicNoise = -2 * qLn(L) + qLn(N) * DF;
+    aicNoise = (-2 * log(L)) + (2 * DF);
+    bicNoise = -2 * log(L) + log(N) * DF;
 }
 
 /** Exponentials
@@ -221,17 +232,17 @@ void ModelSelection::FitExponential(const char *mStarts)
     {
         holder = (exp(-exp( (double) c[0])* (double) x[i][0]));
 
-        SSR += qPow(((double) y[i] - holder), 2);
+        SSR += pow(((double) y[i] - holder), 2);
     }
 
     S2 = SSR / N;
 
-    L = qPow((1.0 / qSqrt(2 * M_PI * S2)), N) * qExp(-SSR / (S2 * 2.0));
+    L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
 
     DF = 2;
 
-    aicExponential = (-2 * qLn(L)) + (2 * DF);
-    bicExponential = -2 * qLn(L) + qLn(N) * DF;
+    aicExponential = (-2 * log(L)) + (2 * DF);
+    bicExponential = -2 * log(L) + log(N) * DF;
     fitExponentialK = (double) c[0];
 }
 
@@ -245,7 +256,7 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
     lsfitcreatef(x, y, c, diffstep, state);
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, hyperbolic);
+    alglib::lsfitfit(state, hyperbolic_discounting);
 
     lsfitresults(state, info, c, rep);
 
@@ -255,57 +266,18 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
     for (int i = 0; i < N; i++)
     {
         holder = pow((1+exp( (double) c[0])* (double) x[i][0]), -1);
-        SSR += qPow(((double) y[i] - holder), 2);
+        SSR += pow(((double) y[i] - holder), 2);
     }
 
     S2 = SSR / N;
 
-    L = qPow((1.0 / qSqrt(2 * M_PI * S2)), N) * qExp(-SSR / (S2 * 2.0));
+    L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
 
     DF = 2;
 
-    aicHyperbolic = (-2 * qLn(L)) + (2 * DF);
-    bicHyperbolic = -2 * qLn(L) + qLn(N) * DF;
+    aicHyperbolic = (-2 * log(L)) + (2 * DF);
+    bicHyperbolic = -2 * log(L) + log(N) * DF;
     fitHyperbolicK = (double) c[0];
-}
-
-/** Hyperboloid Myerson
- * @brief
- */
-void ModelSelection::FitMyerson(const char *mStarts)
-{
-    SetStarts(mStarts);
-
-    lsfitcreatef(x, y, c, diffstep, state);
-    lsfitsetcond(state, epsx, maxits);
-
-    alglib::lsfitfit(state, hyperboloid_myerson);
-
-    lsfitresults(state, info, c, rep);
-
-    if ((int) info == 2 || (int) info == 5)
-    {
-        N = y.length();
-
-        SSR = 0;
-
-        for (int i = 0; i < N; i++)
-        {
-            holder = pow((1+exp( (double) c[0])* (double) x[i][0]),  (double) -c[1]);
-            SSR += qPow(((double) y[i] - holder), 2);
-        }
-
-        S2 = SSR / N;
-
-        L = qPow((1.0 / qSqrt(2 * M_PI * S2)), N) * qExp(-SSR / (S2 * 2.0));
-
-        DF = 3;
-
-        aicMyerson = (-2 * qLn(L)) + (2 * DF);
-        bicMyerson = -2 * qLn(L) + qLn(N) * DF;
-        fitMyersonK = (double) c[0];
-        fitMyersonS = (double) c[1];
-    }
 }
 
 /** Beta delta
@@ -320,7 +292,7 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
     lsfitsetbc(state, bndl, bndu);
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, quasi_hyperboloid);
+    alglib::lsfitfit(state, quasi_hyperboloid_discounting);
 
     lsfitresults(state, info, c, rep);
 
@@ -330,19 +302,58 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
     for (int i = 0; i < N; i++)
     {
         holder = (double) c[0] * pow( (double) c[1], (double) x[i][0]);
-        SSR += qPow(((double) y[i] - holder), 2);
+        SSR += pow(((double) y[i] - holder), 2);
     }
 
     S2 = SSR / N;
 
-    L = qPow((1.0 / qSqrt(2 * M_PI * S2)), N) * qExp(-SSR / (S2 * 2.0));
+    L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
 
     DF = 3;
 
-    aicQuasiHyperbolic = (-2 * qLn(L)) + (2 * DF);
-    bicQuasiHyperbolic = -2 * qLn(L) + qLn(N) * DF;
+    aicQuasiHyperbolic = (-2 * log(L)) + (2 * DF);
+    bicQuasiHyperbolic = -2 * log(L) + log(N) * DF;
     fitQuasiHyperbolicBeta = (double) c[0];
     fitQuasiHyperbolicDelta = (double) c[1];
+}
+
+/** Hyperboloid Myerson
+ * @brief
+ */
+void ModelSelection::FitMyerson(const char *mStarts)
+{
+    SetStarts(mStarts);
+
+    lsfitcreatef(x, y, c, diffstep, state);
+    lsfitsetcond(state, epsx, maxits);
+
+    alglib::lsfitfit(state, hyperboloid_myerson_discounting);
+
+    lsfitresults(state, info, c, rep);
+
+    if ((int) info == 2 || (int) info == 5)
+    {
+        N = y.length();
+
+        SSR = 0;
+
+        for (int i = 0; i < N; i++)
+        {
+            holder = pow((1+exp( (double) c[0])* (double) x[i][0]),  (double) -c[1]);
+            SSR += pow(((double) y[i] - holder), 2);
+        }
+
+        S2 = SSR / N;
+
+        L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
+
+        DF = 3;
+
+        aicMyerson = (-2 * log(L)) + (2 * DF);
+        bicMyerson = -2 * log(L) + log(N) * DF;
+        fitMyersonK = (double) c[0];
+        fitMyersonS = (double) c[1];
+    }
 }
 
 /** Hyperboloid Rachlin
@@ -355,7 +366,7 @@ void ModelSelection::FitRachlin(const char *mStarts)
     lsfitcreatef(x, y, c, diffstep, state);
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, hyperboloid_rachlin);
+    alglib::lsfitfit(state, hyperboloid_rachlin_discounting);
 
     lsfitresults(state, info, c, rep);
 
@@ -365,24 +376,59 @@ void ModelSelection::FitRachlin(const char *mStarts)
     for (int i = 0; i < N; i++)
     {
         holder = pow((1+exp( (double) c[0])*pow( (double) x[i][0], (double) c[1])), -1);
-        SSR += qPow(((double) y[i] - holder), 2);
+        SSR += pow(((double) y[i] - holder), 2);
     }
 
     S2 = SSR / N;
 
-    L = qPow((1.0 / qSqrt(2 * M_PI * S2)), N) * qExp(-SSR / (S2 * 2.0));
+    L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
 
     DF = 3;
 
-    aicRachlin = (-2 * qLn(L)) + (2 * DF);
-    bicRachlin = -2 * qLn(L) + qLn(N) * DF;
+    aicRachlin = (-2 * log(L)) + (2 * DF);
+    bicRachlin = -2 * log(L) + log(N) * DF;
     fitRachlinK = (double) c[0];
     fitRachlinS = (double) c[1];
 }
 
+/** Hyperboloid Rachlin
+  *  @brief
+  */
+void ModelSelection::FitRodriguezLogue(const char *mStarts)
+{
+    SetStarts(mStarts);
+
+    lsfitcreatef(x, y, c, diffstep, state);
+    lsfitsetcond(state, epsx, maxits);
+
+    alglib::lsfitfit(state, generalized_hyperboloid_discounting);
+
+    lsfitresults(state, info, c, rep);
+
+    N = y.length();
+    SSR = 0;
+
+    for (int i = 0; i < N; i++)
+    {
+        holder = pow((1 + x[i][0] * exp(c[0])),(-exp(c[1]) / exp(c[0])));
+        SSR += pow(((double) y[i] - holder), 2);
+    }
+
+    S2 = SSR / N;
+
+    L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
+
+    DF = 3;
+
+    aicRodriguezLogue = (-2 * log(L)) + (2 * DF);
+    bicRodriguezLogue = -2 * log(L) + log(N) * DF;
+    fitRodriguezLogueK = (double) c[0];
+    fitRodriguezLogueBeta = (double) c[1];
+}
+
 double ScaleFactor(double modelBic, double noiseBic)
 {
-    return qExp(-0.5 * (modelBic - noiseBic));
+    return exp(-0.5 * (modelBic - noiseBic));
 }
 
 QString ModelSelection::formatStringResult(int value)
@@ -417,13 +463,13 @@ QString ModelSelection::getED50BestModel(QString model)
 {
     if (model.contains("Exponential", Qt::CaseInsensitive))
     {
-        double result = qLn(1/(qExp(fitExponentialK)));
+        double result = log(1/(exp(fitExponentialK)));
 
         return QString::number(result);
     }
     else if (model.contains("Hyperbolic", Qt::CaseInsensitive))
     {
-        double result = qLn(1/(qExp(fitHyperbolicK)));
+        double result = log(1/(exp(fitHyperbolicK)));
 
         return QString::number(result);
     }
@@ -435,13 +481,13 @@ QString ModelSelection::getED50BestModel(QString model)
     }
     else if (model.contains("Myerson", Qt::CaseInsensitive))
     {
-        double result = qLn((qPow(2, (1/fitMyersonS))-1)/qExp(fitMyersonK));
+        double result = log((pow(2, (1/fitMyersonS))-1)/exp(fitMyersonK));
 
         return QString::number(result);
     }
     else if (model.contains("Rachlin", Qt::CaseInsensitive))
     {
-        double result = qLn( qPow( (1/ (qExp(fitRachlinK))), (1/fitRachlinS)));
+        double result = log( pow( (1/ (exp(fitRachlinK))), (1/fitRachlinS)));
 
         return QString::number(result);
     }
@@ -672,6 +718,11 @@ void ModelSelection::PrepareProbabilities()
             bfRachlin = ScaleFactor(mBicList[i].second, NoiseBIC);
             sumBayesFactors = sumBayesFactors + bfRachlin;
         }
+        else if (mModel.contains("Rodriguez", Qt::CaseInsensitive))
+        {
+            bfRodriguezLogue = ScaleFactor(mBicList[i].second, NoiseBIC);
+            sumBayesFactors = sumBayesFactors + bfRodriguezLogue;
+        }
     }
 
     probsNoise = bfNoise/sumBayesFactors;
@@ -712,6 +763,11 @@ void ModelSelection::PrepareProbabilities()
         {
             probsRachlin = bfRachlin/sumBayesFactors;
             mProbList.append(QPair<QString, double>("Rachlin Model", probsRachlin));
+        }
+        else if (mModel.contains("Rodriguez", Qt::CaseInsensitive))
+        {
+            probsRodriguezLogue = bfRodriguezLogue/sumBayesFactors;
+            mProbList.append(QPair<QString, double>("RodriguezLogue Model", probsRodriguezLogue));
         }
     }
 }

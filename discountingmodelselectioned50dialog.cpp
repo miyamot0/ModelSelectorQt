@@ -119,11 +119,44 @@ void DiscountingModelSelectionED50Dialog::on_pushButton_clicked()
     }
 
     SheetWidget *temp = qobject_cast <SheetWidget *>(parent());
-    temp->Calculate("ED50", topDelay, leftDelay, bottomDelay, rightDelay, topValue, leftValue, bottomValue, rightValue, maxValue,
+
+    temp->calculationSettings = new CalculationSettings();
+    temp->calculationSettings->scriptName = "ED50";
+
+    temp->calculationSettings->topDelay = topDelay;
+    temp->calculationSettings->leftDelay = leftDelay;
+    temp->calculationSettings->bottomDelay = bottomDelay;
+    temp->calculationSettings->rightDelay = rightDelay;
+
+    temp->calculationSettings->topValue = topValue;
+    temp->calculationSettings->leftValue = leftValue;
+    temp->calculationSettings->bottomValue = bottomValue;
+    temp->calculationSettings->rightValue = rightValue;
+
+    temp->calculationSettings->maxValue = maxValue;
+
+    temp->calculationSettings->modelExponential = ui->checkBoxExponential->isChecked();
+    temp->calculationSettings->modelHyperbolic = ui->checkBoxHyperbolic->isChecked();
+    temp->calculationSettings->modelQuasiHyperbolic = ui->checkBoxQuasiHyperbolic->isChecked();
+    temp->calculationSettings->modelMyersonGreen = ui->checkBoxMyersonHyperboloid->isChecked();
+    temp->calculationSettings->modelRachlin = ui->checkBoxRachlinHyperboloid->isChecked();
+    temp->calculationSettings->modelRodriguezLogue = ui->checkBoxRodriguezLogue->isChecked();
+    temp->calculationSettings->modelEbertPrelec = ui->checkBoxEbertPrelec->isChecked();
+    temp->calculationSettings->modelBleichrodt = ui->checkBoxBleichrodt->isChecked();
+
+    temp->calculationSettings->cbRachlin = ui->checkBoxRachlin->isChecked();
+    temp->calculationSettings->johnsonBickelTest = ui->checkBoxJohnson->isChecked();
+    temp->calculationSettings->showCharts = ui->displayPlotFigures->isChecked();
+    temp->calculationSettings->logNormalParameters = ui->checkBoxLog->isChecked();
+
+    temp->Calculate();
+
+    /*temp->Calculate("ED50", topDelay, leftDelay, bottomDelay, rightDelay, topValue, leftValue, bottomValue, rightValue, maxValue,
                     ui->checkBoxRachlin->isChecked(),
                     ui->checkBoxExponential->isChecked(), ui->checkBoxHyperbolic->isChecked(), ui->checkBoxQuasiHyperbolic->isChecked(),
                     ui->checkBoxMyersonHyperboloid->isChecked(), ui->checkBoxRachlinHyperboloid->isChecked(),
                     ui->checkBoxJohnson->isChecked(),
                     ui->displayPlotFigures->isChecked(),
                     ui->checkBoxLog->isChecked());
+    */
 }

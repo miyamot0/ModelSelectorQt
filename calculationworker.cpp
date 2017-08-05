@@ -33,9 +33,10 @@ struct QPairSecondComparer
     }
 };
 
-CalculationWorker::CalculationWorker(QList<QPair<QString, QString> > mJohnsonBickelResults, QList<bool> *mJonhsonBickelSelections, QList<QStringList> mStoredValues, bool runHyperbolic, bool runExponential, bool runBetaDelta, bool runMyersonGreen, bool runRachlin, bool runLogResults, bool boundRachlin, QString computationType, int processChecking)
+/*CalculationWorker::CalculationWorker(QList<QPair<QString, QString> > mJohnsonBickelResults, QList<bool> *mJonhsonBickelSelections, QList<QStringList> mStoredValues, bool runHyperbolic, bool runExponential, bool runBetaDelta, bool runMyersonGreen, bool runRachlin, bool runLogResults, bool boundRachlin, QString computationType, int processChecking)*/
+CalculationWorker::CalculationWorker(QList<QPair<QString, QString> > mJohnsonBickelResults, QList<bool> *mJonhsonBickelSelections, QList<QStringList> mStoredValues, CalculationSettings *calculationSettings, int processChecking)
 {
-    computationTypeLocal = computationType;
+    computationTypeLocal = calculationSettings->scriptName;
 
     mLocalJohnsonBickelResults = mJohnsonBickelResults;
     mLocalJonhsonBickelSelections = mJonhsonBickelSelections;
@@ -43,15 +44,15 @@ CalculationWorker::CalculationWorker(QList<QPair<QString, QString> > mJohnsonBic
 
     mFittingObject = new ModelSelection();
 
-    runLocalHyperbolic =  runHyperbolic;
-    runLocalExponential = runExponential;
-    runLocalBetaDelta = runBetaDelta;
-    runLocalMyersonGreen = runMyersonGreen;
-    runLocalRachlin = runRachlin;
+    runLocalHyperbolic =  calculationSettings->modelHyperbolic;
+    runLocalExponential = calculationSettings->modelExponential;
+    runLocalBetaDelta = calculationSettings->modelQuasiHyperbolic;
+    runLocalMyersonGreen = calculationSettings->modelMyersonGreen;
+    runLocalRachlin = calculationSettings->modelRachlin;
 
-    runLogarithmicResults = runLogResults;
+    runLogarithmicResults = calculationSettings->logNormalParameters;
 
-    boundRachlinModel = boundRachlin;
+    boundRachlinModel = calculationSettings->cbRachlin;
 
     processCheckingLocal = processChecking;
 }

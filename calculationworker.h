@@ -25,30 +25,33 @@
 
 #include <QObject>
 #include "modelselection.h"
+#include "calculationsettings.h"
 
 class CalculationWorker : public QObject
 {
     Q_OBJECT
 
 public:
-    CalculationWorker(QList<QPair<QString, QString>> mJohnsonBickelResults, QList<bool> *mJonhsonBickelSelections, QList<QStringList> mStoredValues,
-                      bool runHyperbolic, bool runExponential, bool runBetaDelta, bool runMyersonGreen, bool runRachlin, bool runLogResults, bool boundRachlin,
-                      QString computationType, int processChecking);
+    CalculationWorker(QList<QPair<QString, QString>> mJohnsonBickelResults, QList<bool> *mJonhsonBickelSelections, QList<QStringList> mStoredValues, CalculationSettings* calculationSettings, int processChecking);
 
 private:
     QString computationTypeLocal;
+
     QString formatStringResult(double value, bool returnLogNormal);
 
     QList<QPair<QString, QString>> mLocalJohnsonBickelResults;
     QList<bool> *mLocalJonhsonBickelSelections;
     QList<QStringList> mLocalStoredValues;
     ModelSelection *mFittingObject;
-    bool runLocalHyperbolic, runLocalExponential, runLocalBetaDelta, runLocalMyersonGreen, runLocalRachlin;
+
+    bool runLocalHyperbolic,
+         runLocalExponential,
+         runLocalBetaDelta,
+         runLocalMyersonGreen,
+         runLocalRachlin;
 
     bool runLogarithmicResults;
-
     bool boundRachlinModel;
-
     int processCheckingLocal;
 
 signals:

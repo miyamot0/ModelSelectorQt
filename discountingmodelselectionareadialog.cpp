@@ -118,6 +118,8 @@ void DiscountingModelSelectionAreaDialog::on_pushButton_clicked()
         return;
     }
 
+    /*
+     * TODO
     SheetWidget *temp = qobject_cast <SheetWidget *>(parent());
     temp->Calculate("Area", topDelay, leftDelay, bottomDelay, rightDelay, topValue, leftValue, bottomValue, rightValue, maxValue,
                     ui->checkBoxRachlin->isChecked(),
@@ -126,4 +128,5 @@ void DiscountingModelSelectionAreaDialog::on_pushButton_clicked()
                     ui->checkBoxJohnson->isChecked(),
                     ui->displayPlotFigures->isChecked(),
                     ui->checkBoxLog->isChecked());
+    */
 }

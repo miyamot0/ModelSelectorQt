@@ -71,7 +71,8 @@ SOURCES += main.cpp\
     systematicchekdialog.cpp \
     sheetdelegate.cpp \
     commanding.cpp \
-    calculationworker.cpp
+    calculationworker.cpp \
+    calculationsettings.cpp
 
 HEADERS  += \
     sheetselectdialog.h \
@@ -101,7 +102,8 @@ HEADERS  += \
     systematicchekdialog.h \
     sheetdelegate.h \
     commanding.h \
-    calculationworker.h
+    calculationworker.h \
+    calculationsettings.h
 
 FORMS    += \
     sheetselectdialog.ui \

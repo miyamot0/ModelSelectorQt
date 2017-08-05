@@ -34,6 +34,8 @@
 #include <math.h>
 #include "optimization.h"
 
+#define _USE_MATH_DEFINES
+
 using namespace alglib;
 
 class ModelSelection
@@ -62,6 +64,7 @@ public:
     void FitQuasiHyperbolic(const char *mStarts);
     void FitMyerson(const char *mStarts);
     void FitRachlin(const char *mStarts);
+    void FitRodriguezLogue(const char *mStarts);
 
     void PrepareProbabilities();
 
@@ -79,6 +82,7 @@ public:
     double aicQuasiHyperbolic = -1;
     double aicMyerson = -1;
     double aicRachlin = -1;
+    double aicRodriguezLogue  = -1;
 
     /** BICs
      *
@@ -89,6 +93,7 @@ public:
     double bicQuasiHyperbolic = -1;
     double bicMyerson = -1;
     double bicRachlin = -1;
+    double bicRodriguezLogue = -1;
 
     /** Bayes Factors
       *
@@ -99,6 +104,7 @@ public:
     double bfQuasiHyperbolic = -1;
     double bfMyerson = -1;
     double bfRachlin = -1;
+    double bfRodriguezLogue = -1;
 
     /** Probs
       *
@@ -109,6 +115,7 @@ public:
     double probsQuasiHyperbolic = -1;
     double probsMyerson = -1;
     double probsRachlin = -1;
+    double probsRodriguezLogue = -1;
 
     /** Fits
       *
@@ -121,6 +128,8 @@ public:
     double fitMyersonS = -1;
     double fitRachlinK = -1;
     double fitRachlinS = -1;
+    double fitRodriguezLogueK = -1;
+    double fitRodriguezLogueBeta = -1;
 
 private:
     real_2d_array x;

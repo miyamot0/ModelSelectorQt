@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>483</width>
-    <height>392</height>
+    <height>461</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -284,7 +284,7 @@
           <item>
            <widget class="QCheckBox" name="checkBoxMyersonHyperboloid">
             <property name="text">
-             <string>Include Myerson Hyperboloid</string>
+             <string>Include Green-Myerson Model</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -294,7 +294,37 @@
           <item>
            <widget class="QCheckBox" name="checkBoxRachlinHyperboloid">
             <property name="text">
-             <string>Include Rachlin Hyperboloid</string>
+             <string>Include Rachlin Model</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxRodriguezLogue">
+            <property name="text">
+             <string>Include Rodriguez-Logue Model</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxEbertPrelec">
+            <property name="text">
+             <string>Include Ebert-Prelec Model</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxBleichrodt">
+            <property name="text">
+             <string>Include Bleichrodt et al. Model</string>
             </property>
             <property name="checked">
              <bool>true</bool>

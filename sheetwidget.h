@@ -82,6 +82,7 @@
 #include <QDomDocument>
 #include "systematicchekdialog.h"
 
+#include "calculationsettings.h"
 #include "sheetselectdialog.h"
 #include "discountingmodelselectioned50dialog.h"
 #include "discountingmodelselectionareadialog.h"
@@ -110,6 +111,8 @@ public:
 
     QUndoStack *undoStack;
     QTableWidget *table;
+
+    CalculationSettings *calculationSettings;
 
 public slots:
     void downloadedFile(QNetworkReply *reply);
@@ -160,11 +163,7 @@ public slots:
     bool areDimensionsValid(bool isRowData, int dWidth, int vWidth, int dLength, int vLength);
     void areValuePointsValid(QStringList &valuePoints, QStringList &tempDelayPoints, QStringList delayPoints, bool isRowData, int topValue, int leftValue, int bottomValue, int rightValue, int i, double maxValue);
 
-    void Calculate(QString scriptName, int topDelay, int leftDelay, int bottomDelay, int rightDelay,
-                   int topValue, int leftValue, int bottomValue, int rightValue,
-                   double maxValue, bool cbRachlin,
-                   bool modelExponential, bool modelHyperbolic, bool modelQuasiHyperbolic,
-                   bool modelMyersonGreen, bool modelRachlin, bool johnsonBickelTest, bool showCharts, bool logNormalParameters);
+    void Calculate();
 
     void closeEvent(QCloseEvent* event);
     void setCurrentFile(const QString &fileName);

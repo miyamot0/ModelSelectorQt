@@ -95,6 +95,7 @@
 #include <QTableWidgetItem>
 #include <QtCharts>
 
+#include "calculationsettings.h"
 #include "sheetwidget.h"
 #include "resultsdialog.h"
 #include "chartwindow.h"
@@ -1301,6 +1302,7 @@ bool SheetWidget::isToolWindowShown()
  * @brief
  */
 
+/*
 void SheetWidget::Calculate(QString scriptName,
                             int topDelay, int leftDelay, int bottomDelay, int rightDelay,
                             int topValue, int leftValue, int bottomValue, int rightValue,
@@ -1308,9 +1310,10 @@ void SheetWidget::Calculate(QString scriptName,
                             bool cbRachlin,
                             bool modelExponential, bool modelHyperbolic, bool modelQuasiHyperbolic, bool modelMyersonGreen, bool modelRachlin,
                             bool johnsonBickelTest, bool showCharts, bool logNormalParameters)
+*/
+void SheetWidget::Calculate()
 {
-
-    tripLogNormal = logNormalParameters;
+    tripLogNormal = calculationSettings->logNormalParameters;
 
     if (discountingAreaDialog->isVisible())
     {
@@ -1321,16 +1324,17 @@ void SheetWidget::Calculate(QString scriptName,
         discountingED50Dialog->ToggleButton(false);
     }
 
-    displayFigures = showCharts;
+    displayFigures = calculationSettings->showCharts;
 
-    bool isRowData = (rightDelay - leftDelay == 0) ? false : true;
-    int nSeries = (isRowData) ? bottomValue - topValue + 1 : nSeries = rightValue - leftValue + 1;
+    bool isRowData = (calculationSettings->rightDelay - calculationSettings->leftDelay == 0) ? false : true;
+    int nSeries = (isRowData) ? calculationSettings->bottomValue - calculationSettings->topValue + 1 :
+                                nSeries = calculationSettings->rightValue - calculationSettings->leftValue + 1;
 
-    int dWidth = rightDelay - leftDelay + 1;
-    int dLength = bottomDelay - topDelay + 1;
+    int dWidth = calculationSettings->rightDelay - calculationSettings->leftDelay + 1;
+    int dLength = calculationSettings->bottomDelay - calculationSettings->topDelay + 1;
 
-    int vWidth = rightValue - leftValue + 1;
-    int vLength = bottomValue - topValue + 1;
+    int vWidth = calculationSettings->rightValue - calculationSettings->leftValue + 1;
+    int vLength = calculationSettings->bottomValue - calculationSettings->topValue + 1;
 
     if (!areDimensionsValid(isRowData, dWidth, vWidth, dLength, vLength))
     {
@@ -1348,7 +1352,9 @@ void SheetWidget::Calculate(QString scriptName,
 
     QStringList delayPoints;
 
-    if(!areDelayPointsValid(delayPoints, isRowData, topDelay, leftDelay, bottomDelay, rightDelay))
+    if(!areDelayPointsValid(delayPoints, isRowData,
+                            calculationSettings->topDelay, calculationSettings->leftDelay,
+                            calculationSettings->bottomDelay, calculationSettings->rightDelay))
     {
         if (discountingAreaDialog->isVisible())
         {
@@ -1369,7 +1375,7 @@ void SheetWidget::Calculate(QString scriptName,
 
     mJohnsonBickelResults.clear();
 
-    if (johnsonBickelTest)
+    if (calculationSettings->johnsonBickelTest)
     {
         checkDialog = new SystematicChekDialog(this);
         double prev, curr;
@@ -1384,7 +1390,9 @@ void SheetWidget::Calculate(QString scriptName,
             valuePoints.clear();
             delayPointsTemp.clear();
 
-            areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData, topValue, leftValue, bottomValue, rightValue, i, maxValue);
+            areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData,
+                                calculationSettings->topValue, calculationSettings->leftValue, calculationSettings->bottomValue, calculationSettings->rightValue,
+                                i, calculationSettings->maxValue);
 
             for (int i=1; i<valuePoints.length(); i++)
             {
@@ -1447,7 +1455,9 @@ void SheetWidget::Calculate(QString scriptName,
         valuePoints.clear();
         delayPointsTemp.clear();
 
-        areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData, topValue, leftValue, bottomValue, rightValue, i, maxValue);
+        areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData,
+                            calculationSettings->topValue, calculationSettings->leftValue, calculationSettings->bottomValue, calculationSettings->rightValue,
+                            i, calculationSettings->maxValue);
 
         mXString = "[";
 
@@ -1490,8 +1500,7 @@ void SheetWidget::Calculate(QString scriptName,
     workerThread = new QThread();
 
     worker = new CalculationWorker(mJohnsonBickelResults, &checkDialog->mJonhsonBickelSelections, mStoredValues,
-                                   modelHyperbolic, modelExponential, modelQuasiHyperbolic, modelMyersonGreen, modelRachlin,
-                                   tripLogNormal, cbRachlin, scriptName, mSeriesScoring);
+                                   calculationSettings, mSeriesScoring);
 
     worker->moveToThread(workerThread);
 
