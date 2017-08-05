@@ -26,6 +26,8 @@
 #include <QObject>
 #include "modelselection.h"
 #include "calculationsettings.h"
+#include "fitresults.h"
+#include "fitresult.h"
 
 class CalculationWorker : public QObject
 {
@@ -44,6 +46,9 @@ private:
     QList<QStringList> mLocalStoredValues;
     ModelSelection *mFittingObject;
 
+    FitResults *fitResults;
+    FitResult *fitResult;
+
     bool runLocalHyperbolic,
          runLocalExponential,
          runLocalBetaDelta,
@@ -56,7 +61,7 @@ private:
 
 signals:
     void workStarted();
-    void workingResult(const QStringList &value);
+    void workingResult(const FitResults &value);
     void workFinished();
 
 public slots:

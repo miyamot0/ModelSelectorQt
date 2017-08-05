@@ -25,6 +25,7 @@
 #include <QDir>
 
 #include "sheetwidget.h"
+#include "fitresults.h"
 
 #ifdef _WIN32
     #include <QSettings>
@@ -33,6 +34,7 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    qRegisterMetaType<FitResults>("FitResults");
 
     SheetWidget mNewSheet;
     mNewSheet.setWindowIcon(QPixmap(":/images/x-office-spreadsheet.png"));

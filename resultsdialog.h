@@ -25,6 +25,7 @@
 #define RESULTSDIALOG_H
 
 #include <QDialog>
+#include "fitresults.h"
 
 namespace Ui {
 class ResultsDialog;

@@ -27,23 +27,37 @@
 #include <QHBoxLayout>
 #include "chartwindow.h"
 
-ChartWindow::ChartWindow(QList<QStringList> stringList, bool isLogNormal, bool isAUC, QWidget *parent)
+#include <QDebug>
+
+ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, bool isAUC, QWidget *parent)
 {
     mDisplayData = stringList;
+
+    mList = mDisplayData[0];
+
     isLogNormalParamerized = isLogNormal;
     isAUCFigure = isAUC;
 
+    lastDelay = 0;
+
     for (int i=0; i<mDisplayData.length(); i++)
     {
-        mList = mDisplayData[0];
+        paramString1 = mDisplayData[i].ParticipantDelays;
+        QStringList delayPoints = paramString1.split(",");
 
-        for (int j=0; j<mList.length(); j++)
+        double testMax = delayPoints[delayPoints.length() - 1].toDouble() * 2;
+
+        if (i == 0)
         {
-            paramString1 = mList.at(46);
-            QStringList delayPoints = paramString1.split(",");
-            lastDelay = delayPoints[delayPoints.length() - 1].toDouble() * 2;
+            lastDelay = testMax;
+        }
+        else if (i > 0 && testMax > lastDelay)
+        {
+            lastDelay = testMax;
         }
     }
+
+    qDebug() << "last delay: " << lastDelay;
 
     QVBoxLayout *windowLayout = new QVBoxLayout;
 
@@ -262,14 +276,14 @@ void ChartWindow::plotAUCSeries(int index)
     dataPoints->clear();
     empiricalSeries->clear();
 
-    if (mList[0].contains("dropped", Qt::CaseInsensitive))
+    if (mList.Header.contains("dropped", Qt::CaseInsensitive))
     {
         chart->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
 
         return;
     }
 
-    chart->setTitle(QString("Participant #%1: %2 AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(mList[45]).arg(mList[48]));
+    chart->setTitle(QString("Participant #%1: %2 AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopAUC));
 
     expSeries->hide();
     hypSeries->hide();
@@ -278,49 +292,73 @@ void ChartWindow::plotAUCSeries(int index)
     rachSeries->hide();
     noiseSeries->hide();
 
-    if (mList[45].contains("Noise"))
+    if (mList.TopModel.contains("Noise"))
     {
         noiseSeries->show();
     }
-    else if (mList[45].contains("Exponential"))
+    else if (mList.TopModel.contains("Exponential"))
     {
         expSeries->show();
     }
-    else if (mList[45].contains("Hyperbolic"))
+    else if (mList.TopModel.contains("Hyperbolic"))
     {
         hypSeries->show();
     }
-    else if (mList[45].contains("Beta Delta"))
+    else if (mList.TopModel.contains("Beta Delta"))
     {
         quasiSeries->show();
     }
-    else if (mList[45].contains("Myerson"))
+    else if (mList.TopModel.contains("Myerson"))
     {
         myerSeries->show();
     }
-    else if (mList[45].contains("Rachlin"))
+    else if (mList.TopModel.contains("Rachlin"))
     {
         rachSeries->show();
     }
 
-    expK = mList[8].toDouble(&expCheck);
+    expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = false;
 
-    hypCheck;
-    hypK = mList[1].toDouble(&hypCheck);
+    for (int i=0; i<mList.FittingResults.length(); i++)
+    {
+        if (mList.FittingResults[i]->Model == ModelType::Noise)
+        {
+            noise = mList.FittingResults[i]->Params.first().second;
+        }
 
-    quasiCheck;
-    quasiB = mList[15].toDouble(&quasiCheck);
-    quasiD = mList[16].toDouble(&quasiCheck);
+        if (mList.FittingResults[i]->Model == ModelType::Exponential)
+        {
+            expCheck = true;
+            expK = mList.FittingResults[i]->Params.first().second;
+        }
 
-    myerCheck;
-    myerK = mList[23].toDouble(&myerCheck);
-    myerS = mList[24].toDouble(&myerCheck);
+        if (mList.FittingResults[i]->Model == ModelType::Hyperbolic)
+        {
+            hypCheck = true;
+            hypK = mList.FittingResults[i]->Params.first().second;
+        }
 
-    rachCheck;
-    rachK = mList[31].toDouble(&rachCheck);
-    rachS = mList[32].toDouble(&rachCheck);
+        if (mList.FittingResults[i]->Model == ModelType::BetaDelta)
+        {
+            quasiCheck = true;
+            quasiB = mList.FittingResults[i]->Params.first().second;
+            quasiD = mList.FittingResults[i]->Params.last().second;
+        }
 
-    noise = mList[39].toDouble();
+        if (mList.FittingResults[i]->Model == ModelType::Myerson)
+        {
+            myerCheck = true;
+            myerK = mList.FittingResults[i]->Params.first().second;
+            myerS = mList.FittingResults[i]->Params.last().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Rachlin)
+        {
+            rachCheck = true;
+            rachK = mList.FittingResults[i]->Params.first().second;
+            rachS = mList.FittingResults[i]->Params.last().second;
+        }
+    }
 
     for (int i = 1; i < int(lastDelay); i++)
     {
@@ -371,8 +409,10 @@ void ChartWindow::plotAUCSeries(int index)
         }
     }
 
-    paramString1 = mList.at(46);
-    paramString2 = mList.at(47);
+    //paramString1 = mList.at(46);
+    //paramString2 = mList.at(47);
+    paramString1 = mList.ParticipantDelays;
+    paramString2 = mList.ParticipantValues;
 
     delayPoints = paramString1.split(",");
     valuePoints = paramString2.split(",");
@@ -409,33 +449,58 @@ void ChartWindow::plotED50Series(int index)
     //noiseSeries->setName(QString("Noise<br>(%1)").arg(mList[44]));
     dataPoints->clear();
 
-    if (mList[0].contains("dropped", Qt::CaseInsensitive))
+    if (mList.Header.contains("dropped", Qt::CaseInsensitive))
     {
         chart->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
 
         return;
     }
 
-    chart->setTitle(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(mList[45]).arg(mList[48]));
+    chart->setTitle(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopED50));
 
-    expK = mList[8].toDouble(&expCheck);
+    expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = false;
 
-    hypCheck;
-    hypK = mList[1].toDouble(&hypCheck);
+    for (int i=0; i<mList.FittingResults.length(); i++)
+    {
+        if (mList.FittingResults[i]->Model == ModelType::Noise)
+        {
+            noise = mList.FittingResults[i]->Params.first().second;
+            qDebug() << "found noise";
+        }
 
-    quasiCheck;
-    quasiB = mList[15].toDouble(&quasiCheck);
-    quasiD = mList[16].toDouble(&quasiCheck);
+        if (mList.FittingResults[i]->Model == ModelType::Exponential)
+        {
+            expCheck = true;
+            expK = mList.FittingResults[i]->Params.first().second;
+        }
 
-    myerCheck;
-    myerK = mList[23].toDouble(&myerCheck);
-    myerS = mList[24].toDouble(&myerCheck);
+        if (mList.FittingResults[i]->Model == ModelType::Hyperbolic)
+        {
+            hypCheck = true;
+            hypK = mList.FittingResults[i]->Params.first().second;
+        }
 
-    rachCheck;
-    rachK = mList[31].toDouble(&rachCheck);
-    rachS = mList[32].toDouble(&rachCheck);
+        if (mList.FittingResults[i]->Model == ModelType::BetaDelta)
+        {
+            quasiCheck = true;
+            quasiB = mList.FittingResults[i]->Params.first().second;
+            quasiD = mList.FittingResults[i]->Params.last().second;
+        }
 
-    noise = mList[39].toDouble();
+        if (mList.FittingResults[i]->Model == ModelType::Myerson)
+        {
+            myerCheck = true;
+            myerK = mList.FittingResults[i]->Params.first().second;
+            myerS = mList.FittingResults[i]->Params.last().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Rachlin)
+        {
+            rachCheck = true;
+            rachK = mList.FittingResults[i]->Params.first().second;
+            rachS = mList.FittingResults[i]->Params.last().second;
+        }
+    }
 
     for (int i = 1; i < int(lastDelay); i++)
     {
@@ -486,8 +551,8 @@ void ChartWindow::plotED50Series(int index)
         }
     }
 
-    paramString1 = mList.at(46);
-    paramString2 = mList.at(47);
+    paramString1 = mList.ParticipantDelays;
+    paramString2 = mList.ParticipantValues;
 
     delayPoints = paramString1.split(",");
     valuePoints = paramString2.split(",");

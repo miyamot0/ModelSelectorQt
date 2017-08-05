@@ -106,7 +106,7 @@ public:
 
     void convertExcelColumn(QString &mString, int column);
 
-    QList<QStringList> allResults;
+    QList<FitResults> allResults;
     QList<QStringList> allCharts;
 
     QUndoStack *undoStack;
@@ -169,7 +169,7 @@ public slots:
     void setCurrentFile(const QString &fileName);
     void updateRecentFileActions();
 
-    void WorkUpdate(QStringList results);
+    void WorkUpdate(FitResults results);
     void WorkFinished();
 
 private:

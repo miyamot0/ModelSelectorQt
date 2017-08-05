@@ -72,7 +72,9 @@ SOURCES += main.cpp\
     sheetdelegate.cpp \
     commanding.cpp \
     calculationworker.cpp \
-    calculationsettings.cpp
+    calculationsettings.cpp \
+    fitresult.cpp \
+    fitresults.cpp
 
 HEADERS  += \
     sheetselectdialog.h \
@@ -103,7 +105,9 @@ HEADERS  += \
     sheetdelegate.h \
     commanding.h \
     calculationworker.h \
-    calculationsettings.h
+    calculationsettings.h \
+    fitresult.h \
+    fitresults.h
 
 FORMS    += \
     sheetselectdialog.ui \

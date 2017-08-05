@@ -36,10 +36,12 @@
 #include <QTextStream>
 #include <QtCharts>
 
+#include "fitresults.h"
+
 class ChartWindow : public QMainWindow
 {
 public:
-    explicit ChartWindow(QList<QStringList> stringList, bool isLogNormal, bool isAUC, QWidget *parent = 0);
+    explicit ChartWindow(QList<FitResults> stringList, bool isLogNormal, bool isAUC, QWidget *parent = 0);
 
     void buildED50Plot();
     void plotED50Series(int index);
@@ -66,7 +68,7 @@ private:
     QLogValueAxis *axisX;
     QValueAxis *axisY;
 
-    QList<QStringList> mDisplayData;
+    QList<FitResults> mDisplayData;
 
     int currentIndexShown;
 
@@ -74,7 +76,7 @@ private:
     QAction *prevAction;
     QAction *nextAction;
 
-    QStringList mList;
+    FitResults mList;
 
     double param1;
     double param2;

@@ -150,13 +150,4 @@ void DiscountingModelSelectionED50Dialog::on_pushButton_clicked()
     temp->calculationSettings->logNormalParameters = ui->checkBoxLog->isChecked();
 
     temp->Calculate();
-
-    /*temp->Calculate("ED50", topDelay, leftDelay, bottomDelay, rightDelay, topValue, leftValue, bottomValue, rightValue, maxValue,
-                    ui->checkBoxRachlin->isChecked(),
-                    ui->checkBoxExponential->isChecked(), ui->checkBoxHyperbolic->isChecked(), ui->checkBoxQuasiHyperbolic->isChecked(),
-                    ui->checkBoxMyersonHyperboloid->isChecked(), ui->checkBoxRachlinHyperboloid->isChecked(),
-                    ui->checkBoxJohnson->isChecked(),
-                    ui->displayPlotFigures->isChecked(),
-                    ui->checkBoxLog->isChecked());
-    */
 }

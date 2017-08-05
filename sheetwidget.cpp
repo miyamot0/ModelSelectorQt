@@ -1506,7 +1506,7 @@ void SheetWidget::Calculate()
 
     connect(worker, SIGNAL(workStarted()), workerThread, SLOT(start()));
     connect(workerThread, SIGNAL(started()), worker, SLOT(working()));
-    connect(worker, SIGNAL(workingResult(QStringList)), this, SLOT(WorkUpdate(QStringList)));
+    connect(worker, SIGNAL(workingResult(FitResults)), this, SLOT(WorkUpdate(FitResults)));
     connect(worker, SIGNAL(workFinished()), workerThread, SLOT(quit()), Qt::DirectConnection);
     connect(worker, SIGNAL(workFinished()), this, SLOT(WorkFinished()));
 
@@ -1516,7 +1516,7 @@ void SheetWidget::Calculate()
     worker->startWork();
 }
 
-void SheetWidget::WorkUpdate(QStringList results)
+void SheetWidget::WorkUpdate(FitResults results)
 {
     allResults.append(results);
     statusBar()->showMessage(QString("Series #%1 Computed").arg(allResults.count()), 3000);
