@@ -37,11 +37,12 @@
 #include <QtCharts>
 
 #include "fitresults.h"
+#include "calculationsettings.h"
 
 class ChartWindow : public QMainWindow
 {
 public:
-    explicit ChartWindow(QList<FitResults> stringList, bool isLogNormal, bool isAUC, QWidget *parent = 0);
+    explicit ChartWindow(QList<FitResults> stringList, bool isLogNormal, ChartingOptions chartOption, QWidget *parent = 0);
 
     void buildED50Plot();
     void plotED50Series(int index);
@@ -145,7 +146,9 @@ private:
 
     double lastDelay;
 
+    bool isED50Figure;
     bool isAUCFigure;
+    bool isAUCLogFigure;
 };
 
 #endif // CHARTWINDOW_H

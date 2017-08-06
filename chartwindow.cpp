@@ -29,14 +29,21 @@
 
 #include <QDebug>
 
-ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, bool isAUC, QWidget *parent)
+ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, ChartingOptions chartOption, QWidget *parent)
 {
     mDisplayData = stringList;
 
     mList = mDisplayData[0];
 
+    isED50Figure = (chartOption == ChartingOptions::ED50);
+    isAUCLogFigure = (chartOption == ChartingOptions::AreaLog);
+
+    if (chartOption == ChartingOptions::None)
+    {
+        isED50Figure = isAUCFigure = isAUCLogFigure = false;
+    }
+
     isLogNormalParamerized = isLogNormal;
-    isAUCFigure = isAUC;
 
     lastDelay = 0;
 
@@ -92,13 +99,17 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, bool is
     axisY->setLinePenColor(Qt::black);
     axisY->setLinePen(QPen(Qt::black));
 
-    if (isAUCFigure)
+    if (!isED50Figure && !isAUCLogFigure)
     {
-        buildAUCPlot();
+        close();
     }
-    else
+    else if (isED50Figure)
     {
         buildED50Plot();
+    }
+    else if (isAUCLogFigure)
+    {
+        buildAUCPlot();
     }
 
     chartView = new QChartView(chart);
@@ -155,6 +166,18 @@ void ChartWindow::buildAUCPlot()
     rachSeries->setName("Rachlin");
     chart->addSeries(rachSeries);
 
+    rodriguezSeries = new QLineSeries();
+    rodriguezSeries->setName("Rodriguez");
+    chart->addSeries(rodriguezSeries);
+
+    ebertSeries = new QLineSeries();
+    ebertSeries->setName("Ebert");
+    chart->addSeries(ebertSeries);
+
+    bleichrodtSeries = new QLineSeries();
+    bleichrodtSeries->setName("Bleichrodt");
+    chart->addSeries(bleichrodtSeries);
+
     noiseSeries = new QLineSeries();
     noiseSeries->setName("Noise");
     noiseSeries->setPen(QPen(Qt::black));
@@ -190,6 +213,15 @@ void ChartWindow::buildAUCPlot()
     chart->setAxisX(axisX, rachSeries);
     chart->setAxisY(axisY, rachSeries);
 
+    chart->setAxisX(axisX, rodriguezSeries);
+    chart->setAxisY(axisY, rodriguezSeries);
+
+    chart->setAxisX(axisX, ebertSeries);
+    chart->setAxisY(axisY, ebertSeries);
+
+    chart->setAxisX(axisX, bleichrodtSeries);
+    chart->setAxisY(axisY, bleichrodtSeries);
+
     chart->setAxisX(axisX, noiseSeries);
     chart->setAxisY(axisY, noiseSeries);
 
@@ -206,39 +238,47 @@ void ChartWindow::buildED50Plot()
 {
     expSeries = new QLineSeries();
     expSeries->setName("Exponential");
+    expSeries->setPen(QPen(Qt::black));
     chart->addSeries(expSeries);
 
     hypSeries = new QLineSeries();
     hypSeries->setName("Hyperbolic");
+    hypSeries->setPen(QPen(Qt::green));
     chart->addSeries(hypSeries);
 
     quasiSeries = new QLineSeries();
     quasiSeries->setName("Beta Delta");
+    quasiSeries->setPen(QPen(Qt::blue));
     chart->addSeries(quasiSeries);
 
     myerSeries = new QLineSeries();
     myerSeries->setName("Myerson");
+    myerSeries->setPen(QPen(Qt::cyan));
     chart->addSeries(myerSeries);
 
     rachSeries = new QLineSeries();
     rachSeries->setName("Rachlin");
+    rachSeries->setPen(QPen(Qt::magenta));
     chart->addSeries(rachSeries);
 
     rodriguezSeries = new QLineSeries();
     rodriguezSeries->setName("Rodriguez");
+    rodriguezSeries->setPen(QPen(Qt::yellow));
     chart->addSeries(rodriguezSeries);
 
     ebertSeries = new QLineSeries();
     ebertSeries->setName("Ebert");
+    ebertSeries->setPen(QPen(Qt::red));
     chart->addSeries(ebertSeries);
 
     bleichrodtSeries = new QLineSeries();
     bleichrodtSeries->setName("Bleichrodt");
+    bleichrodtSeries->setPen(QPen(Qt::darkCyan));
     chart->addSeries(bleichrodtSeries);
 
     noiseSeries = new QLineSeries();
     noiseSeries->setName("Noise");
-    noiseSeries->setPen(QPen(Qt::black));
+    noiseSeries->setPen(QPen(QPen(Qt::darkGray)));
     chart->addSeries(noiseSeries);
 
     dataPoints = new QScatterSeries();
@@ -291,6 +331,9 @@ void ChartWindow::plotAUCSeries(int index)
     quasiSeries->clear();
     myerSeries->clear();
     rachSeries->clear();
+    rodriguezSeries->clear();
+    ebertSeries->clear();
+    bleichrodtSeries->clear();
     noiseSeries->clear();
     dataPoints->clear();
     empiricalSeries->clear();
@@ -302,13 +345,16 @@ void ChartWindow::plotAUCSeries(int index)
         return;
     }
 
-    chart->setTitle(QString("Participant #%1: %2 AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopAUC));
+    chart->setTitle(QString("Participant #%1: %2 Scaled AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopAUCLog));
 
     expSeries->hide();
     hypSeries->hide();
     quasiSeries->hide();
     myerSeries->hide();
     rachSeries->hide();
+    rodriguezSeries->hide();
+    ebertSeries->hide();
+    bleichrodtSeries->hide();
     noiseSeries->hide();
 
     if (mList.TopModel.contains("Noise"))
@@ -335,8 +381,20 @@ void ChartWindow::plotAUCSeries(int index)
     {
         rachSeries->show();
     }
+    else if (mList.TopModel.contains("Rodriguez"))
+    {
+        rodriguezSeries->show();
+    }
+    else if (mList.TopModel.contains("Ebert"))
+    {
+        ebertSeries->show();
+    }
+    else if (mList.TopModel.contains("Bleichrodt"))
+    {
+        bleichrodtSeries->show();
+    }
 
-    expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = false;
+    expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
 
     for (int i=0; i<mList.FittingResults.length(); i++)
     {
@@ -377,6 +435,28 @@ void ChartWindow::plotAUCSeries(int index)
             rachK = mList.FittingResults[i]->Params.first().second;
             rachS = mList.FittingResults[i]->Params.last().second;
         }
+
+        if (mList.FittingResults[i]->Model == ModelType::RodriguezLogue)
+        {
+            rodriguezCheck = true;
+            rodriguezK = mList.FittingResults[i]->Params.first().second;
+            rodriguezS = mList.FittingResults[i]->Params.last().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::EbertPrelec)
+        {
+            ebertCheck = true;
+            ebertK = mList.FittingResults[i]->Params.first().second;
+            ebertS = mList.FittingResults[i]->Params.last().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Beleichrodt)
+        {
+            bleichrodtCheck = true;
+            bleichrodtK = mList.FittingResults[i]->Params.first().second;
+            bleichrodtS = mList.FittingResults[i]->Params[1].second;
+            bleichrodtBeta = mList.FittingResults[i]->Params.last().second;
+        }
     }
 
     for (int i = 1; i < int(lastDelay); i++)
@@ -410,6 +490,21 @@ void ChartWindow::plotAUCSeries(int index)
             *rachSeries << QPointF(xParam, rachlin_plotting(rachK, rachS, xParam));
         }
 
+        if (rodriguezCheck)
+        {
+            *rodriguezSeries << QPointF(xParam, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
+        }
+
+        if (ebertCheck)
+        {
+            *ebertSeries << QPointF(xParam, ebert_prelec_plotting(ebertK, ebertS, xParam));
+        }
+
+        if (bleichrodtCheck)
+        {
+            *bleichrodtSeries << QPointF(xParam, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
+        }
+
         if (i > 10 && i < 100)
         {
             i += 9;
@@ -428,8 +523,6 @@ void ChartWindow::plotAUCSeries(int index)
         }
     }
 
-    //paramString1 = mList.at(46);
-    //paramString2 = mList.at(47);
     paramString1 = mList.ParticipantDelays;
     paramString2 = mList.ParticipantValues;
 
@@ -624,6 +717,7 @@ void ChartWindow::plotED50Series(int index)
         {
             break;
         }
+
         *dataPoints << QPointF(param1, param2);
     }
 }
@@ -752,14 +846,15 @@ void ChartWindow::on_NextButton_clicked()
 
     currentIndexShown++;
 
-    if (isAUCFigure)
-    {
-        plotAUCSeries(currentIndexShown);
-    }
-    else
+    if (isED50Figure)
     {
         plotED50Series(currentIndexShown);
     }
+    else if (isAUCLogFigure)
+    {
+        plotAUCSeries(currentIndexShown);
+    }
+
 }
 
 void ChartWindow::on_PreviousButton_clicked()
@@ -771,12 +866,12 @@ void ChartWindow::on_PreviousButton_clicked()
 
     currentIndexShown--;
 
-    if (isAUCFigure)
-    {
-        plotAUCSeries(currentIndexShown);
-    }
-    else
+    if (isED50Figure)
     {
         plotED50Series(currentIndexShown);
+    }
+    else if (isAUCLogFigure)
+    {
+        plotAUCSeries(currentIndexShown);
     }
 }

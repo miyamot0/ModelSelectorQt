@@ -143,19 +143,25 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="displayPlotFigures">
-         <property name="enabled">
-          <bool>true</bool>
+        <widget class="QComboBox" name="comboBoxFigures">
+         <property name="currentIndex">
+          <number>0</number>
          </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Output Figures</string>
-         </property>
+         <item>
+          <property name="text">
+           <string>No Figures</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ED50 Output</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Area Output (log10)</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item>

@@ -1493,7 +1493,7 @@ void SheetWidget::WorkFinished()
 
         if (discountingED50Dialog->isVisible())
         {
-            graphicsWindow = new ChartWindow(allResults, tripLogNormal, false, this);
+            graphicsWindow = new ChartWindow(allResults, tripLogNormal, calculationSettings->chartOption, this);
         }
 
         graphicsWindow->show();

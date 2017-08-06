@@ -146,7 +146,22 @@ void DiscountingModelSelectionED50Dialog::on_pushButton_clicked()
 
     temp->calculationSettings->cbRachlin = ui->checkBoxRachlin->isChecked();
     temp->calculationSettings->johnsonBickelTest = ui->checkBoxJohnson->isChecked();
-    temp->calculationSettings->showCharts = ui->displayPlotFigures->isChecked();
+
+    if (ui->comboBoxFigures->currentIndex() == 0) {
+        temp->calculationSettings->chartOption = ChartingOptions::None;
+        temp->calculationSettings->showCharts = false;
+
+    } else if (ui->comboBoxFigures->currentIndex() == 1) {
+        temp->calculationSettings->chartOption = ChartingOptions::ED50;
+        temp->calculationSettings->showCharts = true;
+
+    } else if (ui->comboBoxFigures->currentIndex() == 2) {
+        temp->calculationSettings->chartOption = ChartingOptions::AreaLog;
+        temp->calculationSettings->showCharts = true;
+        ui->checkBoxArea->setChecked(true);
+
+    }
+
     temp->calculationSettings->logNormalParameters = ui->checkBoxLog->isChecked();
     temp->calculationSettings->cbArea = ui->checkBoxArea->isChecked();
 

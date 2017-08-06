@@ -26,6 +26,12 @@
 
 #include <QObject>
 
+enum class ChartingOptions {
+    None,
+    ED50,
+    AreaLog
+};
+
 class CalculationSettings
 {
 public:
@@ -46,6 +52,8 @@ public:
          modelRodriguezLogue,
          modelEbertPrelec,
          modelBleichrodt;
+
+    ChartingOptions chartOption;
 
     bool cbRachlin, johnsonBickelTest, showCharts, logNormalParameters, cbArea;
 
