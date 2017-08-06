@@ -72,7 +72,7 @@ Want to contribute? Great! Emails or PM's are welcome.
 
 ### Related Projects
 ------
-An R-based package with the methods included in this project has been ported for more advanced users who wish to more flexibly access approximate Bayesian model selection for delay discounting projects. This can be found at [discountingtools](https://www.github.com/discountingtools).
+An R-based package with the methods included in this project has been ported for more advanced users who wish to more flexibly access approximate Bayesian model selection for delay discounting projects. This can be found at [discountingtools](https://www.github.com/miyamot0/discountingtools).
 
 ### Todos
 ------
