@@ -69,7 +69,7 @@ private slots:
 private:
     QChart *chart;
     QChartView *chartView;
-    QLogValueAxis *axisX;
+    QValueAxis *axisX;
     QValueAxis *axisY;
 
     QList<FitResults> mDisplayData;

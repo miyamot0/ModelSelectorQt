@@ -27,8 +27,6 @@
 #include <QHBoxLayout>
 #include "chartwindow.h"
 
-#include <QDebug>
-
 ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, ChartingOptions chartOption, QWidget *parent)
 {
     mDisplayData = stringList;
@@ -81,11 +79,12 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
     mLegend->setFont(mLegendFont);
     mLegend->setAlignment(Qt::AlignBottom);
 
-    axisX = new QLogValueAxis;
+    axisX = new QValueAxis;
     axisX->setGridLineColor(Qt::transparent);
-    axisX->setTitleText("Delay");
-    axisX->setBase(10);
+    axisX->setTitleText("ln(Delay)");
+    axisX->setMin(0);
     axisX->setLabelsFont(mLegendFont);
+    axisX->setLabelFormat(QString("%.0f"));
     axisX->setLinePenColor(Qt::black);
     axisX->setLinePen(QPen(Qt::black));
 
@@ -459,67 +458,55 @@ void ChartWindow::plotAUCSeries(int index)
         }
     }
 
-    for (int i = 1; i < int(lastDelay); i++)
-    {
-        xParam = double(i);
+    int tickHack = ((int) log(lastDelay)) + 1;
 
-        *noiseSeries << QPointF(xParam, noise);
+    axisX->setMax(tickHack);
+    axisX->setTickCount(tickHack + 1);
+
+    for (double i = 0; i < (log(lastDelay)+1); i = i + 0.1)
+    {
+        xParam = exp(i);
+
+        *noiseSeries << QPointF(i, noise);
 
         if (expCheck)
         {
-            *expSeries << QPointF(xParam, exponential_plotting(expK, xParam));
+            *expSeries << QPointF(i, exponential_plotting(expK, xParam));
         }
 
         if (hypCheck)
         {
-            *hypSeries << QPointF(xParam, hyperbolic_plotting(hypK, xParam));
+            *hypSeries << QPointF(i, hyperbolic_plotting(hypK, xParam));
         }
 
         if (quasiCheck)
         {
-             *quasiSeries << QPointF(xParam, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
+             *quasiSeries << QPointF(i, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
         }
 
         if (myerCheck)
         {
-            *myerSeries << QPointF(xParam, myerson_plotting(myerK, myerS, xParam));
+            *myerSeries << QPointF(i, myerson_plotting(myerK, myerS, xParam));
         }
 
         if (rachCheck)
         {
-            *rachSeries << QPointF(xParam, rachlin_plotting(rachK, rachS, xParam));
+            *rachSeries << QPointF(i, rachlin_plotting(rachK, rachS, xParam));
         }
 
         if (rodriguezCheck)
         {
-            *rodriguezSeries << QPointF(xParam, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
+            *rodriguezSeries << QPointF(i, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
         }
 
         if (ebertCheck)
         {
-            *ebertSeries << QPointF(xParam, ebert_prelec_plotting(ebertK, ebertS, xParam));
+            *ebertSeries << QPointF(i, ebert_prelec_plotting(ebertK, ebertS, xParam));
         }
 
         if (bleichrodtCheck)
         {
-            *bleichrodtSeries << QPointF(xParam, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
-        }
-
-        if (i > 10 && i < 100)
-        {
-            i += 9;
-        }
-        else if (i > 100 && i < 1000)
-        {
-            i += 99;
-        }
-        else if (i > 1000 && i < 10000)
-        {
-            i += 999;
-        }
-        else if (i > 10000)
-        {
-            i += 9999;
+            *bleichrodtSeries << QPointF(i, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
         }
     }
 
@@ -538,8 +525,8 @@ void ChartWindow::plotAUCSeries(int index)
         {
             break;
         }
-        *dataPoints << QPointF(param1, param2);
-        *empiricalSeries << QPointF(param1, param2);
+        *dataPoints << QPointF(log(param1), param2);
+        *empiricalSeries << QPointF(log(param1), param2);
     }
 }
 
@@ -548,17 +535,11 @@ void ChartWindow::plotED50Series(int index)
     mList = mDisplayData.at(index);
 
     expSeries->clear();
-    //expSeries->setName(QString("Exponential<br>(%1)").arg(mList[13]));
     hypSeries->clear();
-    //hypSeries->setName(QString("Hyperbolic<br>(%1)").arg(mList[6]));
     quasiSeries->clear();
-    //quasiSeries->setName(QString("Beta Delta<br>(%1)").arg(mList[21]));
     myerSeries->clear();
-    //myerSeries->setName(QString("Myerson<br>(%1)").arg(mList[29]));
     rachSeries->clear();
-    //rachSeries->setName(QString("Rachlin<br>(%1)").arg(mList[37]));
     noiseSeries->clear();
-    //noiseSeries->setName(QString("Noise<br>(%1)").arg(mList[44]));
     rodriguezSeries->clear();
     ebertSeries->clear();
     bleichrodtSeries->clear();
@@ -638,52 +619,58 @@ void ChartWindow::plotED50Series(int index)
         }
     }
 
-    for (int i = 1; i < int(lastDelay); i++)
-    {
-        xParam = double(i);
+    int tickHack = ((int) log(lastDelay)) + 1;
 
-        *noiseSeries << QPointF(xParam, noise);
+    axisX->setMax(tickHack);
+    axisX->setTickCount(tickHack + 1);
+
+    for (double i = 0; i < (log(lastDelay)+1); i = i + 0.1)
+    {
+        xParam = exp(i);
+
+        *noiseSeries << QPointF(i, noise);
 
         if (expCheck)
         {
-            *expSeries << QPointF(xParam, exponential_plotting(expK, xParam));
+            *expSeries << QPointF(i, exponential_plotting(expK, xParam));
         }
 
         if (hypCheck)
         {
-            *hypSeries << QPointF(xParam, hyperbolic_plotting(hypK, xParam));
+            *hypSeries << QPointF(i, hyperbolic_plotting(hypK, xParam));
         }
 
         if (quasiCheck)
         {
-             *quasiSeries << QPointF(xParam, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
+             *quasiSeries << QPointF(i, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
         }
 
         if (myerCheck)
         {
-            *myerSeries << QPointF(xParam, myerson_plotting(myerK, myerS, xParam));
+            *myerSeries << QPointF(i, myerson_plotting(myerK, myerS, xParam));
         }
 
         if (rachCheck)
         {
-            *rachSeries << QPointF(xParam, rachlin_plotting(rachK, rachS, xParam));
+            *rachSeries << QPointF(i, rachlin_plotting(rachK, rachS, xParam));
         }
 
         if (rodriguezCheck)
         {
-            *rodriguezSeries << QPointF(xParam, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
+            *rodriguezSeries << QPointF(i, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
         }
 
         if (ebertCheck)
         {
-            *ebertSeries << QPointF(xParam, ebert_prelec_plotting(ebertK, ebertS, xParam));
+            *ebertSeries << QPointF(i, ebert_prelec_plotting(ebertK, ebertS, xParam));
         }
 
         if (bleichrodtCheck)
         {
-            *bleichrodtSeries << QPointF(xParam, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
+            *bleichrodtSeries << QPointF(i, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
         }
 
+        /*
         if (i > 10 && i < 100)
         {
             i += 9;
@@ -700,6 +687,7 @@ void ChartWindow::plotED50Series(int index)
         {
             i += 9999;
         }
+        */
     }
 
     paramString1 = mList.ParticipantDelays;
@@ -718,7 +706,7 @@ void ChartWindow::plotED50Series(int index)
             break;
         }
 
-        *dataPoints << QPointF(param1, param2);
+        *dataPoints << QPointF(log(param1), param2);
     }
 }
 
