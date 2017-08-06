@@ -55,10 +55,9 @@ public:
     lsfitreport GetReport();
     double GetNoiseMean();
     QString formatStringResult(int value);
-    QString getED50BestModel(QString model);
-    QString getAUCBestModel(QString model);
-    QString getLogAUCBestModel(QString model);
-    QStringList getAUCAllModels();
+    QString getED50BestModel(ModelType model);
+    QString getAUCBestModel(ModelType model);
+    QString getLogAUCBestModel(ModelType model);
 
     double getED50ep();
     double getED50crdi();
@@ -78,9 +77,8 @@ public:
 
     double NoiseBIC = 0;
 
-    //QList<QPair<QString, double>> mBicList;
     QList<QPair<ModelType, double>> mBicList;
-    QList<QPair<QString, double>> mProbList;
+    QList<QPair<ModelType, double>> mProbList;
 
     /** AICs
      *

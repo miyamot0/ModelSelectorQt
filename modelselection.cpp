@@ -626,59 +626,65 @@ QString ModelSelection::formatStringResult(int value)
     }
 }
 
-QString ModelSelection::getED50BestModel(QString model)
+QString ModelSelection::getED50BestModel(ModelType model)
 {
-    if (model.contains("Exponential", Qt::CaseInsensitive))
-    {
-        double result = log(1/(exp(fitExponentialK)));
+    double result;
 
-        return QString::number(result);
-    }
-    else if (model.contains("Hyperbolic", Qt::CaseInsensitive))
+    switch (model)
     {
-        double result = log(1/(exp(fitHyperbolicK)));
-
-        return QString::number(result);
-    }
-    else if (model.contains("Beta", Qt::CaseInsensitive))
-    {
-        double result = log(log((1/(2*fitQuasiHyperbolicBeta)))/log(fitQuasiHyperbolicDelta));
-
-        return QString::number(result);
-    }
-    else if (model.contains("Myerson", Qt::CaseInsensitive))
-    {
-        double result = log((pow(2, (1/fitMyersonS))-1)/exp(fitMyersonK));
-
-        return QString::number(result);
-    }
-    else if (model.contains("Rachlin", Qt::CaseInsensitive))
-    {
-        double result = log( pow( (1/ (exp(fitRachlinK))), (1/fitRachlinS)));
-
-        return QString::number(result);
-    }
-    else if (model.contains("Ebert", Qt::CaseInsensitive))
-    {
-        double result = getED50ep();
-
-        return QString::number(result);
-    }
-    else if (model.contains("Bleichrodt", Qt::CaseInsensitive))
-    {
-        double result = getED50crdi();
-
-        return QString::number(result);
-    }
-    else if (model.contains("Rodriguez", Qt::CaseInsensitive))
-    {
-        double result = getED50rodriguez();
-
-        return QString::number(result);
-    }
-    else
-    {
+    case ModelType::Noise:
         return QString("NA");
+
+        break;
+
+    case ModelType::Exponential:
+        result = log(1/(exp(fitExponentialK)));
+        return QString::number(result);
+
+        break;
+
+    case ModelType::Hyperbolic:
+        result = log(1/(exp(fitHyperbolicK)));
+        return QString::number(result);
+
+        break;
+
+    case ModelType::BetaDelta:
+        result = log(log((1/(2*fitQuasiHyperbolicBeta)))/log(fitQuasiHyperbolicDelta));
+        return QString::number(result);
+
+        break;
+
+    case ModelType::Myerson:
+        result = log((pow(2, (1/fitMyersonS))-1)/exp(fitMyersonK));
+        return QString::number(result);
+
+        break;
+
+    case ModelType::Rachlin:
+        result = log( pow( (1/ (exp(fitRachlinK))), (1/fitRachlinS)));
+        return QString::number(result);
+
+        break;
+
+    case ModelType::RodriguezLogue:
+        result = getED50rodriguez();
+        return QString::number(result);
+
+        break;
+
+    case ModelType::EbertPrelec:
+        result = getED50ep();
+        return QString::number(result);
+
+        break;
+
+    case ModelType::Beleichrodt:
+        result = getED50crdi();
+        return QString::number(result);
+
+        break;
+
     }
 }
 
@@ -763,106 +769,7 @@ double ModelSelection::getED50rodriguez () {
     return returnValue;
 }
 
-QStringList ModelSelection::getAUCAllModels()
-{
-    double a = x[0][0];
-    double b = x[x.rows() - 1][0];
-
-    QStringList mReturn;
-    mReturn.clear();
-
-    QString model = "";
-
-    QList<double> mParams;
-    autogkstate s;
-    double v;
-    autogkreport rep;
-
-    double result;
-
-    for (int i=0; i<mProbList.count(); i++)
-    {
-        model = mProbList[i].first;
-
-        if (model.contains("Exponential", Qt::CaseInsensitive))
-        {
-            mParams << fitExponentialK;
-
-            autogksmooth(a, b, s);
-            alglib::autogkintegrate(s, exponential_integration, &mParams);
-            autogkresults(s, v, rep);
-
-            result = double(v) / (b - a);
-
-            mReturn << QString::number(result, 'G', 6);
-            mReturn << QString::number(mProbList[i].second, 'G', 6);
-        }
-        else if (model.contains("Hyperbolic", Qt::CaseInsensitive))
-        {
-            mParams << fitHyperbolicK;
-
-            autogksmooth(a, b, s);
-            alglib::autogkintegrate(s, hyperbolic_integration, &mParams);
-            autogkresults(s, v, rep);
-
-            result = double(v) / (b - a);
-
-            mReturn << QString::number(result, 'G', 6);
-            mReturn << QString::number(mProbList[i].second, 'G', 6);
-        }
-        else if (model.contains("Beta", Qt::CaseInsensitive))
-        {
-            mParams << fitQuasiHyperbolicBeta;
-            mParams << fitQuasiHyperbolicDelta;
-
-            autogksmooth(a, b, s);
-            alglib::autogkintegrate(s, quasi_hyperboloid_integration, &mParams);
-            autogkresults(s, v, rep);
-
-            result = double(v) / (b - a);
-
-            mReturn << QString::number(result, 'G', 6);
-            mReturn << QString::number(mProbList[i].second, 'G', 6);
-        }
-        else if (model.contains("Myerson", Qt::CaseInsensitive))
-        {
-            mParams << fitMyersonK;
-            mParams << fitMyersonS;
-
-            autogksmooth(a, b, s);
-            alglib::autogkintegrate(s, hyperboloid_myerson_integration, &mParams);
-            autogkresults(s, v, rep);
-
-            result = double(v) / (b - a);
-
-            mReturn << QString::number(result, 'G', 6);
-            mReturn << QString::number(mProbList[i].second, 'G', 6);
-        }
-        else if (model.contains("Rachlin", Qt::CaseInsensitive))
-        {
-            mParams << fitRachlinK;
-            mParams << fitRachlinS;
-
-            autogksmooth(a, b, s);
-            alglib::autogkintegrate(s, hyperboloid_rachlin_integration, &mParams);
-            autogkresults(s, v, rep);
-
-            result = double(v) / (b - a);
-
-            mReturn << QString::number(result, 'G', 6);
-            mReturn << QString::number(mProbList[i].second, 'G', 6);
-        }
-        else
-        {
-            mReturn << QString::number(GetNoiseMean(), 'G', 6);
-            mReturn << QString::number(mProbList[i].second, 'G', 6);
-        }
-    }
-
-    return mReturn;
-}
-
-QString ModelSelection::getAUCBestModel(QString model)
+QString ModelSelection::getAUCBestModel(ModelType model)
 {
     double result = -1;
     double a = x[0][0];
@@ -873,8 +780,14 @@ QString ModelSelection::getAUCBestModel(QString model)
     double v;
     autogkreport rep;
 
-    if (model.contains("Exponential", Qt::CaseInsensitive))
+    switch (model)
     {
+    case ModelType::Noise:
+        return QString::number(GetNoiseMean());
+
+        break;
+
+    case ModelType::Exponential:
         mParams << fitExponentialK;
 
         autogksmooth(a, b, s);
@@ -884,9 +797,10 @@ QString ModelSelection::getAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else if (model.contains("Hyperbolic", Qt::CaseInsensitive))
-    {
+
+        break;
+
+    case ModelType::Hyperbolic:
         mParams << fitHyperbolicK;
 
         autogksmooth(a, b, s);
@@ -896,9 +810,10 @@ QString ModelSelection::getAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else if (model.contains("Beta", Qt::CaseInsensitive))
-    {
+
+        break;
+
+    case ModelType::BetaDelta:
         mParams << fitQuasiHyperbolicBeta;
         mParams << fitQuasiHyperbolicDelta;
 
@@ -909,9 +824,10 @@ QString ModelSelection::getAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else if (model.contains("Myerson", Qt::CaseInsensitive))
-    {
+
+        break;
+
+    case ModelType::Myerson:
         mParams << fitMyersonK;
         mParams << fitMyersonS;
 
@@ -922,9 +838,10 @@ QString ModelSelection::getAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else if (model.contains("Rachlin", Qt::CaseInsensitive))
-    {
+
+        break;
+
+    case ModelType::Rachlin:
         mParams << fitRachlinK;
         mParams << fitRachlinS;
 
@@ -935,9 +852,10 @@ QString ModelSelection::getAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else if (model.contains("Rodriguez", Qt::CaseInsensitive))
-    {
+
+        break;
+
+    case ModelType::RodriguezLogue:
         mParams << fitRodriguezLogueK;
         mParams << fitRodriguezLogueBeta;
 
@@ -948,9 +866,10 @@ QString ModelSelection::getAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else if (model.contains("Ebert", Qt::CaseInsensitive))
-    {
+
+        break;
+
+    case ModelType::EbertPrelec:
         mParams << fitEbertPrelecK;
         mParams << fitEbertPrelecS;
 
@@ -961,9 +880,10 @@ QString ModelSelection::getAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else if (model.contains("Bleichrodt", Qt::CaseInsensitive))
-    {
+
+        break;
+
+    case ModelType::Beleichrodt:
         mParams << fitBleichrodtK;
         mParams << fitBleichrodtS;
         mParams << fitBleichrodtBeta;
@@ -975,14 +895,13 @@ QString ModelSelection::getAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else
-    {
-        return QString("NA");
+
+        break;
+
     }
 }
 
-QString ModelSelection::getLogAUCBestModel(QString model)
+QString ModelSelection::getLogAUCBestModel(ModelType model)
 {
     double result = -1;
     double a, b;
@@ -1003,8 +922,14 @@ QString ModelSelection::getLogAUCBestModel(QString model)
     double v;
     autogkreport rep;
 
-    if (model.contains("Exponential", Qt::CaseInsensitive))
+    switch (model)
     {
+    case ModelType::Noise:
+        return QString::number(GetNoiseMean());
+
+        break;
+
+    case ModelType::Exponential:
         mParams << fitExponentialK;
 
         autogksmooth(a, b, s);
@@ -1014,9 +939,10 @@ QString ModelSelection::getLogAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else if (model.contains("Hyperbolic", Qt::CaseInsensitive))
-    {
+
+        break;
+
+    case ModelType::Hyperbolic:
         mParams << fitHyperbolicK;
 
         autogksmooth(a, b, s);
@@ -1026,9 +952,10 @@ QString ModelSelection::getLogAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else if (model.contains("Beta", Qt::CaseInsensitive))
-    {
+
+        break;
+
+    case ModelType::BetaDelta:
         mParams << fitQuasiHyperbolicBeta;
         mParams << fitQuasiHyperbolicDelta;
 
@@ -1039,9 +966,10 @@ QString ModelSelection::getLogAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else if (model.contains("Myerson", Qt::CaseInsensitive))
-    {
+
+        break;
+
+    case ModelType::Myerson:
         mParams << fitMyersonK;
         mParams << fitMyersonS;
 
@@ -1052,9 +980,10 @@ QString ModelSelection::getLogAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else if (model.contains("Rachlin", Qt::CaseInsensitive))
-    {
+
+        break;
+
+    case ModelType::Rachlin:
         mParams << fitRachlinK;
         mParams << fitRachlinS;
 
@@ -1065,9 +994,10 @@ QString ModelSelection::getLogAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else if (model.contains("Rodriguez", Qt::CaseInsensitive))
-    {
+
+        break;
+
+    case ModelType::RodriguezLogue:
         mParams << fitRodriguezLogueK;
         mParams << fitRodriguezLogueBeta;
 
@@ -1078,9 +1008,10 @@ QString ModelSelection::getLogAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else if (model.contains("Ebert", Qt::CaseInsensitive))
-    {
+
+        break;
+
+    case ModelType::EbertPrelec:
         mParams << fitEbertPrelecK;
         mParams << fitEbertPrelecS;
 
@@ -1091,9 +1022,10 @@ QString ModelSelection::getLogAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else if (model.contains("Bleichrodt", Qt::CaseInsensitive))
-    {
+
+        break;
+
+    case ModelType::Beleichrodt:
         mParams << fitBleichrodtK;
         mParams << fitBleichrodtS;
         mParams << fitBleichrodtBeta;
@@ -1105,10 +1037,9 @@ QString ModelSelection::getLogAUCBestModel(QString model)
         result = double(v) / (b - a);
 
         return QString::number(result);
-    }
-    else
-    {
-        return QString("NA");
+
+        break;
+
     }
 }
 
@@ -1182,51 +1113,49 @@ void ModelSelection::PrepareProbabilities()
     probsEbertPrelec = -1;
 
     mProbList.clear();
-    mProbList.append(QPair<QString, double>("Noise Model", probsNoise));
+    mProbList.append(QPair<ModelType, double>(ModelType::Noise, probsNoise));
 
     for (int i=0; i<mBicList.length(); i++)
     {
-        //QString mModel(mBicList[i].first);
-
         if (mBicList[i].first == ModelType::Exponential)
         {
             probsExponential = bfExponential/sumBayesFactors;
-            mProbList.append(QPair<QString, double>("Exponential Model", probsExponential));
+            mProbList.append(QPair<ModelType, double>(ModelType::Exponential, probsExponential));
         }
         else if (mBicList[i].first == ModelType::Hyperbolic)
         {
             probsHyperbolic = bfHyperbolic/sumBayesFactors;
-            mProbList.append(QPair<QString, double>("Hyperbolic Model", probsHyperbolic));
+            mProbList.append(QPair<ModelType, double>(ModelType::Hyperbolic, probsHyperbolic));
         }
         else if (mBicList[i].first == ModelType::BetaDelta)
         {
             probsQuasiHyperbolic = bfQuasiHyperbolic/sumBayesFactors;
-            mProbList.append(QPair<QString, double>("Beta Delta Model", probsQuasiHyperbolic));
+            mProbList.append(QPair<ModelType, double>(ModelType::BetaDelta, probsQuasiHyperbolic));
         }
         else if (mBicList[i].first == ModelType::Myerson)
         {
             probsMyerson = bfMyerson/sumBayesFactors;
-            mProbList.append(QPair<QString, double>("Myerson Model", probsMyerson));
+            mProbList.append(QPair<ModelType, double>(ModelType::Myerson, probsMyerson));
         }
         else if (mBicList[i].first == ModelType::Rachlin)
         {
             probsRachlin = bfRachlin/sumBayesFactors;
-            mProbList.append(QPair<QString, double>("Rachlin Model", probsRachlin));
+            mProbList.append(QPair<ModelType, double>(ModelType::Rachlin, probsRachlin));
         }
         else if (mBicList[i].first == ModelType::RodriguezLogue)
         {
             probsRodriguezLogue = bfRodriguezLogue/sumBayesFactors;
-            mProbList.append(QPair<QString, double>("Rodriguez-Logue Model", probsRodriguezLogue));
+            mProbList.append(QPair<ModelType, double>(ModelType::RodriguezLogue, probsRodriguezLogue));
         }
         else if (mBicList[i].first == ModelType::EbertPrelec)
         {
             probsEbertPrelec = bfEbertPrelec/sumBayesFactors;
-            mProbList.append(QPair<QString, double>("Ebert-Prelec Model", probsEbertPrelec));
+            mProbList.append(QPair<ModelType, double>(ModelType::EbertPrelec, probsEbertPrelec));
         }
         else if (mBicList[i].first == ModelType::Beleichrodt)
         {
             probsBleichrodt = bfBleichrodt/sumBayesFactors;
-            mProbList.append(QPair<QString, double>("Bleichrodt Model", probsBleichrodt));
+            mProbList.append(QPair<ModelType, double>(ModelType::Beleichrodt, probsBleichrodt));
         }
     }
 }

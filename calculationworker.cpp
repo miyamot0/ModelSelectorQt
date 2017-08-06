@@ -337,19 +337,54 @@ void CalculationWorker::working()
                 fitResults->FittingResults.append(fitResultBleichrodt);
         }
 
-        QString model = mFittingObject->mProbList.first().first;
+        QString mModel;
 
-        fitResults->TopModel = model;
+        switch(mFittingObject->mProbList.first().first)
+        {
+            case ModelType::Noise:
+                mModel = "Noise";
+                break;
+
+            case ModelType::Exponential:
+                mModel = "Exponential";
+                break;
+
+            case ModelType::BetaDelta:
+                mModel = "Quasi-Hyperbolic";
+                break;
+
+            case ModelType::Myerson:
+                mModel = "Myerson-Green";
+                break;
+
+            case ModelType::Rachlin:
+                mModel = "Rachlin";
+                break;
+
+            case ModelType::RodriguezLogue:
+                mModel = "Rodriguez-Logue";
+                break;
+
+            case ModelType::EbertPrelec:
+                mModel = "Ebert-Prelec";
+                break;
+
+            case ModelType::Beleichrodt:
+                mModel = "Beleichrodt";
+                break;
+        }
+
+        fitResults->TopModel = mModel;
 
         fitResults->ParticipantDelays = tempList[2];
         fitResults->ParticipantValues = tempList[3];
 
-        fitResults->TopED50 = mFittingObject->getED50BestModel(model);
+        fitResults->TopED50 = mFittingObject->getED50BestModel(mFittingObject->mProbList.first().first);
 
         if (runLocalArea)
         {
-            fitResults->TopAUC = mFittingObject->getAUCBestModel(model);
-            fitResults->TopAUCLog = mFittingObject->getLogAUCBestModel(model);
+            fitResults->TopAUC = mFittingObject->getAUCBestModel(mFittingObject->mProbList.first().first);
+            fitResults->TopAUCLog = mFittingObject->getLogAUCBestModel(mFittingObject->mProbList.first().first);
         }
 
         emit workingResult(*fitResults);
