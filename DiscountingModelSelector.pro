@@ -133,6 +133,7 @@ win32 {
                     License_Qt.txt \
                     License_ALGLIB.txt \
                     License_Tango.txt \
+                    License_QtXlsx.txt \
                     COPYING \
                     scripts/manualDiscountingEd50AreaComputation.R \
                     SNS.ico
@@ -162,6 +163,7 @@ macx {
                     License_Qt.txt \
                     License_ALGLIB.txt \
                     License_Tango.txt \
+                    License_QtXlsx.txt \
                     COPYING \
                     scripts/manualDiscountingEd50AreaComputation.R \
                     SNS.icns
@@ -178,6 +180,7 @@ DISTFILES += \
     License_Qt.txt \
     License_ALGLIB.txt \
     License_Tango.txt \
+    License_QtXlsx.txt \
     SNS.ico \
     SNS.icns \
     scripts/manualDiscountingEd50AreaComputation.R

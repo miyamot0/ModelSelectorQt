@@ -153,6 +153,7 @@ public slots:
     void showBDSLicenseWindow();
     void showQTLicenseWindow();
     void showTangoLicenseWindow();
+    void showQtXlsxLicenseWindow();
     void showTestingFeatures();
 
     bool isToolWindowShown();
@@ -195,6 +196,7 @@ private:
     QAction *openLicenseALGLIB;
     QAction *openLicenseQt;
     QAction *openLicenseTango;
+    QAction *openLicenseQtXlsx;
 
     QAction *openAbout;
     QAction *openFAQ;

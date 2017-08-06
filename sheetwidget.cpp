@@ -311,6 +311,10 @@ void SheetWidget::buildMenus()
     openLicenseTango->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openLicenseTango, &QAction::triggered, this, &SheetWidget::showTangoLicenseWindow);
 
+    openLicenseQtXlsx = new QAction("QtXlsx License (MIT)", this);
+    openLicenseQtXlsx->setIcon(QIcon(":/images/format-justify-center.png"));
+    connect(openLicenseQtXlsx, &QAction::triggered, this, &SheetWidget::showQtXlsxLicenseWindow);
+
     openAbout = new QAction("Credits", this);
     openAbout->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openAbout, &QAction::triggered, this, &SheetWidget::showCreditsWindow);
@@ -380,17 +384,13 @@ void SheetWidget::buildMenus()
     QMenu *sheetCalculationsMenu = menuBar()->addMenu(tr("&Discounting"));
     sheetCalculationsMenu->addAction(openDiscountingED50Window);
 
-    if (VERSION_TESTING == 1)
-    {
-        sheetCalculationsMenu->addAction(openDiscountingAreaWindow);
-    }
-
     QMenu *sheetLicensesMenu = menuBar()->addMenu(tr("&Licenses"));
     sheetLicensesMenu->addAction(openLicenseALGLIB);
     sheetLicensesMenu->addAction(openLicenseDMS);
     sheetLicensesMenu->addAction(openLicenseBDS);
     sheetLicensesMenu->addAction(openLicenseQt);
     sheetLicensesMenu->addAction(openLicenseTango);
+    sheetLicensesMenu->addAction(openLicenseQtXlsx);
     sheetLicensesMenu->addAction(openAbout);
 
     QMenu *sheetAboutMenu = menuBar()->addMenu(tr("&Help"));
@@ -892,6 +892,28 @@ void SheetWidget::showTangoLicenseWindow()
 
     licenseDialog = new LicenseDialog(mFilePath, this);
     licenseDialog->setWindowTitle("Tango Icon Set License (Public Domain)");
+    licenseDialog->setModal(true);
+    licenseDialog->show();
+}
+
+void SheetWidget::showQtXlsxLicenseWindow()
+{
+    QString mFilePath = "";
+
+    #ifdef _WIN32
+            mFilePath = "License_QtXlsx.txt";
+    #elif TARGET_OS_MAC
+            QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
+            runDirectory.cdUp();
+            runDirectory.cd("Resources");
+            mFilePath = runDirectory.path() + "/";
+
+            mFilePath = mFilePath + "License_QtXlsx.txt";
+
+    #endif
+
+    licenseDialog = new LicenseDialog(mFilePath, this);
+    licenseDialog->setWindowTitle("QtXlsx License (MIT)");
     licenseDialog->setModal(true);
     licenseDialog->show();
 }
