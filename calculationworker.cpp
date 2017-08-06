@@ -344,6 +344,7 @@ void CalculationWorker::working()
 
         fitResults->TopED50 = mFittingObject->getED50BestModel(model);
         fitResults->TopAUC = mFittingObject->getAUCBestModel(model);
+        fitResults->TopAUCLog = mFittingObject->getLogAUCBestModel(model);
 
         emit workingResult(*fitResults);
     }

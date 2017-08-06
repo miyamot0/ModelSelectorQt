@@ -56,6 +56,7 @@ public:
     QString formatStringResult(int value);
     QString getED50BestModel(QString model);
     QString getAUCBestModel(QString model);
+    QString getLogAUCBestModel(QString model);
     QStringList getAUCAllModels();
 
     double getED50ep();
