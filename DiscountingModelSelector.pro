@@ -52,7 +52,6 @@ SOURCES += main.cpp\
     aboutdialog.cpp \
     creditsdialog.cpp \
     discountingmodelselectioned50dialog.cpp \
-    discountingmodelselectionareadialog.cpp \
     Libraries/alglib-3.11.0/src/alglibinternal.cpp \
     Libraries/alglib-3.11.0/src/alglibmisc.cpp \
     Libraries/alglib-3.11.0/src/ap.cpp \
@@ -84,7 +83,6 @@ HEADERS  += \
     aboutdialog.h \
     creditsdialog.h \
     discountingmodelselectioned50dialog.h \
-    discountingmodelselectionareadialog.h \
     Libraries/alglib-3.11.0/src/alglibinternal.h \
     Libraries/alglib-3.11.0/src/alglibmisc.h \
     Libraries/alglib-3.11.0/src/ap.h \
@@ -116,7 +114,6 @@ FORMS    += \
     aboutdialog.ui \
     creditsdialog.ui \
     discountingmodelselectioned50dialog.ui \
-    discountingmodelselectionareadialog.ui \
     systematicchekdialog.ui
 
 RESOURCES += \
