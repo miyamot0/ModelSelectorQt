@@ -85,7 +85,6 @@
 #include "calculationsettings.h"
 #include "sheetselectdialog.h"
 #include "discountingmodelselectioned50dialog.h"
-#include "discountingmodelselectionareadialog.h"
 #include "resultsdialog.h"
 #include "chartwindow.h"
 #include "licensedialog.h"
@@ -144,7 +143,6 @@ public slots:
     void showSaveFileDialog();
     void showSaveAsFileDialog();
 
-    void showDiscountingAreaWindow();
     void showDiscountingED50Window();
 
     void showCreditsWindow();
@@ -211,7 +209,6 @@ private:
 
     SheetSelectDialog *sheetSelectDialog;
 
-    DiscountingModelSelectionAreaDialog *discountingAreaDialog;
     DiscountingModelSelectionED50Dialog *discountingED50Dialog;
 
     LicenseDialog *licenseDialog;
