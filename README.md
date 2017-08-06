@@ -35,6 +35,12 @@ Features include:
 * **Ebert & Prelec Model**: Ebert, J. E. J., & Prelec, D. (2007). The Fragility of Time: Time-Insensitivity and Valuation of the Near and Far Future. Management Science, 53(9), 1423-1438. https://doi.org/10.1287/mnsc.1060.0671
 * **Bleichrodt et al. Constant Relative Decreasing Impatience Model**: Bleichrodt, H., Rohde, K. I. M., & Wakker, P. P. (2009). Non-hyperbolic time inconsistency. Games and Economic Behavior, 66(1), 27-38. https://doi.org/10.1016/j.geb.2008.05.007
 
+### Usage
+------
+![Alt text](screencaps/SpreadsheetInterface.gif?raw=true "Spreadsheet Interface")
+![Alt text](screencaps/SpreadsheetOptions.gif?raw=true "Range of Options")
+![Alt text](screencaps/Analyses.gif?raw=true "Analyses")
+
 ### Referenced Works (F/OSS software)
 ------
 The Small N Stats Discounting Model Selector uses a number of open source projects to work properly:

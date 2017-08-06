@@ -183,4 +183,7 @@ DISTFILES += \
     License_QtXlsx.txt \
     SNS.ico \
     SNS.icns \
-    scripts/manualDiscountingEd50AreaComputation.R
+    scripts/manualDiscountingEd50AreaComputation.R \
+    screencaps/Analyses.gif \
+    screencaps/SpreadsheetInterface.gif \
+    screencaps/SpreadsheetOptions.gif
