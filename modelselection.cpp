@@ -56,8 +56,6 @@
 #include "optimization.h"
 #include "integration.h"
 
-#include <QDebug>
-
 using namespace alglib;
 
 void exponential_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)

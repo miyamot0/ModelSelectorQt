@@ -34,7 +34,7 @@
 #include <math.h>
 #include "optimization.h"
 
-#define _USE_MATH_DEFINES
+//#define _USE_MATH_DEFINES
 
 using namespace alglib;
 
