@@ -49,7 +49,7 @@ public:
      * @param cbRMSE - add RMSE
      * @param cbBF - add Bayes Factors
      */
-    void ImportDataAndShow(bool tripLogNormal, QString metric);
+    void ImportDataAndShow(bool tripLogNormal, bool hasAreaMetrics);
 
     /** Convert indices to Excel-friendly equivalents
      * @brief convertExcelColumn

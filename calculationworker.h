@@ -69,6 +69,7 @@ private:
 
     bool runLogarithmicResults;
     bool boundRachlinModel;
+    bool runLocalArea;
     int processCheckingLocal;
 
 signals:

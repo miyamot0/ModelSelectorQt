@@ -57,6 +57,8 @@ CalculationWorker::CalculationWorker(QList<QPair<QString, QString> > mJohnsonBic
 
     boundRachlinModel = calculationSettings->cbRachlin;
 
+    runLocalArea = calculationSettings->cbArea;
+
     processCheckingLocal = processChecking;
 }
 
@@ -343,8 +345,12 @@ void CalculationWorker::working()
         fitResults->ParticipantValues = tempList[3];
 
         fitResults->TopED50 = mFittingObject->getED50BestModel(model);
-        fitResults->TopAUC = mFittingObject->getAUCBestModel(model);
-        fitResults->TopAUCLog = mFittingObject->getLogAUCBestModel(model);
+
+        if (runLocalArea)
+        {
+            fitResults->TopAUC = mFittingObject->getAUCBestModel(model);
+            fitResults->TopAUCLog = mFittingObject->getLogAUCBestModel(model);
+        }
 
         emit workingResult(*fitResults);
     }

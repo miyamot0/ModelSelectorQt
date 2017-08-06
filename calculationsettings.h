@@ -24,7 +24,7 @@ public:
          modelEbertPrelec,
          modelBleichrodt;
 
-    bool cbRachlin, johnsonBickelTest, showCharts, logNormalParameters;
+    bool cbRachlin, johnsonBickelTest, showCharts, logNormalParameters, cbArea;
 
 };
 

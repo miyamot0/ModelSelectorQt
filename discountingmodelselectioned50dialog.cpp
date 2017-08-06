@@ -148,6 +148,7 @@ void DiscountingModelSelectionED50Dialog::on_pushButton_clicked()
     temp->calculationSettings->johnsonBickelTest = ui->checkBoxJohnson->isChecked();
     temp->calculationSettings->showCharts = ui->displayPlotFigures->isChecked();
     temp->calculationSettings->logNormalParameters = ui->checkBoxLog->isChecked();
+    temp->calculationSettings->cbArea = ui->checkBoxArea->isChecked();
 
     temp->Calculate();
 }

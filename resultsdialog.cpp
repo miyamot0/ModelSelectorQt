@@ -55,7 +55,7 @@ ResultsDialog::ResultsDialog(QWidget *parent) :
     setWindowFlags(windowFlags() | Qt::WindowMinimizeButtonHint);
 }
 
-void ResultsDialog::ImportDataAndShow(bool tripLogNormal, QString metric)
+void ResultsDialog::ImportDataAndShow(bool tripLogNormal, bool hasAreaMetrics)
 {
     SheetWidget *temp = qobject_cast <SheetWidget *>(parent());
 
@@ -522,13 +522,16 @@ void ResultsDialog::ImportDataAndShow(bool tripLogNormal, QString metric)
         item->setFlags(item->flags() ^ Qt::ItemIsEditable);
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,71, item);
 
-        item = new QTableWidgetItem(mResults.TopAUC);
-        item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,72, item);
+        if (hasAreaMetrics)
+        {
+            item = new QTableWidgetItem(mResults.TopAUC);
+            item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+            ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,72, item);
 
-        item = new QTableWidgetItem(mResults.TopAUCLog);
-        item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,73, item);
+            item = new QTableWidgetItem(mResults.TopAUCLog);
+            item->setFlags(item->flags() ^ Qt::ItemIsEditable);
+            ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1,73, item);
+        }
 
         item = new QTableWidgetItem(mResults.ParticipantDelays);
         item->setFlags(item->flags() ^ Qt::ItemIsEditable);

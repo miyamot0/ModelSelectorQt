@@ -1547,14 +1547,14 @@ void SheetWidget::WorkFinished()
         discountingAreaDialog->ToggleButton(true);
         discountingAreaDialog->setEnabled(true);
 
-        resultsDialog->ImportDataAndShow(tripLogNormal, "AUC.mostprob");
+        resultsDialog->ImportDataAndShow(tripLogNormal, calculationSettings->cbArea);
     }
     else if (discountingED50Dialog->isVisible())
     {
         discountingED50Dialog->ToggleButton(true);
         discountingED50Dialog->setEnabled(true);
 
-        resultsDialog->ImportDataAndShow(tripLogNormal, "lnED50.mostprob");
+        resultsDialog->ImportDataAndShow(tripLogNormal, calculationSettings->cbArea);
     }
 }
 
