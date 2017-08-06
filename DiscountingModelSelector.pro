@@ -130,7 +130,6 @@ win32 {
     win32:RC_ICONS += SNS.ico
 
     DMS_FILES.files = License_BDS.txt \
-                    License_gnome_icons.txt \
                     License_Qt.txt \
                     License_ALGLIB.txt \
                     License_Tango.txt \
@@ -160,7 +159,6 @@ macx {
     macx:ICON = $${PWD}/SNS.icns
 
     DMS_FILES.files = License_BDS.txt \
-                    License_gnome_icons.txt \
                     License_Qt.txt \
                     License_ALGLIB.txt \
                     License_Tango.txt \
