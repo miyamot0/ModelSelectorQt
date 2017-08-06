@@ -32,10 +32,6 @@
 #include <QCheckBox>
 #include <QHBoxLayout>
 
-#if VERSION_TESTING == 1
-    #include <QDebug>
-#endif
-
 namespace Ui {
 class SystematicChekDialog;
 }

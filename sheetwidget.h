@@ -92,10 +92,6 @@
 #include "aboutdialog.h"
 #include "calculationworker.h"
 
-#if VERSION_TESTING == 1
-    #include <QDebug>
-#endif
-
 class SheetWidget : public QMainWindow
 {
     Q_OBJECT
