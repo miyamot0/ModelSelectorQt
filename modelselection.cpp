@@ -1130,44 +1130,42 @@ void ModelSelection::PrepareProbabilities()
       */
     for (int i=0; i<mBicList.length(); i++)
     {
-        QString mModel(mBicList[i].first);
-
-        if (mModel.contains("Exponential", Qt::CaseInsensitive))
+        if (mBicList[i].first == ModelType::Exponential)
         {
             bfExponential = ScaleFactor(mBicList[i].second, NoiseBIC);
             sumBayesFactors = sumBayesFactors + bfExponential;
         }
-        else if (mModel.contains("Hyperbolic", Qt::CaseInsensitive))
+        else if (mBicList[i].first == ModelType::Hyperbolic)
         {
             bfHyperbolic = ScaleFactor(mBicList[i].second, NoiseBIC);
             sumBayesFactors = sumBayesFactors + bfHyperbolic;
         }
-        else if (mModel.contains("Beta", Qt::CaseInsensitive))
+        else if (mBicList[i].first == ModelType::BetaDelta)
         {
             bfQuasiHyperbolic = ScaleFactor(mBicList[i].second, NoiseBIC);
             sumBayesFactors = sumBayesFactors + bfQuasiHyperbolic;
         }
-        else if (mModel.contains("Myerson", Qt::CaseInsensitive))
+        else if (mBicList[i].first == ModelType::Myerson)
         {
             bfMyerson = ScaleFactor(mBicList[i].second, NoiseBIC);
             sumBayesFactors = sumBayesFactors + bfMyerson;
         }
-        else if (mModel.contains("Rachlin", Qt::CaseInsensitive))
+        else if (mBicList[i].first == ModelType::Rachlin)
         {
             bfRachlin = ScaleFactor(mBicList[i].second, NoiseBIC);
             sumBayesFactors = sumBayesFactors + bfRachlin;
         }
-        else if (mModel.contains("Rodriguez", Qt::CaseInsensitive))
+        else if (mBicList[i].first == ModelType::RodriguezLogue)
         {
             bfRodriguezLogue = ScaleFactor(mBicList[i].second, NoiseBIC);
             sumBayesFactors = sumBayesFactors + bfRodriguezLogue;
         }
-        else if (mModel.contains("Ebert", Qt::CaseInsensitive))
+        else if (mBicList[i].first == ModelType::EbertPrelec)
         {
             bfEbertPrelec = ScaleFactor(mBicList[i].second, NoiseBIC);
             sumBayesFactors = sumBayesFactors + bfEbertPrelec;
         }
-        else if (mModel.contains("Bleichrodt", Qt::CaseInsensitive))
+        else if (mBicList[i].first == ModelType::Beleichrodt)
         {
             bfBleichrodt = ScaleFactor(mBicList[i].second, NoiseBIC);
             sumBayesFactors = sumBayesFactors + bfBleichrodt;
@@ -1188,44 +1186,44 @@ void ModelSelection::PrepareProbabilities()
 
     for (int i=0; i<mBicList.length(); i++)
     {
-        QString mModel(mBicList[i].first);
+        //QString mModel(mBicList[i].first);
 
-        if (mModel.contains("Exponential", Qt::CaseInsensitive))
+        if (mBicList[i].first == ModelType::Exponential)
         {
             probsExponential = bfExponential/sumBayesFactors;
             mProbList.append(QPair<QString, double>("Exponential Model", probsExponential));
         }
-        else if (mModel.contains("Hyperbolic", Qt::CaseInsensitive))
+        else if (mBicList[i].first == ModelType::Hyperbolic)
         {
             probsHyperbolic = bfHyperbolic/sumBayesFactors;
             mProbList.append(QPair<QString, double>("Hyperbolic Model", probsHyperbolic));
         }
-        else if (mModel.contains("Beta", Qt::CaseInsensitive))
+        else if (mBicList[i].first == ModelType::BetaDelta)
         {
             probsQuasiHyperbolic = bfQuasiHyperbolic/sumBayesFactors;
             mProbList.append(QPair<QString, double>("Beta Delta Model", probsQuasiHyperbolic));
         }
-        else if (mModel.contains("Myerson", Qt::CaseInsensitive))
+        else if (mBicList[i].first == ModelType::Myerson)
         {
             probsMyerson = bfMyerson/sumBayesFactors;
             mProbList.append(QPair<QString, double>("Myerson Model", probsMyerson));
         }
-        else if (mModel.contains("Rachlin", Qt::CaseInsensitive))
+        else if (mBicList[i].first == ModelType::Rachlin)
         {
             probsRachlin = bfRachlin/sumBayesFactors;
             mProbList.append(QPair<QString, double>("Rachlin Model", probsRachlin));
         }
-        else if (mModel.contains("Rodriguez", Qt::CaseInsensitive))
+        else if (mBicList[i].first == ModelType::RodriguezLogue)
         {
             probsRodriguezLogue = bfRodriguezLogue/sumBayesFactors;
             mProbList.append(QPair<QString, double>("Rodriguez-Logue Model", probsRodriguezLogue));
         }
-        else if (mModel.contains("Ebert", Qt::CaseInsensitive))
+        else if (mBicList[i].first == ModelType::EbertPrelec)
         {
             probsEbertPrelec = bfEbertPrelec/sumBayesFactors;
             mProbList.append(QPair<QString, double>("Ebert-Prelec Model", probsEbertPrelec));
         }
-        else if (mModel.contains("Bleichrodt", Qt::CaseInsensitive))
+        else if (mBicList[i].first == ModelType::Beleichrodt)
         {
             probsBleichrodt = bfBleichrodt/sumBayesFactors;
             mProbList.append(QPair<QString, double>("Bleichrodt Model", probsBleichrodt));

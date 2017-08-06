@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "optimization.h"
+#include "fitresult.h"
 
 //#define _USE_MATH_DEFINES
 
@@ -77,7 +78,8 @@ public:
 
     double NoiseBIC = 0;
 
-    QList<QPair<QString, double>> mBicList;
+    //QList<QPair<QString, double>> mBicList;
+    QList<QPair<ModelType, double>> mBicList;
     QList<QPair<QString, double>> mProbList;
 
     /** AICs

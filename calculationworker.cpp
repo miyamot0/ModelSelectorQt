@@ -107,7 +107,7 @@ void CalculationWorker::working()
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
-                mFittingObject->mBicList.append(QPair<QString, double>("Exponential", mFittingObject->bicExponential));
+                mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Exponential, mFittingObject->bicExponential));
             }
 
             fitResultExponential = new FitResult(ModelType::Exponential);
@@ -126,7 +126,7 @@ void CalculationWorker::working()
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
-                mFittingObject->mBicList.append(QPair<QString, double>("Hyperbolic", mFittingObject->bicHyperbolic));
+                mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Hyperbolic, mFittingObject->bicHyperbolic));
             }
 
             fitResultHyperbolic = new FitResult(ModelType::Hyperbolic);
@@ -145,7 +145,7 @@ void CalculationWorker::working()
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
-                mFittingObject->mBicList.append(QPair<QString, double>("Beta Delta", mFittingObject->bicQuasiHyperbolic));
+                mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::BetaDelta, mFittingObject->bicQuasiHyperbolic));
             }
 
             fitResultBetaDelta = new FitResult(ModelType::BetaDelta);
@@ -164,7 +164,7 @@ void CalculationWorker::working()
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
-                mFittingObject->mBicList.append(QPair<QString, double>("Myerson Hyperbola", mFittingObject->bicMyerson));
+                mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Myerson, mFittingObject->bicMyerson));
             }
 
             fitResultGreenMyerson = new FitResult(ModelType::Myerson);
@@ -191,7 +191,7 @@ void CalculationWorker::working()
             {
                 if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
                 {
-                    mFittingObject->mBicList.append(QPair<QString, double>("Rachlin Hyperbola", mFittingObject->bicRachlin));
+                    mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Rachlin, mFittingObject->bicRachlin));
                 }
 
                 fitResultRachlin = new FitResult(ModelType::Rachlin);
@@ -211,7 +211,7 @@ void CalculationWorker::working()
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
-                mFittingObject->mBicList.append(QPair<QString, double>("Rodriguez-Logue", mFittingObject->bicRodriguezLogue));
+                mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::RodriguezLogue, mFittingObject->bicRodriguezLogue));
             }
 
             fitResultRodriguezLogue = new FitResult(ModelType::RodriguezLogue);
@@ -230,7 +230,7 @@ void CalculationWorker::working()
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
-                mFittingObject->mBicList.append(QPair<QString, double>("Ebert-Prelec", mFittingObject->bicEbertPrelec));
+                mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::EbertPrelec, mFittingObject->bicEbertPrelec));
             }
 
             fitResultEbertPrelec = new FitResult(ModelType::EbertPrelec);
@@ -249,7 +249,7 @@ void CalculationWorker::working()
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
-                mFittingObject->mBicList.append(QPair<QString, double>("Bleichrodt", mFittingObject->bicBleichrodt));
+                mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Beleichrodt, mFittingObject->bicBleichrodt));
             }
 
             fitResultBleichrodt = new FitResult(ModelType::Beleichrodt);
