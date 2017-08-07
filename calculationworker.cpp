@@ -107,57 +107,83 @@ void CalculationWorker::working()
         {
             mFittingObject->FitExponential("[-5]");
 
+            fitResultExponential = new FitResult(ModelType::Exponential);
+
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Exponential, mFittingObject->bicExponential));
+
+                double lnK = (runLogarithmicResults) ? exp(mFittingObject->fitExponentialK) : mFittingObject->fitExponentialK;
+                fitResultExponential->Params.append(QPair<QString, double>(QString("Exponential K"), lnK));
+                fitResultExponential->RMS = mFittingObject->GetReport().rmserror;
+                fitResultExponential->AIC = mFittingObject->aicExponential;
+                fitResultExponential->BIC = mFittingObject->bicExponential;
+                fitResultExponential->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
-
-            fitResultExponential = new FitResult(ModelType::Exponential);
-
-            double lnK = (runLogarithmicResults) ? exp(mFittingObject->fitExponentialK) : mFittingObject->fitExponentialK;
-            fitResultExponential->Params.append(QPair<QString, double>(QString("Exponential K"), lnK));
-            fitResultExponential->RMS = mFittingObject->GetReport().rmserror;
-            fitResultExponential->AIC = mFittingObject->aicExponential;
-            fitResultExponential->BIC = mFittingObject->bicExponential;
-            fitResultExponential->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+            else
+            {
+                fitResultExponential->Params.append(QPair<QString, double>(QString("Exponential K"), NULL));
+                fitResultExponential->RMS = NULL;
+                fitResultExponential->AIC = NULL;
+                fitResultExponential->BIC = NULL;
+                fitResultExponential->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+            }
         }
 
         if (runLocalHyperbolic)
         {
             mFittingObject->FitHyperbolic("[-5]");
 
+            fitResultHyperbolic = new FitResult(ModelType::Hyperbolic);
+
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Hyperbolic, mFittingObject->bicHyperbolic));
+
+                double lnK = (runLogarithmicResults) ? exp(mFittingObject->fitHyperbolicK) : mFittingObject->fitHyperbolicK;
+
+                fitResultHyperbolic->Params.append(QPair<QString, double>(QString("Hyperbolic K"), lnK));
+                fitResultHyperbolic->RMS = mFittingObject->GetReport().rmserror;
+                fitResultHyperbolic->AIC = mFittingObject->aicHyperbolic;
+                fitResultHyperbolic->BIC = mFittingObject->bicHyperbolic;
+                fitResultHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
-
-            fitResultHyperbolic = new FitResult(ModelType::Hyperbolic);
-
-            double lnK = (runLogarithmicResults) ? exp(mFittingObject->fitHyperbolicK) : mFittingObject->fitHyperbolicK;
-            fitResultHyperbolic->Params.append(QPair<QString, double>(QString("Hyperbolic K"), lnK));
-            fitResultHyperbolic->RMS = mFittingObject->GetReport().rmserror;
-            fitResultHyperbolic->AIC = mFittingObject->aicHyperbolic;
-            fitResultHyperbolic->BIC = mFittingObject->bicHyperbolic;
-            fitResultHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+            else
+            {
+                fitResultHyperbolic->Params.append(QPair<QString, double>(QString("Hyperbolic K"), NULL));
+                fitResultHyperbolic->RMS = NULL;
+                fitResultHyperbolic->AIC = NULL;
+                fitResultHyperbolic->BIC = NULL;
+                fitResultHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+            }
         }
 
         if (runLocalBetaDelta)
         {
             mFittingObject->FitQuasiHyperbolic("[0.3, 0.3]");
 
+            fitResultBetaDelta = new FitResult(ModelType::BetaDelta);
+
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::BetaDelta, mFittingObject->bicQuasiHyperbolic));
+
+                fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Beta"), mFittingObject->fitQuasiHyperbolicBeta));
+                fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Delta"), mFittingObject->fitQuasiHyperbolicDelta));
+                fitResultBetaDelta->RMS = mFittingObject->GetReport().rmserror;
+                fitResultBetaDelta->AIC = mFittingObject->aicQuasiHyperbolic;
+                fitResultBetaDelta->BIC = mFittingObject->bicQuasiHyperbolic;
+                fitResultBetaDelta->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
-
-            fitResultBetaDelta = new FitResult(ModelType::BetaDelta);
-
-            fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Beta"), mFittingObject->fitQuasiHyperbolicBeta));
-            fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Delta"), mFittingObject->fitQuasiHyperbolicDelta));
-            fitResultBetaDelta->RMS = mFittingObject->GetReport().rmserror;
-            fitResultBetaDelta->AIC = mFittingObject->aicQuasiHyperbolic;
-            fitResultBetaDelta->BIC = mFittingObject->bicQuasiHyperbolic;
-            fitResultBetaDelta->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+            else
+            {
+                fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Beta"), NULL));
+                fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Delta"), NULL));
+                fitResultBetaDelta->RMS = NULL;
+                fitResultBetaDelta->AIC = NULL;
+                fitResultBetaDelta->BIC = NULL;
+                fitResultBetaDelta->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+            }
         }
 
         if (runLocalMyersonGreen)
