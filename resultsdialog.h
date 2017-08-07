@@ -40,7 +40,7 @@ public:
      * @brief ResultsDialog
      * @param parent
      */
-    explicit ResultsDialog(QWidget *parent = 0);
+    explicit ResultsDialog(int nSeries, bool tripLogNormal, QWidget *parent = 0);
 
     /** Optional display parameters, as they are added
      * @brief ImportDataAndShow
@@ -49,7 +49,7 @@ public:
      * @param cbRMSE - add RMSE
      * @param cbBF - add Bayes Factors
      */
-    void ImportDataAndShow(bool tripLogNormal, bool hasAreaMetrics);
+    void ImportDataAndShow(bool hasAreaMetrics);
 
     /** Convert indices to Excel-friendly equivalents
      * @brief convertExcelColumn

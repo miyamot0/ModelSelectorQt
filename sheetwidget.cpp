@@ -1400,7 +1400,7 @@ void SheetWidget::Calculate()
         }
     }
 
-    resultsDialog = new ResultsDialog(this);
+    resultsDialog = new ResultsDialog(nSeries, tripLogNormal, this);
     resultsDialog->setModal(false);
 
     QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
@@ -1504,7 +1504,7 @@ void SheetWidget::WorkFinished()
         discountingED50Dialog->ToggleButton(true);
         discountingED50Dialog->setEnabled(true);
 
-        resultsDialog->ImportDataAndShow(tripLogNormal, calculationSettings->cbArea);
+        resultsDialog->ImportDataAndShow(calculationSettings->cbArea);
     }
 }
 
