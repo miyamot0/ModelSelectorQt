@@ -352,10 +352,10 @@ void CalculationWorker::working()
 
         fitResultNoise = new FitResult(ModelType::Noise);
         fitResultNoise->Params.append(QPair<QString, double>(QString("Noise mean"), mFittingObject->GetNoiseMean()));
-        fitResultNoise->RMS = mFittingObject->GetReport().rmserror;
+        fitResultNoise->RMS = mFittingObject->NoiseRMSE;
         fitResultNoise->AIC = mFittingObject->aicNoise;
         fitResultNoise->BIC = mFittingObject->bicNoise;
-        fitResultNoise->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+        fitResultNoise->Status = QString("---");
 
         mFittingObject->PrepareProbabilities();
 

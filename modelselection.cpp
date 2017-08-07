@@ -56,8 +56,6 @@
 #include "optimization.h"
 #include "integration.h"
 
-#include <QDebug>
-
 using namespace alglib;
 
 void exponential_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
@@ -305,6 +303,7 @@ void ModelSelection::FitNoise()
 
     aicNoise = (-2 * log(L)) + (2 * DF);
     bicNoise = -2 * log(L) + log(N) * DF;
+    NoiseRMSE = sqrt(S2);
 }
 
 /** Exponentials
@@ -764,9 +763,11 @@ QString ModelSelection::getED50BestModel(ModelType model)
 
 double ModelSelection::getED50ep () {
     double lowDelay = 0;
-    double highDelay = x[x.rows()-1][0]*10;
+    double highDelay = x[x.rows()-1][0] * 100;
 
-    while ((highDelay - lowDelay) > 0.001) {
+    int i = 0;
+
+    while ((highDelay - lowDelay) > 0.001 && i < 100) {
       double lowEst = ChartWindow::ebert_prelec_plotting(fitEbertPrelecK, fitEbertPrelecS, lowDelay);
       double midEst = ChartWindow::ebert_prelec_plotting(fitEbertPrelecK, fitEbertPrelecS, (lowDelay+highDelay)/2);
       double highEst = ChartWindow::ebert_prelec_plotting(fitEbertPrelecK, fitEbertPrelecS, highDelay);
@@ -782,6 +783,8 @@ double ModelSelection::getED50ep () {
         highDelay = (lowDelay+highDelay)/2;
 
       }
+
+      i++;
     }
 
     double returnValue = log((lowDelay+highDelay)/2);
@@ -791,9 +794,11 @@ double ModelSelection::getED50ep () {
 
 double ModelSelection::getED50crdi () {
     double lowDelay = 0;
-    double highDelay = x[x.rows()-1][0]*10;
+    double highDelay = x[x.rows()-1][0] * 100;
 
-    while ((highDelay - lowDelay) > 0.001) {
+    int i = 0;
+
+    while ((highDelay - lowDelay) > 0.001 && i < 100) {
       double lowEst = ChartWindow::bleichrodt_plotting(fitBleichrodtK, fitBleichrodtS, fitBleichrodtBeta, lowDelay);
       double midEst = ChartWindow::bleichrodt_plotting(fitBleichrodtK, fitBleichrodtS, fitBleichrodtBeta, (lowDelay+highDelay)/2);
       double highEst = ChartWindow::bleichrodt_plotting(fitBleichrodtK, fitBleichrodtS, fitBleichrodtBeta, highDelay);
@@ -809,6 +814,8 @@ double ModelSelection::getED50crdi () {
         highDelay = (lowDelay+highDelay)/2;
 
       }
+
+      i++;
     }
 
     double returnValue = log((lowDelay+highDelay)/2);
@@ -818,9 +825,11 @@ double ModelSelection::getED50crdi () {
 
 double ModelSelection::getED50rodriguez () {
     double lowDelay = 0;
-    double highDelay = x[x.rows()-1][0]*10;
+    double highDelay = x[x.rows()-1][0] * 100;
 
-    while ((highDelay - lowDelay) > 0.001) {
+    int i = 0;
+
+    while ((highDelay - lowDelay) > 0.001 && i < 100) {
       double lowEst = ChartWindow::rodriguez_logue_plotting(fitRodriguezLogueK, fitRodriguezLogueBeta, lowDelay);
       double midEst = ChartWindow::rodriguez_logue_plotting(fitRodriguezLogueK, fitRodriguezLogueBeta, (lowDelay+highDelay)/2);
       double highEst = ChartWindow::rodriguez_logue_plotting(fitRodriguezLogueK, fitRodriguezLogueBeta, highDelay);
@@ -836,6 +845,8 @@ double ModelSelection::getED50rodriguez () {
         highDelay = (lowDelay+highDelay)/2;
 
       }
+
+      i++;
     }
 
     double returnValue = log((lowDelay+highDelay)/2);

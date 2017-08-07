@@ -76,6 +76,7 @@ public:
     void PrepareProbabilities();
 
     double NoiseBIC = 0;
+    double NoiseRMSE = 0;
 
     QList<QPair<ModelType, double>> mBicList;
     QList<QPair<ModelType, double>> mProbList;
