@@ -499,6 +499,9 @@ void SheetWidget::openRecentFile()
 
                 xlsx2.selectSheet(sheetSelectDialog->GetSelected());
 
+                table->setUpdatesEnabled(false);
+                table->blockSignals(true);
+
                 for (int w = 0; w < xlsx2.dimension().lastColumn() + 1; w++)
                 {
                     for (int h = 0; h < xlsx2.dimension().lastRow() + 1; h++)
@@ -512,6 +515,9 @@ void SheetWidget::openRecentFile()
                         }
                     }
                 }
+
+                table->setUpdatesEnabled(true);
+                table->blockSignals(false);
 
                 setCurrentFile(mFile);
                 statusBar()->showMessage(tr("File loaded"), 2000);
@@ -628,6 +634,9 @@ void SheetWidget::showOpenFileDialog()
 
             xlsx2.selectSheet(sheetSelectDialog->GetSelected());
 
+            table->setUpdatesEnabled(false);
+            table->blockSignals(true);
+
             for (int w = 0; w < xlsx2.dimension().lastColumn() + 1; w++)
             {
                 for (int h = 0; h < xlsx2.dimension().lastRow() + 1; h++)
@@ -640,7 +649,15 @@ void SheetWidget::showOpenFileDialog()
                         }
                     }
                 }
+
+                if (((w / xlsx2.dimension().lastColumn())*100) % 10 == 0)
+                {
+                    statusBar()->showMessage(QString::number(((w / xlsx2.dimension().lastColumn())*100)), 2000);
+                }
             }
+
+            table->setUpdatesEnabled(true);
+            table->blockSignals(false);
 
             setCurrentFile(file_name);
             statusBar()->showMessage(tr("File loaded"), 2000);
