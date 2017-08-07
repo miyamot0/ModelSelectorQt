@@ -35,6 +35,7 @@ public:
 
     QString Header;
     QString TopModel;
+    ModelType TopModelType;
     QString ParticipantValues;
     QString ParticipantDelays;
 

@@ -463,6 +463,7 @@ void CalculationWorker::working()
         }
 
         fitResults->TopModel = mModel;
+        fitResults->TopModelType = mFittingObject->mProbList.first().first;
 
         fitResults->ParticipantDelays = tempList[2];
         fitResults->ParticipantValues = tempList[3];

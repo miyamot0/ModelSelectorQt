@@ -356,41 +356,43 @@ void ChartWindow::plotAUCSeries(int index)
     bleichrodtSeries->hide();
     noiseSeries->hide();
 
-    if (mList.TopModel.contains("Noise"))
+    switch (mList.TopModelType)
     {
-        noiseSeries->show();
-    }
-    else if (mList.TopModel.contains("Exponential"))
-    {
-        expSeries->show();
-    }
-    else if (mList.TopModel.contains("Hyperbolic"))
-    {
-        hypSeries->show();
-    }
-    else if (mList.TopModel.contains("Beta Delta"))
-    {
-        quasiSeries->show();
-    }
-    else if (mList.TopModel.contains("Myerson"))
-    {
-        myerSeries->show();
-    }
-    else if (mList.TopModel.contains("Rachlin"))
-    {
-        rachSeries->show();
-    }
-    else if (mList.TopModel.contains("Rodriguez"))
-    {
-        rodriguezSeries->show();
-    }
-    else if (mList.TopModel.contains("Ebert"))
-    {
-        ebertSeries->show();
-    }
-    else if (mList.TopModel.contains("Beleichrodt"))
-    {
-        bleichrodtSeries->show();
+        case ModelType::Noise:
+            noiseSeries->show();
+            break;
+
+        case ModelType::Exponential:
+            expSeries->show();
+            break;
+
+        case ModelType::Hyperbolic:
+            hypSeries->show();
+            break;
+
+        case ModelType::BetaDelta:
+            quasiSeries->show();
+            break;
+
+        case ModelType::Myerson:
+            myerSeries->show();
+            break;
+
+        case ModelType::Rachlin:
+            rachSeries->show();
+            break;
+
+        case ModelType::RodriguezLogue:
+            rodriguezSeries->show();
+            break;
+
+        case ModelType::EbertPrelec:
+            ebertSeries->show();
+            break;
+
+        case ModelType::Beleichrodt:
+            bleichrodtSeries->show();
+            break;
     }
 
     expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
@@ -525,6 +527,7 @@ void ChartWindow::plotAUCSeries(int index)
         {
             break;
         }
+
         *dataPoints << QPointF(log(param1), param2);
         *empiricalSeries << QPointF(log(param1), param2);
     }
@@ -720,25 +723,6 @@ void ChartWindow::plotED50Series(int index)
         {
             *bleichrodtSeries << QPointF(i, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
         }
-
-        /*
-        if (i > 10 && i < 100)
-        {
-            i += 9;
-        }
-        else if (i > 100 && i < 1000)
-        {
-            i += 99;
-        }
-        else if (i > 1000 && i < 10000)
-        {
-            i += 999;
-        }
-        else if (i > 10000)
-        {
-            i += 9999;
-        }
-        */
     }
 
     paramString1 = mList.ParticipantDelays;
