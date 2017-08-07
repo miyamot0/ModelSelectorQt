@@ -388,7 +388,7 @@ void ChartWindow::plotAUCSeries(int index)
     {
         ebertSeries->show();
     }
-    else if (mList.TopModel.contains("Bleichrodt"))
+    else if (mList.TopModel.contains("Beleichrodt"))
     {
         bleichrodtSeries->show();
     }
