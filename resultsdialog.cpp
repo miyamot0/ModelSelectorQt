@@ -193,6 +193,8 @@ void ResultsDialog::ImportDataAndShow(bool hasAreaMetrics)
 {
     SheetWidget *temp = qobject_cast <SheetWidget *>(parent());
 
+    ui->tableWidget->blockSignals(true);
+
     for(int i=0; i<temp->allResults.count(); i++)
     {
         if (i % 10 == 0)
@@ -322,6 +324,8 @@ void ResultsDialog::ImportDataAndShow(bool hasAreaMetrics)
         ui->tableWidget->setItem(i,74, new QTableWidgetItem(temp->allResults.at(i).ParticipantDelays));
         ui->tableWidget->setItem(i,75, new QTableWidgetItem(temp->allResults.at(i).ParticipantValues));
     }
+
+    ui->tableWidget->blockSignals(false);
 
     show();
 }
