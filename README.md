@@ -15,10 +15,11 @@ Features include:
 
 ### Version
 ------
-1.4.0 (beta)
+1.4.3 (beta)
 
 ### Changelog
 ------
+ * 1.4.3 - Perf improvements
  * 1.4.0 - Added additional models
  * 1.3.0 - Added numerical integration
  * 1.2.0 - Migrated from R to ALGLIB
