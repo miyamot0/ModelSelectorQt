@@ -24,6 +24,8 @@
 #include "qstringlist.h"
 #include <QtWidgets>
 
+#include <QDebug>
+
 struct QPairSecondComparer
 {
     template<typename T1, typename T2>
@@ -162,45 +164,73 @@ void CalculationWorker::working()
         {
             mFittingObject->FitMyerson("[-5, 0.3]");
 
+            fitResultGreenMyerson = new FitResult(ModelType::Myerson);
+
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Myerson, mFittingObject->bicMyerson));
+
+                fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson K"), mFittingObject->fitMyersonK));
+                fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson S"), mFittingObject->fitMyersonS));
+                fitResultGreenMyerson->RMS = mFittingObject->GetReport().rmserror;
+                fitResultGreenMyerson->AIC = mFittingObject->aicMyerson;
+                fitResultGreenMyerson->BIC = mFittingObject->bicMyerson;
+                fitResultGreenMyerson->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
-
-            fitResultGreenMyerson = new FitResult(ModelType::Myerson);
-
-            fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson K"), mFittingObject->fitMyersonK));
-            fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson S"), mFittingObject->fitMyersonS));
-            fitResultGreenMyerson->RMS = mFittingObject->GetReport().rmserror;
-            fitResultGreenMyerson->AIC = mFittingObject->aicMyerson;
-            fitResultGreenMyerson->BIC = mFittingObject->bicMyerson;
-            fitResultGreenMyerson->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+            else
+            {
+                fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson K"), NULL));
+                fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson S"), NULL));
+                fitResultGreenMyerson->RMS = NULL;
+                fitResultGreenMyerson->AIC = NULL;
+                fitResultGreenMyerson->BIC = NULL;
+                fitResultGreenMyerson->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+            }
         }
 
         if (runLocalRachlin)
         {
             mFittingObject->FitRachlin("[-5, 0.3]");
 
-            if (boundRachlinModel && mFittingObject->GetParams()[1] > 1)
-            {
-                fitResultRachlin = new FitResult(ModelType::Rachlin);
+            fitResultRachlin = new FitResult(ModelType::Rachlin);
 
-                fitResultRachlin->Status = "Exceeded Bounds";
+            if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
+            {
+                if (boundRachlinModel && mFittingObject->GetParams()[1] > 1)
+                {
+                    fitResultRachlin = new FitResult(ModelType::Rachlin);
+
+                    fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin K"), NULL));
+                    fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin S"), NULL));
+                    fitResultRachlin->RMS = NULL;
+                    fitResultRachlin->AIC = NULL;
+                    fitResultRachlin->BIC = NULL;
+                    fitResultRachlin->BF = NULL;
+                    fitResultRachlin->Probability = NULL;
+
+                    fitResultRachlin->Status = "Exceeded Bounds";
+                }
+                else
+                {
+                    mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Rachlin, mFittingObject->bicRachlin));
+
+                    fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin K"), mFittingObject->fitRachlinK));
+                    fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin S"), mFittingObject->fitRachlinS));
+                    fitResultRachlin->RMS = mFittingObject->GetReport().rmserror;
+                    fitResultRachlin->AIC = mFittingObject->aicRachlin;
+                    fitResultRachlin->BIC = mFittingObject->bicRachlin;
+                    fitResultRachlin->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
             }
             else
             {
-                if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
-                {
-                    mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Rachlin, mFittingObject->bicRachlin));
-                }
-
-                fitResultRachlin = new FitResult(ModelType::Rachlin);
-
-                fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin K"), mFittingObject->fitRachlinK));
-                fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin S"), mFittingObject->fitRachlinS));
-                fitResultRachlin->RMS = mFittingObject->GetReport().rmserror;
-                fitResultRachlin->AIC = mFittingObject->aicRachlin;
-                fitResultRachlin->BIC = mFittingObject->bicRachlin;
+                fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin K"), NULL));
+                fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin S"), NULL));
+                fitResultRachlin->RMS = NULL;
+                fitResultRachlin->AIC = NULL;
+                fitResultRachlin->BIC = NULL;
+                fitResultRachlin->BF = NULL;
+                fitResultRachlin->Probability = NULL;
                 fitResultRachlin->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
         }
@@ -209,58 +239,86 @@ void CalculationWorker::working()
         {
             mFittingObject->FitRodriguezLogue("[-5, 0.3]");
 
+            fitResultRodriguezLogue = new FitResult(ModelType::RodriguezLogue);
+
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::RodriguezLogue, mFittingObject->bicRodriguezLogue));
+
+                fitResultRodriguezLogue->Params.append(QPair<QString, double>(QString("Rodriguez-Logue K"), mFittingObject->fitRodriguezLogueK));
+                fitResultRodriguezLogue->Params.append(QPair<QString, double>(QString("Rodriguez-Logue Beta"), mFittingObject->fitRodriguezLogueBeta));
+                fitResultRodriguezLogue->RMS = mFittingObject->GetReport().rmserror;
+                fitResultRodriguezLogue->AIC = mFittingObject->aicRodriguezLogue;
+                fitResultRodriguezLogue->BIC = mFittingObject->bicRodriguezLogue;
+                fitResultRodriguezLogue->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
-
-            fitResultRodriguezLogue = new FitResult(ModelType::RodriguezLogue);
-
-            fitResultRodriguezLogue->Params.append(QPair<QString, double>(QString("Rodriguez-Logue K"), mFittingObject->fitRodriguezLogueK));
-            fitResultRodriguezLogue->Params.append(QPair<QString, double>(QString("Rodriguez-Logue Beta"), mFittingObject->fitRodriguezLogueBeta));
-            fitResultRodriguezLogue->RMS = mFittingObject->GetReport().rmserror;
-            fitResultRodriguezLogue->AIC = mFittingObject->aicRodriguezLogue;
-            fitResultRodriguezLogue->BIC = mFittingObject->bicRodriguezLogue;
-            fitResultRodriguezLogue->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+            else
+            {
+                fitResultRodriguezLogue->Params.append(QPair<QString, double>(QString("Rodriguez-Logue K"), NULL));
+                fitResultRodriguezLogue->Params.append(QPair<QString, double>(QString("Rodriguez-Logue Beta"), NULL));
+                fitResultRodriguezLogue->RMS = NULL;
+                fitResultRodriguezLogue->AIC = NULL;
+                fitResultRodriguezLogue->BIC = NULL;
+                fitResultRodriguezLogue->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+            }
         }
 
         if (runLocalEbertPrelec)
         {
             mFittingObject->FitEbertPrelec("[-5.0, 0.5]");
 
+            fitResultEbertPrelec = new FitResult(ModelType::EbertPrelec);
+
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::EbertPrelec, mFittingObject->bicEbertPrelec));
+
+                fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec K"), mFittingObject->fitEbertPrelecK));
+                fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec S"), mFittingObject->fitEbertPrelecS));
+                fitResultEbertPrelec->RMS = mFittingObject->GetReport().rmserror;
+                fitResultEbertPrelec->AIC = mFittingObject->aicEbertPrelec;
+                fitResultEbertPrelec->BIC = mFittingObject->bicEbertPrelec;
+                fitResultEbertPrelec->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
-
-            fitResultEbertPrelec = new FitResult(ModelType::EbertPrelec);
-
-            fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec K"), mFittingObject->fitEbertPrelecK));
-            fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec S"), mFittingObject->fitEbertPrelecS));
-            fitResultEbertPrelec->RMS = mFittingObject->GetReport().rmserror;
-            fitResultEbertPrelec->AIC = mFittingObject->aicEbertPrelec;
-            fitResultEbertPrelec->BIC = mFittingObject->bicEbertPrelec;
-            fitResultEbertPrelec->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+            else
+            {
+                fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec K"), NULL));
+                fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec S"), NULL));
+                fitResultEbertPrelec->RMS = NULL;
+                fitResultEbertPrelec->AIC = NULL;
+                fitResultEbertPrelec->BIC = NULL;
+                fitResultEbertPrelec->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+            }
         }
 
         if (runLocalBleicholdt)
         {
             mFittingObject->FitBleichrodt("[-5.0, 0.5, 0.5]");
 
+            fitResultBleichrodt = new FitResult(ModelType::Beleichrodt);
+
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Beleichrodt, mFittingObject->bicBleichrodt));
+
+                fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt K"), mFittingObject->fitBleichrodtK));
+                fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt S"), mFittingObject->fitBleichrodtS));
+                fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt Beta"), mFittingObject->fitBleichrodtBeta));
+                fitResultBleichrodt->RMS = mFittingObject->GetReport().rmserror;
+                fitResultBleichrodt->AIC = mFittingObject->aicBleichrodt;
+                fitResultBleichrodt->BIC = mFittingObject->bicBleichrodt;
+                fitResultBleichrodt->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
-
-            fitResultBleichrodt = new FitResult(ModelType::Beleichrodt);
-
-            fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt K"), mFittingObject->fitBleichrodtK));
-            fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt S"), mFittingObject->fitBleichrodtS));
-            fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt Beta"), mFittingObject->fitBleichrodtBeta));
-            fitResultBleichrodt->RMS = mFittingObject->GetReport().rmserror;
-            fitResultBleichrodt->AIC = mFittingObject->aicBleichrodt;
-            fitResultBleichrodt->BIC = mFittingObject->bicBleichrodt;
-            fitResultBleichrodt->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+            else
+            {
+                fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt K"), NULL));
+                fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt S"), NULL));
+                fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt Beta"), NULL));
+                fitResultBleichrodt->RMS = NULL;
+                fitResultBleichrodt->AIC = NULL;
+                fitResultBleichrodt->BIC = NULL;
+                fitResultBleichrodt->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+            }
         }
 
         mFittingObject->FitNoise();
@@ -269,8 +327,8 @@ void CalculationWorker::working()
         fitResultNoise = new FitResult(ModelType::Noise);
         fitResultNoise->Params.append(QPair<QString, double>(QString("Noise mean"), mFittingObject->GetNoiseMean()));
         fitResultNoise->RMS = mFittingObject->GetReport().rmserror;
-        fitResultNoise->AIC = mFittingObject->aicExponential;
-        fitResultNoise->BIC = mFittingObject->bicExponential;
+        fitResultNoise->AIC = mFittingObject->aicNoise;
+        fitResultNoise->BIC = mFittingObject->bicNoise;
         fitResultNoise->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
 
         mFittingObject->PrepareProbabilities();

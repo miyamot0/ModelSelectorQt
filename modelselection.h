@@ -80,6 +80,9 @@ public:
     QList<QPair<ModelType, double>> mBicList;
     QList<QPair<ModelType, double>> mProbList;
 
+    QString errorCode;
+    int statusValue;
+
     /** AICs
      *
      */

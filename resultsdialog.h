@@ -57,6 +57,7 @@ public:
      * @param column
      */
     void convertExcelColumn(QString &mString, int column);
+    QString formatNumberCatchNulls(double value);
     ~ResultsDialog();
 
 public slots:

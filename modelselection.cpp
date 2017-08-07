@@ -56,6 +56,8 @@
 #include "optimization.h"
 #include "integration.h"
 
+#include <QDebug>
+
 using namespace alglib;
 
 void exponential_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
@@ -455,9 +457,16 @@ void ModelSelection::FitMyerson(const char *mStarts)
   */
 void ModelSelection::FitRachlin(const char *mStarts)
 {
+    statusValue = -1;
+    aicRachlin = -1;
+    bicRachlin = -1;
+    fitRachlinK = -1;
+    fitRachlinS = -1;
+
     SetStarts(mStarts);
 
     lsfitcreatef(x, y, c, diffstep, state);
+
     lsfitsetcond(state, epsx, maxits);
 
     alglib::lsfitfit(state, hyperboloid_rachlin_discounting);
@@ -467,22 +476,27 @@ void ModelSelection::FitRachlin(const char *mStarts)
     N = y.length();
     SSR = 0;
 
-    for (int i = 0; i < N; i++)
+    if ((int) GetInfo() == 2 || (int) GetInfo() == 5)
     {
-        holder = pow((1+exp( (double) c[0])*pow( (double) x[i][0], (double) c[1])), -1);
-        SSR += pow(((double) y[i] - holder), 2);
+        for (int i = 0; i < N; i++)
+        {
+            holder = pow((1+exp( (double) c[0])*pow( (double) x[i][0], (double) c[1])), -1);
+            SSR += pow(((double) y[i] - holder), 2);
+        }
+
+        S2 = SSR / N;
+
+        L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
+
+        DF = 3;
+
+        aicRachlin = (-2 * log(L)) + (2 * DF);
+        bicRachlin = -2 * log(L) + log(N) * DF;
+        fitRachlinK = (double) c[0];
+        fitRachlinS = (double) c[1];
+
+        statusValue = (int) info;
     }
-
-    S2 = SSR / N;
-
-    L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
-    DF = 3;
-
-    aicRachlin = (-2 * log(L)) + (2 * DF);
-    bicRachlin = -2 * log(L) + log(N) * DF;
-    fitRachlinK = (double) c[0];
-    fitRachlinS = (double) c[1];
 }
 
 /** Rodriguez Logue Model
@@ -600,7 +614,7 @@ double ScaleFactor(double modelBic, double noiseBic)
 
 QString ModelSelection::formatStringResult(int value)
 {
-    if (value == -7)
+    if (value == -7 || value == -8)
     {
         return QString("gradient verification failed");
 
@@ -1046,14 +1060,14 @@ QString ModelSelection::getLogAUCBestModel(ModelType model)
 void ModelSelection::PrepareProbabilities()
 {
     bfNoise = ScaleFactor(NoiseBIC, NoiseBIC);
-    bfExponential = -1;
-    bfHyperbolic = -1;
-    bfQuasiHyperbolic = -1;
-    bfMyerson = -1;
-    bfRachlin = -1;
-    bfRodriguezLogue = -1;
-    bfEbertPrelec = -1;
-    bfBleichrodt = -1;
+    bfExponential = NULL;
+    bfHyperbolic = NULL;
+    bfQuasiHyperbolic = NULL;
+    bfMyerson = NULL;
+    bfRachlin = NULL;
+    bfRodriguezLogue = NULL;
+    bfEbertPrelec = NULL;
+    bfBleichrodt = NULL;
 
     sumBayesFactors = 0;
 
@@ -1104,13 +1118,13 @@ void ModelSelection::PrepareProbabilities()
     }
 
     probsNoise = bfNoise/sumBayesFactors;
-    probsHyperbolic = -1;
-    probsExponential = -1;
-    probsQuasiHyperbolic = -1;
-    probsMyerson = -1;
-    probsRachlin = -1;
-    probsRodriguezLogue = -1;
-    probsEbertPrelec = -1;
+    probsHyperbolic = NULL;
+    probsExponential = NULL;
+    probsQuasiHyperbolic = NULL;
+    probsMyerson = NULL;
+    probsRachlin = NULL;
+    probsRodriguezLogue = NULL;
+    probsEbertPrelec = NULL;
 
     mProbList.clear();
     mProbList.append(QPair<ModelType, double>(ModelType::Noise, probsNoise));
