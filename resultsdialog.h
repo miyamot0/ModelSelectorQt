@@ -24,6 +24,7 @@
 #ifndef RESULTSDIALOG_H
 #define RESULTSDIALOG_H
 
+#include <QTableWidget>
 #include <QDialog>
 #include "fitresults.h"
 
@@ -69,7 +70,6 @@ private slots:
 private:
     Ui::ResultsDialog *ui;
     QAction *copyAction;
-
 };
 
 #endif // RESULTSDIALOG_H
