@@ -433,6 +433,10 @@ void CalculationWorker::working()
                 mModel = "Exponential";
                 break;
 
+            case ModelType::Hyperbolic:
+                mModel = "Hyperbolic";
+                break;
+
             case ModelType::BetaDelta:
                 mModel = "Quasi-Hyperbolic";
                 break;
