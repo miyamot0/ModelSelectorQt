@@ -545,6 +545,16 @@ void ChartWindow::plotED50Series(int index)
     bleichrodtSeries->clear();
     dataPoints->clear();
 
+    expSeries->hide();
+    hypSeries->hide();
+    quasiSeries->hide();
+    myerSeries->hide();
+    rachSeries->hide();
+    noiseSeries->hide();
+    rodriguezSeries->hide();
+    ebertSeries->hide();
+    bleichrodtSeries->hide();
+
     if (mList.Header.contains("dropped", Qt::CaseInsensitive))
     {
         chart->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
@@ -565,49 +575,84 @@ void ChartWindow::plotED50Series(int index)
 
         if (mList.FittingResults[i]->Model == ModelType::Exponential)
         {
-            expCheck = true;
             expK = mList.FittingResults[i]->Params.first().second;
+
+            if (expK != NULL)
+            {
+                expCheck = true;
+                expSeries->show();
+            }
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Hyperbolic)
         {
-            hypCheck = true;
             hypK = mList.FittingResults[i]->Params.first().second;
+
+            if (hypK != NULL)
+            {
+                hypCheck = true;
+                hypSeries->show();
+            }
         }
 
         if (mList.FittingResults[i]->Model == ModelType::BetaDelta)
         {
-            quasiCheck = true;
             quasiB = mList.FittingResults[i]->Params.first().second;
             quasiD = mList.FittingResults[i]->Params.last().second;
+
+            if (quasiB != NULL && quasiD != NULL)
+            {
+                quasiCheck = true;
+                quasiSeries->show();
+            }
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Myerson)
         {
-            myerCheck = true;
             myerK = mList.FittingResults[i]->Params.first().second;
             myerS = mList.FittingResults[i]->Params.last().second;
+
+            if (myerK != NULL && myerS != NULL)
+            {
+                myerCheck = true;
+                myerSeries->show();
+            }
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Rachlin)
         {
-            rachCheck = true;
             rachK = mList.FittingResults[i]->Params.first().second;
             rachS = mList.FittingResults[i]->Params.last().second;
+
+            if (rachK != NULL && rachS != NULL)
+            {
+                rachCheck = true;
+                rachSeries->show();
+            }
         }
 
         if (mList.FittingResults[i]->Model == ModelType::RodriguezLogue)
         {
-            rodriguezCheck = true;
             rodriguezK = mList.FittingResults[i]->Params.first().second;
             rodriguezS = mList.FittingResults[i]->Params.last().second;
+
+            if (rodriguezK != NULL && rodriguezS != NULL)
+            {
+                rodriguezCheck = true;
+                rodriguezSeries->show();
+            }
         }
 
         if (mList.FittingResults[i]->Model == ModelType::EbertPrelec)
         {
-            ebertCheck = true;
             ebertK = mList.FittingResults[i]->Params.first().second;
             ebertS = mList.FittingResults[i]->Params.last().second;
+
+            if (ebertK != NULL && ebertS != NULL)
+            {
+                ebertCheck = true;
+                ebertSeries->show();
+            }
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Beleichrodt)
@@ -616,6 +661,12 @@ void ChartWindow::plotED50Series(int index)
             bleichrodtK = mList.FittingResults[i]->Params.first().second;
             bleichrodtS = mList.FittingResults[i]->Params[1].second;
             bleichrodtBeta = mList.FittingResults[i]->Params.last().second;
+
+            if (bleichrodtK != NULL && bleichrodtS != NULL && bleichrodtBeta != NULL)
+            {
+                bleichrodtCheck = true;
+                bleichrodtSeries->show();
+            }
         }
     }
 
