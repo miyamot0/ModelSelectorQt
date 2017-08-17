@@ -35,6 +35,28 @@ struct QPairSecondComparer
     }
 };
 
+struct BruteForce {
+  double p1 = 0;
+  double p2 = 0;
+  double p3 = 0;
+
+  double err = 0;
+
+  bool operator < (const BruteForce& r1) const {
+      return (err < r1.err);
+  }
+};
+
+struct BruteForceValues {
+    BruteForce startingValueArray[1000];
+};
+
+BruteForceValues provisionalValues;
+
+bool BruteSorter(BruteForce const& lhs, BruteForce const& rhs) {
+    return lhs.err < rhs.err;
+}
+
 CalculationWorker::CalculationWorker(QList<QPair<QString, QString> > mJohnsonBickelResults, QList<bool> *mJonhsonBickelSelections, QList<QStringList> mStoredValues, CalculationSettings *calculationSettings, int processChecking)
 {
     computationTypeLocal = calculationSettings->scriptName;
@@ -105,7 +127,34 @@ void CalculationWorker::working()
 
         if (runLocalExponential)
         {
-            mFittingObject->FitExponential("[-5]");
+            // Running brute mode
+            if (true)
+            {
+                p1Span = abs(-12) + abs(12); // -12 to 12
+                p1Step = p1Span / 100;
+
+                grandLoop = 0;
+
+                for (int kLoop = 0; kLoop < 100; kLoop++)
+                {
+                    provisionalValues.startingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+
+                    grandLoop++;
+                }
+
+                for(BruteForce & obj : provisionalValues.startingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorExponential(obj.p1);
+                }
+
+                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 100);
+
+                mFittingObject->FitExponential(QString("[%1]").arg(provisionalValues.startingValueArray[0].p1).toUtf8().constData());
+            }
+            else
+            {
+                mFittingObject->FitExponential("[-5]");
+            }
 
             fitResultExponential = new FitResult(ModelType::Exponential);
 
@@ -132,7 +181,35 @@ void CalculationWorker::working()
 
         if (runLocalHyperbolic)
         {
-            mFittingObject->FitHyperbolic("[-5]");
+            if (true)
+            {
+                p1Span = abs(-12) + abs(12); // -12 to 12
+                p1Step = p1Span / 100;
+
+                grandLoop = 0;
+
+                for (int kLoop = 0; kLoop < 100; kLoop++)
+                {
+                    provisionalValues.startingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+
+                    grandLoop++;
+                }
+
+                for(BruteForce & obj : provisionalValues.startingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorHyperbolic(obj.p1);
+                }
+
+                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 100);
+
+                mFittingObject->FitHyperbolic(QString("[%1]").arg(provisionalValues.startingValueArray[0].p1).toUtf8().constData());
+            }
+            else
+            {
+                mFittingObject->FitHyperbolic("[-5]");
+            }
+
+            //mFittingObject->FitHyperbolic("[-5]");
 
             fitResultHyperbolic = new FitResult(ModelType::Hyperbolic);
 

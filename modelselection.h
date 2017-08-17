@@ -63,6 +63,9 @@ public:
     double getED50crdi();
     double getED50rodriguez();
 
+    double getErrorExponential(double lnK);
+    double getErrorHyperbolic(double lnK);
+
     void FitNoise();
     void FitExponential(const char *mStarts);
     void FitHyperbolic(const char *mStarts);
@@ -184,6 +187,8 @@ private:
     double holder = 0;
 
     double sumBayesFactors = 0;
+
+    double leastSquaresError = 0;
 };
 
 #endif // MODELSELECTION_H

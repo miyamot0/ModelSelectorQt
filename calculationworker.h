@@ -72,6 +72,11 @@ private:
     bool runLocalArea;
     int processCheckingLocal;
 
+    double p1Span;
+    double p1Step;
+
+    int grandLoop;
+
 signals:
     void workStarted();
     void workingResult(const FitResults &value);

@@ -1257,6 +1257,30 @@ void ModelSelection::PrepareProbabilities()
     }
 }
 
+double ModelSelection::getErrorExponential(double lnK)
+{
+    leastSquaresError = 0;
+
+    for (int i=0; i<y.length(); i++)
+    {
+        leastSquaresError = leastSquaresError + pow((y[i] - (exp(-exp(lnK)*x[i][0]))), 2);
+    }
+
+    return leastSquaresError;
+}
+
+double ModelSelection::getErrorHyperbolic(double lnK)
+{
+    leastSquaresError = 0;
+
+    for (int i=0; i<y.length(); i++)
+    {
+        leastSquaresError = leastSquaresError + pow((y[i] - (pow((1+exp(lnK)*x[i][0]), -1))), 2);
+    }
+
+    return leastSquaresError;
+}
+
 ModelSelection::ModelSelection()
 {
 
