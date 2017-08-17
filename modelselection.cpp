@@ -1281,6 +1281,30 @@ double ModelSelection::getErrorHyperbolic(double lnK)
     return leastSquaresError;
 }
 
+double ModelSelection::getErrorQuasiHyperbolic(double beta, double delta)
+{
+    leastSquaresError = 0;
+
+    for (int i=0; i<y.length(); i++)
+    {
+        leastSquaresError = leastSquaresError + pow((y[i] - (pow((beta*delta),x[i][0]))), 2);
+    }
+
+    return leastSquaresError;
+}
+
+double ModelSelection::getErrorGreenMyerson(double lnK, double s)
+{
+    leastSquaresError = 0;
+
+    for (int i=0; i<y.length(); i++)
+    {
+        leastSquaresError = leastSquaresError + pow((y[i] - (pow((1+exp(lnK)*x[i][0]), (-s)))), 2);
+    }
+
+    return leastSquaresError;
+}
+
 ModelSelection::ModelSelection()
 {
 

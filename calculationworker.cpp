@@ -237,7 +237,45 @@ void CalculationWorker::working()
 
         if (runLocalBetaDelta)
         {
-            mFittingObject->FitQuasiHyperbolic("[0.3, 0.3]");
+            if (true)
+            {
+                p1Span = 1; // 0 to 1
+                p1Step = p1Span / 10;
+
+                p2Span = 1;
+                p2Step = p2Span / 10;
+
+                grandLoop = 0;
+
+                for (int bLoop = 0; bLoop < 10; bLoop++)
+                {
+                    for (int dLoop = 0; dLoop < 10; dLoop++)
+                    {
+                        provisionalValues.startingValueArray[grandLoop].p1 = ((bLoop + 1) * p1Step);
+                        provisionalValues.startingValueArray[grandLoop].p2 = ((dLoop + 1) * p2Step);
+
+                        grandLoop++;
+                    }
+                }
+
+                for(BruteForce & obj : provisionalValues.startingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorQuasiHyperbolic(obj.p1, obj.p2);
+                }
+
+                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 100);
+
+                mFittingObject->FitQuasiHyperbolic(QString("[%1,%2]")
+                                                   .arg(provisionalValues.startingValueArray[0].p1)
+                                                   .arg(provisionalValues.startingValueArray[0].p2)
+                                                   .toUtf8().constData());
+            }
+            else
+            {
+                mFittingObject->FitQuasiHyperbolic("[0.3, 0.3]");
+            }
+
+            //mFittingObject->FitQuasiHyperbolic("[0.3, 0.3]");
 
             fitResultBetaDelta = new FitResult(ModelType::BetaDelta);
 
@@ -265,7 +303,45 @@ void CalculationWorker::working()
 
         if (runLocalMyersonGreen)
         {
-            mFittingObject->FitMyerson("[-5, 0.3]");
+            if (true)
+            {
+                p1Span = abs(-12) + abs(12); // -12 to 12
+                p1Step = p1Span / 10;
+
+                p2Span = 10; // .1 to 10
+                p2Step = p2Span / 100;
+
+                grandLoop = 0;
+
+                for (int kLoop = 0; kLoop < 10; kLoop++)
+                {
+                    for (int sLoop = 0; sLoop < 100; sLoop++)
+                    {
+                        provisionalValues.startingValueArray[grandLoop].p1 = ((kLoop + 1) * p1Step);
+                        provisionalValues.startingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
+
+                        grandLoop++;
+                    }
+                }
+
+                for(BruteForce & obj : provisionalValues.startingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorGreenMyerson(obj.p1, obj.p2);
+                }
+
+                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 1000);
+
+                mFittingObject->FitMyerson(QString("[%1,%2]")
+                                                   .arg(provisionalValues.startingValueArray[0].p1)
+                                                   .arg(provisionalValues.startingValueArray[0].p2)
+                                                   .toUtf8().constData());
+            }
+            else
+            {
+                mFittingObject->FitMyerson("[-5, 0.3]");
+            }
+
+            //mFittingObject->FitMyerson("[-5, 0.3]");
 
             fitResultGreenMyerson = new FitResult(ModelType::Myerson);
 

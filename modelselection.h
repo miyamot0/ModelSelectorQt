@@ -65,6 +65,8 @@ public:
 
     double getErrorExponential(double lnK);
     double getErrorHyperbolic(double lnK);
+    double getErrorQuasiHyperbolic(double beta, double delta);
+    double getErrorGreenMyerson(double lnK, double s);
 
     void FitNoise();
     void FitExponential(const char *mStarts);
