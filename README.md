@@ -15,10 +15,11 @@ Features include:
 
 ### Version
 ------
-1.4.3 (beta)
+1.5.0 (beta)
 
 ### Changelog
 ------
+ * 1.5.0 - Added obnoxious, brute force options to exploring optimal start parameters
  * 1.4.3 - Perf improvements
  * 1.4.0 - Added additional models
  * 1.3.0 - Added numerical integration
