@@ -55,7 +55,12 @@ public:
 
     ChartingOptions chartOption;
 
-    bool cbRachlin, johnsonBickelTest, showCharts, logNormalParameters, cbArea;
+    bool cbRachlin,
+         johnsonBickelTest,
+         showCharts,
+         logNormalParameters,
+         cbArea,
+         cbBruteForce;
 
 };
 

@@ -67,10 +67,11 @@ private:
          runLocalEbertPrelec,
          runLocalBleicholdt;
 
-    bool runLogarithmicResults;
-    bool boundRachlinModel;
-    bool runLocalArea;
-    int processCheckingLocal;
+    bool runLogarithmicResults,
+         boundRachlinModel,
+         runLocalArea,
+         runBruteForce,
+         processCheckingLocal;
 
     double p1Span;
     double p1Step;

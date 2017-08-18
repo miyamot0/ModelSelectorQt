@@ -146,6 +146,7 @@ void DiscountingModelSelectionED50Dialog::on_pushButton_clicked()
 
     temp->calculationSettings->cbRachlin = ui->checkBoxRachlin->isChecked();
     temp->calculationSettings->johnsonBickelTest = ui->checkBoxJohnson->isChecked();
+    temp->calculationSettings->cbBruteForce = ui->BruteForceMode->isChecked();
 
     if (ui->comboBoxFigures->currentIndex() == 0) {
         temp->calculationSettings->chartOption = ChartingOptions::None;

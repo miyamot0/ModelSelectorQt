@@ -24,8 +24,6 @@
 #include "qstringlist.h"
 #include <QtWidgets>
 
-#include <QDebug>
-
 struct QPairSecondComparer
 {
     template<typename T1, typename T2>
@@ -48,7 +46,11 @@ struct BruteForce {
 };
 
 struct BruteForceValues {
-    BruteForce startingValueArray[1000];
+    BruteForce oneParamStartingValueArray[100];
+    BruteForce twoParamStartingValueArray[1000];
+    BruteForce threeParamStartingValueArray[1000];
+    BruteForce smallBruteStartingValueArray[100000];
+    BruteForce largeBruteStartingValueArray[1000000];
 };
 
 BruteForceValues provisionalValues;
@@ -82,6 +84,8 @@ CalculationWorker::CalculationWorker(QList<QPair<QString, QString> > mJohnsonBic
     boundRachlinModel = calculationSettings->cbRachlin;
 
     runLocalArea = calculationSettings->cbArea;
+
+    runBruteForce = calculationSettings->cbBruteForce;
 
     processCheckingLocal = processChecking;
 }
@@ -127,8 +131,7 @@ void CalculationWorker::working()
 
         if (runLocalExponential)
         {
-            // Running brute mode
-            if (true)
+            if (!runBruteForce)
             {
                 p1Span = abs(-12) + abs(12); // -12 to 12
                 p1Step = p1Span / 100;
@@ -137,23 +140,42 @@ void CalculationWorker::working()
 
                 for (int kLoop = 0; kLoop < 100; kLoop++)
                 {
-                    provisionalValues.startingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+                    provisionalValues.oneParamStartingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
 
                     grandLoop++;
                 }
 
-                for(BruteForce & obj : provisionalValues.startingValueArray)
+                for(BruteForce & obj : provisionalValues.oneParamStartingValueArray)
                 {
                     obj.err = mFittingObject->getErrorExponential(obj.p1);
                 }
 
-                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 100);
+                std::sort(provisionalValues.oneParamStartingValueArray, provisionalValues.oneParamStartingValueArray + 100);
 
-                mFittingObject->FitExponential(QString("[%1]").arg(provisionalValues.startingValueArray[0].p1).toUtf8().constData());
+                mFittingObject->FitExponential(QString("[%1]").arg(provisionalValues.oneParamStartingValueArray[0].p1).toUtf8().constData());
             }
             else
             {
-                mFittingObject->FitExponential("[-5]");
+                p1Span = abs(-20) + abs(20); // -20 to 20
+                p1Step = p1Span / 10000;
+
+                grandLoop = 0;
+
+                for (int kLoop = 0; kLoop < 10000; kLoop++)
+                {
+                    provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 20 - ((kLoop + 1) * p1Step);
+
+                    grandLoop++;
+                }
+
+                for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorExponential(obj.p1);
+                }
+
+                std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+
+                mFittingObject->FitExponential(QString("[%1]").arg(provisionalValues.smallBruteStartingValueArray[0].p1).toUtf8().constData());
             }
 
             //mFittingObject->FitExponential("[-5]");
@@ -183,7 +205,7 @@ void CalculationWorker::working()
 
         if (runLocalHyperbolic)
         {
-            if (true)
+            if (!runBruteForce)
             {
                 p1Span = abs(-12) + abs(12); // -12 to 12
                 p1Step = p1Span / 100;
@@ -192,23 +214,42 @@ void CalculationWorker::working()
 
                 for (int kLoop = 0; kLoop < 100; kLoop++)
                 {
-                    provisionalValues.startingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+                    provisionalValues.oneParamStartingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
 
                     grandLoop++;
                 }
 
-                for(BruteForce & obj : provisionalValues.startingValueArray)
+                for(BruteForce & obj : provisionalValues.oneParamStartingValueArray)
                 {
                     obj.err = mFittingObject->getErrorHyperbolic(obj.p1);
                 }
 
-                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 100);
+                std::sort(provisionalValues.oneParamStartingValueArray, provisionalValues.oneParamStartingValueArray + 100);
 
-                mFittingObject->FitHyperbolic(QString("[%1]").arg(provisionalValues.startingValueArray[0].p1).toUtf8().constData());
+                mFittingObject->FitHyperbolic(QString("[%1]").arg(provisionalValues.oneParamStartingValueArray[0].p1).toUtf8().constData());
             }
             else
             {
-                mFittingObject->FitHyperbolic("[-5]");
+                p1Span = abs(-20) + abs(20); // -20 to 20
+                p1Step = p1Span / 10000;
+
+                grandLoop = 0;
+
+                for (int kLoop = 0; kLoop < 10000; kLoop++)
+                {
+                    provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 20 - ((kLoop + 1) * p1Step);
+
+                    grandLoop++;
+                }
+
+                for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorHyperbolic(obj.p1);
+                }
+
+                std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+
+                mFittingObject->FitHyperbolic(QString("[%1]").arg(provisionalValues.smallBruteStartingValueArray[0].p1).toUtf8().constData());
             }
 
             //mFittingObject->FitHyperbolic("[-5]");
@@ -239,42 +280,71 @@ void CalculationWorker::working()
 
         if (runLocalBetaDelta)
         {
-            if (true)
+            if (!runBruteForce)
             {
                 p1Span = 1; // 0 to 1
                 p1Step = p1Span / 10;
 
                 p2Span = 1;
-                p2Step = p2Span / 10;
+                p2Step = p2Span / 100;
 
                 grandLoop = 0;
 
                 for (int bLoop = 0; bLoop < 10; bLoop++)
                 {
-                    for (int dLoop = 0; dLoop < 10; dLoop++)
+                    for (int dLoop = 0; dLoop < 100; dLoop++)
                     {
-                        provisionalValues.startingValueArray[grandLoop].p1 = ((bLoop + 1) * p1Step);
-                        provisionalValues.startingValueArray[grandLoop].p2 = ((dLoop + 1) * p2Step);
+                        provisionalValues.twoParamStartingValueArray[grandLoop].p1 = ((bLoop + 1) * p1Step);
+                        provisionalValues.twoParamStartingValueArray[grandLoop].p2 = ((dLoop + 1) * p2Step);
 
                         grandLoop++;
                     }
                 }
 
-                for(BruteForce & obj : provisionalValues.startingValueArray)
+                for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
                 {
                     obj.err = mFittingObject->getErrorQuasiHyperbolic(obj.p1, obj.p2);
                 }
 
-                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 100);
+                std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
 
                 mFittingObject->FitQuasiHyperbolic(QString("[%1,%2]")
-                                                   .arg(provisionalValues.startingValueArray[0].p1)
-                                                   .arg(provisionalValues.startingValueArray[0].p2)
+                                                   .arg(provisionalValues.twoParamStartingValueArray[0].p1)
+                                                   .arg(provisionalValues.twoParamStartingValueArray[0].p2)
                                                    .toUtf8().constData());
             }
             else
             {
-                mFittingObject->FitQuasiHyperbolic("[0.3, 0.3]");
+                p1Span = 1; // 0 to 1
+                p1Step = p1Span / 100;
+
+                p2Span = 1;
+                p2Step = p2Span / 100;
+
+                grandLoop = 0;
+
+                for (int bLoop = 0; bLoop < 100; bLoop++)
+                {
+                    for (int dLoop = 0; dLoop < 100; dLoop++)
+                    {
+                        provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = ((bLoop + 1) * p1Step);
+                        provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = ((dLoop + 1) * p2Step);
+
+                        grandLoop++;
+                    }
+                }
+
+                for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorQuasiHyperbolic(obj.p1, obj.p2);
+                }
+
+                std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+
+                mFittingObject->FitQuasiHyperbolic(QString("[%1,%2]")
+                                                   .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
+                                                   .arg(provisionalValues.smallBruteStartingValueArray[0].p2)
+                                                   .toUtf8().constData());
             }
 
             //mFittingObject->FitQuasiHyperbolic("[0.3, 0.3]");
@@ -305,7 +375,7 @@ void CalculationWorker::working()
 
         if (runLocalMyersonGreen)
         {
-            if (true)
+            if (!runBruteForce)
             {
                 p1Span = abs(-12) + abs(12); // -12 to 12
                 p1Step = p1Span / 10;
@@ -319,28 +389,57 @@ void CalculationWorker::working()
                 {
                     for (int sLoop = 0; sLoop < 100; sLoop++)
                     {
-                        provisionalValues.startingValueArray[grandLoop].p1 = ((kLoop + 1) * p1Step);
-                        provisionalValues.startingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
+                        provisionalValues.twoParamStartingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+                        provisionalValues.twoParamStartingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
 
                         grandLoop++;
                     }
                 }
 
-                for(BruteForce & obj : provisionalValues.startingValueArray)
+                for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
                 {
                     obj.err = mFittingObject->getErrorGreenMyerson(obj.p1, obj.p2);
                 }
 
-                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 1000);
+                std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
 
                 mFittingObject->FitMyerson(QString("[%1,%2]")
-                                                   .arg(provisionalValues.startingValueArray[0].p1)
-                                                   .arg(provisionalValues.startingValueArray[0].p2)
+                                                   .arg(provisionalValues.twoParamStartingValueArray[0].p1)
+                                                   .arg(provisionalValues.twoParamStartingValueArray[0].p2)
                                                    .toUtf8().constData());
             }
             else
             {
-                mFittingObject->FitMyerson("[-5, 0.3]");
+                p1Span = abs(-20) + abs(20); // -20 to 20
+                p1Step = p1Span / 100;
+
+                p2Span = 10; // .1 to 10
+                p2Step = p2Span / 100;
+
+                grandLoop = 0;
+
+                for (int kLoop = 0; kLoop < 100; kLoop++)
+                {
+                    for (int sLoop = 0; sLoop < 100; sLoop++)
+                    {
+                        provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 20 - ((kLoop + 1) * p1Step);
+                        provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
+
+                        grandLoop++;
+                    }
+                }
+
+                for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorGreenMyerson(obj.p1, obj.p2);
+                }
+
+                std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+
+                mFittingObject->FitMyerson(QString("[%1,%2]")
+                                                   .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
+                                                   .arg(provisionalValues.smallBruteStartingValueArray[0].p2)
+                                                   .toUtf8().constData());
             }
 
             //mFittingObject->FitMyerson("[-5, 0.3]");
@@ -371,7 +470,7 @@ void CalculationWorker::working()
 
         if (runLocalRachlin)
         {
-            if (true)
+            if (!runBruteForce)
             {
                 p1Span = abs(-12) + abs(12); // -12 to 12
                 p1Step = p1Span / 10;
@@ -385,28 +484,57 @@ void CalculationWorker::working()
                 {
                     for (int sLoop = 0; sLoop < 100; sLoop++)
                     {
-                        provisionalValues.startingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
-                        provisionalValues.startingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
+                        provisionalValues.twoParamStartingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+                        provisionalValues.twoParamStartingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
 
                         grandLoop++;
                     }
                 }
 
-                for(BruteForce & obj : provisionalValues.startingValueArray)
+                for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
                 {
                     obj.err = mFittingObject->getErrorGreenRachlin(obj.p1, obj.p2);
                 }
 
-                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 1000);
+                std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
 
                 mFittingObject->FitRachlin(QString("[%1,%2]")
-                                                   .arg(provisionalValues.startingValueArray[0].p1)
-                                                   .arg(provisionalValues.startingValueArray[0].p2)
+                                                   .arg(provisionalValues.twoParamStartingValueArray[0].p1)
+                                                   .arg(provisionalValues.twoParamStartingValueArray[0].p2)
                                                    .toUtf8().constData());
             }
             else
             {
-                mFittingObject->FitRachlin("[-5, 0.3]");
+                p1Span = abs(-20) + abs(20); // -20 to 20
+                p1Step = p1Span / 100;
+
+                p2Span = 10; // .1 to 10
+                p2Step = p2Span / 100;
+
+                grandLoop = 0;
+
+                for (int kLoop = 0; kLoop < 100; kLoop++)
+                {
+                    for (int sLoop = 0; sLoop < 100; sLoop++)
+                    {
+                        provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 20 - ((kLoop + 1) * p1Step);
+                        provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
+
+                        grandLoop++;
+                    }
+                }
+
+                for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorGreenRachlin(obj.p1, obj.p2);
+                }
+
+                std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+
+                mFittingObject->FitRachlin(QString("[%1,%2]")
+                                                   .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
+                                                   .arg(provisionalValues.smallBruteStartingValueArray[0].p2)
+                                                   .toUtf8().constData());
             }
 
             //mFittingObject->FitRachlin("[-5, 0.3]");
@@ -456,42 +584,71 @@ void CalculationWorker::working()
 
         if (runLocalRodriguezLogue)
         {
-            if (true)
+            if (!runBruteForce)
             {
                 p1Span = abs(-12) + abs(12); // -12 to 12
                 p1Step = p1Span / 10;
 
                 p2Span = abs(-12) + abs(12); // -12 to 12
-                p2Step = p2Span / 10;
+                p2Step = p2Span / 100;
 
                 grandLoop = 0;
 
                 for (int kLoop = 0; kLoop < 10; kLoop++)
                 {
-                    for (int sLoop = 0; sLoop < 10; sLoop++)
+                    for (int sLoop = 0; sLoop < 100; sLoop++)
                     {
-                        provisionalValues.startingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
-                        provisionalValues.startingValueArray[grandLoop].p2 = 12 - ((sLoop + 1) * p2Step);
+                        provisionalValues.twoParamStartingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+                        provisionalValues.twoParamStartingValueArray[grandLoop].p2 = 12 - ((sLoop + 1) * p2Step);
 
                         grandLoop++;
                     }
                 }
 
-                for(BruteForce & obj : provisionalValues.startingValueArray)
+                for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
                 {
                     obj.err = mFittingObject->getErrorRodriguezLogue(obj.p1, obj.p2);
                 }
 
-                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 100);
+                std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
 
                 mFittingObject->FitRodriguezLogue(QString("[%1,%2]")
-                                                   .arg(provisionalValues.startingValueArray[0].p1)
-                                                   .arg(exp(provisionalValues.startingValueArray[0].p2))
+                                                   .arg(provisionalValues.twoParamStartingValueArray[0].p1)
+                                                   .arg(exp(provisionalValues.twoParamStartingValueArray[0].p2))
                                                    .toUtf8().constData());
             }
             else
             {
-                mFittingObject->FitRodriguezLogue("[-5, 0.3]");
+                p1Span = abs(-20) + abs(20); // -20 to 20
+                p1Step = p1Span / 100;
+
+                p2Span = abs(-20) + abs(20); // -20 to 20
+                p2Step = p2Span / 100;
+
+                grandLoop = 0;
+
+                for (int kLoop = 0; kLoop < 100; kLoop++)
+                {
+                    for (int sLoop = 0; sLoop < 100; sLoop++)
+                    {
+                        provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 20 - ((kLoop + 1) * p1Step);
+                        provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = 20 - ((sLoop + 1) * p2Step);
+
+                        grandLoop++;
+                    }
+                }
+
+                for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorRodriguezLogue(obj.p1, obj.p2);
+                }
+
+                std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+
+                mFittingObject->FitRodriguezLogue(QString("[%1,%2]")
+                                                   .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
+                                                   .arg(exp(provisionalValues.smallBruteStartingValueArray[0].p2))
+                                                   .toUtf8().constData());
             }
 
             //mFittingObject->FitRodriguezLogue("[-5, 0.3]");
@@ -522,7 +679,7 @@ void CalculationWorker::working()
 
         if (runLocalEbertPrelec)
         {
-            if (true)
+            if (!runBruteForce)
             {
                 p1Span = abs(-12) + abs(12); // -12 to 12
                 p1Step = p1Span / 10;
@@ -536,28 +693,57 @@ void CalculationWorker::working()
                 {
                     for (int sLoop = 0; sLoop < 100; sLoop++)
                     {
-                        provisionalValues.startingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
-                        provisionalValues.startingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
+                        provisionalValues.twoParamStartingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+                        provisionalValues.twoParamStartingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
 
                         grandLoop++;
                     }
                 }
 
-                for(BruteForce & obj : provisionalValues.startingValueArray)
+                for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
                 {
                     obj.err = mFittingObject->getErrorEbertPrelec(obj.p1, obj.p2);
                 }
 
-                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 1000);
+                std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
 
                 mFittingObject->FitEbertPrelec(QString("[%1,%2]")
-                                                   .arg(provisionalValues.startingValueArray[0].p1)
-                                                   .arg(provisionalValues.startingValueArray[0].p2)
+                                                   .arg(provisionalValues.twoParamStartingValueArray[0].p1)
+                                                   .arg(provisionalValues.twoParamStartingValueArray[0].p2)
                                                    .toUtf8().constData());
             }
             else
             {
-                mFittingObject->FitEbertPrelec("[-5, 0.3]");
+                p1Span = abs(-20) + abs(20); // -20 to 20
+                p1Step = p1Span / 100;
+
+                p2Span = 10; // .1 to 10
+                p2Step = p2Span / 100;
+
+                grandLoop = 0;
+
+                for (int kLoop = 0; kLoop < 100; kLoop++)
+                {
+                    for (int sLoop = 0; sLoop < 100; sLoop++)
+                    {
+                        provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 20 - ((kLoop + 1) * p1Step);
+                        provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
+
+                        grandLoop++;
+                    }
+                }
+
+                for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorEbertPrelec(obj.p1, obj.p2);
+                }
+
+                std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+
+                mFittingObject->FitEbertPrelec(QString("[%1,%2]")
+                                                   .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
+                                                   .arg(provisionalValues.smallBruteStartingValueArray[0].p2)
+                                                   .toUtf8().constData());
             }
 
             //mFittingObject->FitEbertPrelec("[-5.0, 0.5]");
@@ -588,7 +774,7 @@ void CalculationWorker::working()
 
         if (runLocalBleicholdt)
         {
-            if (true)
+            if (!runBruteForce)
             {
                 p1Span = abs(-12) + abs(12); // -12 to 12
                 p1Step = p1Span / 10;
@@ -607,31 +793,68 @@ void CalculationWorker::working()
                     {
                         for (int bLoop = 0; bLoop < 10; bLoop++)
                         {
-                            provisionalValues.startingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
-                            provisionalValues.startingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
-                            provisionalValues.startingValueArray[grandLoop].p3 = ((bLoop + 1) * p3Step);
+                            provisionalValues.threeParamStartingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+                            provisionalValues.threeParamStartingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
+                            provisionalValues.threeParamStartingValueArray[grandLoop].p3 = ((bLoop + 1) * p3Step);
 
                             grandLoop++;
                         }
                    }
                 }
 
-                for(BruteForce & obj : provisionalValues.startingValueArray)
+                for(BruteForce & obj : provisionalValues.threeParamStartingValueArray)
                 {
                     obj.err = mFittingObject->getErrorBleichrodt(obj.p1, obj.p2, obj.p3);
                 }
 
-                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 1000);
+                std::sort(provisionalValues.threeParamStartingValueArray, provisionalValues.threeParamStartingValueArray + 1000);
 
                 mFittingObject->FitBleichrodt(QString("[%1,%2,%3]")
-                                                   .arg(provisionalValues.startingValueArray[0].p1)
-                                                   .arg(provisionalValues.startingValueArray[0].p2)
-                                                   .arg(provisionalValues.startingValueArray[0].p3)
+                                                   .arg(provisionalValues.threeParamStartingValueArray[0].p1)
+                                                   .arg(provisionalValues.threeParamStartingValueArray[0].p2)
+                                                   .arg(provisionalValues.threeParamStartingValueArray[0].p3)
                                                    .toUtf8().constData());
             }
             else
             {
-                mFittingObject->FitBleichrodt("[-5.0, 0.5, 0.5]");
+                p1Span = abs(-20) + abs(20); // -20 to 20
+                p1Step = p1Span / 100;
+
+                p2Span = 1; // .1 to 10
+                p2Step = p2Span / 100;
+
+                p3Span = 1; // .1 to 10
+                p3Step = p3Span / 100;
+
+                grandLoop = 0;
+
+                for (int kLoop = 0; kLoop < 100; kLoop++)
+                {
+                    for (int sLoop = 0; sLoop < 100; sLoop++)
+                    {
+                        for (int bLoop = 0; bLoop < 100; bLoop++)
+                        {
+                            provisionalValues.largeBruteStartingValueArray[grandLoop].p1 = 20 - ((kLoop + 1) * p1Step);
+                            provisionalValues.largeBruteStartingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
+                            provisionalValues.largeBruteStartingValueArray[grandLoop].p3 = ((bLoop + 1) * p3Step);
+
+                            grandLoop++;
+                        }
+                   }
+                }
+
+                for(BruteForce & obj : provisionalValues.largeBruteStartingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorBleichrodt(obj.p1, obj.p2, obj.p3);
+                }
+
+                std::sort(provisionalValues.largeBruteStartingValueArray, provisionalValues.largeBruteStartingValueArray + 1000000);
+
+                mFittingObject->FitBleichrodt(QString("[%1,%2,%3]")
+                                                   .arg(provisionalValues.largeBruteStartingValueArray[0].p1)
+                                                   .arg(provisionalValues.largeBruteStartingValueArray[0].p2)
+                                                   .arg(provisionalValues.largeBruteStartingValueArray[0].p3)
+                                                   .toUtf8().constData());
             }
 
             //mFittingObject->FitBleichrodt("[-5.0, 0.5, 0.5]");

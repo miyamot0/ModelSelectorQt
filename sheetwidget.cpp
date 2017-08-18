@@ -1497,7 +1497,15 @@ void SheetWidget::Calculate()
 void SheetWidget::WorkUpdate(FitResults results)
 {
     allResults.append(results);
-    statusBar()->showMessage(QString("Series #%1 Computed").arg(allResults.count()), 3000);
+
+    if (calculationSettings->cbBruteForce)
+    {
+        statusBar()->showMessage(QString("Series #%1 Computed... Brute Force mode will take time").arg(allResults.count()), 10000);
+    }
+    else
+    {
+        statusBar()->showMessage(QString("Series #%1 Computed").arg(allResults.count()), 3000);
+    }
 }
 
 void SheetWidget::WorkFinished()
