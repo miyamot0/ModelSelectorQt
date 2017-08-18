@@ -1305,6 +1305,54 @@ double ModelSelection::getErrorGreenMyerson(double lnK, double s)
     return leastSquaresError;
 }
 
+double ModelSelection::getErrorGreenRachlin(double lnK, double s)
+{
+    leastSquaresError = 0;
+
+    for (int i=0; i<y.length(); i++)
+    {
+        leastSquaresError = leastSquaresError + pow((y[i] - pow((1+exp(lnK)*(pow(x[i][0],s))),(-1))), 2);
+    }
+
+    return leastSquaresError;
+}
+
+double ModelSelection::getErrorRodriguezLogue(double lnK, double beta)
+{
+    leastSquaresError = 0;
+
+    for (int i=0; i<y.length(); i++)
+    {
+        leastSquaresError = leastSquaresError + pow((y[i] - (pow((1 + x[i][0] * exp(lnK)),(-exp(beta) / exp(lnK))))), 2);
+    }
+
+    return leastSquaresError;
+}
+
+double ModelSelection::getErrorEbertPrelec(double lnK, double s)
+{
+    leastSquaresError = 0;
+
+    for (int i=0; i<y.length(); i++)
+    {
+        leastSquaresError = leastSquaresError + pow((y[i] - exp(-pow((exp(lnK)*x[i][0]),s))), 2);
+    }
+
+    return leastSquaresError;
+}
+
+double ModelSelection::getErrorBleichrodt(double lnK, double s, double beta)
+{
+    leastSquaresError = 0;
+
+    for (int i=0; i<y.length(); i++)
+    {
+        leastSquaresError = leastSquaresError + pow((y[i] - (beta*exp(-(exp(lnK)*pow(x[i][0],s))))), 2);
+    }
+
+    return leastSquaresError;
+}
+
 ModelSelection::ModelSelection()
 {
 

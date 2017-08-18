@@ -78,6 +78,9 @@ private:
     double p2Span;
     double p2Step;
 
+    double p3Span;
+    double p3Step;
+
     int grandLoop;
 
 signals:

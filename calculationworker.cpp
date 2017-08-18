@@ -156,6 +156,8 @@ void CalculationWorker::working()
                 mFittingObject->FitExponential("[-5]");
             }
 
+            //mFittingObject->FitExponential("[-5]");
+
             fitResultExponential = new FitResult(ModelType::Exponential);
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
@@ -369,7 +371,45 @@ void CalculationWorker::working()
 
         if (runLocalRachlin)
         {
-            mFittingObject->FitRachlin("[-5, 0.3]");
+            if (true)
+            {
+                p1Span = abs(-12) + abs(12); // -12 to 12
+                p1Step = p1Span / 10;
+
+                p2Span = 10; // .1 to 10
+                p2Step = p2Span / 100;
+
+                grandLoop = 0;
+
+                for (int kLoop = 0; kLoop < 10; kLoop++)
+                {
+                    for (int sLoop = 0; sLoop < 100; sLoop++)
+                    {
+                        provisionalValues.startingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+                        provisionalValues.startingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
+
+                        grandLoop++;
+                    }
+                }
+
+                for(BruteForce & obj : provisionalValues.startingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorGreenRachlin(obj.p1, obj.p2);
+                }
+
+                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 1000);
+
+                mFittingObject->FitRachlin(QString("[%1,%2]")
+                                                   .arg(provisionalValues.startingValueArray[0].p1)
+                                                   .arg(provisionalValues.startingValueArray[0].p2)
+                                                   .toUtf8().constData());
+            }
+            else
+            {
+                mFittingObject->FitRachlin("[-5, 0.3]");
+            }
+
+            //mFittingObject->FitRachlin("[-5, 0.3]");
 
             fitResultRachlin = new FitResult(ModelType::Rachlin);
 
@@ -416,7 +456,45 @@ void CalculationWorker::working()
 
         if (runLocalRodriguezLogue)
         {
-            mFittingObject->FitRodriguezLogue("[-5, 0.3]");
+            if (true)
+            {
+                p1Span = abs(-12) + abs(12); // -12 to 12
+                p1Step = p1Span / 10;
+
+                p2Span = abs(-12) + abs(12); // -12 to 12
+                p2Step = p2Span / 10;
+
+                grandLoop = 0;
+
+                for (int kLoop = 0; kLoop < 10; kLoop++)
+                {
+                    for (int sLoop = 0; sLoop < 10; sLoop++)
+                    {
+                        provisionalValues.startingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+                        provisionalValues.startingValueArray[grandLoop].p2 = 12 - ((sLoop + 1) * p2Step);
+
+                        grandLoop++;
+                    }
+                }
+
+                for(BruteForce & obj : provisionalValues.startingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorRodriguezLogue(obj.p1, obj.p2);
+                }
+
+                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 100);
+
+                mFittingObject->FitRodriguezLogue(QString("[%1,%2]")
+                                                   .arg(provisionalValues.startingValueArray[0].p1)
+                                                   .arg(exp(provisionalValues.startingValueArray[0].p2))
+                                                   .toUtf8().constData());
+            }
+            else
+            {
+                mFittingObject->FitRodriguezLogue("[-5, 0.3]");
+            }
+
+            //mFittingObject->FitRodriguezLogue("[-5, 0.3]");
 
             fitResultRodriguezLogue = new FitResult(ModelType::RodriguezLogue);
 
@@ -444,7 +522,45 @@ void CalculationWorker::working()
 
         if (runLocalEbertPrelec)
         {
-            mFittingObject->FitEbertPrelec("[-5.0, 0.5]");
+            if (true)
+            {
+                p1Span = abs(-12) + abs(12); // -12 to 12
+                p1Step = p1Span / 10;
+
+                p2Span = 10; // .1 to 10
+                p2Step = p2Span / 100;
+
+                grandLoop = 0;
+
+                for (int kLoop = 0; kLoop < 10; kLoop++)
+                {
+                    for (int sLoop = 0; sLoop < 100; sLoop++)
+                    {
+                        provisionalValues.startingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+                        provisionalValues.startingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
+
+                        grandLoop++;
+                    }
+                }
+
+                for(BruteForce & obj : provisionalValues.startingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorEbertPrelec(obj.p1, obj.p2);
+                }
+
+                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 1000);
+
+                mFittingObject->FitEbertPrelec(QString("[%1,%2]")
+                                                   .arg(provisionalValues.startingValueArray[0].p1)
+                                                   .arg(provisionalValues.startingValueArray[0].p2)
+                                                   .toUtf8().constData());
+            }
+            else
+            {
+                mFittingObject->FitEbertPrelec("[-5, 0.3]");
+            }
+
+            //mFittingObject->FitEbertPrelec("[-5.0, 0.5]");
 
             fitResultEbertPrelec = new FitResult(ModelType::EbertPrelec);
 
@@ -472,7 +588,53 @@ void CalculationWorker::working()
 
         if (runLocalBleicholdt)
         {
-            mFittingObject->FitBleichrodt("[-5.0, 0.5, 0.5]");
+            if (true)
+            {
+                p1Span = abs(-12) + abs(12); // -12 to 12
+                p1Step = p1Span / 10;
+
+                p2Span = 1; // .1 to 1
+                p2Step = p2Span / 10;
+
+                p3Span = 1; // .1 to 1
+                p3Step = p3Span / 10;
+
+                grandLoop = 0;
+
+                for (int kLoop = 0; kLoop < 10; kLoop++)
+                {
+                    for (int sLoop = 0; sLoop < 10; sLoop++)
+                    {
+                        for (int bLoop = 0; bLoop < 10; bLoop++)
+                        {
+                            provisionalValues.startingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+                            provisionalValues.startingValueArray[grandLoop].p2 = ((sLoop + 1) * p2Step);
+                            provisionalValues.startingValueArray[grandLoop].p3 = ((bLoop + 1) * p3Step);
+
+                            grandLoop++;
+                        }
+                   }
+                }
+
+                for(BruteForce & obj : provisionalValues.startingValueArray)
+                {
+                    obj.err = mFittingObject->getErrorBleichrodt(obj.p1, obj.p2, obj.p3);
+                }
+
+                std::sort(provisionalValues.startingValueArray, provisionalValues.startingValueArray + 1000);
+
+                mFittingObject->FitBleichrodt(QString("[%1,%2,%3]")
+                                                   .arg(provisionalValues.startingValueArray[0].p1)
+                                                   .arg(provisionalValues.startingValueArray[0].p2)
+                                                   .arg(provisionalValues.startingValueArray[0].p3)
+                                                   .toUtf8().constData());
+            }
+            else
+            {
+                mFittingObject->FitBleichrodt("[-5.0, 0.5, 0.5]");
+            }
+
+            //mFittingObject->FitBleichrodt("[-5.0, 0.5, 0.5]");
 
             fitResultBleichrodt = new FitResult(ModelType::Beleichrodt);
 
