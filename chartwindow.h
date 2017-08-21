@@ -44,6 +44,8 @@ class ChartWindow : public QMainWindow
 public:
     explicit ChartWindow(QList<FitResults> stringList, bool isLogNormal, ChartingOptions chartOption, QWidget *parent = 0);
 
+    void buildProbabilityPlot();
+
     void buildED50Plot();
     void plotED50Series(int index);
 
@@ -67,10 +69,39 @@ private slots:
     void saveSVGasPNG();
 
 private:
+    QVBoxLayout *windowLayout;
+
+    QStackedWidget *stackedWidget;
+
+    QWidget *window;
+
+    QFont mTitle;
+    QFont mLegendFont;
+
     QChart *chart;
     QChartView *chartView;
     QValueAxis *axisX;
     QValueAxis *axisY;
+
+    QChart *barChart;
+    QChartView *barChartView;
+
+    QBarSet *expProbSet;
+    QBarSet *hypProbSet;
+    QBarSet *quasiProbSet;
+    QBarSet *myerProbSet;
+    QBarSet *rachProbSet;
+    QBarSet *rodriguezProbSet;
+    QBarSet *ebertProbSet;
+    QBarSet *bleichrodtProbSet;
+    QBarSet *noiseProbSet;
+
+    QStackedBarSeries *barSeries;
+
+    QStringList modelAxisCategories;
+
+    QBarCategoryAxis *barAxisX;
+    QValueAxis *barAxisY;
 
     QList<FitResults> mDisplayData;
 

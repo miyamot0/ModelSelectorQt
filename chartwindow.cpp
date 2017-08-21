@@ -62,20 +62,18 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
         }
     }
 
-    QVBoxLayout *windowLayout = new QVBoxLayout;
-
     currentIndexShown = 0;
 
     installEventFilter(this);
 
     chart = new QChart();
 
-    QFont mTitle("Serif", 14, -1, false);
+    mTitle = QFont("Serif", 14, -1, false);
     chart->setTitleFont(mTitle);
 
     auto mLegend = chart->legend();
 
-    QFont mLegendFont("Serif", 12, -1, false);
+    mLegendFont = QFont("Serif", 12, -1, false);
     mLegend->setFont(mLegendFont);
     mLegend->setAlignment(Qt::AlignBottom);
 
@@ -114,10 +112,20 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
     chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
 
-    windowLayout->addWidget(chartView);
+    windowLayout = new QVBoxLayout;
+
+    stackedWidget = new QStackedWidget;
+
+    stackedWidget->addWidget(chartView);
+
+    buildProbabilityPlot();
+
+    stackedWidget->addWidget(barChartView);
+
+    windowLayout->addWidget(stackedWidget);
 
     // Set layout in QWidget
-    QWidget *window = new QWidget(parent);
+    window = new QWidget(parent);
     window->setLayout(windowLayout);
 
     QToolBar *tb = new QToolBar();
@@ -141,6 +149,116 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
     resize(800, 600);
 
     setWindowFlags(Qt::WindowStaysOnTopHint);
+
+    if (isED50Figure)
+    {
+        plotED50Series(0);
+    }
+    else if (isAUCLogFigure)
+    {
+        plotAUCSeries(0);
+    }
+}
+
+void ChartWindow::buildProbabilityPlot()
+{
+    barChart = new QChart();
+    barChart->setTitleFont(mTitle);
+    barChart->setFont(mTitle);
+
+    expProbSet = new QBarSet("Exponential");
+    expProbSet->setColor(Qt::black);
+    expProbSet->setBorderColor(Qt::black);
+
+    hypProbSet = new QBarSet("Hyperbolic");
+    hypProbSet->setColor(Qt::green);
+    hypProbSet->setBorderColor(Qt::green);
+
+    quasiProbSet = new QBarSet("QuasiHyperbolic");
+    quasiProbSet->setColor(Qt::blue);
+    quasiProbSet->setBorderColor(Qt::blue);
+
+    myerProbSet = new QBarSet("Green-Myerson");
+    myerProbSet->setColor(Qt::cyan);
+    myerProbSet->setBorderColor(Qt::cyan);
+
+    rachProbSet = new QBarSet("Rachlin");
+    rachProbSet->setColor(Qt::magenta);
+    rachProbSet->setBorderColor(Qt::magenta);
+
+    rodriguezProbSet = new QBarSet("Rodriguez-Logue");
+    rodriguezProbSet->setColor(Qt::yellow);
+    rodriguezProbSet->setBorderColor(Qt::yellow);
+
+    ebertProbSet = new QBarSet("Ebert-Prelec");
+    ebertProbSet->setColor(Qt::red);
+    ebertProbSet->setBorderColor(Qt::red);
+
+    bleichrodtProbSet = new QBarSet("Belechrodt");
+    bleichrodtProbSet->setColor(Qt::darkCyan);
+    bleichrodtProbSet->setBorderColor(Qt::darkCyan);
+
+    noiseProbSet = new QBarSet("Noise");
+    noiseProbSet->setColor(Qt::darkGray);
+    noiseProbSet->setBorderColor(Qt::darkGray);
+
+    for (int l=0; l<9; l++)
+    {
+        *expProbSet << NULL;
+        *hypProbSet << NULL;
+        *quasiProbSet << NULL;
+        *myerProbSet << NULL;
+        *rachProbSet << NULL;
+        *rodriguezProbSet << NULL;
+        *ebertProbSet << NULL;
+        *bleichrodtProbSet << NULL;
+        *noiseProbSet << NULL;
+    }
+
+    barSeries = new QStackedBarSeries();
+    barSeries->append(expProbSet);
+    barSeries->append(hypProbSet);
+    barSeries->append(quasiProbSet);
+    barSeries->append(myerProbSet);
+    barSeries->append(rachProbSet);
+    barSeries->append(rodriguezProbSet);
+    barSeries->append(ebertProbSet);
+    barSeries->append(bleichrodtProbSet);
+    barSeries->append(noiseProbSet);
+
+    barChart->addSeries(barSeries);
+    barChart->setTitle("Simple barchart example");
+
+    modelAxisCategories << "Exponential" << "Hyperbolic" << "QuasiHyperbolic" << "Green-Myerson" << "Rachlin" << "Rodriguez-Logue" << "Ebert-Prelec" << "Belechrodt" << "Noise";
+    barAxisX = new QBarCategoryAxis();
+    barAxisX->append(modelAxisCategories);
+    barAxisX->setGridLineColor(Qt::transparent);
+    barAxisX->setTitleText("Model Candidates");
+    barAxisX->setLabelsFont(mLegendFont);
+    barAxisX->setLinePenColor(Qt::black);
+    barAxisX->setLinePen(QPen(Qt::black));
+
+    barChart->setAxisX(barAxisX, barSeries);
+    //barChart->setAnimationOptions(QChart::SeriesAnimations);
+
+    barAxisY = new QValueAxis();
+    barAxisY->setMin(0.0);
+    barAxisY->setMax(1.0);
+    barAxisY->setTitleText("Probability");
+    barAxisY->setGridLineColor(Qt::transparent);
+    barAxisY->setLabelsFont(mLegendFont);
+    barAxisY->setLinePenColor(Qt::black);
+    barAxisY->setLinePen(QPen(Qt::black));
+    barChart->setAxisY(barAxisY, barSeries);
+
+    barChart->legend()->setVisible(false);
+
+    barChartView = new QChartView(barChart);
+
+    //chartView = new QChartView(barChart);
+    //chartView->setRenderHint(QPainter::Antialiasing);
+
+    // END Bar chart
 }
 
 void ChartWindow::buildAUCPlot()
@@ -194,8 +312,6 @@ void ChartWindow::buildAUCPlot()
     dataPoints->setBrush(QBrush(Qt::black));
     dataPoints->setMarkerSize(10);
     chart->addSeries(dataPoints);
-
-    plotAUCSeries(0);
 
     chart->setAxisX(axisX, expSeries);
     chart->setAxisY(axisY, expSeries);
@@ -288,8 +404,6 @@ void ChartWindow::buildED50Plot()
     dataPoints->setMarkerSize(10);
     chart->addSeries(dataPoints);
 
-    plotED50Series(0);
-
     chart->setAxisX(axisX, expSeries);
     chart->setAxisY(axisY, expSeries);
 
@@ -340,11 +454,13 @@ void ChartWindow::plotAUCSeries(int index)
     if (mList.Header.contains("dropped", Qt::CaseInsensitive))
     {
         chart->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
+        barChart->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
 
         return;
     }
 
     chart->setTitle(QString("Participant #%1: %2 Scaled AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopAUCLog));
+    barChart->setTitle(QString("Participant #%1: %2 Scaled AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopAUCLog));
 
     expSeries->hide();
     hypSeries->hide();
@@ -355,6 +471,20 @@ void ChartWindow::plotAUCSeries(int index)
     ebertSeries->hide();
     bleichrodtSeries->hide();
     noiseSeries->hide();
+
+    for (int l=0; l<9; l++)
+    {
+        expProbSet->replace(l, NULL);
+        expProbSet->replace(l, NULL);
+        hypProbSet->replace(l, NULL);
+        quasiProbSet->replace(l, NULL);
+        myerProbSet->replace(l, NULL);
+        rachProbSet->replace(l, NULL);
+        rodriguezProbSet->replace(l, NULL);
+        ebertProbSet->replace(l, NULL);
+        bleichrodtProbSet->replace(l, NULL);
+        noiseProbSet->replace(l, NULL);
+    }
 
     switch (mList.TopModelType)
     {
@@ -402,18 +532,21 @@ void ChartWindow::plotAUCSeries(int index)
         if (mList.FittingResults[i]->Model == ModelType::Noise)
         {
             noise = mList.FittingResults[i]->Params.first().second;
+            noiseProbSet->replace(8, mList.FittingResults[i]->Probability);
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Exponential)
         {
             expCheck = true;
             expK = mList.FittingResults[i]->Params.first().second;
+            expProbSet->replace(0, mList.FittingResults[i]->Probability);
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Hyperbolic)
         {
             hypCheck = true;
             hypK = mList.FittingResults[i]->Params.first().second;
+            hypProbSet->replace(1, mList.FittingResults[i]->Probability);
         }
 
         if (mList.FittingResults[i]->Model == ModelType::BetaDelta)
@@ -421,6 +554,7 @@ void ChartWindow::plotAUCSeries(int index)
             quasiCheck = true;
             quasiB = mList.FittingResults[i]->Params.first().second;
             quasiD = mList.FittingResults[i]->Params.last().second;
+            quasiProbSet->replace(2, mList.FittingResults[i]->Probability);
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Myerson)
@@ -428,6 +562,7 @@ void ChartWindow::plotAUCSeries(int index)
             myerCheck = true;
             myerK = mList.FittingResults[i]->Params.first().second;
             myerS = mList.FittingResults[i]->Params.last().second;
+            myerProbSet->replace(3, mList.FittingResults[i]->Probability);
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Rachlin)
@@ -435,6 +570,7 @@ void ChartWindow::plotAUCSeries(int index)
             rachCheck = true;
             rachK = mList.FittingResults[i]->Params.first().second;
             rachS = mList.FittingResults[i]->Params.last().second;
+            rachProbSet->replace(4, mList.FittingResults[i]->Probability);
         }
 
         if (mList.FittingResults[i]->Model == ModelType::RodriguezLogue)
@@ -442,6 +578,7 @@ void ChartWindow::plotAUCSeries(int index)
             rodriguezCheck = true;
             rodriguezK = mList.FittingResults[i]->Params.first().second;
             rodriguezS = mList.FittingResults[i]->Params.last().second;
+            rodriguezProbSet->replace(5, mList.FittingResults[i]->Probability);
         }
 
         if (mList.FittingResults[i]->Model == ModelType::EbertPrelec)
@@ -449,6 +586,7 @@ void ChartWindow::plotAUCSeries(int index)
             ebertCheck = true;
             ebertK = mList.FittingResults[i]->Params.first().second;
             ebertS = mList.FittingResults[i]->Params.last().second;
+            ebertProbSet->replace(6, mList.FittingResults[i]->Probability);
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Beleichrodt)
@@ -457,6 +595,7 @@ void ChartWindow::plotAUCSeries(int index)
             bleichrodtK = mList.FittingResults[i]->Params.first().second;
             bleichrodtS = mList.FittingResults[i]->Params[1].second;
             bleichrodtBeta = mList.FittingResults[i]->Params.last().second;
+            bleichrodtProbSet->replace(7, mList.FittingResults[i]->Probability);
         }
     }
 
@@ -558,14 +697,30 @@ void ChartWindow::plotED50Series(int index)
     ebertSeries->hide();
     bleichrodtSeries->hide();
 
+    for (int l=0; l<9; l++)
+    {
+        expProbSet->replace(l, NULL);
+        expProbSet->replace(l, NULL);
+        hypProbSet->replace(l, NULL);
+        quasiProbSet->replace(l, NULL);
+        myerProbSet->replace(l, NULL);
+        rachProbSet->replace(l, NULL);
+        rodriguezProbSet->replace(l, NULL);
+        ebertProbSet->replace(l, NULL);
+        bleichrodtProbSet->replace(l, NULL);
+        noiseProbSet->replace(l, NULL);
+    }
+
     if (mList.Header.contains("dropped", Qt::CaseInsensitive))
     {
         chart->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
+        barChart->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
 
         return;
     }
 
     chart->setTitle(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopED50));
+    barChart->setTitle(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopED50));
 
     expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
 
@@ -574,6 +729,7 @@ void ChartWindow::plotED50Series(int index)
         if (mList.FittingResults[i]->Model == ModelType::Noise)
         {
             noise = mList.FittingResults[i]->Params.first().second;
+            noiseProbSet->replace(8, mList.FittingResults[i]->Probability);
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Exponential)
@@ -584,6 +740,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 expCheck = true;
                 expSeries->show();
+                expProbSet->replace(0, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -595,6 +752,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 hypCheck = true;
                 hypSeries->show();
+                hypProbSet->replace(1, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -607,6 +765,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 quasiCheck = true;
                 quasiSeries->show();
+                quasiProbSet->replace(2, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -619,6 +778,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 myerCheck = true;
                 myerSeries->show();
+                myerProbSet->replace(3, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -631,6 +791,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 rachCheck = true;
                 rachSeries->show();
+                rachProbSet->replace(4, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -643,6 +804,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 rodriguezCheck = true;
                 rodriguezSeries->show();
+                rodriguezProbSet->replace(5, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -655,6 +817,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 ebertCheck = true;
                 ebertSeries->show();
+                ebertProbSet->replace(6, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -669,6 +832,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 bleichrodtCheck = true;
                 bleichrodtSeries->show();
+                bleichrodtProbSet->replace(7, mList.FittingResults[i]->Probability);
             }
         }
     }
@@ -826,6 +990,11 @@ bool ChartWindow::eventFilter(QObject *object, QEvent *e)
         else if (keyEvent->key() == Qt::Key::Key_Right)
         {
             on_NextButton_clicked();
+        }
+        else if (keyEvent->key() == Qt::Key::Key_Down || keyEvent->key() == Qt::Key::Key_Up)
+        {
+            int currIndex = (stackedWidget->currentIndex() == 1) ? 0 : 1;
+            stackedWidget->setCurrentIndex(currIndex);
         }
     }
 
