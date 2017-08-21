@@ -29,7 +29,8 @@
 enum class ChartingOptions {
     None,
     ED50,
-    AreaLog
+    AreaLog,
+    All
 };
 
 class CalculationSettings

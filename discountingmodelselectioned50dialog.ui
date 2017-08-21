@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>483</width>
-    <height>526</height>
+    <height>551</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -154,12 +154,7 @@
          </item>
          <item>
           <property name="text">
-           <string>ED50 Output</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Area Output (log10)</string>
+           <string>All Figures</string>
           </property>
          </item>
         </widget>

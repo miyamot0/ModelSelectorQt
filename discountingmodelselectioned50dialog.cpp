@@ -153,11 +153,7 @@ void DiscountingModelSelectionED50Dialog::on_pushButton_clicked()
         temp->calculationSettings->showCharts = false;
 
     } else if (ui->comboBoxFigures->currentIndex() == 1) {
-        temp->calculationSettings->chartOption = ChartingOptions::ED50;
-        temp->calculationSettings->showCharts = true;
-
-    } else if (ui->comboBoxFigures->currentIndex() == 2) {
-        temp->calculationSettings->chartOption = ChartingOptions::AreaLog;
+        temp->calculationSettings->chartOption = ChartingOptions::All;
         temp->calculationSettings->showCharts = true;
         ui->checkBoxArea->setChecked(true);
 

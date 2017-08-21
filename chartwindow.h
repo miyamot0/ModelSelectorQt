@@ -80,8 +80,15 @@ private:
 
     QChart *chart;
     QChartView *chartView;
+
     QValueAxis *axisX;
     QValueAxis *axisY;
+
+    QChart *chartArea;
+    QChartView *chartViewArea;
+
+    QValueAxis *axisXarea;
+    QValueAxis *axisYarea;
 
     QChart *barChart;
     QChartView *barChartView;
@@ -133,6 +140,18 @@ private:
     QLineSeries *noiseSeries;
 
     QScatterSeries *dataPoints;
+
+    QLineSeries *expSeriesArea;
+    QLineSeries *hypSeriesArea;
+    QLineSeries *quasiSeriesArea;
+    QLineSeries *myerSeriesArea;
+    QLineSeries *rachSeriesArea;
+    QLineSeries *rodriguezSeriesArea;
+    QLineSeries *ebertSeriesArea;
+    QLineSeries *bleichrodtSeriesArea;
+    QLineSeries *noiseSeriesArea;
+
+    QScatterSeries *dataPointsArea;
     QLineSeries *empiricalSeries;
 
     bool isLogNormalParamerized;
