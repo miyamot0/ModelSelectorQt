@@ -266,39 +266,47 @@ void ChartWindow::buildAUCPlot()
 
     expSeriesArea = new QLineSeries();
     expSeriesArea->setName("Exponential");
+    expSeriesArea->setPen(QPen(Qt::black));
     chartArea->addSeries(expSeriesArea);
 
     hypSeriesArea = new QLineSeries();
     hypSeriesArea->setName("Hyperbolic");
+    hypSeriesArea->setPen(QPen(Qt::green));
     chartArea->addSeries(hypSeriesArea);
 
     quasiSeriesArea = new QLineSeries();
     quasiSeriesArea->setName("QuasiHyperbolic");
+    quasiSeriesArea->setPen(QPen(Qt::blue));
     chartArea->addSeries(quasiSeriesArea);
 
     myerSeriesArea = new QLineSeries();
     myerSeriesArea->setName("Green-Myerson");
+    myerSeriesArea->setPen(QPen(Qt::cyan));
     chartArea->addSeries(myerSeriesArea);
 
     rachSeriesArea = new QLineSeries();
     rachSeriesArea->setName("Rachlin");
+    rachSeriesArea->setPen(QPen(Qt::magenta));
     chartArea->addSeries(rachSeriesArea);
 
     rodriguezSeriesArea = new QLineSeries();
     rodriguezSeriesArea->setName("Rodriguez-Logue");
+    rodriguezSeriesArea->setPen(QPen(Qt::yellow));
     chartArea->addSeries(rodriguezSeriesArea);
 
     ebertSeriesArea = new QLineSeries();
     ebertSeriesArea->setName("Ebert-Prelec");
+    ebertSeriesArea->setPen(QPen(Qt::red));
     chartArea->addSeries(ebertSeriesArea);
 
     bleichrodtSeriesArea = new QLineSeries();
     bleichrodtSeriesArea->setName("Bleichrodt");
+    bleichrodtSeriesArea->setPen(QPen(Qt::darkCyan));
     chartArea->addSeries(bleichrodtSeriesArea);
 
     noiseSeriesArea = new QLineSeries();
     noiseSeriesArea->setName("Noise");
-    noiseSeriesArea->setPen(QPen(Qt::black));
+    noiseSeriesArea->setPen(QPen(Qt::darkGray));
     chartArea->addSeries(noiseSeriesArea);
 
     empiricalSeries = new QLineSeries();
