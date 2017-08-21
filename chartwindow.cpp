@@ -154,11 +154,11 @@ void ChartWindow::buildAUCPlot()
     chart->addSeries(hypSeries);
 
     quasiSeries = new QLineSeries();
-    quasiSeries->setName("Beta Delta");
+    quasiSeries->setName("QuasiHyperbolic");
     chart->addSeries(quasiSeries);
 
     myerSeries = new QLineSeries();
-    myerSeries->setName("Myerson");
+    myerSeries->setName("Green-Myerson");
     chart->addSeries(myerSeries);
 
     rachSeries = new QLineSeries();
@@ -166,11 +166,11 @@ void ChartWindow::buildAUCPlot()
     chart->addSeries(rachSeries);
 
     rodriguezSeries = new QLineSeries();
-    rodriguezSeries->setName("Rodriguez");
+    rodriguezSeries->setName("Rodriguez-Logue");
     chart->addSeries(rodriguezSeries);
 
     ebertSeries = new QLineSeries();
-    ebertSeries->setName("Ebert");
+    ebertSeries->setName("Ebert-Prelec");
     chart->addSeries(ebertSeries);
 
     bleichrodtSeries = new QLineSeries();
@@ -246,12 +246,12 @@ void ChartWindow::buildED50Plot()
     chart->addSeries(hypSeries);
 
     quasiSeries = new QLineSeries();
-    quasiSeries->setName("Beta Delta");
+    quasiSeries->setName("QuasiHyperbolic");
     quasiSeries->setPen(QPen(Qt::blue));
     chart->addSeries(quasiSeries);
 
     myerSeries = new QLineSeries();
-    myerSeries->setName("Myerson");
+    myerSeries->setName("Green-Myerson");
     myerSeries->setPen(QPen(Qt::cyan));
     chart->addSeries(myerSeries);
 
@@ -261,12 +261,12 @@ void ChartWindow::buildED50Plot()
     chart->addSeries(rachSeries);
 
     rodriguezSeries = new QLineSeries();
-    rodriguezSeries->setName("Rodriguez");
+    rodriguezSeries->setName("Rodriguez-Logue");
     rodriguezSeries->setPen(QPen(Qt::yellow));
     chart->addSeries(rodriguezSeries);
 
     ebertSeries = new QLineSeries();
-    ebertSeries->setName("Ebert");
+    ebertSeries->setName("Ebert-Prelec");
     ebertSeries->setPen(QPen(Qt::red));
     chart->addSeries(ebertSeries);
 
