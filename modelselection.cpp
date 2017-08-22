@@ -1094,8 +1094,7 @@ QString ModelSelection::getED50BestModel(ModelType model)
         break;
 
     default:
-
-        return QString("---");
+        return QString("NA");
 
         break;
 

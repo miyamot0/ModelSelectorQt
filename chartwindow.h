@@ -50,9 +50,11 @@ public:
 
     void buildED50Plot();
     void plotED50Series(int index);
+    void plotED50Point(double i);
 
     void buildAUCPlot();
     void plotAUCSeries(int index);
+    void plotAUCPoint(double i);
 
     double exponential_plotting(double k, double x);
     double hyperbolic_plotting(double k, double x);

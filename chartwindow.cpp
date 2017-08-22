@@ -748,49 +748,7 @@ void ChartWindow::plotAUCSeries(int index)
 
     for (double i = 0; i < (log(lastDelay)+1); i = i + chartIterator)
     {
-        xParam = exp(i);
-
-        *noiseSeriesArea << QPointF(i, noise);
-
-        if (expCheck)
-        {
-            *expSeriesArea << QPointF(i, exponential_plotting(expK, xParam));
-        }
-
-        if (hypCheck)
-        {
-            *hypSeriesArea << QPointF(i, hyperbolic_plotting(hypK, xParam));
-        }
-
-        if (quasiCheck)
-        {
-             *quasiSeriesArea << QPointF(i, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
-        }
-
-        if (myerCheck)
-        {
-            *myerSeriesArea << QPointF(i, myerson_plotting(myerK, myerS, xParam));
-        }
-
-        if (rachCheck)
-        {
-            *rachSeriesArea << QPointF(i, rachlin_plotting(rachK, rachS, xParam));
-        }
-
-        if (rodriguezCheck)
-        {
-            *rodriguezSeriesArea << QPointF(i, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
-        }
-
-        if (ebertCheck)
-        {
-            *ebertSeriesArea << QPointF(i, ebert_prelec_plotting(ebertK, ebertS, xParam));
-        }
-
-        if (bleichrodtCheck)
-        {
-            *bleichrodtSeriesArea << QPointF(i, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
-        }
+        plotAUCPoint(i);
     }
 
     paramString1 = mList.ParticipantDelays;
@@ -811,6 +769,53 @@ void ChartWindow::plotAUCSeries(int index)
 
         *dataPointsArea << QPointF(log(param1), param2);
         *empiricalSeries << QPointF(log(param1), param2);
+    }
+}
+
+void ChartWindow::plotAUCPoint(double i)
+{
+    xParam = exp(i);
+
+    *noiseSeriesArea << QPointF(i, noise);
+
+    if (expCheck)
+    {
+        *expSeriesArea << QPointF(i, exponential_plotting(expK, xParam));
+    }
+
+    if (hypCheck)
+    {
+        *hypSeriesArea << QPointF(i, hyperbolic_plotting(hypK, xParam));
+    }
+
+    if (quasiCheck)
+    {
+         *quasiSeriesArea << QPointF(i, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
+    }
+
+    if (myerCheck)
+    {
+        *myerSeriesArea << QPointF(i, myerson_plotting(myerK, myerS, xParam));
+    }
+
+    if (rachCheck)
+    {
+        *rachSeriesArea << QPointF(i, rachlin_plotting(rachK, rachS, xParam));
+    }
+
+    if (rodriguezCheck)
+    {
+        *rodriguezSeriesArea << QPointF(i, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
+    }
+
+    if (ebertCheck)
+    {
+        *ebertSeriesArea << QPointF(i, ebert_prelec_plotting(ebertK, ebertS, xParam));
+    }
+
+    if (bleichrodtCheck)
+    {
+        *bleichrodtSeriesArea << QPointF(i, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
     }
 }
 
@@ -1012,49 +1017,7 @@ void ChartWindow::plotED50Series(int index)
 
     for (double i = 0; i < (log(lastDelay)+1); i = i + chartIterator)
     {
-        xParam = exp(i);
-
-        *noiseSeries << QPointF(i, noise);
-
-        if (expCheck)
-        {
-            *expSeries << QPointF(i, exponential_plotting(expK, xParam));
-        }
-
-        if (hypCheck)
-        {
-            *hypSeries << QPointF(i, hyperbolic_plotting(hypK, xParam));
-        }
-
-        if (quasiCheck)
-        {
-             *quasiSeries << QPointF(i, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
-        }
-
-        if (myerCheck)
-        {
-            *myerSeries << QPointF(i, myerson_plotting(myerK, myerS, xParam));
-        }
-
-        if (rachCheck)
-        {
-            *rachSeries << QPointF(i, rachlin_plotting(rachK, rachS, xParam));
-        }
-
-        if (rodriguezCheck)
-        {
-            *rodriguezSeries << QPointF(i, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
-        }
-
-        if (ebertCheck)
-        {
-            *ebertSeries << QPointF(i, ebert_prelec_plotting(ebertK, ebertS, xParam));
-        }
-
-        if (bleichrodtCheck)
-        {
-            *bleichrodtSeries << QPointF(i, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
-        }
+        plotED50Point(i);
     }
 
     paramString1 = mList.ParticipantDelays;
@@ -1074,6 +1037,53 @@ void ChartWindow::plotED50Series(int index)
         }
 
         *dataPoints << QPointF(log(param1), param2);
+    }
+}
+
+void ChartWindow::plotED50Point(double i)
+{
+    xParam = exp(i);
+
+    *noiseSeries << QPointF(i, noise);
+
+    if (expCheck)
+    {
+        *expSeries << QPointF(i, exponential_plotting(expK, xParam));
+    }
+
+    if (hypCheck)
+    {
+        *hypSeries << QPointF(i, hyperbolic_plotting(hypK, xParam));
+    }
+
+    if (quasiCheck)
+    {
+         *quasiSeries << QPointF(i, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
+    }
+
+    if (myerCheck)
+    {
+        *myerSeries << QPointF(i, myerson_plotting(myerK, myerS, xParam));
+    }
+
+    if (rachCheck)
+    {
+        *rachSeries << QPointF(i, rachlin_plotting(rachK, rachS, xParam));
+    }
+
+    if (rodriguezCheck)
+    {
+        *rodriguezSeries << QPointF(i, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
+    }
+
+    if (ebertCheck)
+    {
+        *ebertSeries << QPointF(i, ebert_prelec_plotting(ebertK, ebertS, xParam));
+    }
+
+    if (bleichrodtCheck)
+    {
+        *bleichrodtSeries << QPointF(i, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
     }
 }
 
