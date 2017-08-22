@@ -70,6 +70,12 @@ void exponential_discounting(const real_1d_array &c, const real_1d_array &x, dou
     func = exp(-exp(c[0])*x[0]);
 }
 
+void exponential_discounting_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *)
+{
+    func = exp(-exp(c[0])*x[0]);
+    grad[0] = -(exp(-exp(c[0]) * x[0]) * (exp(c[0]) * x[0]));
+}
+
 /**
  * @brief exponential_integration
  * @param x
@@ -105,6 +111,12 @@ void exponential_integration_log10(double x, double, double, double &y, void *pt
 void hyperbolic_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = pow((1+exp(c[0])*x[0]), -1);
+}
+
+void hyperbolic_discounting_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *)
+{
+    func = pow((1+exp(c[0])*x[0]), -1);
+    grad[0] = pow((1 + exp(c[0]) * x[0]),((-1) - 1)) * ((-1) * (exp(c[0]) * x[0]));
 }
 
 /**
@@ -185,6 +197,13 @@ void quasi_hyperboloid_discounting(const real_1d_array &c, const real_1d_array &
     func = c[0] * pow(c[1], x[0]);
 }
 
+void quasi_hyperboloid_discounting_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *)
+{
+    func = c[0] * pow(c[1], x[0]);
+    grad[0] = pow(c[1], x[0]);
+    grad[1] = c[0] * (pow(c[1],(x[0] - 1)) * x[0]);
+}
+
 /**
  * @brief quasi_hyperboloid_integration
  * @param x
@@ -224,6 +243,13 @@ void hyperboloid_myerson_discounting(const real_1d_array &c, const real_1d_array
     func = pow((1+exp(c[0])*x[0]), -c[1]);
 }
 
+void hyperboloid_myerson_discounting_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *)
+{
+    func = pow((1+exp(c[0])*x[0]), -c[1]);
+    grad[0] = pow((1 + exp(c[0]) * x[0]),((-c[1]) - 1)) * ((-c[1]) * (exp(c[0]) * x[0]));
+    grad[1] = -(pow((1 + exp(c[0]) * x[0]),(-c[1])) * log((1 + exp(c[0]) * x[0])));
+}
+
 /**
  * @brief hyperboloid_myerson_integration
  * @param x
@@ -261,6 +287,13 @@ void hyperboloid_myerson_integration_log10(double x, double, double, double &y, 
 void hyperboloid_rachlin_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = pow((1+exp(c[0])*pow(x[0], c[1])), -1);
+}
+
+void hyperboloid_rachlin_discounting_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *)
+{
+    func = pow((1+exp(c[0])*pow(x[0], c[1])), -1);
+    grad[0] = pow((1 + exp(c[0]) * (pow(x[0], c[1]))),((-1) - 1)) * ((-1) * (exp(c[0]) * (pow(x[0], c[1]))));
+    grad[1] = pow((1 + exp(c[0]) * (pow(x[0], c[1]))),((-1) - 1)) * ((-1) * (exp(c[0]) * (pow(x[0], c[1]) * log(x[0]))));
 }
 
 /**
@@ -484,10 +517,11 @@ void ModelSelection::FitExponential(const char *mStarts)
 
     SetStarts(mStarts);
 
-    lsfitcreatef(x, y, c, diffstep, state);
+    lsfitcreatefg(x, y, c, true, state);
+
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, exponential_discounting);
+    alglib::lsfitfit(state, exponential_discounting, exponential_discounting_grad);
 
     lsfitresults(state, info, c, rep);
 
@@ -530,10 +564,10 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
     SetStarts(mStarts);
 
-    lsfitcreatef(x, y, c, diffstep, state);
+    lsfitcreatefg(x, y, c, true, state);
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, hyperbolic_discounting);
+    alglib::lsfitfit(state, hyperbolic_discounting, hyperbolic_discounting_grad);
 
     lsfitresults(state, info, c, rep);
 
@@ -579,11 +613,12 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
     SetLowerUpperBounds("[1.0, 1.0]", "[0.0, 0.0]");
 
-    lsfitcreatef(x, y, c, diffstep, state);
+    lsfitcreatefg(x, y, c, true, state);
+
     lsfitsetbc(state, bndl, bndu);
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, quasi_hyperboloid_discounting);
+    alglib::lsfitfit(state, quasi_hyperboloid_discounting, quasi_hyperboloid_discounting_grad);
 
     lsfitresults(state, info, c, rep);
 
@@ -628,10 +663,10 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
     SetStarts(mStarts);
 
-    lsfitcreatef(x, y, c, diffstep, state);
+    lsfitcreatefg(x, y, c, true, state);
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, hyperboloid_myerson_discounting);
+    alglib::lsfitfit(state, hyperboloid_myerson_discounting, hyperboloid_myerson_discounting_grad);
 
     lsfitresults(state, info, c, rep);
 
@@ -678,11 +713,11 @@ void ModelSelection::FitRachlin(const char *mStarts)
 
     SetStarts(mStarts);
 
-    lsfitcreatef(x, y, c, diffstep, state);
+    lsfitcreatefg(x, y, c, true, state);
 
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, hyperboloid_rachlin_discounting);
+    alglib::lsfitfit(state, hyperboloid_rachlin_discounting, hyperboloid_rachlin_discounting_grad);
 
     lsfitresults(state, info, c, rep);
 
