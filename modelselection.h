@@ -26,16 +26,15 @@
 
 #include <QMap>
 #include <iostream>
-#include "interpolation.h"
-
-#include "stdafx.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include "optimization.h"
-#include "fitresult.h"
 
-//#define _USE_MATH_DEFINES
+#include "interpolation.h"
+#include "stdafx.h"
+#include "optimization.h"
+
+#include "fitresult.h"
 
 using namespace alglib;
 
@@ -53,15 +52,19 @@ public:
     lsfitstate GetState();
     ae_int_t GetInfo();
     lsfitreport GetReport();
+
     double GetNoiseMean();
+
     QString formatStringResult(int value);
+
     QString getED50BestModel(ModelType model);
-    QString getAUCBestModel(ModelType model);
-    QString getLogAUCBestModel(ModelType model);
 
     double getED50ep();
     double getED50crdi();
     double getED50rodriguez();
+
+    QString getAUCBestModel(ModelType model);
+    QString getLogAUCBestModel(ModelType model);
 
     double getErrorExponential(double lnK);
     double getErrorHyperbolic(double lnK);
@@ -82,16 +85,10 @@ public:
     void FitEbertPrelec(const char *mStarts);
     void FitBleichrodt(const char *mStarts);
 
-    void PrepareProbabilities();
-
-    double NoiseBIC = 0;
-    double NoiseRMSE = 0;
-
     QList<QPair<ModelType, double>> mBicList;
     QList<QPair<ModelType, double>> mProbList;
 
-    QString errorCode;
-    int statusValue;
+    void PrepareProbabilities();
 
     /** AICs
      *
@@ -169,6 +166,12 @@ public:
       */
     QList<double> ErrorResidual;
 
+    double NoiseBIC = 0;
+    double NoiseRMSE = 0;
+
+    QString errorCode;
+    int statusValue;
+
 private:
     real_2d_array x;
     real_1d_array y;
@@ -196,9 +199,7 @@ private:
     double DF = 0;
     double PROJ = 0;
     double holder = 0;
-
     double sumBayesFactors = 0;
-
     double leastSquaresError = 0;
 };
 
