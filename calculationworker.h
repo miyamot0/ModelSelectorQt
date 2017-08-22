@@ -70,8 +70,9 @@ private:
     bool runLogarithmicResults,
          boundRachlinModel,
          runLocalArea,
-         runBruteForce,
-         processCheckingLocal;
+         runBruteForce;
+
+    int processCheckingLocal;
 
     double p1Span;
     double p1Step;
