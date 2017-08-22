@@ -83,6 +83,22 @@ void exponential_discounting_grad(const real_1d_array &c, const real_1d_array &x
     grad[0] = -(exp(-exp(c[0]) * x[0]) * (exp(c[0]) * x[0]));
 }
 
+void exponential_discounting_hessian(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, real_2d_array &hess, void *)
+{
+    // this callback calculates f(c,x)=exp(-c0*sqr(x0)), gradient G={df/dc[i]} and Hessian H={d2f/(dc[i]*dc[j])}
+    // where x is a position on X-axis and c is adjustable parameter.
+    // IMPORTANT: gradient/Hessian are calculated with respect to C, not to X
+    //func = exp(-c[0]*pow(x[0],2));
+    //grad[0] = -pow(x[0],2)*func;
+    //hess[0][0] = pow(x[0],4)*func;
+
+    func = exp(-exp(c[0])*x[0]);
+
+    grad[0] = -(exp(-exp(c[0]) * x[0]) * (exp(c[0]) * x[0]));
+
+    hess[0][0] = -(exp(-exp(c[0]) * x[0]) * (exp(c[0]) * x[0]) - exp(-exp(c[0]) * x[0]) * (exp(c[0]) * x[0]) * (exp(c[0]) * x[0]));
+}
+
 /**
  * @brief exponential_integration
  * @param x
