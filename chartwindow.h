@@ -73,35 +73,34 @@ private slots:
     void saveSVGasPNG();
 
 private:
-    QVBoxLayout *windowLayout;
 
+    /** Layouts
+     *
+     */
+    QWidget *window;
+    QVBoxLayout *windowLayout;
     QStackedWidget *stackedWidget;
 
-    QWidget *window;
-
-    QFont mTitle;
-    QFont mLegendFont;
-
+    /** Display Widgets
+     *
+     */
     QChart *chart;
     QChartView *chartView;
 
-    QValueAxis *axisX;
-    QValueAxis *axisY;
+    QValueAxis *axisX,
+               *axisY,
+               *axisXarea,
+               *axisYarea,
+               *axisXerror,
+               *axisYerror;
 
-    QChart *chartArea;
-    QChartView *chartViewArea;
+    QChart *chartArea,
+           *barChart,
+           *chartError;
 
-    QValueAxis *axisXarea;
-    QValueAxis *axisYarea;
-
-    QChart *barChart;
-    QChartView *barChartView;
-
-    QChart *chartError;
-    QChartView *chartViewError;
-
-    QValueAxis *axisXerror;
-    QValueAxis *axisYerror;
+    QChartView *chartViewArea,
+               *barChartView,
+               *chartViewError;
 
     QLineSeries *errSeries;
     QScatterSeries *errDataPoints;
@@ -118,105 +117,104 @@ private:
 
     QStackedBarSeries *barSeries;
 
-    QStringList modelAxisCategories;
+    QStringList modelAxisCategories,
+                delayPoints,
+                valuePoints;
 
     QBarCategoryAxis *barAxisX;
     QValueAxis *barAxisY;
 
+
+    QLineSeries *expSeries,
+                *hypSeries,
+                *quasiSeries,
+                *myerSeries,
+                *rachSeries,
+                *rodriguezSeries,
+                *ebertSeries,
+                *bleichrodtSeries,
+                *noiseSeries;
+
+    QScatterSeries *dataPoints,
+                   *dataPointsArea;
+
+    QLineSeries *expSeriesArea,
+                *hypSeriesArea,
+                *quasiSeriesArea,
+                *myerSeriesArea,
+                *rachSeriesArea,
+                *rodriguezSeriesArea,
+                *ebertSeriesArea,
+                *bleichrodtSeriesArea,
+                *noiseSeriesArea,
+                *empiricalSeries;
+
+    QFont mTitle = QFont("Serif", 14, -1, false),
+          mLegendFont = QFont("Serif", 10, -1, false);
+
+    /** Actions
+     *
+     */
+
+    QAction *saveAction,
+            *prevAction,
+            *nextAction;
+
+    /** Results
+     *
+     */
+
     QList<FitResults> mDisplayData;
-
-    int currentIndexShown;
-
-    QAction *saveAction;
-    QAction *prevAction;
-    QAction *nextAction;
 
     FitResults mList;
 
-    double param1;
-    double param2;
+    /** Settings
+     *
+     */
+    QString paramString1,
+            paramString2;
 
-    QString paramString1;
-    QString paramString2;
+    int currentIndexShown;
 
-    bool checkValue1;
-    bool checkValue2;
+    bool isLogNormalParamerized,
+         checkValue1,
+         checkValue2,
+         expCheck,
+         hypCheck,
+         quasiCheck,
+         myerCheck,
+         rachCheck,
+         rodriguezCheck,
+         ebertCheck,
+         bleichrodtCheck,
+         isED50Figure,
+         isAUCFigure,
+         isAUCLogFigure;
 
-    QLineSeries *expSeries;
-    QLineSeries *hypSeries;
-    QLineSeries *quasiSeries;
-    QLineSeries *myerSeries;
-    QLineSeries *rachSeries;
-    QLineSeries *rodriguezSeries;
-    QLineSeries *ebertSeries;
-    QLineSeries *bleichrodtSeries;
-    QLineSeries *noiseSeries;
+    double expK,
+           hypK,
+           quasiB,
+           quasiD,
+           myerK,
+           myerS,
+           rachK,
+           rachS,
+           rodriguezK,
+           rodriguezS,
+           ebertK,
+           ebertS,
+           bleichrodtK,
+           bleichrodtS,
+           bleichrodtBeta,
+           noise;
 
-    QScatterSeries *dataPoints;
-
-    QLineSeries *expSeriesArea;
-    QLineSeries *hypSeriesArea;
-    QLineSeries *quasiSeriesArea;
-    QLineSeries *myerSeriesArea;
-    QLineSeries *rachSeriesArea;
-    QLineSeries *rodriguezSeriesArea;
-    QLineSeries *ebertSeriesArea;
-    QLineSeries *bleichrodtSeriesArea;
-    QLineSeries *noiseSeriesArea;
-
-    QScatterSeries *dataPointsArea;
-    QLineSeries *empiricalSeries;
-
-    bool isLogNormalParamerized;
-
-    bool expCheck;
-    double expK;
-
-    bool hypCheck;
-    double hypK;
-
-    bool quasiCheck;
-    double quasiB;
-    double quasiD;
-
-    bool myerCheck;
-    double myerK;
-    double myerS;
-
-    bool rachCheck;
-    double rachK;
-    double rachS;
-
-    bool rodriguezCheck;
-    double rodriguezK;
-    double rodriguezS;
-
-    bool ebertCheck;
-    double ebertK;
-    double ebertS;
-
-    bool bleichrodtCheck;
-    double bleichrodtK;
-    double bleichrodtS;
-    double bleichrodtBeta;
-
-    double noise;
-
-    double xParam;
-
-    QStringList delayPoints;
-    QStringList valuePoints;
-
-    double lastDelay;
-
-    bool isED50Figure;
-    bool isAUCFigure;
-    bool isAUCLogFigure;
-
-    double minList;
-    double maxList;
-
-    double chartIterator = 0.25;
+    double param1,
+           param2,
+           xParam,
+           lastDelay,
+           minList,
+           maxList,
+           chartIterator = 0.25;
 };
 
 #endif // CHARTWINDOW_H

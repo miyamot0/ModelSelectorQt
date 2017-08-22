@@ -71,9 +71,6 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
 
     installEventFilter(this);
 
-    mTitle = QFont("Serif", 14, -1, false);
-    mLegendFont = QFont("Serif", 10, -1, false);
-
     chart = new QChart();
 
     buildED50Plot();
@@ -871,8 +868,6 @@ void ChartWindow::plotED50Series(int index)
 
     expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
 
-    //double highestProbability = 0;
-
     for (int i=0; i<mList.FittingResults.length(); i++)
     {
         if (mList.FittingResults[i]->Model == ModelType::Noise)
@@ -890,9 +885,6 @@ void ChartWindow::plotED50Series(int index)
                 expCheck = true;
                 expSeries->show();
                 expProbSet->replace(0, mList.FittingResults[i]->Probability);
-
-                //highestProbability = (mList.FittingResults[i]->Probability > mList.FittingResults[i]->Probability) ?
-                //            mList.FittingResults[i]->Probability : highestProbability;
             }
         }
 
@@ -905,9 +897,6 @@ void ChartWindow::plotED50Series(int index)
                 hypCheck = true;
                 hypSeries->show();
                 hypProbSet->replace(1, mList.FittingResults[i]->Probability);
-
-                //highestProbability = (mList.FittingResults[i]->Probability > mList.FittingResults[i]->Probability) ?
-                //            mList.FittingResults[i]->Probability : highestProbability;
             }
         }
 
@@ -921,9 +910,6 @@ void ChartWindow::plotED50Series(int index)
                 quasiCheck = true;
                 quasiSeries->show();
                 quasiProbSet->replace(2, mList.FittingResults[i]->Probability);
-
-                //highestProbability = (mList.FittingResults[i]->Probability > mList.FittingResults[i]->Probability) ?
-                //            mList.FittingResults[i]->Probability : highestProbability;
             }
         }
 
@@ -937,9 +923,6 @@ void ChartWindow::plotED50Series(int index)
                 myerCheck = true;
                 myerSeries->show();
                 myerProbSet->replace(3, mList.FittingResults[i]->Probability);
-
-                //highestProbability = (mList.FittingResults[i]->Probability > mList.FittingResults[i]->Probability) ?
-                //            mList.FittingResults[i]->Probability : highestProbability;
             }
         }
 
@@ -953,9 +936,6 @@ void ChartWindow::plotED50Series(int index)
                 rachCheck = true;
                 rachSeries->show();
                 rachProbSet->replace(4, mList.FittingResults[i]->Probability);
-
-                //highestProbability = (mList.FittingResults[i]->Probability > mList.FittingResults[i]->Probability) ?
-                //            mList.FittingResults[i]->Probability : highestProbability;
             }
         }
 
@@ -969,9 +949,6 @@ void ChartWindow::plotED50Series(int index)
                 rodriguezCheck = true;
                 rodriguezSeries->show();
                 rodriguezProbSet->replace(5, mList.FittingResults[i]->Probability);
-
-                //highestProbability = (mList.FittingResults[i]->Probability > mList.FittingResults[i]->Probability) ?
-                //            mList.FittingResults[i]->Probability : highestProbability;
             }
         }
 
@@ -985,9 +962,6 @@ void ChartWindow::plotED50Series(int index)
                 ebertCheck = true;
                 ebertSeries->show();
                 ebertProbSet->replace(6, mList.FittingResults[i]->Probability);
-
-                //highestProbability = (mList.FittingResults[i]->Probability > mList.FittingResults[i]->Probability) ?
-                //            mList.FittingResults[i]->Probability : highestProbability;
             }
         }
 
@@ -1003,9 +977,6 @@ void ChartWindow::plotED50Series(int index)
                 bleichrodtCheck = true;
                 bleichrodtSeries->show();
                 bleichrodtProbSet->replace(7, mList.FittingResults[i]->Probability);
-
-                //highestProbability = (mList.FittingResults[i]->Probability > mList.FittingResults[i]->Probability) ?
-                //            mList.FittingResults[i]->Probability : highestProbability;
             }
         }
     }

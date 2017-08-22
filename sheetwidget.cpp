@@ -129,7 +129,7 @@ SheetWidget::SheetWidget(QWidget *parent) : QMainWindow(parent)
     buildMenus();
     setCentralWidget(table);
 
-    setWindowTitle("Discounting Model Selector v" + QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD));
+    setWindowTitle(QString("Discounting Model Selector v" + QString("%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD)));
 
     this->layout()->setSizeConstraint(QLayout::SetNoConstraint);
 
@@ -200,8 +200,8 @@ void SheetWidget::downloadedFile(QNetworkReply *reply) {
     if (hasUpdate)
     {
         QMessageBox *msgBox = new QMessageBox;
-        msgBox->setWindowTitle("Updates");
-        msgBox->setText("There is an update available!");
+        msgBox->setWindowTitle(tr("Updates"));
+        msgBox->setText(tr("There is an update available!"));
         msgBox->setWindowModality(Qt::NonModal);
         msgBox->show();
     }
@@ -216,31 +216,31 @@ void SheetWidget::buildMenus()
      * @brief
      */
 
-    newSheetAction = new QAction("N&ew", this);
+    newSheetAction = new QAction(tr("N&ew"), this);
     newSheetAction->setShortcut(QKeySequence::New);
     newSheetAction->setIcon(QIcon(":/images/document-new.png"));
     connect(newSheetAction, &QAction::triggered, this, &SheetWidget::clearSheet);
 
-    openSheetAction = new QAction("I&mport", this);
+    openSheetAction = new QAction(tr("I&mport"), this);
     openSheetAction->setShortcut(QKeySequence::Open);
     openSheetAction->setIcon(QIcon(":/images/document-open.png"));
     connect(openSheetAction, &QAction::triggered, this, &SheetWidget::showOpenFileDialog);
 
-    saveSheetAction = new QAction("S&ave", this);
+    saveSheetAction = new QAction(tr("S&ave"), this);
     saveSheetAction->setShortcut(QKeySequence::Save);
     saveSheetAction->setIcon(QIcon(":/images/document-save.png"));
     connect(saveSheetAction, &QAction::triggered, this, &SheetWidget::showSaveFileDialog);
 
-    saveAsSheetAction = new QAction("S&ave As", this);
+    saveAsSheetAction = new QAction(tr("S&ave As"), this);
     saveAsSheetAction->setShortcut(QKeySequence::SaveAs);
     saveAsSheetAction->setIcon(QIcon(":/images/document-save-as.png"));
     connect(saveAsSheetAction, &QAction::triggered, this, &SheetWidget::showSaveAsFileDialog);
 
-    updateProgramAction = new QAction("C&heck Updates", this);
+    updateProgramAction = new QAction(tr("C&heck Updates"), this);
     updateProgramAction->setIcon(QIcon(":/images/view-refresh.png"));
     connect(updateProgramAction, &QAction::triggered, this, &SheetWidget::checkUpdatesAction);
 
-    exitSheetAction = new QAction("E&xit", this);
+    exitSheetAction = new QAction(tr("E&xit"), this);
     exitSheetAction->setShortcut(QKeySequence::Quit);
     exitSheetAction->setIcon(QIcon(":/images/system-log-out.png"));
     connect(exitSheetAction, &QAction::triggered, qApp, &QCoreApplication::quit);
@@ -249,7 +249,7 @@ void SheetWidget::buildMenus()
      * @brief
      */
 
-    openDiscountingED50Window = new QAction("M&odel Selection", this);
+    openDiscountingED50Window = new QAction(tr("M&odel Selection"), this);
     openDiscountingED50Window->setIcon(QIcon(":/images/applications-system.png"));
     connect(openDiscountingED50Window, &QAction::triggered, this, &SheetWidget::showDiscountingED50Window);
 
@@ -257,26 +257,26 @@ void SheetWidget::buildMenus()
      * @brief
      */
 
-    cutAction = new QAction("Cut", this);
+    cutAction = new QAction(tr("Cut"), this);
     cutAction->setShortcut(QKeySequence::Cut);
     cutAction->setIcon(QIcon(":/images/edit-cut.png"));
     connect(cutAction, &QAction::triggered, this, &SheetWidget::cut);
 
-    copyAction = new QAction("Copy", this);
+    copyAction = new QAction(tr("Copy"), this);
     copyAction->setShortcut(QKeySequence::Copy);
     copyAction->setIcon(QIcon(":/images/edit-copy.png"));
     connect(copyAction, &QAction::triggered, this, &SheetWidget::copy);
 
-    pasteAction = new QAction("Paste", this);
+    pasteAction = new QAction(tr("Paste"), this);
     pasteAction->setShortcut(QKeySequence::Paste);
     pasteAction->setIcon(QIcon(":/images/edit-paste.png"));
     connect(pasteAction, &QAction::triggered, this, &SheetWidget::paste);
 
-    pasteInvertedAction = new QAction("Paste Transposed", this);
+    pasteInvertedAction = new QAction(tr("Paste Transposed"), this);
     pasteInvertedAction->setIcon(QIcon(":/images/edit-paste.png"));
     connect(pasteInvertedAction, &QAction::triggered, this, &SheetWidget::pasteInverted);
 
-    clearAction = new QAction("Clear", this);
+    clearAction = new QAction(tr("Clear"), this);
     clearAction->setShortcut(Qt::Key_Delete);
     clearAction->setIcon(QIcon(":/images/edit-clear.png"));
     connect(clearAction, &QAction::triggered, this, &SheetWidget::clear);
@@ -298,35 +298,35 @@ void SheetWidget::buildMenus()
 
     discountingED50Dialog = new DiscountingModelSelectionED50Dialog(this);
 
-    openLicenseDMS = new QAction("DMS License (GPL-V3)", this);
+    openLicenseDMS = new QAction(tr("DMS License (GPL-V3)"), this);
     openLicenseDMS->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openLicenseDMS, &QAction::triggered, this, &SheetWidget::showDMSLicenseWindow);
 
-    openLicenseALGLIB = new QAction("ALGLIB License (GPL-V3)", this);
+    openLicenseALGLIB = new QAction(tr("ALGLIB License (GPL-V3)"), this);
     openLicenseALGLIB->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openLicenseALGLIB, &QAction::triggered, this, &SheetWidget::showALGLIBLicenseWindow);
 
-    openLicenseBDS = new QAction("BDS License (GPL-V3)", this);
+    openLicenseBDS = new QAction(tr("BDS License (GPL-V3)"), this);
     openLicenseBDS->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openLicenseBDS, &QAction::triggered, this, &SheetWidget::showBDSLicenseWindow);
 
-    openLicenseQt = new QAction("Qt License (GPL-V3)", this);
+    openLicenseQt = new QAction(tr("Qt License (GPL-V3)"), this);
     openLicenseQt->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openLicenseQt, &QAction::triggered, this, &SheetWidget::showQTLicenseWindow);
 
-    openLicenseTango = new QAction("Tango Icons License (GPL-V3)", this);
+    openLicenseTango = new QAction(tr("Tango Icons License (GPL-V3)"), this);
     openLicenseTango->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openLicenseTango, &QAction::triggered, this, &SheetWidget::showTangoLicenseWindow);
 
-    openLicenseQtXlsx = new QAction("QtXlsx License (MIT)", this);
+    openLicenseQtXlsx = new QAction(tr("QtXlsx License (MIT)"), this);
     openLicenseQtXlsx->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openLicenseQtXlsx, &QAction::triggered, this, &SheetWidget::showQtXlsxLicenseWindow);
 
-    openAbout = new QAction("Credits", this);
+    openAbout = new QAction(tr("Credits"), this);
     openAbout->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openAbout, &QAction::triggered, this, &SheetWidget::showCreditsWindow);
 
-    openFAQ = new QAction("FAQ", this);
+    openFAQ = new QAction(tr("FAQ"), this);
     openFAQ->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openFAQ, &QAction::triggered, this, &SheetWidget::showFAQWindow);
 
@@ -334,15 +334,15 @@ void SheetWidget::buildMenus()
      * @brief
      */
 
-    delayAction = new QAction("Set Delays", this);
+    delayAction = new QAction(tr("Set Delays"), this);
     delayAction->setIcon(QIcon(":/images/preferences-system.png"));
     connect(delayAction, &QAction::triggered, this, &SheetWidget::updateDelayModalWindow);
 
-    valueAction = new QAction("Set Values", this);
+    valueAction = new QAction(tr("Set Values"), this);
     valueAction->setIcon(QIcon(":/images/preferences-system.png"));
     connect(valueAction, &QAction::triggered, this, &SheetWidget::updateValueModalWindow);
 
-    maxValueAction = new QAction("Set Max Value", this);
+    maxValueAction = new QAction(tr("Set Max Value"), this);
     maxValueAction->setIcon(QIcon(":/images/preferences-system.png"));
     connect(maxValueAction, &QAction::triggered, this, &SheetWidget::updateMaxValueModalWindow);
 
@@ -482,7 +482,7 @@ void SheetWidget::clearSheet()
  */
 void SheetWidget::closeEvent(QCloseEvent* event)
 {
-    QMessageBox::StandardButton confirm = QMessageBox::question( this, "Discounting Model Selector",
+    QMessageBox::StandardButton confirm = QMessageBox::question( this, tr("Discounting Model Selector"),
                                                                 tr("Are you sure you want to quit?\n"),
                                                                 QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
                                                                 QMessageBox::Yes);
@@ -643,12 +643,12 @@ void SheetWidget::showOpenFileDialog()
 
     #ifdef _WIN32
 
-    file_name = QFileDialog::getOpenFileName(this, "Open spreadsheet file", QDir::homePath(),
+    file_name = QFileDialog::getOpenFileName(this, tr("Open spreadsheet file"), QDir::homePath(),
                                              fileFilter);
 
     #elif TARGET_OS_MAC
 
-    file_name = QFileDialog::getOpenFileName(nullptr, "Open spreadsheet file", QDir::homePath(),
+    file_name = QFileDialog::getOpenFileName(nullptr, tr("Open spreadsheet file"), QDir::homePath(),
                                              fileFilter, nullptr, QFileDialog::Option::DontUseNativeDialog);
 
     #endif
@@ -785,12 +785,12 @@ void SheetWidget::showSaveAsFileDialog()
 
 #ifdef _WIN32
 
-        file_name = QFileDialog::getSaveFileName(this, "Save spreadsheet file", QDir::homePath(),
+        file_name = QFileDialog::getSaveFileName(this, tr("Save spreadsheet file"), QDir::homePath(),
                                          fileFilter);
 
 #elif TARGET_OS_MAC
 
-        file_name = QFileDialog::getSaveFileName(this, "Save spreadsheet file", QDir::homePath(),
+        file_name = QFileDialog::getSaveFileName(this, tr("Save spreadsheet file"), QDir::homePath(),
                                          fileFilter, &fileFilter, QFileDialog::Option::DontUseNativeDialog);
 
         if (!file_name.contains(".xlsx"))
@@ -871,7 +871,7 @@ void SheetWidget::showDMSLicenseWindow()
     #endif
 
     licenseDialog = new LicenseDialog(mFilePath, this);
-    licenseDialog->setWindowTitle("DMS License (GPL-V3)");
+    licenseDialog->setWindowTitle(tr("DMS License (GPL-V3)"));
     licenseDialog->setModal(true);
     licenseDialog->show();
 }
@@ -896,7 +896,7 @@ void SheetWidget::showALGLIBLicenseWindow()
     #endif
 
     licenseDialog = new LicenseDialog(mFilePath, this);
-    licenseDialog->setWindowTitle("DMS License (GPL-V3)");
+    licenseDialog->setWindowTitle(tr("ALGLIB (GPL-V3)"));
     licenseDialog->setModal(true);
     licenseDialog->show();
 }
@@ -921,7 +921,7 @@ void SheetWidget::showBDSLicenseWindow()
     #endif
 
     licenseDialog = new LicenseDialog(mFilePath, this);
-    licenseDialog->setWindowTitle("DMS License (GPL-V3)");
+    licenseDialog->setWindowTitle(tr("BDS License (GPL-V3)"));
     licenseDialog->setModal(true);
     licenseDialog->show();
 }
@@ -946,7 +946,7 @@ void SheetWidget::showQTLicenseWindow()
     #endif
 
     licenseDialog = new LicenseDialog(mFilePath, this);
-    licenseDialog->setWindowTitle("Qt License (LGPL-V3)");
+    licenseDialog->setWindowTitle(tr("Qt License (LGPL-V3)"));
     licenseDialog->setModal(true);
     licenseDialog->show();
 }
@@ -971,7 +971,7 @@ void SheetWidget::showTangoLicenseWindow()
     #endif
 
     licenseDialog = new LicenseDialog(mFilePath, this);
-    licenseDialog->setWindowTitle("Tango Icon Set License (Public Domain)");
+    licenseDialog->setWindowTitle(tr("Tango Icon Set License (Public Domain)"));
     licenseDialog->setModal(true);
     licenseDialog->show();
 }
@@ -996,7 +996,7 @@ void SheetWidget::showQtXlsxLicenseWindow()
     #endif
 
     licenseDialog = new LicenseDialog(mFilePath, this);
-    licenseDialog->setWindowTitle("QtXlsx License (MIT)");
+    licenseDialog->setWindowTitle(tr("QtXlsx License (MIT)"));
     licenseDialog->setModal(true);
     licenseDialog->show();
 }
@@ -1326,12 +1326,12 @@ void SheetWidget::updateDelayModalWindow()
 
     if (mWidth > 0 && mHeight > 0)
     {
-        QMessageBox::critical(this, "Error", "Please select a vector of delays (e.g., one column or one row).");
+        QMessageBox::critical(this, tr("Error"), tr("Please select a vector of delays (e.g., one column or one row)."));
         return;
     }
     else if (mWidth + mHeight < 3)
     {
-        QMessageBox::critical(this, "Error", "Please select at least 3 delay points. At least 3 points are needed to proceed with curve fitting.");
+        QMessageBox::critical(this, tr("Error"), tr("Please select at least 3 delay points. At least 3 points are needed to proceed with curve fitting."));
         return;
     }
 
@@ -1528,7 +1528,7 @@ void SheetWidget::Calculate()
 
     QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
 
-    statusBar()->showMessage("Beginning calculations...", 3000);
+    statusBar()->showMessage(tr("Beginning calculations..."), 3000);
     allResults.clear();
 
     QList<QStringList> mStoredValues;
@@ -1627,11 +1627,11 @@ void SheetWidget::WorkUpdate(FitResults results)
  */
 void SheetWidget::WorkFinished()
 {
-    statusBar()->showMessage("Calculations Complete.", 3000);
+    statusBar()->showMessage(tr("Calculations Complete."), 3000);
 
     if (displayFigures)
     {
-        statusBar()->showMessage("Drawing figures...", 3000);
+        statusBar()->showMessage(tr("Drawing figures..."), 3000);
 
         if (discountingED50Dialog->isVisible())
         {
@@ -1649,9 +1649,3 @@ void SheetWidget::WorkFinished()
         resultsDialog->ImportDataAndShow(calculationSettings->cbArea);
     }
 }
-
-
-
-
-
-

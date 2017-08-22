@@ -233,7 +233,6 @@ private:
 
     QThread *workerThread;
     CalculationWorker *worker;
-
 };
 
 #endif // SHEETWIDGET_H
