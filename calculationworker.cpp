@@ -20,10 +20,14 @@
    Email: shawn(dot)gilroy(at)temple.edu
 */
 
-#include "calculationworker.h"
-#include "qstringlist.h"
 #include <QtWidgets>
 
+#include "calculationworker.h"
+#include "qstringlist.h"
+
+/**
+ * @brief The QPairSecondComparer struct
+ */
 struct QPairSecondComparer
 {
     template<typename T1, typename T2>
@@ -32,32 +36,6 @@ struct QPairSecondComparer
         return one.second > two.second;
     }
 };
-
-struct BruteForce {
-  double p1 = 0;
-  double p2 = 0;
-  double p3 = 0;
-
-  double err = 0;
-
-  bool operator < (const BruteForce& r1) const {
-      return (err < r1.err);
-  }
-};
-
-struct BruteForceValues {
-    BruteForce oneParamStartingValueArray[100];
-    BruteForce twoParamStartingValueArray[1000];
-    BruteForce threeParamStartingValueArray[1000];
-    BruteForce smallBruteStartingValueArray[100000];
-    BruteForce largeBruteStartingValueArray[1000000];
-};
-
-BruteForceValues provisionalValues;
-
-bool BruteSorter(BruteForce const& lhs, BruteForce const& rhs) {
-    return lhs.err < rhs.err;
-}
 
 CalculationWorker::CalculationWorker(QList<QPair<QString, QString> > mJohnsonBickelResults, QList<bool> *mJonhsonBickelSelections, QList<QStringList> mStoredValues, CalculationSettings *calculationSettings, int processChecking)
 {

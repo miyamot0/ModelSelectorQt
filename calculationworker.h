@@ -28,13 +28,18 @@
 #include "calculationsettings.h"
 #include "fitresults.h"
 #include "fitresult.h"
+#include "gridsearch.h"
 
 class CalculationWorker : public QObject
 {
     Q_OBJECT
 
 public:
-    CalculationWorker(QList<QPair<QString, QString>> mJohnsonBickelResults, QList<bool> *mJonhsonBickelSelections, QList<QStringList> mStoredValues, CalculationSettings* calculationSettings, int processChecking);
+    CalculationWorker(QList<QPair<QString, QString>> mJohnsonBickelResults,
+                      QList<bool> *mJonhsonBickelSelections,
+                      QList<QStringList> mStoredValues,
+                      CalculationSettings* calculationSettings,
+                      int processChecking);
 
 private:
     QString computationTypeLocal;
@@ -72,18 +77,21 @@ private:
          runLocalArea,
          runBruteForce;
 
-    int processCheckingLocal;
+    int processCheckingLocal,
+        grandLoop;
 
-    double p1Span;
-    double p1Step;
+    double p1Span,
+           p1Step,
+           p2Span,
+           p2Step,
+           p3Span,
+           p3Step;
 
-    double p2Span;
-    double p2Step;
+    BruteForceValues provisionalValues;
 
-    double p3Span;
-    double p3Step;
-
-    int grandLoop;
+    bool BruteSorter(BruteForce const& lhs, BruteForce const& rhs) {
+        return lhs.err < rhs.err;
+    }
 
 signals:
     void workStarted();
