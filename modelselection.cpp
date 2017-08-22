@@ -83,6 +83,14 @@ void exponential_discounting_grad(const real_1d_array &c, const real_1d_array &x
     grad[0] = -(exp(-exp(c[0]) * x[0]) * (exp(c[0]) * x[0]));
 }
 
+/**
+ * @brief exponential_discounting_hessian
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ * @param hess
+ */
 void exponential_discounting_hessian(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, real_2d_array &hess, void *)
 {
     func = exp(-exp(c[0])*x[0]);
@@ -140,14 +148,20 @@ void hyperbolic_discounting_grad(const real_1d_array &c, const real_1d_array &x,
     grad[0] = pow((1 + exp(c[0]) * x[0]),((-1) - 1)) * ((-1) * (exp(c[0]) * x[0]));
 }
 
+/**
+ * @brief hyperbolic_discounting_hessian
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ * @param hess
+ */
 void hyperbolic_discounting_hessian(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, real_2d_array &hess, void *)
 {
     func = pow((1+exp(c[0])*x[0]), -1);
     grad[0] = pow((1 + exp(c[0]) * x[0]),((-1) - 1)) * ((-1) * (exp(c[0]) * x[0]));
     hess[0][0] = pow((1 + exp(c[0]) * x[0]),(((-1) - 1) - 1)) * (((-1) - 1) * (exp(c[0]) * x[0])) *
             ((-1) * (exp(c[0]) * x[0])) + pow((1 + exp(c[0]) * x[0]),((-1) - 1)) * ((-1) * (exp(c[0]) * x[0]));
-
-//    hess[0][0] = -(exp(-exp(c[0]) * x[0]) * (exp(c[0]) * x[0]) - exp(-exp(c[0]) * x[0]) * (exp(c[0]) * x[0]) * (exp(c[0]) * x[0]));
 }
 
 /**
@@ -263,6 +277,18 @@ void quasi_hyperboloid_discounting_grad(const real_1d_array &c, const real_1d_ar
     grad[1] = c[0] * (pow(c[1],(x[0] - 1)) * x[0]);
 }
 
+void quasi_hyperboloid_discounting_hessian(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, real_2d_array &hess, void *)
+{
+    func = c[0] * pow(c[1], x[0]);
+    grad[0] = pow(c[1], x[0]);
+    grad[1] = c[0] * (pow(c[1],(x[0] - 1)) * x[0]);
+
+    hess[0][0] = 0;
+    hess[0][1] = (pow(c[1],(x[0] - 1)) * x[0]);
+    hess[1][0] = (pow(c[1],(x[0] - 1)) * x[0]);
+    hess[1][1] = c[0] * (pow(c[1],((x[0] - 1) - 1)) * (x[0] - 1) * x[0]);
+}
+
 /**
  * @brief quasi_hyperboloid_integration
  * @param x
@@ -315,6 +341,35 @@ void hyperboloid_myerson_discounting_grad(const real_1d_array &c, const real_1d_
     grad[0] = pow((1 + exp(c[0]) * x[0]),((-c[1]) - 1)) * ((-c[1]) * (exp(c[0]) * x[0]));
     grad[1] = -(pow((1 + exp(c[0]) * x[0]),(-c[1])) * log((1 + exp(c[0]) * x[0])));
 }
+
+
+
+void hyperboloid_myerson_discounting_hessian(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, real_2d_array &hess, void *)
+{
+    func = pow((1+exp(c[0])*x[0]), -c[1]);
+    grad[0] = pow((1 + exp(c[0]) * x[0]),((-c[1]) - 1)) * ((-c[1]) * (exp(c[0]) * x[0]));
+    grad[1] = -(pow((1 + exp(c[0]) * x[0]),(-c[1])) * log((1 + exp(c[0]) * x[0])));
+
+    hess[0][0] = pow((1 + exp(c[0]) * x[0]),(((-c[1]) - 1) - 1)) *
+            (((-c[1]) - 1) * (exp(c[0]) * x[0])) *
+            ((-c[1]) * (exp(c[0]) * x[0])) +
+            pow((1 + exp(c[0]) * x[0]),((-c[1]) - 1)) *
+            ((-c[1]) * (exp(c[0]) * x[0]));
+
+    hess[0][1] = -(pow((1 + exp(c[0]) * x[0]),((-c[1]) - 1)) *
+                   ((-c[1]) * (exp(c[0]) * x[0])) * log((1 + exp(c[0]) * x[0])) +
+                   pow((1 + exp(c[0]) * x[0]),(-c[1])) * (exp(c[0]) * x[0]/(1 + exp(c[0]) * x[0])));
+
+    hess[1][0] = -(pow((1 + exp(c[0]) * x[0]),((-c[1]) - 1)) *
+                   (exp(c[0]) * x[0]) + pow((1 + exp(c[0]) * x[0]),((-c[1]) - 1)) *
+                   log((1 + exp(c[0]) * x[0])) * ((-c[1]) * (exp(c[0]) * x[0])));
+
+    hess[1][1] = pow((1 + exp(c[0]) * x[0]),(-c[1])) * log((1 + exp(c[0]) * x[0])) * log((1 + exp(c[0]) * x[0]));
+}
+
+
+
+
 
 /**
  * @brief hyperboloid_myerson_integration
@@ -716,12 +771,12 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
     SetLowerUpperBounds("[1.0, 1.0]", "[0.0, 0.0]");
 
-    lsfitcreatefg(x, y, c, true, state);
+    lsfitcreatefgh(x, y, c, state);
 
     lsfitsetbc(state, bndl, bndu);
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, quasi_hyperboloid_discounting, quasi_hyperboloid_discounting_grad);
+    alglib::lsfitfit(state, quasi_hyperboloid_discounting, quasi_hyperboloid_discounting_grad, quasi_hyperboloid_discounting_hessian);
 
     lsfitresults(state, info, c, rep);
 
@@ -766,10 +821,11 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
     SetStarts(mStarts);
 
-    lsfitcreatefg(x, y, c, true, state);
+    lsfitcreatefgh(x, y, c, state);
+
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, hyperboloid_myerson_discounting, hyperboloid_myerson_discounting_grad);
+    alglib::lsfitfit(state, hyperboloid_myerson_discounting, hyperboloid_myerson_discounting_grad, hyperboloid_myerson_discounting_hessian);
 
     lsfitresults(state, info, c, rep);
 
