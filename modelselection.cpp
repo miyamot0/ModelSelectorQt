@@ -445,6 +445,21 @@ void bleichrodt_discounting(const real_1d_array &c, const real_1d_array &x, doub
 }
 
 /**
+ * @brief bleichrodt_discounting_grad
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ */
+void bleichrodt_discounting_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *)
+{
+    func = c[2] * exp(-exp(c[0])*pow(x[0],c[1]));
+    grad[0] = -(c[2] * (exp(-exp(c[0]) * pow(x[0], c[1])) * (exp(c[0]) * pow(x[0],c[1]))));
+    grad[1] = -(c[2] * (exp(-exp(c[0]) * pow(x[0], c[1])) * (exp(c[0]) * (pow(x[0], c[1]) * log(x[0])))));
+    grad[2] = exp(-exp(c[0]) * pow(x[0], c[1]));
+}
+
+/**
  * @brief bleichrodt_integration
  * @param x
  * @param y
@@ -934,11 +949,11 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
 
     SetLowerUpperBounds("[Inf, Inf, 1.0]", "[-Inf, -Inf, 0.0]");
 
-    lsfitcreatef(x, y, c, diffstep, state);
+    lsfitcreatefg(x, y, c, true, state);
     lsfitsetbc(state, bndl, bndu);
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, bleichrodt_discounting);
+    alglib::lsfitfit(state, bleichrodt_discounting, bleichrodt_discounting_grad);
 
     lsfitresults(state, info, c, rep);
 
