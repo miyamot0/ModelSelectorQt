@@ -342,8 +342,14 @@ void hyperboloid_myerson_discounting_grad(const real_1d_array &c, const real_1d_
     grad[1] = -(pow((1 + exp(c[0]) * x[0]),(-c[1])) * log((1 + exp(c[0]) * x[0])));
 }
 
-
-
+/**
+ * @brief hyperboloid_myerson_discounting_hessian
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ * @param hess
+ */
 void hyperboloid_myerson_discounting_hessian(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, real_2d_array &hess, void *)
 {
     func = pow((1+exp(c[0])*x[0]), -c[1]);
@@ -366,10 +372,6 @@ void hyperboloid_myerson_discounting_hessian(const real_1d_array &c, const real_
 
     hess[1][1] = pow((1 + exp(c[0]) * x[0]),(-c[1])) * log((1 + exp(c[0]) * x[0])) * log((1 + exp(c[0]) * x[0]));
 }
-
-
-
-
 
 /**
  * @brief hyperboloid_myerson_integration
@@ -425,6 +427,46 @@ void hyperboloid_rachlin_discounting_grad(const real_1d_array &c, const real_1d_
 }
 
 /**
+ * @brief hyperboloid_rachlin_discounting_hessian
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ * @param hess
+ */
+void hyperboloid_rachlin_discounting_hessian(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, real_2d_array &hess, void *)
+{
+    func = pow((1+exp(c[0])*pow(x[0], c[1])), -1);
+
+    grad[0] = pow((1 + exp(c[0]) * (pow(x[0], c[1]))),((-1) - 1)) * ((-1) * (exp(c[0]) * (pow(x[0], c[1]))));
+    grad[1] = pow((1 + exp(c[0]) * (pow(x[0], c[1]))),((-1) - 1)) * ((-1) * (exp(c[0]) * (pow(x[0], c[1]) * log(x[0]))));
+
+    hess[0][0] = pow((1 + exp(c[0]) * (pow(x[0],c[1]))),(((-1) - 1) - 1)) *
+            (((-1) - 1) * (exp(c[0]) * (pow(x[0],c[1])))) *
+            ((-1) * (exp(c[0]) * (pow(x[0],c[1])))) +
+            pow((1 + exp(c[0]) * (pow(x[0],c[1]))),((-1) - 1)) *
+            ((-1) * (exp(c[0]) * (pow(x[0],c[1]))));
+
+    hess[0][1] = pow((1 + exp(c[0]) * (pow(x[0],c[1]))),(((-1) - 1) - 1)) *
+            (((-1) - 1) * (exp(c[0]) * (pow(x[0],c[1])))) *
+            ((-1) * (exp(c[0]) * (pow(x[0],c[1]) * log(x[0])))) +
+            pow((1 + exp(c[0]) * (pow(x[0],c[1]))),((-1) - 1)) *
+            ((-1) * (exp(c[0]) * (pow(x[0],c[1]) * log(x[0]))));
+
+    hess[1][0] = pow((1 + exp(c[0]) * (pow(x[0],c[1]))),(((-1) - 1) - 1)) *
+            (((-1) - 1) * (exp(c[0]) * (pow(x[0],c[1]) * log(x[0])))) *
+            ((-1) * (exp(c[0]) * (pow(x[0],c[1])))) +
+            pow((1 + exp(c[0]) * (pow(x[0],c[1]))),((-1) - 1)) *
+            ((-1) * (exp(c[0]) * (pow(x[0],c[1]) * log(x[0]))));
+
+    hess[1][1] = pow((1 + exp(c[0]) * (pow(x[0],c[1]))),(((-1) - 1) - 1)) *
+            (((-1) - 1) * (exp(c[0]) * (pow(x[0],c[1]) * log(x[0])))) *
+            ((-1) * (exp(c[0]) * (pow(x[0],c[1]) * log(x[0])))) +
+            pow((1 + exp(c[0]) * (pow(x[0],c[1]))),((-1) - 1)) *
+            ((-1) * (exp(c[0]) * (pow(x[0],c[1]) * log(x[0]) * log(x[0]))));
+}
+
+/**
  * @brief hyperboloid_rachlin_integration
  * @param x
  * @param y
@@ -476,6 +518,10 @@ void ebert_prelec_discounting_grad(const real_1d_array &c, const real_1d_array &
     grad[0] = -(exp(-pow((exp(c[0]) * x[0]), c[1])) * (pow((exp(c[0]) * x[0]), (c[1] - 1)) * (c[1] * (exp(c[0]) * x[0]))));
     grad[1] = -(exp(-pow((exp(c[0]) * x[0]), c[1])) * (pow((exp(c[0]) * x[0]), c[1]) * log((exp(c[0]) * x[0]))));
 }
+
+
+
+
 
 /**
  * @brief ebert_prelec_integration
@@ -872,11 +918,11 @@ void ModelSelection::FitRachlin(const char *mStarts)
 
     SetStarts(mStarts);
 
-    lsfitcreatefg(x, y, c, true, state);
+    lsfitcreatefgh(x, y, c, state);
 
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, hyperboloid_rachlin_discounting, hyperboloid_rachlin_discounting_grad);
+    alglib::lsfitfit(state, hyperboloid_rachlin_discounting, hyperboloid_rachlin_discounting_grad, hyperboloid_rachlin_discounting_hessian);
 
     lsfitresults(state, info, c, rep);
 
