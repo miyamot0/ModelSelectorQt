@@ -1052,13 +1052,6 @@ void CalculationWorker::working()
         fitResults->TopModelType = mFittingObject->mProbList.first().first;
         fitResults->TopErrPar = mTopErrPar;
 
-        qDebug() << "Errors here: " << endl;
-
-        for (int p=0; p<fitResults->TopErrPar.count(); p++)
-        {
-            qDebug() << fitResults->TopErrPar.at(p);
-        }
-
         fitResults->ParticipantDelays = tempList[2];
         fitResults->ParticipantValues = tempList[3];
 

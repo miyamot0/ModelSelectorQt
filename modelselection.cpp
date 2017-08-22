@@ -58,50 +58,50 @@
 
 using namespace alglib;
 
-void exponential_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+void exponential_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = exp(-exp(c[0])*x[0]);
 }
 
-void exponential_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+void exponential_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double k = param->at(0);
     y = exp(-exp(k)*x);
 }
 
-void exponential_integration_log10(double x, double xminusa, double bminusx, double &y, void *ptr)
+void exponential_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double k = param->at(0);
     y = exp(-exp(k)*pow(10,x));
 }
 
-void hyperbolic_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+void hyperbolic_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = pow((1+exp(c[0])*x[0]), -1);
 }
 
-void hyperbolic_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+void hyperbolic_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double k = param->at(0);
     y = pow((1+exp(k)*x), -1);
 }
 
-void hyperbolic_integration_log10(double x, double xminusa, double bminusx, double &y, void *ptr)
+void hyperbolic_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double k = param->at(0);
     y = pow((1+exp(k)*pow(10,x)), -1);
 }
 
-void generalized_hyperboloid_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+void generalized_hyperboloid_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = pow((1 + x[0] * exp(c[0])),(-exp(c[1]) / exp(c[0])));
 }
 
-void generalized_hyperboloid_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+void generalized_hyperboloid_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double lnk = param->at(0);
@@ -110,7 +110,7 @@ void generalized_hyperboloid_integration(double x, double xminusa, double bminus
     y = pow((1 + x * exp(lnk)),(-exp(beta) / exp(lnk)));
 }
 
-void generalized_hyperboloid_integration_log10(double x, double xminusa, double bminusx, double &y, void *ptr)
+void generalized_hyperboloid_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double lnk = param->at(0);
@@ -119,12 +119,12 @@ void generalized_hyperboloid_integration_log10(double x, double xminusa, double 
     y = pow((1 + pow(10,x) * exp(lnk)),(-exp(beta) / exp(lnk)));
 }
 
-void quasi_hyperboloid_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+void quasi_hyperboloid_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = c[0] * pow(c[1], x[0]);
 }
 
-void quasi_hyperboloid_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+void quasi_hyperboloid_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double b = param->at(0);
@@ -132,7 +132,7 @@ void quasi_hyperboloid_integration(double x, double xminusa, double bminusx, dou
     y = b * pow(d, x);
 }
 
-void quasi_hyperboloid_integration_log10(double x, double xminusa, double bminusx, double &y, void *ptr)
+void quasi_hyperboloid_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double b = param->at(0);
@@ -140,12 +140,12 @@ void quasi_hyperboloid_integration_log10(double x, double xminusa, double bminus
     y = b * pow(d, pow(10,x));
 }
 
-void hyperboloid_myerson_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+void hyperboloid_myerson_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = pow((1+exp(c[0])*x[0]), -c[1]);
 }
 
-void hyperboloid_myerson_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+void hyperboloid_myerson_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double k = param->at(0);
@@ -153,7 +153,7 @@ void hyperboloid_myerson_integration(double x, double xminusa, double bminusx, d
     y = pow((1+exp(k)*x), -s);
 }
 
-void hyperboloid_myerson_integration_log10(double x, double xminusa, double bminusx, double &y, void *ptr)
+void hyperboloid_myerson_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double k = param->at(0);
@@ -161,12 +161,12 @@ void hyperboloid_myerson_integration_log10(double x, double xminusa, double bmin
     y = pow((1+exp(k)*pow(10,x)), -s);
 }
 
-void hyperboloid_rachlin_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+void hyperboloid_rachlin_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = pow((1+exp(c[0])*pow(x[0], c[1])), -1);
 }
 
-void hyperboloid_rachlin_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+void hyperboloid_rachlin_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double k = param->at(0);
@@ -174,7 +174,7 @@ void hyperboloid_rachlin_integration(double x, double xminusa, double bminusx, d
     y = pow((1+exp(k)*pow(x, s)), -1);
 }
 
-void hyperboloid_rachlin_integration_log10(double x, double xminusa, double bminusx, double &y, void *ptr)
+void hyperboloid_rachlin_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double k = param->at(0);
@@ -182,12 +182,12 @@ void hyperboloid_rachlin_integration_log10(double x, double xminusa, double bmin
     y = pow((1+exp(k)*pow(pow(10,x), s)), -1);
 }
 
-void ebert_prelec_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+void ebert_prelec_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = exp(-pow((exp(c[0])*x[0]),c[1]));
 }
 
-void ebert_prelec_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+void ebert_prelec_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double k = param->at(0);
@@ -195,7 +195,7 @@ void ebert_prelec_integration(double x, double xminusa, double bminusx, double &
     y = exp(-pow((exp(k)*x), s));
 }
 
-void ebert_prelec_integration_log10(double x, double xminusa, double bminusx, double &y, void *ptr)
+void ebert_prelec_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double k = param->at(0);
@@ -203,12 +203,12 @@ void ebert_prelec_integration_log10(double x, double xminusa, double bminusx, do
     y = exp(-pow((exp(k)*pow(10,x)), s));
 }
 
-void bleichrodt_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
+void bleichrodt_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = c[2] * exp(-exp(c[0])*pow(x[0],c[1]));
 }
 
-void bleichrodt_integration(double x, double xminusa, double bminusx, double &y, void *ptr)
+void bleichrodt_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double k = param->at(0);
@@ -218,7 +218,7 @@ void bleichrodt_integration(double x, double xminusa, double bminusx, double &y,
     y = beta * exp(-exp(k)*pow(x,s));
 }
 
-void bleichrodt_integration_log10(double x, double xminusa, double bminusx, double &y, void *ptr)
+void bleichrodt_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
     double k = param->at(0);

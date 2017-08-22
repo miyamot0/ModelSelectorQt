@@ -746,7 +746,7 @@ void ChartWindow::plotAUCSeries(int index)
     axisXarea->setMax(tickHack);
     axisXarea->setTickCount(tickHack + 1);
 
-    for (double i = 0; i < (log(lastDelay)+1); i = i + 0.1)
+    for (double i = 0; i < (log(lastDelay)+1); i = i + chartIterator)
     {
         xParam = exp(i);
 
@@ -984,7 +984,7 @@ void ChartWindow::plotED50Series(int index)
     axisX->setMax(tickHack);
     axisX->setTickCount(tickHack + 1);
 
-    for (double i = 0; i < (log(lastDelay)+1); i = i + 0.1)
+    for (double i = 0; i < (log(lastDelay)+1); i = i + chartIterator)
     {
         xParam = exp(i);
 
@@ -1181,8 +1181,6 @@ void ChartWindow::saveSVGasPNG()
     if(!file_name.trimmed().isEmpty())
     {
         stackedWidget->currentWidget()->grab().save(file_name, "PNG", 9);
-
-        //chartView->grab().save(file_name, "PNG", 9);
     }
 }
 

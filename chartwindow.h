@@ -213,6 +213,8 @@ private:
 
     double minList;
     double maxList;
+
+    double chartIterator = 0.25;
 };
 
 #endif // CHARTWINDOW_H
