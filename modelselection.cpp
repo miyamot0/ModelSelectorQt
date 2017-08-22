@@ -575,13 +575,6 @@ void ebert_prelec_discounting_hessian(const real_1d_array &c, const real_1d_arra
                    * (pow((exp(c[0]) * x[0]),c[1]) * log((exp(c[0]) * x[0]))));
 }
 
-
-
-
-
-
-
-
 /**
  * @brief ebert_prelec_integration
  * @param x
@@ -634,6 +627,40 @@ void bleichrodt_discounting_grad(const real_1d_array &c, const real_1d_array &x,
     grad[0] = -(c[2] * (exp(-exp(c[0]) * pow(x[0], c[1])) * (exp(c[0]) * pow(x[0],c[1]))));
     grad[1] = -(c[2] * (exp(-exp(c[0]) * pow(x[0], c[1])) * (exp(c[0]) * (pow(x[0], c[1]) * log(x[0])))));
     grad[2] = exp(-exp(c[0]) * pow(x[0], c[1]));
+}
+
+void bleichrodt_discounting_hessian(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, real_2d_array &hess, void *)
+{
+    func = c[2] * exp(-exp(c[0])*pow(x[0],c[1]));
+
+    grad[0] = -(c[2] * (exp(-exp(c[0]) * pow(x[0], c[1])) * (exp(c[0]) * pow(x[0],c[1]))));
+    grad[1] = -(c[2] * (exp(-exp(c[0]) * pow(x[0], c[1])) * (exp(c[0]) * (pow(x[0], c[1]) * log(x[0])))));
+    grad[2] = exp(-exp(c[0]) * pow(x[0], c[1]));
+
+    hess[0][0] = -(c[2] * (exp(-exp(c[0]) * pow(x[0],c[1])) * (exp(c[0]) *
+            pow(x[0],c[1])) - exp(-exp(c[0]) * pow(x[0],c[1])) *
+            (exp(c[0]) * pow(x[0],c[1])) * (exp(c[0]) * pow(x[0],c[1]))));
+
+    hess[0][1] = -(c[2] * (exp(-exp(c[0]) * pow(x[0],c[1])) * (exp(c[0]) * (pow(x[0],c[1]) * log(x[0]))) -
+                           exp(-exp(c[0]) * pow(x[0],c[1])) * (exp(c[0]) * pow(x[0],c[1])) * (exp(c[0]) *
+                           (pow(x[0],c[1]) * log(x[0])))));
+
+    hess[0][2] = -(exp(-exp(c[0]) * pow(x[0],c[1])) * (exp(c[0]) * pow(x[0],c[1])));
+
+    hess[1][0] = -(c[2] * (exp(-exp(c[0]) * pow(x[0],c[1])) * (exp(c[0]) * (pow(x[0],c[1]) * log(x[0]))) -
+                           exp(-exp(c[0]) * pow(x[0],c[1])) * (exp(c[0]) * (pow(x[0],c[1]) * log(x[0]))) * (exp(c[0]) * pow(x[0],c[1]))));
+
+    hess[1][1] = -(c[2] * (exp(-exp(c[0]) * pow(x[0],c[1])) * (exp(c[0]) * (pow(x[0],c[1]) * log(x[0]) *
+                 log(x[0]))) - exp(-exp(c[0]) * pow(x[0],c[1])) * (exp(c[0]) * (pow(x[0],c[1]) * log(x[0]))) *
+                 (exp(c[0]) * (pow(x[0],c[1]) * log(x[0])))));
+
+    hess[1][2] = -(exp(-exp(c[0]) * pow(x[0],c[1])) * (exp(c[0]) * (pow(x[0],c[1]) * log(x[0]))));
+
+    hess[2][0] = -(exp(-exp(c[0]) * pow(x[0],c[1])) * (exp(c[0]) * pow(x[0],c[1])));
+
+    hess[2][1] = -(exp(-exp(c[0]) * pow(x[0],c[1])) * (exp(c[0]) * (pow(x[0],c[1]) * log(x[0]))));
+
+    hess[2][2] = 0;
 }
 
 /**
@@ -1129,11 +1156,12 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
 
     SetLowerUpperBounds("[Inf, Inf, 1.0]", "[-Inf, -Inf, 0.0]");
 
-    lsfitcreatefg(x, y, c, true, state);
+    lsfitcreatefgh(x, y, c, state);
+
     lsfitsetbc(state, bndl, bndu);
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, bleichrodt_discounting, bleichrodt_discounting_grad);
+    alglib::lsfitfit(state, bleichrodt_discounting, bleichrodt_discounting_grad, bleichrodt_discounting_hessian);
 
     lsfitresults(state, info, c, rep);
 
