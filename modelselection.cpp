@@ -70,6 +70,13 @@ void exponential_discounting(const real_1d_array &c, const real_1d_array &x, dou
     func = exp(-exp(c[0])*x[0]);
 }
 
+/**
+ * @brief exponential_discounting_grad
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ */
 void exponential_discounting_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *)
 {
     func = exp(-exp(c[0])*x[0]);
@@ -113,6 +120,13 @@ void hyperbolic_discounting(const real_1d_array &c, const real_1d_array &x, doub
     func = pow((1+exp(c[0])*x[0]), -1);
 }
 
+/**
+ * @brief hyperbolic_discounting_grad
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ */
 void hyperbolic_discounting_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *)
 {
     func = pow((1+exp(c[0])*x[0]), -1);
@@ -157,6 +171,27 @@ void generalized_hyperboloid_discounting(const real_1d_array &c, const real_1d_a
 }
 
 /**
+ * @brief generalized_hyperboloid_discounting_grad
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ */
+void generalized_hyperboloid_discounting_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *)
+{
+    func = pow((1 + x[0] * exp(c[0])),(-exp(c[1]) / exp(c[0])));
+
+    grad[0] = pow((1 + x[0] * exp(c[0])),((-exp(c[1])/exp(c[0])) - 1)) *
+            ((-exp(c[1])/exp(c[0])) * (x[0] * exp(c[0]))) + pow((1 + x[0] * exp(c[0])), (-exp(c[1])/exp(c[0]))) *
+            (log((1 + x[0] * exp(c[0]))) * (exp(c[1]) * exp(c[0])/pow(exp(c[0]),2)));
+
+    grad[1] = -(pow((1 + x[0] * exp(c[0])),(-exp(c[1])/exp(c[0]))) *
+            (log((1 + x[0] * exp(c[0]))) *
+            (exp(c[1])/exp(c[0]))));
+
+}
+
+/**
  * @brief generalized_hyperboloid_integration
  * @param x
  * @param y
@@ -197,6 +232,13 @@ void quasi_hyperboloid_discounting(const real_1d_array &c, const real_1d_array &
     func = c[0] * pow(c[1], x[0]);
 }
 
+/**
+ * @brief quasi_hyperboloid_discounting_grad
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ */
 void quasi_hyperboloid_discounting_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *)
 {
     func = c[0] * pow(c[1], x[0]);
@@ -243,6 +285,13 @@ void hyperboloid_myerson_discounting(const real_1d_array &c, const real_1d_array
     func = pow((1+exp(c[0])*x[0]), -c[1]);
 }
 
+/**
+ * @brief hyperboloid_myerson_discounting_grad
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ */
 void hyperboloid_myerson_discounting_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *)
 {
     func = pow((1+exp(c[0])*x[0]), -c[1]);
@@ -289,6 +338,13 @@ void hyperboloid_rachlin_discounting(const real_1d_array &c, const real_1d_array
     func = pow((1+exp(c[0])*pow(x[0], c[1])), -1);
 }
 
+/**
+ * @brief hyperboloid_rachlin_discounting_grad
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ */
 void hyperboloid_rachlin_discounting_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *)
 {
     func = pow((1+exp(c[0])*pow(x[0], c[1])), -1);
@@ -333,6 +389,20 @@ void hyperboloid_rachlin_integration_log10(double x, double, double, double &y, 
 void ebert_prelec_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = exp(-pow((exp(c[0])*x[0]),c[1]));
+}
+
+/**
+ * @brief ebert_prelec_discounting_grad
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ */
+void ebert_prelec_discounting_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *)
+{
+    func = exp(-pow((exp(c[0])*x[0]), c[1]));
+    grad[0] = -(exp(-pow((exp(c[0]) * x[0]), c[1])) * (pow((exp(c[0]) * x[0]), (c[1] - 1)) * (c[1] * (exp(c[0]) * x[0]))));
+    grad[1] = -(exp(-pow((exp(c[0]) * x[0]), c[1])) * (pow((exp(c[0]) * x[0]), c[1]) * log((exp(c[0]) * x[0]))));
 }
 
 /**
@@ -764,10 +834,11 @@ void ModelSelection::FitRodriguezLogue(const char *mStarts)
 
     SetStarts(mStarts);
 
-    lsfitcreatef(x, y, c, diffstep, state);
+    lsfitcreatefg(x, y, c, true, state);
+
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, generalized_hyperboloid_discounting);
+    alglib::lsfitfit(state, generalized_hyperboloid_discounting, generalized_hyperboloid_discounting_grad);
 
     lsfitresults(state, info, c, rep);
 
@@ -812,10 +883,10 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
 
     SetStarts(mStarts);
 
-    lsfitcreatef(x, y, c, diffstep, state);
+    lsfitcreatefg(x, y, c, true, state);
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, ebert_prelec_discounting);
+    alglib::lsfitfit(state, ebert_prelec_discounting, ebert_prelec_discounting_grad);
 
     lsfitresults(state, info, c, rep);
 
