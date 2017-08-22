@@ -619,7 +619,6 @@ void ModelSelection::FitExponential(const char *mStarts)
 
     SetStarts(mStarts);
 
-    //lsfitcreatefg(x, y, c, true, state);
     lsfitcreatefgh(x, y, c, state);
 
     lsfitsetcond(state, epsx, maxits);
@@ -667,10 +666,11 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
     SetStarts(mStarts);
 
-    lsfitcreatefg(x, y, c, true, state);
+    lsfitcreatefgh(x, y, c, state);
+
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, hyperbolic_discounting, hyperbolic_discounting_grad);
+    alglib::lsfitfit(state, hyperbolic_discounting, hyperbolic_discounting_grad, hyperbolic_discounting_hessian);
 
     lsfitresults(state, info, c, rep);
 
