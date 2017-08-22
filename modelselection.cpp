@@ -85,17 +85,8 @@ void exponential_discounting_grad(const real_1d_array &c, const real_1d_array &x
 
 void exponential_discounting_hessian(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, real_2d_array &hess, void *)
 {
-    // this callback calculates f(c,x)=exp(-c0*sqr(x0)), gradient G={df/dc[i]} and Hessian H={d2f/(dc[i]*dc[j])}
-    // where x is a position on X-axis and c is adjustable parameter.
-    // IMPORTANT: gradient/Hessian are calculated with respect to C, not to X
-    //func = exp(-c[0]*pow(x[0],2));
-    //grad[0] = -pow(x[0],2)*func;
-    //hess[0][0] = pow(x[0],4)*func;
-
     func = exp(-exp(c[0])*x[0]);
-
     grad[0] = -(exp(-exp(c[0]) * x[0]) * (exp(c[0]) * x[0]));
-
     hess[0][0] = -(exp(-exp(c[0]) * x[0]) * (exp(c[0]) * x[0]) - exp(-exp(c[0]) * x[0]) * (exp(c[0]) * x[0]) * (exp(c[0]) * x[0]));
 }
 
@@ -147,6 +138,16 @@ void hyperbolic_discounting_grad(const real_1d_array &c, const real_1d_array &x,
 {
     func = pow((1+exp(c[0])*x[0]), -1);
     grad[0] = pow((1 + exp(c[0]) * x[0]),((-1) - 1)) * ((-1) * (exp(c[0]) * x[0]));
+}
+
+void hyperbolic_discounting_hessian(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, real_2d_array &hess, void *)
+{
+    func = pow((1+exp(c[0])*x[0]), -1);
+    grad[0] = pow((1 + exp(c[0]) * x[0]),((-1) - 1)) * ((-1) * (exp(c[0]) * x[0]));
+    hess[0][0] = pow((1 + exp(c[0]) * x[0]),(((-1) - 1) - 1)) * (((-1) - 1) * (exp(c[0]) * x[0])) *
+            ((-1) * (exp(c[0]) * x[0])) + pow((1 + exp(c[0]) * x[0]),((-1) - 1)) * ((-1) * (exp(c[0]) * x[0]));
+
+//    hess[0][0] = -(exp(-exp(c[0]) * x[0]) * (exp(c[0]) * x[0]) - exp(-exp(c[0]) * x[0]) * (exp(c[0]) * x[0]) * (exp(c[0]) * x[0]));
 }
 
 /**
@@ -618,11 +619,12 @@ void ModelSelection::FitExponential(const char *mStarts)
 
     SetStarts(mStarts);
 
-    lsfitcreatefg(x, y, c, true, state);
+    //lsfitcreatefg(x, y, c, true, state);
+    lsfitcreatefgh(x, y, c, state);
 
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, exponential_discounting, exponential_discounting_grad);
+    alglib::lsfitfit(state, exponential_discounting, exponential_discounting_grad, exponential_discounting_hessian);
 
     lsfitresults(state, info, c, rep);
 
