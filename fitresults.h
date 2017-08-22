@@ -43,6 +43,8 @@ public:
     QString TopAUC;
     QString TopAUCLog;
 
+    QList<double> TopErrPar;
+
     QList<QStringList> StoredValues;
 
     QList<FitResult*> FittingResults;

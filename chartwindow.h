@@ -46,6 +46,8 @@ public:
 
     void buildProbabilityPlot();
 
+    void buildErrorPlot();
+
     void buildED50Plot();
     void plotED50Series(int index);
 
@@ -92,6 +94,15 @@ private:
 
     QChart *barChart;
     QChartView *barChartView;
+
+    QChart *chartError;
+    QChartView *chartViewError;
+
+    QValueAxis *axisXerror;
+    QValueAxis *axisYerror;
+
+    QLineSeries *errSeries;
+    QScatterSeries *errDataPoints;
 
     QBarSet *expProbSet;
     QBarSet *hypProbSet;
@@ -199,6 +210,9 @@ private:
     bool isED50Figure;
     bool isAUCFigure;
     bool isAUCLogFigure;
+
+    double minList;
+    double maxList;
 };
 
 #endif // CHARTWINDOW_H

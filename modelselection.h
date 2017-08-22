@@ -164,6 +164,11 @@ public:
     double fitBleichrodtK = -1;
     double fitBleichrodtS = -1;
 
+    /** Errors
+      *
+      */
+    QList<double> ErrorResidual;
+
 private:
     real_2d_array x;
     real_1d_array y;

@@ -279,6 +279,8 @@ double ModelSelection::GetNoiseMean()
  */
 void ModelSelection::FitNoise()
 {
+    ErrorResidual.clear();
+
     N = y.length();
     AVE = 0;
 
@@ -292,7 +294,8 @@ void ModelSelection::FitNoise()
 
     for (int i = 0; i < N; i++)
     {
-        SSR += pow(((double) y[i] - AVE), 2);
+        ErrorResidual.append(((double) y[i] - AVE));
+        SSR += pow(ErrorResidual[i], 2);
     }
 
     S2 = SSR / N;
@@ -311,6 +314,8 @@ void ModelSelection::FitNoise()
  */
 void ModelSelection::FitExponential(const char *mStarts)
 {
+    ErrorResidual.clear();
+
     aicExponential = NULL;
     bicExponential = NULL;
     fitExponentialK = NULL;
@@ -333,7 +338,9 @@ void ModelSelection::FitExponential(const char *mStarts)
         {
             holder = (exp(-exp( (double) c[0])* (double) x[i][0]));
 
-            SSR += pow(((double) y[i] - holder), 2);
+            ErrorResidual.append(((double) y[i] - holder));
+
+            SSR += pow(ErrorResidual[i], 2);
         }
 
         S2 = SSR / N;
@@ -353,6 +360,8 @@ void ModelSelection::FitExponential(const char *mStarts)
  */
 void ModelSelection::FitHyperbolic(const char *mStarts)
 {
+    ErrorResidual.clear();
+
     aicHyperbolic = NULL;
     bicHyperbolic = NULL;
     fitHyperbolicK = NULL;
@@ -374,7 +383,10 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
         for (int i = 0; i < N; i++)
         {
             holder = pow((1+exp( (double) c[0])* (double) x[i][0]), -1);
-            SSR += pow(((double) y[i] - holder), 2);
+
+            ErrorResidual.append(((double) y[i] - holder));
+
+            SSR += pow(ErrorResidual[i], 2);
         }
 
         S2 = SSR / N;
@@ -394,6 +406,8 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
   */
 void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 {
+    ErrorResidual.clear();
+
     aicQuasiHyperbolic = NULL;
     bicQuasiHyperbolic = NULL;
     fitQuasiHyperbolicBeta = NULL;
@@ -419,7 +433,10 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
         for (int i = 0; i < N; i++)
         {
             holder = (double) c[0] * pow( (double) c[1], (double) x[i][0]);
-            SSR += pow(((double) y[i] - holder), 2);
+
+            ErrorResidual.append(((double) y[i] - holder));
+
+            SSR += pow(ErrorResidual[i], 2);
         }
 
         S2 = SSR / N;
@@ -440,6 +457,8 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
  */
 void ModelSelection::FitMyerson(const char *mStarts)
 {
+    ErrorResidual.clear();
+
     aicMyerson = NULL;
     bicMyerson = NULL;
     fitMyersonK = NULL;
@@ -463,7 +482,10 @@ void ModelSelection::FitMyerson(const char *mStarts)
         for (int i = 0; i < N; i++)
         {
             holder = pow((1+exp( (double) c[0])* (double) x[i][0]),  (double) -c[1]);
-            SSR += pow(((double) y[i] - holder), 2);
+
+            ErrorResidual.append(((double) y[i] - holder));
+
+            SSR += pow(ErrorResidual[i], 2);
         }
 
         S2 = SSR / N;
@@ -484,6 +506,8 @@ void ModelSelection::FitMyerson(const char *mStarts)
   */
 void ModelSelection::FitRachlin(const char *mStarts)
 {
+    ErrorResidual.clear();
+
     statusValue = NULL;
     aicRachlin = NULL;
     bicRachlin = NULL;
@@ -508,7 +532,10 @@ void ModelSelection::FitRachlin(const char *mStarts)
         for (int i = 0; i < N; i++)
         {
             holder = pow((1+exp( (double) c[0])*pow( (double) x[i][0], (double) c[1])), -1);
-            SSR += pow(((double) y[i] - holder), 2);
+
+            ErrorResidual.append(((double) y[i] - holder));
+
+            SSR += pow(ErrorResidual[i], 2);
         }
 
         S2 = SSR / N;
@@ -531,6 +558,8 @@ void ModelSelection::FitRachlin(const char *mStarts)
   */
 void ModelSelection::FitRodriguezLogue(const char *mStarts)
 {
+    ErrorResidual.clear();
+
     aicRodriguezLogue = NULL;
     bicRodriguezLogue = NULL;
     fitRodriguezLogueK = NULL;
@@ -553,7 +582,10 @@ void ModelSelection::FitRodriguezLogue(const char *mStarts)
         for (int i = 0; i < N; i++)
         {
             holder = pow((1 + x[i][0] * exp(c[0])),(-exp(c[1]) / exp(c[0])));
-            SSR += pow(((double) y[i] - holder), 2);
+
+            ErrorResidual.append(((double) y[i] - holder));
+
+            SSR += pow(ErrorResidual[i], 2);
         }
 
         S2 = SSR / N;
@@ -574,6 +606,8 @@ void ModelSelection::FitRodriguezLogue(const char *mStarts)
   */
 void ModelSelection::FitEbertPrelec(const char *mStarts)
 {
+    ErrorResidual.clear();
+
     aicEbertPrelec = NULL;
     bicEbertPrelec = NULL;
     fitEbertPrelecK = NULL;
@@ -596,7 +630,10 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
         for (int i = 0; i < N; i++)
         {
             holder = exp(-pow((exp(c[0])*x[i][0]), c[1]));
-            SSR += pow(((double) y[i] - holder), 2);
+
+            ErrorResidual.append(((double) y[i] - holder));
+
+            SSR += pow(ErrorResidual[i], 2);
         }
 
         S2 = SSR / N;
@@ -617,6 +654,8 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
   */
 void ModelSelection::FitBleichrodt(const char *mStarts)
 {
+    ErrorResidual.clear();
+
     aicBleichrodt = NULL;
     bicBleichrodt = NULL;
     fitBleichrodtK = NULL;
@@ -643,7 +682,10 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
         for (int i = 0; i < N; i++)
         {
             holder = c[2] * exp(-exp(c[0])*pow(x[i][0], c[1]));
-            SSR += pow(((double) y[i] - holder), 2);
+
+            ErrorResidual.append(((double) y[i] - holder));
+
+            SSR += pow(ErrorResidual[i], 2);
         }
 
         S2 = SSR / N;

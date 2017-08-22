@@ -56,6 +56,8 @@ public:
     int Rank;
 
     QString Status;
+
+    QList<double> ErrPar;
 };
 
 #endif // FITRESULT_H

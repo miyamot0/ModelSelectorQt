@@ -178,8 +178,6 @@ void CalculationWorker::working()
                 mFittingObject->FitExponential(QString("[%1]").arg(provisionalValues.smallBruteStartingValueArray[0].p1).toUtf8().constData());
             }
 
-            //mFittingObject->FitExponential("[-5]");
-
             fitResultExponential = new FitResult(ModelType::Exponential);
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
@@ -191,6 +189,12 @@ void CalculationWorker::working()
                 fitResultExponential->RMS = mFittingObject->GetReport().rmserror;
                 fitResultExponential->AIC = mFittingObject->aicExponential;
                 fitResultExponential->BIC = mFittingObject->bicExponential;
+
+                for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                {
+                    fitResultExponential->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                }
+
                 fitResultExponential->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
             else
@@ -252,8 +256,6 @@ void CalculationWorker::working()
                 mFittingObject->FitHyperbolic(QString("[%1]").arg(provisionalValues.smallBruteStartingValueArray[0].p1).toUtf8().constData());
             }
 
-            //mFittingObject->FitHyperbolic("[-5]");
-
             fitResultHyperbolic = new FitResult(ModelType::Hyperbolic);
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
@@ -266,6 +268,12 @@ void CalculationWorker::working()
                 fitResultHyperbolic->RMS = mFittingObject->GetReport().rmserror;
                 fitResultHyperbolic->AIC = mFittingObject->aicHyperbolic;
                 fitResultHyperbolic->BIC = mFittingObject->bicHyperbolic;
+
+                for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                {
+                    fitResultHyperbolic->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                }
+
                 fitResultHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
             else
@@ -347,8 +355,6 @@ void CalculationWorker::working()
                                                    .toUtf8().constData());
             }
 
-            //mFittingObject->FitQuasiHyperbolic("[0.3, 0.3]");
-
             fitResultBetaDelta = new FitResult(ModelType::BetaDelta);
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
@@ -360,6 +366,12 @@ void CalculationWorker::working()
                 fitResultBetaDelta->RMS = mFittingObject->GetReport().rmserror;
                 fitResultBetaDelta->AIC = mFittingObject->aicQuasiHyperbolic;
                 fitResultBetaDelta->BIC = mFittingObject->bicQuasiHyperbolic;
+
+                for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                {
+                    fitResultBetaDelta->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                }
+
                 fitResultBetaDelta->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
             else
@@ -442,8 +454,6 @@ void CalculationWorker::working()
                                                    .toUtf8().constData());
             }
 
-            //mFittingObject->FitMyerson("[-5, 0.3]");
-
             fitResultGreenMyerson = new FitResult(ModelType::Myerson);
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
@@ -455,6 +465,12 @@ void CalculationWorker::working()
                 fitResultGreenMyerson->RMS = mFittingObject->GetReport().rmserror;
                 fitResultGreenMyerson->AIC = mFittingObject->aicMyerson;
                 fitResultGreenMyerson->BIC = mFittingObject->bicMyerson;
+
+                for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                {
+                    fitResultGreenMyerson->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                }
+
                 fitResultGreenMyerson->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
             else
@@ -537,8 +553,6 @@ void CalculationWorker::working()
                                                    .toUtf8().constData());
             }
 
-            //mFittingObject->FitRachlin("[-5, 0.3]");
-
             fitResultRachlin = new FitResult(ModelType::Rachlin);
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
@@ -566,6 +580,12 @@ void CalculationWorker::working()
                     fitResultRachlin->RMS = mFittingObject->GetReport().rmserror;
                     fitResultRachlin->AIC = mFittingObject->aicRachlin;
                     fitResultRachlin->BIC = mFittingObject->bicRachlin;
+
+                    for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                    {
+                        fitResultRachlin->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                    }
+
                     fitResultRachlin->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
                 }
             }
@@ -651,8 +671,6 @@ void CalculationWorker::working()
                                                    .toUtf8().constData());
             }
 
-            //mFittingObject->FitRodriguezLogue("[-5, 0.3]");
-
             fitResultRodriguezLogue = new FitResult(ModelType::RodriguezLogue);
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
@@ -664,6 +682,12 @@ void CalculationWorker::working()
                 fitResultRodriguezLogue->RMS = mFittingObject->GetReport().rmserror;
                 fitResultRodriguezLogue->AIC = mFittingObject->aicRodriguezLogue;
                 fitResultRodriguezLogue->BIC = mFittingObject->bicRodriguezLogue;
+
+                for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                {
+                    fitResultRodriguezLogue->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                }
+
                 fitResultRodriguezLogue->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
             else
@@ -746,8 +770,6 @@ void CalculationWorker::working()
                                                    .toUtf8().constData());
             }
 
-            //mFittingObject->FitEbertPrelec("[-5.0, 0.5]");
-
             fitResultEbertPrelec = new FitResult(ModelType::EbertPrelec);
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
@@ -759,6 +781,12 @@ void CalculationWorker::working()
                 fitResultEbertPrelec->RMS = mFittingObject->GetReport().rmserror;
                 fitResultEbertPrelec->AIC = mFittingObject->aicEbertPrelec;
                 fitResultEbertPrelec->BIC = mFittingObject->bicEbertPrelec;
+
+                for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                {
+                    fitResultEbertPrelec->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                }
+
                 fitResultEbertPrelec->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
             else
@@ -857,8 +885,6 @@ void CalculationWorker::working()
                                                    .toUtf8().constData());
             }
 
-            //mFittingObject->FitBleichrodt("[-5.0, 0.5, 0.5]");
-
             fitResultBleichrodt = new FitResult(ModelType::Beleichrodt);
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
@@ -871,6 +897,12 @@ void CalculationWorker::working()
                 fitResultBleichrodt->RMS = mFittingObject->GetReport().rmserror;
                 fitResultBleichrodt->AIC = mFittingObject->aicBleichrodt;
                 fitResultBleichrodt->BIC = mFittingObject->bicBleichrodt;
+
+                for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                {
+                    fitResultBleichrodt->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                }
+
                 fitResultBleichrodt->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
             else
@@ -893,6 +925,12 @@ void CalculationWorker::working()
         fitResultNoise->RMS = mFittingObject->NoiseRMSE;
         fitResultNoise->AIC = mFittingObject->aicNoise;
         fitResultNoise->BIC = mFittingObject->bicNoise;
+
+        for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+        {
+            fitResultNoise->ErrPar.append(mFittingObject->ErrorResidual[v]);
+        }
+
         fitResultNoise->Status = QString("---");
 
         mFittingObject->PrepareProbabilities();
@@ -960,48 +998,66 @@ void CalculationWorker::working()
         }
 
         QString mModel;
+        QList<double> mTopErrPar;
 
         switch(mFittingObject->mProbList.first().first)
         {
             case ModelType::Noise:
                 mModel = "Noise";
+                mTopErrPar = fitResultNoise->ErrPar;
                 break;
 
             case ModelType::Exponential:
                 mModel = "Exponential";
+                mTopErrPar = fitResultExponential->ErrPar;
                 break;
 
             case ModelType::Hyperbolic:
                 mModel = "Hyperbolic";
+                mTopErrPar = fitResultHyperbolic->ErrPar;
                 break;
 
             case ModelType::BetaDelta:
                 mModel = "Quasi-Hyperbolic";
+                mTopErrPar = fitResultBetaDelta->ErrPar;
                 break;
 
             case ModelType::Myerson:
                 mModel = "Myerson-Green";
+                mTopErrPar = fitResultGreenMyerson->ErrPar;
                 break;
 
             case ModelType::Rachlin:
                 mModel = "Rachlin";
+                mTopErrPar = fitResultRachlin->ErrPar;
                 break;
 
             case ModelType::RodriguezLogue:
                 mModel = "Rodriguez-Logue";
+                mTopErrPar = fitResultRodriguezLogue->ErrPar;
                 break;
 
             case ModelType::EbertPrelec:
                 mModel = "Ebert-Prelec";
+                mTopErrPar = fitResultEbertPrelec->ErrPar;
                 break;
 
             case ModelType::Beleichrodt:
                 mModel = "Beleichrodt";
+                mTopErrPar = fitResultBleichrodt->ErrPar;
                 break;
         }
 
         fitResults->TopModel = mModel;
         fitResults->TopModelType = mFittingObject->mProbList.first().first;
+        fitResults->TopErrPar = mTopErrPar;
+
+        qDebug() << "Errors here: " << endl;
+
+        for (int p=0; p<fitResults->TopErrPar.count(); p++)
+        {
+            qDebug() << fitResults->TopErrPar.at(p);
+        }
 
         fitResults->ParticipantDelays = tempList[2];
         fitResults->ParticipantValues = tempList[3];

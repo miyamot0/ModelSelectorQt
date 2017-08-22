@@ -72,8 +72,7 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
     installEventFilter(this);
 
     mTitle = QFont("Serif", 14, -1, false);
-    mLegendFont = QFont("Serif", 12, -1, false);
-
+    mLegendFont = QFont("Serif", 10, -1, false);
 
     chart = new QChart();
 
@@ -98,6 +97,10 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
 
     stackedWidget->addWidget(barChartView);
 
+    buildErrorPlot();
+
+    stackedWidget->addWidget(chartViewError);
+
     // Add stacked widget
     windowLayout->addWidget(stackedWidget);
 
@@ -120,7 +123,7 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
     tb->addAction(prevAction);
     tb->addAction(nextAction);
 
-    setWindowTitle("Discounting Model Selection Plots");
+    setWindowTitle(tr("Discounting Model Selection Plots (Use Arrows to Change Plots)"));
     windowLayout->setMenuBar(tb);
     setCentralWidget(window);
     resize(800, 600);
@@ -199,6 +202,9 @@ void ChartWindow::buildProbabilityPlot()
 
     barChart->addSeries(barSeries);
     barChart->setTitle("Simple barchart example");
+    barChart->setTitleBrush(Qt::black);
+    barChart->setTitleFont(mTitle);
+    barChart->setFont(mTitle);
 
     modelAxisCategories << "Exponential" <<
                            "Hyperbolic" <<
@@ -214,7 +220,10 @@ void ChartWindow::buildProbabilityPlot()
     barAxisX->append(modelAxisCategories);
     barAxisX->setGridLineColor(Qt::transparent);
     barAxisX->setTitleText("Model Candidates");
-    barAxisX->setLabelsFont(mLegendFont);
+    barAxisX->setTitleBrush(Qt::black);
+    barAxisX->setTitleFont(QFont("Serif", 10, -1, false));
+    barAxisX->setLabelsFont(QFont("Serif", 7, -1, false));
+    barAxisX->setLabelsColor(Qt::black);
     barAxisX->setLinePenColor(Qt::black);
     barAxisX->setLinePen(QPen(Qt::black));
 
@@ -225,31 +234,113 @@ void ChartWindow::buildProbabilityPlot()
     barAxisY->setMin(0.0);
     barAxisY->setMax(1.0);
     barAxisY->setTitleText("Probability");
-    barAxisY->setGridLineColor(Qt::transparent);
-    barAxisY->setLabelsFont(mLegendFont);
+    barAxisY->setTitleFont(QFont("Serif", 10, -1, false));
+    barAxisY->setTitleBrush(Qt::black);
+    barAxisY->setGridLineColor(Qt::transparent);   
+    barAxisY->setLabelsFont(QFont("Serif", 10, -1, false));
+    barAxisY->setLabelsColor(Qt::black);
     barAxisY->setLinePenColor(Qt::black);
     barAxisY->setLinePen(QPen(Qt::black));
+
     barChart->setAxisY(barAxisY, barSeries);
 
     barChart->legend()->setVisible(false);
+    barChart->legend()->setFont(QFont("Serif", 8, -1, false));
+    barChart->legend()->setBrush(Qt::black);
+    barChart->legend()->setColor(Qt::black);
 
     barChartView = new QChartView(barChart);
+}
+
+void ChartWindow::buildErrorPlot()
+{
+    chartError = new QChart();
+    chartError->setTitleFont(mTitle);
+    chartError->setFont(mTitle);
+    chartError->setTitleBrush(Qt::black);
+
+    auto mLegendArea = chartError->legend();
+
+    mLegendArea->setFont(mLegendFont);
+    mLegendArea->setAlignment(Qt::AlignBottom);
+    mLegendArea->setBrush(Qt::black);
+    mLegendArea->setColor(Qt::black);
+
+    // TODO do we need a table?
+    mLegendArea->setVisible(false);
+
+    axisXerror = new QValueAxis;
+    axisXerror->setGridLineColor(Qt::transparent);
+    axisXerror->setTitleText("Residual");
+    axisXerror->setMin(0);
+    axisXerror->setLabelsFont(QFont("Serif", 10, -1, false));
+    axisXerror->setLabelsColor(Qt::black);
+    axisXerror->setLabelFormat(QString("%.0f"));
+    axisXerror->setLinePenColor(Qt::black);
+    axisXerror->setLinePen(QPen(Qt::black));
+    axisXerror->setTitleBrush(Qt::black);
+    axisXerror->setTitleFont(QFont("Serif", 10, -1, false));
+
+    axisYerror = new QValueAxis;
+    axisYerror->setGridLineColor(Qt::transparent);
+    axisYerror->setTitleText("Error Value Value");
+    axisYerror->setTickCount(9);
+    axisYerror->setLabelsFont(QFont("Serif", 10, -1, false));
+    axisYerror->setLabelsColor(Qt::black);
+    axisYerror->setMin(-1);
+    axisYerror->setMax(1);
+    axisYerror->setLinePenColor(Qt::black);
+    axisYerror->setLinePen(QPen(Qt::black));
+    axisYerror->setTitleBrush(Qt::black);
+    axisYerror->setTitleFont(QFont("Serif", 10, -1, false));
+
+    errSeries = new QLineSeries();
+    errSeries->setName("");
+    errSeries->setPen(QPen(Qt::black));
+    //errSeries->setPointsVisible(false);
+    chartError->addSeries(errSeries);
+
+    errDataPoints = new QScatterSeries();
+
+    errDataPoints->setName("err");
+    errDataPoints->setMarkerShape(QScatterSeries::MarkerShapeRectangle);
+    errDataPoints->setPen(QPen(Qt::black));
+    errDataPoints->setBrush(QBrush(Qt::black));
+    errDataPoints->setMarkerSize(10);
+
+    chartError->addSeries(errDataPoints);
+
+    chartError->setAxisX(axisXerror, errSeries);
+    chartError->setAxisY(axisYerror, errSeries);
+
+    chartError->setAxisX(axisXerror, errDataPoints);
+    chartError->setAxisY(axisYerror, errDataPoints);
+
+    chartViewError = new QChartView(chartError);
 }
 
 void ChartWindow::buildAUCPlot()
 {
     chartArea->setTitleFont(mTitle);
+    chartArea->setTitleBrush(Qt::black);
 
     auto mLegendArea = chartArea->legend();
 
     mLegendArea->setFont(mLegendFont);
     mLegendArea->setAlignment(Qt::AlignBottom);
+    mLegendArea->setLabelBrush(Qt::black);
+    mLegendArea->setLabelColor(Qt::black);
+    mLegendArea->setFont(QFont("Serif", 8, -1, false));
 
     axisXarea = new QValueAxis;
     axisXarea->setGridLineColor(Qt::transparent);
     axisXarea->setTitleText("ln(Delay)");
+    axisXarea->setTitleBrush(Qt::black);
+    axisXarea->setTitleFont(QFont("Serif", 10, -1, false));
     axisXarea->setMin(0);
-    axisXarea->setLabelsFont(mLegendFont);
+    axisXarea->setLabelsFont(QFont("Serif", 10, -1, false));
+    axisXarea->setLabelsBrush(Qt::black);
+    axisXarea->setLabelsColor(Qt::black);
     axisXarea->setLabelFormat(QString("%.0f"));
     axisXarea->setLinePenColor(Qt::black);
     axisXarea->setLinePen(QPen(Qt::black));
@@ -257,8 +348,12 @@ void ChartWindow::buildAUCPlot()
     axisYarea = new QValueAxis;
     axisYarea->setGridLineColor(Qt::transparent);
     axisYarea->setTitleText("Value");
+    axisYarea->setTitleBrush(Qt::black);
+    axisYarea->setTitleFont(QFont("Serif", 10, -1, false));
     axisYarea->setTickCount(5);
-    axisYarea->setLabelsFont(mLegendFont);
+    axisYarea->setLabelsFont(QFont("Serif", 10, -1, false));
+    axisYarea->setLabelsBrush(Qt::black);
+    axisYarea->setLabelsColor(Qt::black);
     axisYarea->setMin(0);
     axisYarea->setMax(1);
     axisYarea->setLinePenColor(Qt::black);
@@ -355,32 +450,43 @@ void ChartWindow::buildAUCPlot()
     chartArea->setAxisX(axisXarea, empiricalSeries);
     chartArea->setAxisY(axisYarea, empiricalSeries);
 
-    //installEventFilter(this);
 }
 
 void ChartWindow::buildED50Plot()
 {
     chart->setTitleFont(mTitle);
+    chart->setTitleBrush(Qt::black);
 
     auto mLegend = chart->legend();
 
     mLegend->setFont(mLegendFont);
     mLegend->setAlignment(Qt::AlignBottom);
+    mLegend->setLabelBrush(Qt::black);
+    mLegend->setLabelColor(Qt::black);
+    mLegend->setFont(QFont("Serif", 8, -1, false));
 
     axisX = new QValueAxis;
     axisX->setGridLineColor(Qt::transparent);
     axisX->setTitleText("ln(Delay)");
+    axisX->setTitleFont(QFont("Serif", 10, -1, false));
+    axisX->setTitleBrush(Qt::black);
     axisX->setMin(0);
-    axisX->setLabelsFont(mLegendFont);
+    axisX->setLabelsFont(QFont("Serif", 10, -1, false));
     axisX->setLabelFormat(QString("%.0f"));
+    axisX->setLabelsBrush(Qt::black);
+    axisX->setLabelsColor(Qt::black);
     axisX->setLinePenColor(Qt::black);
     axisX->setLinePen(QPen(Qt::black));
 
     axisY = new QValueAxis;
     axisY->setGridLineColor(Qt::transparent);
     axisY->setTitleText("Value");
+    axisY->setTitleFont(QFont("Serif", 10, -1, false));
+    axisY->setTitleBrush(Qt::black);
     axisY->setTickCount(5);
-    axisY->setLabelsFont(mLegendFont);
+    axisY->setLabelsFont(QFont("Serif", 10, -1, false));
+    axisY->setLabelsBrush(Qt::black);
+    axisY->setLabelsColor(Qt::black);
     axisY->setMin(0);
     axisY->setMax(1);
     axisY->setLinePenColor(Qt::black);
@@ -474,6 +580,30 @@ void ChartWindow::plotAUCSeries(int index)
 {
     mList = mDisplayData.at(index);
 
+    errSeries->clear();
+    errDataPoints->clear();
+
+    *errSeries << QPointF(0, 0);
+
+    for (int j=0; j<mList.TopErrPar.length(); j++)
+    {
+        *errSeries << QPointF(j+1, 0);
+        *errDataPoints << QPointF(j+1, mList.TopErrPar[j]);
+    }
+
+    if (mList.TopErrPar.length() > 0)
+    {
+        minList = abs(*std::min_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
+        maxList = abs(*std::max_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
+
+        axisYerror->setMin((maxList >= minList) ? -maxList : -minList);
+        axisYerror->setMax((maxList >= minList) ? maxList : minList);
+    }
+
+    axisXerror->setMin(0);
+    axisXerror->setMax(mList.TopErrPar.length());
+    axisXerror->setTickCount(mList.TopErrPar.count() + 1);
+
     expSeriesArea->clear();
     hypSeriesArea->clear();
     quasiSeriesArea->clear();
@@ -489,11 +619,13 @@ void ChartWindow::plotAUCSeries(int index)
     if (mList.Header.contains("dropped", Qt::CaseInsensitive))
     {
         chartArea->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
+        chartError->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
 
         return;
     }
 
     chartArea->setTitle(QString("Participant #%1: %2 Scaled AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopAUCLog));
+    chartError->setTitle(QString("Participant #%1: %2 Residual Plot").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel));
 
     expSeriesArea->hide();
     hypSeriesArea->hide();
@@ -730,7 +862,7 @@ void ChartWindow::plotED50Series(int index)
     }
 
     chart->setTitle(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopED50));
-    barChart->setTitle(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopED50));
+    barChart->setTitle(QString("Participant #%1: Model Probabilities").arg(QString::number(currentIndexShown + 1)));
 
     expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
 
@@ -1031,7 +1163,7 @@ void ChartWindow::saveSVGasPNG()
 
 #ifdef _WIN32
 
-        file_name = QFileDialog::getSaveFileName(this, "Save PNG", QDir::homePath(),
+        file_name = QFileDialog::getSaveFileName(this, tr("Save PNG"), QDir::homePath(),
                                          fileFilter);
 
 #elif TARGET_OS_MAC
@@ -1048,7 +1180,9 @@ void ChartWindow::saveSVGasPNG()
 
     if(!file_name.trimmed().isEmpty())
     {
-        chartView->grab().save(file_name, "PNG", 9);
+        stackedWidget->currentWidget()->grab().save(file_name, "PNG", 9);
+
+        //chartView->grab().save(file_name, "PNG", 9);
     }
 }
 
