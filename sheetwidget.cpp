@@ -122,7 +122,7 @@ SheetWidget::SheetWidget(QWidget *parent) : QMainWindow(parent)
     for (int c = 0; c < 10000; ++c)
     {
         value = "";
-        convertExcelColumn(value, c);
+        SheetTools::convertExcelColumn(value, c);
         table->setHorizontalHeaderItem(c, new QTableWidgetItem(value));
     }
 
@@ -161,6 +161,10 @@ SheetWidget::SheetWidget(QWidget *parent) : QMainWindow(parent)
 
 }
 
+/**
+ * @brief SheetWidget::downloadedFile
+ * @param reply
+ */
 void SheetWidget::downloadedFile(QNetworkReply *reply) {
     QByteArray data = reply->readAll();
 
@@ -203,6 +207,9 @@ void SheetWidget::downloadedFile(QNetworkReply *reply) {
     }
 }
 
+/**
+ * @brief SheetWidget::buildMenus
+ */
 void SheetWidget::buildMenus()
 {
     /** File actions
@@ -421,6 +428,9 @@ void SheetWidget::buildMenus()
     setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
+/**
+ * @brief SheetWidget::checkUpdatesAction
+ */
 void SheetWidget::checkUpdatesAction()
 {
     QString mCommand = "";
@@ -447,6 +457,9 @@ void SheetWidget::checkUpdatesAction()
     }
 }
 
+/**
+ * @brief SheetWidget::clearSheet
+ */
 void SheetWidget::clearSheet()
 {
     QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -463,6 +476,10 @@ void SheetWidget::clearSheet()
  * @brief
  */
 
+/**
+ * @brief SheetWidget::closeEvent
+ * @param event
+ */
 void SheetWidget::closeEvent(QCloseEvent* event)
 {
     QMessageBox::StandardButton confirm = QMessageBox::question( this, "Discounting Model Selector",
@@ -477,6 +494,9 @@ void SheetWidget::closeEvent(QCloseEvent* event)
     }
 }
 
+/**
+ * @brief SheetWidget::openRecentFile
+ */
 void SheetWidget::openRecentFile()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -526,6 +546,10 @@ void SheetWidget::openRecentFile()
     }
 }
 
+/**
+ * @brief SheetWidget::setCurrentFile
+ * @param fileName
+ */
 void SheetWidget::setCurrentFile(const QString &fileName)
 {
     curFile = fileName;
@@ -550,6 +574,9 @@ void SheetWidget::setCurrentFile(const QString &fileName)
     updateRecentFileActions();
 }
 
+/**
+ * @brief SheetWidget::saveSettings
+ */
 void SheetWidget::saveSettings()
 {
     QSettings settings(QSettings::UserScope, QLatin1String("Discounting Model Selector"));
@@ -563,10 +590,16 @@ void SheetWidget::saveSettings()
     settings.sync();
 }
 
-/** Window methods
+/** Events
  * @brief
  */
 
+/**
+ * @brief SheetWidget::eventFilter
+ * @param object
+ * @param event
+ * @return
+ */
 bool SheetWidget::eventFilter(QObject *object, QEvent *event)
 {
     if (event->type() == QEvent::KeyPress)
@@ -600,6 +633,9 @@ bool SheetWidget::eventFilter(QObject *object, QEvent *event)
     return QObject::eventFilter(object, event);
 }
 
+/**
+ * @brief SheetWidget::showOpenFileDialog
+ */
 void SheetWidget::showOpenFileDialog()
 {
     QString file_name;
@@ -667,6 +703,9 @@ void SheetWidget::showOpenFileDialog()
     }
 }
 
+/**
+ * @brief SheetWidget::updateRecentFileActions
+ */
 void SheetWidget::updateRecentFileActions()
 {
     QSettings settings(QSettings::UserScope, QLatin1String("Discounting Model Selector"));
@@ -676,7 +715,7 @@ void SheetWidget::updateRecentFileActions()
     int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
 
     for (int i = 0; i < numRecentFiles; ++i) {
-        QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
+        QString text = tr("&%1 %2").arg(i + 1).arg(SheetTools::strippedName(files[i]));
         recentFileActs[i]->setText(text);
         recentFileActs[i]->setData(files[i]);
         recentFileActs[i]->setVisible(true);
@@ -690,6 +729,9 @@ void SheetWidget::updateRecentFileActions()
     separatorAct->setVisible(numRecentFiles > 0);
 }
 
+/**
+ * @brief SheetWidget::showSaveFileDialog
+ */
 void SheetWidget::showSaveFileDialog()
 {
     if (curFile == "")
@@ -732,6 +774,9 @@ void SheetWidget::showSaveFileDialog()
     }
 }
 
+/**
+ * @brief SheetWidget::showSaveAsFileDialog
+ */
 void SheetWidget::showSaveAsFileDialog()
 {
 
@@ -789,6 +834,9 @@ void SheetWidget::showSaveAsFileDialog()
     }
 }
 
+/**
+ * @brief SheetWidget::showDiscountingED50Window
+ */
 void SheetWidget::showDiscountingED50Window()
 {
     if (isToolWindowShown())
@@ -803,6 +851,9 @@ void SheetWidget::showDiscountingED50Window()
     discountingED50Dialog->show();
 }
 
+/**
+ * @brief SheetWidget::showDMSLicenseWindow
+ */
 void SheetWidget::showDMSLicenseWindow()
 {
     QString mFilePath = "";
@@ -825,6 +876,9 @@ void SheetWidget::showDMSLicenseWindow()
     licenseDialog->show();
 }
 
+/**
+ * @brief SheetWidget::showALGLIBLicenseWindow
+ */
 void SheetWidget::showALGLIBLicenseWindow()
 {
     QString mFilePath = "";
@@ -847,6 +901,9 @@ void SheetWidget::showALGLIBLicenseWindow()
     licenseDialog->show();
 }
 
+/**
+ * @brief SheetWidget::showBDSLicenseWindow
+ */
 void SheetWidget::showBDSLicenseWindow()
 {
     QString mFilePath = "";
@@ -869,6 +926,9 @@ void SheetWidget::showBDSLicenseWindow()
     licenseDialog->show();
 }
 
+/**
+ * @brief SheetWidget::showQTLicenseWindow
+ */
 void SheetWidget::showQTLicenseWindow()
 {
     QString mFilePath = "";
@@ -891,6 +951,9 @@ void SheetWidget::showQTLicenseWindow()
     licenseDialog->show();
 }
 
+/**
+ * @brief SheetWidget::showTangoLicenseWindow
+ */
 void SheetWidget::showTangoLicenseWindow()
 {
     QString mFilePath = "";
@@ -913,6 +976,9 @@ void SheetWidget::showTangoLicenseWindow()
     licenseDialog->show();
 }
 
+/**
+ * @brief SheetWidget::showQtXlsxLicenseWindow
+ */
 void SheetWidget::showQtXlsxLicenseWindow()
 {
     QString mFilePath = "";
@@ -935,6 +1001,9 @@ void SheetWidget::showQtXlsxLicenseWindow()
     licenseDialog->show();
 }
 
+/**
+ * @brief SheetWidget::showCreditsWindow
+ */
 void SheetWidget::showCreditsWindow()
 {
     creditsDialog = new CreditsDialog();
@@ -942,6 +1011,9 @@ void SheetWidget::showCreditsWindow()
     creditsDialog->show();
 }
 
+/**
+ * @brief SheetWidget::showFAQWindow
+ */
 void SheetWidget::showFAQWindow()
 {
     aboutDialog = new AboutDialog();
@@ -949,6 +1021,9 @@ void SheetWidget::showFAQWindow()
     aboutDialog->show();
 }
 
+/**
+ * @brief SheetWidget::showTestingFeatures
+ */
 void SheetWidget::showTestingFeatures()
 {
     if (!openDiscountingAreaWindow->isVisible())
@@ -962,12 +1037,18 @@ void SheetWidget::showTestingFeatures()
  * @brief
  */
 
+/**
+ * @brief SheetWidget::cut
+ */
 void SheetWidget::cut()
 {
     SheetWidget::copy();
     SheetWidget::clear();
 }
 
+/**
+ * @brief SheetWidget::copy
+ */
 void SheetWidget::copy()
 {
     if (table->selectedItems().count() < 1)
@@ -1006,6 +1087,9 @@ void SheetWidget::copy()
     QApplication::clipboard()->setText(str);
 }
 
+/**
+ * @brief SheetWidget::paste
+ */
 void SheetWidget::paste()
 {
     QTableWidgetSelectionRange range = table->selectedRanges().first();
@@ -1073,6 +1157,9 @@ void SheetWidget::paste()
     }
 }
 
+/**
+ * @brief SheetWidget::pasteInverted
+ */
 void SheetWidget::pasteInverted()
 {
     QTableWidgetSelectionRange range = table->selectedRanges().first();
@@ -1140,6 +1227,9 @@ void SheetWidget::pasteInverted()
     }
 }
 
+/**
+ * @brief SheetWidget::clear
+ */
 void SheetWidget::clear()
 {
     QTableWidgetSelectionRange range = table->selectedRanges().first();
@@ -1207,6 +1297,9 @@ void SheetWidget::clear()
  * @brief
  */
 
+/**
+ * @brief SheetWidget::updateDelayModalWindow
+ */
 void SheetWidget::updateDelayModalWindow()
 {
     if (!isToolWindowShown())
@@ -1218,10 +1311,10 @@ void SheetWidget::updateDelayModalWindow()
     QTableWidgetSelectionRange range = mList.first();
 
     QString mLeft = "";
-    convertExcelColumn(mLeft, range.leftColumn());
+    SheetTools::convertExcelColumn(mLeft, range.leftColumn());
 
     QString mRight = "";
-    convertExcelColumn(mRight, range.rightColumn());
+    SheetTools::convertExcelColumn(mRight, range.rightColumn());
 
     mLeft.append(QString::number(range.topRow() + 1));
     mLeft.append(":");
@@ -1248,6 +1341,9 @@ void SheetWidget::updateDelayModalWindow()
     }
 }
 
+/**
+ * @brief SheetWidget::updateValueModalWindow
+ */
 void SheetWidget::updateValueModalWindow()
 {
     if (!isToolWindowShown())
@@ -1259,10 +1355,10 @@ void SheetWidget::updateValueModalWindow()
     QTableWidgetSelectionRange range = mList.first();
 
     QString mLeft = "";
-    convertExcelColumn(mLeft, range.leftColumn());
+    SheetTools::convertExcelColumn(mLeft, range.leftColumn());
 
     QString mRight = "";
-    convertExcelColumn(mRight, range.rightColumn());
+    SheetTools::convertExcelColumn(mRight, range.rightColumn());
 
     mLeft.append(QString::number(range.topRow() + 1));
     mLeft.append(":");
@@ -1275,6 +1371,9 @@ void SheetWidget::updateValueModalWindow()
     }
 }
 
+/**
+ * @brief SheetWidget::updateMaxValueModalWindow
+ */
 void SheetWidget::updateMaxValueModalWindow()
 {
     if (!isToolWindowShown())
@@ -1291,6 +1390,10 @@ void SheetWidget::updateMaxValueModalWindow()
     }   
 }
 
+/**
+ * @brief SheetWidget::isToolWindowShown
+ * @return
+ */
 bool SheetWidget::isToolWindowShown()
 {
     if (discountingED50Dialog->isVisible())
@@ -1305,6 +1408,9 @@ bool SheetWidget::isToolWindowShown()
  * @brief
  */
 
+/**
+ * @brief SheetWidget::Calculate
+ */
 void SheetWidget::Calculate()
 {
     tripLogNormal = calculationSettings->logNormalParameters;
@@ -1326,7 +1432,7 @@ void SheetWidget::Calculate()
     int vWidth = calculationSettings->rightValue - calculationSettings->leftValue + 1;
     int vLength = calculationSettings->bottomValue - calculationSettings->topValue + 1;
 
-    if (!areDimensionsValid(isRowData, dWidth, vWidth, dLength, vLength))
+    if (!SheetTools::areDimensionsValid(isRowData, dWidth, vWidth, dLength, vLength, discountingED50Dialog))
     {
         if (discountingED50Dialog->isVisible())
         {
@@ -1338,9 +1444,9 @@ void SheetWidget::Calculate()
 
     QStringList delayPoints;
 
-    if(!areDelayPointsValid(delayPoints, isRowData,
+    if(!SheetTools::areDelayPointsValid(delayPoints, isRowData,
                             calculationSettings->topDelay, calculationSettings->leftDelay,
-                            calculationSettings->bottomDelay, calculationSettings->rightDelay))
+                            calculationSettings->bottomDelay, calculationSettings->rightDelay, discountingED50Dialog, table))
     {
         if (discountingED50Dialog->isVisible())
         {
@@ -1372,9 +1478,9 @@ void SheetWidget::Calculate()
             valuePoints.clear();
             delayPointsTemp.clear();
 
-            areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData,
+            SheetTools::areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData,
                                 calculationSettings->topValue, calculationSettings->leftValue, calculationSettings->bottomValue, calculationSettings->rightValue,
-                                i, calculationSettings->maxValue);
+                                i, calculationSettings->maxValue, table);
 
             for (int i=1; i<valuePoints.length(); i++)
             {
@@ -1433,9 +1539,9 @@ void SheetWidget::Calculate()
         valuePoints.clear();
         delayPointsTemp.clear();
 
-        areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData,
+        SheetTools::areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData,
                             calculationSettings->topValue, calculationSettings->leftValue, calculationSettings->bottomValue, calculationSettings->rightValue,
-                            i, calculationSettings->maxValue);
+                            i, calculationSettings->maxValue, table);
 
         mXString = "[";
 
@@ -1494,6 +1600,14 @@ void SheetWidget::Calculate()
     worker->startWork();
 }
 
+/** Threading Tools
+ *
+ */
+
+/**
+ * @brief SheetWidget::WorkUpdate
+ * @param results
+ */
 void SheetWidget::WorkUpdate(FitResults results)
 {
     allResults.append(results);
@@ -1508,6 +1622,9 @@ void SheetWidget::WorkUpdate(FitResults results)
     }
 }
 
+/**
+ * @brief SheetWidget::WorkFinished
+ */
 void SheetWidget::WorkFinished()
 {
     statusBar()->showMessage("Calculations Complete.", 3000);
@@ -1533,235 +1650,8 @@ void SheetWidget::WorkFinished()
     }
 }
 
-bool SheetWidget::areDelayPointsValid(QStringList &delayPoints, bool isRowData, int topDelay, int leftDelay, int bottomDelay, int rightDelay)
-{
-    delayPoints.clear();
 
-    QString holder;
-    bool valueCheck = true;
 
-    if (isRowData)
-    {
-        int r = topDelay;
 
-        for (int c = leftDelay; c <= rightDelay; c++)
-        {
-            if (table->item(r, c) == NULL)
-            {
-                QMessageBox::critical(this, "Error",
-                                      "One of your delay measures doesn't look correct. Please re-check these values or selections.");
 
-                if (discountingED50Dialog->isVisible())
-                {
-                    discountingED50Dialog->ToggleButton(true);
-                }
-
-                return false;
-            }
-
-            holder = table->item(r, c)->data(Qt::DisplayRole).toString();
-            holder.toDouble(&valueCheck);
-
-            delayPoints << holder;
-
-            if (!valueCheck)
-            {
-                QMessageBox::critical(this, "Error",
-                                      "One of your delay measures doesn't look correct. Please re-check these values or selections.");
-
-                if (discountingED50Dialog->isVisible())
-                {
-                    discountingED50Dialog->ToggleButton(true);
-                }
-
-                return false;
-            }
-        }
-    }
-    else
-    {
-        int c = leftDelay;
-
-        for (int r = topDelay; r <= bottomDelay; r++)
-        {
-            if (table->item(r, c) == NULL)
-            {
-                QMessageBox::critical(this, "Error",
-                                      "One of your delay measures doesn't look correct. Please re-check these values or selections.");
-
-                if (discountingED50Dialog->isVisible())
-                {
-                    discountingED50Dialog->ToggleButton(true);
-                }
-
-                return false;
-            }
-
-            holder = table->item(r, c)->data(Qt::DisplayRole).toString();
-            holder.toDouble(&valueCheck);
-
-            delayPoints << holder;
-
-            if (!valueCheck)
-            {
-                QMessageBox::critical(this, "Error",
-                                      "One of your delay measures doesn't look correct. Please re-check these values or selections.");
-
-                if (discountingED50Dialog->isVisible())
-                {
-                    discountingED50Dialog->ToggleButton(true);
-                }
-
-                return false;
-            }
-        }
-    }
-
-    return true;
-}
-
-bool SheetWidget::areDimensionsValid(bool isRowData, int dWidth, int vWidth, int dLength, int vLength)
-{
-    if (isRowData)
-    {
-        if (dWidth != vWidth)
-        {
-            QMessageBox::critical(this, "Error",
-                                  "You have row-based data, but the data selected appears to have different column counts. Please correct.");
-
-            if (discountingED50Dialog->isVisible())
-            {
-                discountingED50Dialog->ToggleButton(true);
-            }
-
-            return false;
-        }
-    }
-    else
-    {
-        if (dLength != vLength)
-        {
-            QMessageBox::critical(this, "Error",
-                                  "You have column-based data, but the data selected appears to have different row counts. Please correct.");
-
-            if (discountingED50Dialog->isVisible())
-            {
-                discountingED50Dialog->ToggleButton(true);
-            }
-
-            return false;
-        }
-    }
-
-    return true;
-}
-
-void SheetWidget::areValuePointsValid(QStringList &valuePoints, QStringList &tempDelayPoints, QStringList delayPoints, bool isRowData, int topValue, int leftValue, int bottomValue, int rightValue, int i, double maxValue)
-{
-    valuePoints.clear();
-    tempDelayPoints.clear();
-
-    QString holder;
-    bool valueCheck = true;
-    double valHolder;
-
-    int index = 0;
-
-    if (isRowData)
-    {
-        int r = topValue;
-
-        for (int c = leftValue; c <= rightValue; c++)
-        {
-            if (table->item(r + i, c) != NULL)
-            {
-                holder = table->item(r + i, c)->data(Qt::DisplayRole).toString();
-                valHolder = holder.toDouble(&valueCheck);
-
-                if (valueCheck)
-                {
-                    valHolder = valHolder / maxValue;
-
-                    valuePoints << QString::number(valHolder);
-                    tempDelayPoints << delayPoints.at(index);
-                }
-            }
-
-            index++;
-        }
-    }
-    else
-    {
-        int c = leftValue;
-
-        for (int r = topValue; r <= bottomValue; r++)
-        {
-            if (table->item(r, c + i) != NULL)
-            {
-                holder = table->item(r, c + i)->data(Qt::DisplayRole).toString();
-                valHolder = holder.toDouble(&valueCheck);
-
-                if (valueCheck)
-                {
-                    valHolder = valHolder / maxValue;
-
-                    valuePoints << QString::number(valHolder);
-                    tempDelayPoints << delayPoints.at(index);
-                }
-            }
-
-            index++;
-        }
-    }
-}
-
-/** Utilities
- * @brief
- */
-
-QString SheetWidget::strippedName(const QString &fullFileName)
-{
-    return QFileInfo(fullFileName).fileName();
-}
-
-QString SheetWidget::formatStringResult(double value, bool returnLogNormal)
-{
-    if (!isnan(value))
-    {
-        if (value == 0)
-        {
-            return QString("NA");
-        }
-        else if (returnLogNormal)
-        {
-            qreal res = qExp(value);
-            return QString::number(res);
-        }
-        else
-        {
-            return QString::number(value);
-        }
-    }
-    else
-    {
-        return QString("NA");
-    }
-}
-
-void SheetWidget::convertExcelColumn(QString &mString, int column)
-{
-    int dividend = column + 1;
-    QString columnName = "";
-
-    int modulo;
-
-    while (dividend > 0)
-    {
-        modulo = (dividend - 1) % 26;
-        columnName = new QString(65 + modulo) + columnName;
-        dividend = (int)((dividend - modulo) / 26);
-    }
-
-    mString = columnName;
-}
 

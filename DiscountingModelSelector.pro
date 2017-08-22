@@ -100,7 +100,8 @@ HEADERS  += \
     calculationsettings.h \
     fitresult.h \
     fitresults.h \
-    gridsearch.h
+    gridsearch.h \
+    sheettools.h
 
 FORMS    += \
     sheetselectdialog.ui \

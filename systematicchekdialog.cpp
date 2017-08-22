@@ -53,6 +53,12 @@ SystematicChekDialog::SystematicChekDialog(QWidget *parent) :
     ui->tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 }
 
+/**
+ * @brief SystematicChekDialog::appendRow
+ * @param participant
+ * @param criteriaOne
+ * @param criteriaTwo
+ */
 void SystematicChekDialog::appendRow(QString participant, QString criteriaOne, QString criteriaTwo)
 {
     bool isFirstFlagged = false;
@@ -117,16 +123,26 @@ void SystematicChekDialog::appendRow(QString participant, QString criteriaOne, Q
     ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 4, item);
 }
 
+/**
+ * @brief SystematicChekDialog::getIndexOption
+ * @return
+ */
 int SystematicChekDialog::getIndexOption()
 {
     return ui->comboBox->currentIndex();
 }
 
+/**
+ * @brief SystematicChekDialog::~SystematicChekDialog
+ */
 SystematicChekDialog::~SystematicChekDialog()
 {
     delete ui;
 }
 
+/**
+ * @brief SystematicChekDialog::on_buttonBox_accepted
+ */
 void SystematicChekDialog::on_buttonBox_accepted()
 {
     mJonhsonBickelSelections.clear();
@@ -141,6 +157,9 @@ void SystematicChekDialog::on_buttonBox_accepted()
     canProceed = true;
 }
 
+/**
+ * @brief SystematicChekDialog::on_buttonBox_rejected
+ */
 void SystematicChekDialog::on_buttonBox_rejected()
 {
     canProceed = false;

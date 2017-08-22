@@ -91,20 +91,26 @@
 #include "creditsdialog.h"
 #include "aboutdialog.h"
 #include "calculationworker.h"
+#include "sheettools.h"
 
 class SheetWidget : public QMainWindow
 {
     Q_OBJECT
 
+enum
+{
+    MaxRecentFiles = 5
+};
+
 public:
     SheetWidget(QWidget *parent = 0);
 
-    void convertExcelColumn(QString &mString, int column);
-
     QList<FitResults> allResults;
+
     QList<QStringList> allCharts;
 
     QUndoStack *undoStack;
+
     QTableWidget *table;
 
     CalculationSettings *calculationSettings;
@@ -154,97 +160,80 @@ public slots:
 
     bool isToolWindowShown();
 
-    bool areDelayPointsValid(QStringList &delayPoints, bool isRowData, int topDelay, int leftDelay, int bottomDelay, int rightDelay);
-    bool areDimensionsValid(bool isRowData, int dWidth, int vWidth, int dLength, int vLength);
-    void areValuePointsValid(QStringList &valuePoints, QStringList &tempDelayPoints, QStringList delayPoints, bool isRowData, int topValue, int leftValue, int bottomValue, int rightValue, int i, double maxValue);
-
     void Calculate();
 
     void closeEvent(QCloseEvent* event);
+
     void setCurrentFile(const QString &fileName);
+
     void updateRecentFileActions();
 
     void WorkUpdate(FitResults results);
+
     void WorkFinished();
 
 private:
-    QAction *newSheetAction;
-    QAction *openSheetAction;
-    QAction *saveSheetAction;
-    QAction *saveAsSheetAction;
-    QAction *updateProgramAction;
-    QAction *exitSheetAction;
+    QAction *newSheetAction,
+            *openSheetAction,
+            *saveSheetAction,
+            *saveAsSheetAction,
+            *updateProgramAction,
+            *exitSheetAction;
 
-    QAction *cutAction;
-    QAction *copyAction;
-    QAction *pasteAction;
-    QAction *pasteInvertedAction;
-    QAction *clearAction;
+    QAction *cutAction,
+            *copyAction,
+            *pasteAction,
+            *pasteInvertedAction,
+            *clearAction,
+            *undoAction,
+            *redoAction;
 
-    QAction *undoAction;
-    QAction *redoAction;
+    QAction *openDiscountingAreaWindow,
+            *openDiscountingED50Window;
 
-    QAction *openDiscountingAreaWindow;
-    QAction *openDiscountingED50Window;
+    QAction *openLicenseDMS,
+            *openLicenseBDS,
+            *openLicenseALGLIB,
+            *openLicenseQt,
+            *openLicenseTango,
+            *openLicenseQtXlsx,
+            *openAbout,
+            *openFAQ;
 
-    QAction *openLicenseDMS;
-    QAction *openLicenseBDS;
-    QAction *openLicenseALGLIB;
-    QAction *openLicenseQt;
-    QAction *openLicenseTango;
-    QAction *openLicenseQtXlsx;
-
-    QAction *openAbout;
-    QAction *openFAQ;
-
-    QAction *delayAction;
-    QAction *valueAction;
-    QAction *maxValueAction;
-
-    QAction *unlockTesting;
+    QAction *delayAction,
+            *valueAction,
+            *maxValueAction,
+            *unlockTesting,
+            *separatorAct,
+            *recentFileActs[MaxRecentFiles];
 
     SystematicChekDialog *checkDialog;
-
     SheetSelectDialog *sheetSelectDialog;
-
     DiscountingModelSelectionED50Dialog *discountingED50Dialog;
-
     LicenseDialog *licenseDialog;
-
     AboutDialog *aboutDialog;
     CreditsDialog *creditsDialog;
-
     ResultsDialog *resultsDialog;
     ChartWindow *graphicsWindow;
 
-    bool tripAIC;
-    bool tripBIC;
-    bool tripBF;
-    bool tripRMSE;
-    bool tripLogNormal;
+    bool tripAIC,
+         tripBIC,
+         tripBF,
+         tripRMSE,
+         tripLogNormal,
+         displayFigures;
 
-    bool displayFigures;
-
-    QString settingsFile;
-
-    enum { MaxRecentFiles = 5 };
-    QAction *recentFileActs[MaxRecentFiles];
-
-    QString strippedName(const QString &fullFileName);
-    QString formatStringResult(double value, bool returnLogNormal);
-    QString curFile;
-
-    QAction *separatorAct;
-
-    QString mXString;
-    QString mYString;
+    QString settingsFile,
+            curFile,
+            mXString,
+            mYString;
 
     QList<QPair<QString, QString>> mJohnsonBickelResults;
     QNetworkAccessManager *manager;
 
     QThread *workerThread;
     CalculationWorker *worker;
-};
 
+};
 
 #endif // SHEETWIDGET_H
