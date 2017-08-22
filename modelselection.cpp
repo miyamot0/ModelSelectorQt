@@ -46,23 +46,36 @@
 #include "modelselection.h"
 
 #include <iostream>
-#include "chartwindow.h"
-#include "interpolation.h"
-
-#include "stdafx.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+
+#include "interpolation.h"
 #include "optimization.h"
 #include "integration.h"
+#include "stdafx.h"
+
+#include "chartwindow.h"
 
 using namespace alglib;
 
+/**
+ * @brief exponential_discounting
+ * @param c
+ * @param x
+ * @param func
+ */
 void exponential_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = exp(-exp(c[0])*x[0]);
 }
 
+/**
+ * @brief exponential_integration
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void exponential_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -70,6 +83,12 @@ void exponential_integration(double x, double, double, double &y, void *ptr)
     y = exp(-exp(k)*x);
 }
 
+/**
+ * @brief exponential_integration_log10
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void exponential_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -77,11 +96,23 @@ void exponential_integration_log10(double x, double, double, double &y, void *pt
     y = exp(-exp(k)*pow(10,x));
 }
 
+/**
+ * @brief hyperbolic_discounting
+ * @param c
+ * @param x
+ * @param func
+ */
 void hyperbolic_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = pow((1+exp(c[0])*x[0]), -1);
 }
 
+/**
+ * @brief hyperbolic_integration
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void hyperbolic_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -89,6 +120,12 @@ void hyperbolic_integration(double x, double, double, double &y, void *ptr)
     y = pow((1+exp(k)*x), -1);
 }
 
+/**
+ * @brief hyperbolic_integration_log10
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void hyperbolic_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -96,11 +133,23 @@ void hyperbolic_integration_log10(double x, double, double, double &y, void *ptr
     y = pow((1+exp(k)*pow(10,x)), -1);
 }
 
+/**
+ * @brief generalized_hyperboloid_discounting
+ * @param c
+ * @param x
+ * @param func
+ */
 void generalized_hyperboloid_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = pow((1 + x[0] * exp(c[0])),(-exp(c[1]) / exp(c[0])));
 }
 
+/**
+ * @brief generalized_hyperboloid_integration
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void generalized_hyperboloid_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -110,6 +159,12 @@ void generalized_hyperboloid_integration(double x, double, double, double &y, vo
     y = pow((1 + x * exp(lnk)),(-exp(beta) / exp(lnk)));
 }
 
+/**
+ * @brief generalized_hyperboloid_integration_log10
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void generalized_hyperboloid_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -119,11 +174,23 @@ void generalized_hyperboloid_integration_log10(double x, double, double, double 
     y = pow((1 + pow(10,x) * exp(lnk)),(-exp(beta) / exp(lnk)));
 }
 
+/**
+ * @brief quasi_hyperboloid_discounting
+ * @param c
+ * @param x
+ * @param func
+ */
 void quasi_hyperboloid_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = c[0] * pow(c[1], x[0]);
 }
 
+/**
+ * @brief quasi_hyperboloid_integration
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void quasi_hyperboloid_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -132,6 +199,12 @@ void quasi_hyperboloid_integration(double x, double, double, double &y, void *pt
     y = b * pow(d, x);
 }
 
+/**
+ * @brief quasi_hyperboloid_integration_log10
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void quasi_hyperboloid_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -140,11 +213,23 @@ void quasi_hyperboloid_integration_log10(double x, double, double, double &y, vo
     y = b * pow(d, pow(10,x));
 }
 
+/**
+ * @brief hyperboloid_myerson_discounting
+ * @param c
+ * @param x
+ * @param func
+ */
 void hyperboloid_myerson_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = pow((1+exp(c[0])*x[0]), -c[1]);
 }
 
+/**
+ * @brief hyperboloid_myerson_integration
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void hyperboloid_myerson_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -153,6 +238,12 @@ void hyperboloid_myerson_integration(double x, double, double, double &y, void *
     y = pow((1+exp(k)*x), -s);
 }
 
+/**
+ * @brief hyperboloid_myerson_integration_log10
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void hyperboloid_myerson_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -161,11 +252,23 @@ void hyperboloid_myerson_integration_log10(double x, double, double, double &y, 
     y = pow((1+exp(k)*pow(10,x)), -s);
 }
 
+/**
+ * @brief hyperboloid_rachlin_discounting
+ * @param c
+ * @param x
+ * @param func
+ */
 void hyperboloid_rachlin_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = pow((1+exp(c[0])*pow(x[0], c[1])), -1);
 }
 
+/**
+ * @brief hyperboloid_rachlin_integration
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void hyperboloid_rachlin_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -174,6 +277,12 @@ void hyperboloid_rachlin_integration(double x, double, double, double &y, void *
     y = pow((1+exp(k)*pow(x, s)), -1);
 }
 
+/**
+ * @brief hyperboloid_rachlin_integration_log10
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void hyperboloid_rachlin_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -182,11 +291,23 @@ void hyperboloid_rachlin_integration_log10(double x, double, double, double &y, 
     y = pow((1+exp(k)*pow(pow(10,x), s)), -1);
 }
 
+/**
+ * @brief ebert_prelec_discounting
+ * @param c
+ * @param x
+ * @param func
+ */
 void ebert_prelec_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = exp(-pow((exp(c[0])*x[0]),c[1]));
 }
 
+/**
+ * @brief ebert_prelec_integration
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void ebert_prelec_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -195,6 +316,12 @@ void ebert_prelec_integration(double x, double, double, double &y, void *ptr)
     y = exp(-pow((exp(k)*x), s));
 }
 
+/**
+ * @brief ebert_prelec_integration_log10
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void ebert_prelec_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -203,11 +330,23 @@ void ebert_prelec_integration_log10(double x, double, double, double &y, void *p
     y = exp(-pow((exp(k)*pow(10,x)), s));
 }
 
+/**
+ * @brief bleichrodt_discounting
+ * @param c
+ * @param x
+ * @param func
+ */
 void bleichrodt_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
 {
     func = c[2] * exp(-exp(c[0])*pow(x[0],c[1]));
 }
 
+/**
+ * @brief bleichrodt_integration
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void bleichrodt_integration(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -218,6 +357,12 @@ void bleichrodt_integration(double x, double, double, double &y, void *ptr)
     y = beta * exp(-exp(k)*pow(x,s));
 }
 
+/**
+ * @brief bleichrodt_integration_log10
+ * @param x
+ * @param y
+ * @param ptr
+ */
 void bleichrodt_integration_log10(double x, double, double, double &y, void *ptr)
 {
     QList<double> *param = (QList<double> *) ptr;
@@ -228,21 +373,38 @@ void bleichrodt_integration_log10(double x, double, double, double &y, void *ptr
     y = beta * exp(-exp(k)*pow(pow(10,x),s));
 }
 
+/**
+ * @brief ModelSelection::SetX
+ * @param mString
+ */
 void ModelSelection::SetX(const char *mString)
 {
     x = mString;
 }
 
+/**
+ * @brief ModelSelection::SetY
+ * @param mString
+ */
 void ModelSelection::SetY(const char *mString)
 {
     y = mString;
 }
 
+/**
+ * @brief ModelSelection::SetStarts
+ * @param mString
+ */
 void ModelSelection::SetStarts(const char *mString)
 {
     c = mString;
 }
 
+/**
+ * @brief ModelSelection::SetLowerUpperBounds
+ * @param mUpperString
+ * @param mLowerString
+ */
 void ModelSelection::SetLowerUpperBounds(const char *mUpperString, const char *mLowerString)
 {
     bndu = mUpperString;
@@ -702,11 +864,22 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
     }
 }
 
+/**
+ * @brief ScaleFactor
+ * @param modelBic
+ * @param noiseBic
+ * @return
+ */
 double ScaleFactor(double modelBic, double noiseBic)
 {
     return exp(-0.5 * (modelBic - noiseBic));
 }
 
+/**
+ * @brief ModelSelection::formatStringResult
+ * @param value
+ * @return
+ */
 QString ModelSelection::formatStringResult(int value)
 {
     if (value == -7 || value == -8)
@@ -735,6 +908,11 @@ QString ModelSelection::formatStringResult(int value)
     }
 }
 
+/**
+ * @brief ModelSelection::getED50BestModel
+ * @param model
+ * @return
+ */
 QString ModelSelection::getED50BestModel(ModelType model)
 {
     double result;
@@ -803,6 +981,10 @@ QString ModelSelection::getED50BestModel(ModelType model)
     }
 }
 
+/**
+ * @brief ModelSelection::getED50ep
+ * @return
+ */
 double ModelSelection::getED50ep () {
     double lowDelay = 0;
     double highDelay = x[x.rows()-1][0] * 100;
@@ -834,6 +1016,10 @@ double ModelSelection::getED50ep () {
     return returnValue;
 }
 
+/**
+ * @brief ModelSelection::getED50crdi
+ * @return
+ */
 double ModelSelection::getED50crdi () {
     double lowDelay = 0;
     double highDelay = x[x.rows()-1][0] * 100;
@@ -865,6 +1051,10 @@ double ModelSelection::getED50crdi () {
     return returnValue;
 }
 
+/**
+ * @brief ModelSelection::getED50rodriguez
+ * @return
+ */
 double ModelSelection::getED50rodriguez () {
     double lowDelay = 0;
     double highDelay = x[x.rows()-1][0] * 100;
@@ -896,6 +1086,11 @@ double ModelSelection::getED50rodriguez () {
     return returnValue;
 }
 
+/**
+ * @brief ModelSelection::getAUCBestModel
+ * @param model
+ * @return
+ */
 QString ModelSelection::getAUCBestModel(ModelType model)
 {
     double result;
@@ -1034,6 +1229,11 @@ QString ModelSelection::getAUCBestModel(ModelType model)
     }
 }
 
+/**
+ * @brief ModelSelection::getLogAUCBestModel
+ * @param model
+ * @return
+ */
 QString ModelSelection::getLogAUCBestModel(ModelType model)
 {
     double result;
@@ -1182,6 +1382,9 @@ QString ModelSelection::getLogAUCBestModel(ModelType model)
     }
 }
 
+/**
+ * @brief ModelSelection::PrepareProbabilities
+ */
 void ModelSelection::PrepareProbabilities()
 {
     bfNoise = ScaleFactor(NoiseBIC, NoiseBIC);
@@ -1299,6 +1502,11 @@ void ModelSelection::PrepareProbabilities()
     }
 }
 
+/**
+ * @brief ModelSelection::getErrorExponential
+ * @param lnK
+ * @return
+ */
 double ModelSelection::getErrorExponential(double lnK)
 {
     leastSquaresError = 0;
@@ -1311,6 +1519,11 @@ double ModelSelection::getErrorExponential(double lnK)
     return leastSquaresError;
 }
 
+/**
+ * @brief ModelSelection::getErrorHyperbolic
+ * @param lnK
+ * @return
+ */
 double ModelSelection::getErrorHyperbolic(double lnK)
 {
     leastSquaresError = 0;
@@ -1323,6 +1536,12 @@ double ModelSelection::getErrorHyperbolic(double lnK)
     return leastSquaresError;
 }
 
+/**
+ * @brief ModelSelection::getErrorQuasiHyperbolic
+ * @param beta
+ * @param delta
+ * @return
+ */
 double ModelSelection::getErrorQuasiHyperbolic(double beta, double delta)
 {
     leastSquaresError = 0;
@@ -1335,6 +1554,12 @@ double ModelSelection::getErrorQuasiHyperbolic(double beta, double delta)
     return leastSquaresError;
 }
 
+/**
+ * @brief ModelSelection::getErrorGreenMyerson
+ * @param lnK
+ * @param s
+ * @return
+ */
 double ModelSelection::getErrorGreenMyerson(double lnK, double s)
 {
     leastSquaresError = 0;
@@ -1347,6 +1572,12 @@ double ModelSelection::getErrorGreenMyerson(double lnK, double s)
     return leastSquaresError;
 }
 
+/**
+ * @brief ModelSelection::getErrorGreenRachlin
+ * @param lnK
+ * @param s
+ * @return
+ */
 double ModelSelection::getErrorGreenRachlin(double lnK, double s)
 {
     leastSquaresError = 0;
@@ -1359,6 +1590,12 @@ double ModelSelection::getErrorGreenRachlin(double lnK, double s)
     return leastSquaresError;
 }
 
+/**
+ * @brief ModelSelection::getErrorRodriguezLogue
+ * @param lnK
+ * @param beta
+ * @return
+ */
 double ModelSelection::getErrorRodriguezLogue(double lnK, double beta)
 {
     leastSquaresError = 0;
@@ -1371,6 +1608,12 @@ double ModelSelection::getErrorRodriguezLogue(double lnK, double beta)
     return leastSquaresError;
 }
 
+/**
+ * @brief ModelSelection::getErrorEbertPrelec
+ * @param lnK
+ * @param s
+ * @return
+ */
 double ModelSelection::getErrorEbertPrelec(double lnK, double s)
 {
     leastSquaresError = 0;
@@ -1383,6 +1626,13 @@ double ModelSelection::getErrorEbertPrelec(double lnK, double s)
     return leastSquaresError;
 }
 
+/**
+ * @brief ModelSelection::getErrorBleichrodt
+ * @param lnK
+ * @param s
+ * @param beta
+ * @return
+ */
 double ModelSelection::getErrorBleichrodt(double lnK, double s, double beta)
 {
     leastSquaresError = 0;
