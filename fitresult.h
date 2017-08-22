@@ -47,11 +47,11 @@ public:
 
     QList<QPair<QString, double>> Params;
 
-    double RMS;
-    double BIC;
-    double AIC;
-    double BF;
-    double Probability;
+    double RMS,
+           BIC,
+           AIC,
+           BF,
+           Probability;
 
     int Rank;
 

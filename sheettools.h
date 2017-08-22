@@ -60,7 +60,9 @@ public:
         }
     }
 
-    bool static SheetTools::areDimensionsValid(bool isRowData, int dWidth, int vWidth, int dLength, int vLength, DiscountingModelSelectionED50Dialog *discountingED50Dialog)
+    bool static SheetTools::areDimensionsValid(bool isRowData, int dWidth, int vWidth,
+                                               int dLength, int vLength,
+                                               DiscountingModelSelectionED50Dialog *discountingED50Dialog)
     {
         if (isRowData)
         {
@@ -96,8 +98,9 @@ public:
         return true;
     }
 
-    bool static SheetTools::areDelayPointsValid(QStringList &delayPoints, bool isRowData, int topDelay, int leftDelay, int bottomDelay, int rightDelay,
-                                    DiscountingModelSelectionED50Dialog *discountingED50Dialog, QTableWidget *table)
+    bool static SheetTools::areDelayPointsValid(QStringList &delayPoints, bool isRowData,
+                                                int topDelay, int leftDelay, int bottomDelay, int rightDelay,
+                                                DiscountingModelSelectionED50Dialog *discountingED50Dialog, QTableWidget *table)
     {
         delayPoints.clear();
 

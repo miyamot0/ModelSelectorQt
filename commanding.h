@@ -45,16 +45,15 @@ public:
     void undo() override;
     void redo() override;
 
-    QString mOldContent;
-    QString mNewContent;
+    QString mOldContent,
+            mNewContent;
 
 private:
     const QAbstractItemModel *mItemModelRef;
     const QModelIndex *mItemIndex;
 
-
-    int mColumn = -1;
-    int mRow = -1;
+    int mColumn = -1,
+        mRow = -1;
 };
 
 class UpdateCommandBlock : public QUndoCommand
@@ -75,15 +74,15 @@ public:
     void undo() override;
     void redo() override;
 
-    QStringList mOldContent;
-    QStringList mNewContent;
+    QStringList mOldContent,
+                mNewContent;
 
 private:
     const QAbstractItemModel *mTopLeftModelRef;
     const QModelIndex *mTopLeftIndex;
 
-    int mLeftColumn = -1;
-    int mLeftRow = -1;
+    int mLeftColumn = -1,
+        mLeftRow = -1;
 };
 
 class UpdateCommandBlockInvert : public QUndoCommand
@@ -104,15 +103,15 @@ public:
     void undo() override;
     void redo() override;
 
-    QStringList mOldContent;
-    QStringList mNewContent;
+    QStringList mOldContent,
+                mNewContent;
 
 private:
     const QAbstractItemModel *mTopLeftModelRef;
     const QModelIndex *mTopLeftIndex;
 
-    int mLeftColumn = -1;
-    int mLeftRow = -1;
+    int mLeftColumn = -1,
+        mLeftRow = -1;
 };
 
 #endif // COMMANDING_H

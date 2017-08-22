@@ -43,14 +43,16 @@ class SystematicChekDialog : public QDialog
 public:
     explicit SystematicChekDialog(QWidget *parent = 0);
     ~SystematicChekDialog();
+
     QTableWidgetItem *item;
     QWidget *pWidget;
     QCheckBox *pCheckBox;
     QHBoxLayout *pLayout;
+
     QList<bool> mJonhsonBickelSelections;
 
-    bool canProceed = false;
-    bool flagRaised = false;
+    bool canProceed = false,
+         flagRaised = false;
 
     void appendRow(QString participant, QString criteriaOne, QString criteriaTwo);
     int getIndexOption();

@@ -86,15 +86,15 @@ private slots:
 private:
     Ui::DiscountingModelSelectionED50Dialog *ui;
 
-    int topDelay;
-    int leftDelay;
-    int bottomDelay;
-    int rightDelay;
+    int topDelay,
+        leftDelay,
+        bottomDelay,
+        rightDelay;
 
-    int topValue;
-    int leftValue;
-    int bottomValue;
-    int rightValue;
+    int topValue,
+        leftValue,
+        bottomValue,
+        rightValue;
 };
 
 #endif // DISCOUNTINGMODELSELECTIONED50DIALOG_H

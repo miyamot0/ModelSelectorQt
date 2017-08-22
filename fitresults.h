@@ -33,15 +33,15 @@ class FitResults
 public:
     FitResults();
 
-    QString Header;
-    QString TopModel;
     ModelType TopModelType;
-    QString ParticipantValues;
-    QString ParticipantDelays;
 
-    QString TopED50;
-    QString TopAUC;
-    QString TopAUCLog;
+    QString Header,
+            TopModel,
+            ParticipantValues,
+            ParticipantDelays,
+            TopED50,
+            TopAUC,
+            TopAUCLog;
 
     QList<double> TopErrPar;
 

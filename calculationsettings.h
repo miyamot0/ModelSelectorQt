@@ -40,8 +40,15 @@ public:
 
     QString scriptName;
 
-    int topDelay, leftDelay, bottomDelay, rightDelay;
-    int topValue, leftValue, bottomValue, rightValue;
+    int topDelay,
+        leftDelay,
+        bottomDelay,
+        rightDelay;
+
+    int topValue,
+        leftValue,
+        bottomValue,
+        rightValue;
 
     double maxValue;
 
