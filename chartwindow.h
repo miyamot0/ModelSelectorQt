@@ -65,7 +65,7 @@ public:
     double static ebert_prelec_plotting(double k, double s, double x);
     double static bleichrodt_plotting(double k, double s, double beta, double x);
 
-    bool eventFilter(QObject *object, QEvent *e);
+    bool eventFilter(QObject *, QEvent *e);
 
 private slots:
     void on_NextButton_clicked();

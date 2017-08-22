@@ -20,7 +20,7 @@ TEST_FEATURES = 1
 
 VERSION_MAJOR = 1
 VERSION_MINOR = 5
-VERSION_BUILD = 0
+VERSION_BUILD = 1
 
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
        "VERSION_MINOR=$$VERSION_MINOR"\
@@ -55,9 +55,6 @@ SOURCES += main.cpp\
     Libraries/alglib-3.11.0/src/alglibinternal.cpp \
     Libraries/alglib-3.11.0/src/alglibmisc.cpp \
     Libraries/alglib-3.11.0/src/ap.cpp \
-    Libraries/alglib-3.11.0/src/dataanalysis.cpp \
-    Libraries/alglib-3.11.0/src/diffequations.cpp \
-    Libraries/alglib-3.11.0/src/fasttransforms.cpp \
     Libraries/alglib-3.11.0/src/integration.cpp \
     Libraries/alglib-3.11.0/src/interpolation.cpp \
     Libraries/alglib-3.11.0/src/linalg.cpp \
@@ -86,9 +83,6 @@ HEADERS  += \
     Libraries/alglib-3.11.0/src/alglibinternal.h \
     Libraries/alglib-3.11.0/src/alglibmisc.h \
     Libraries/alglib-3.11.0/src/ap.h \
-    Libraries/alglib-3.11.0/src/dataanalysis.h \
-    Libraries/alglib-3.11.0/src/diffequations.h \
-    Libraries/alglib-3.11.0/src/fasttransforms.h \
     Libraries/alglib-3.11.0/src/integration.h \
     Libraries/alglib-3.11.0/src/interpolation.h \
     Libraries/alglib-3.11.0/src/linalg.h \

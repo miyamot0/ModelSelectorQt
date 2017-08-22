@@ -1155,7 +1155,7 @@ double ChartWindow::bleichrodt_plotting(double k, double s, double beta, double 
     return beta * exp(-exp(k)*pow(x,s));
 }
 
-bool ChartWindow::eventFilter(QObject *object, QEvent *e)
+bool ChartWindow::eventFilter(QObject *, QEvent *e)
 {
     if (e->type() == QEvent::ShortcutOverride)
     {
