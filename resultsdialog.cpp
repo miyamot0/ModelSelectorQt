@@ -45,7 +45,7 @@ ResultsDialog::ResultsDialog(int nSeries, bool tripLogNormal, QWidget *parent) :
         )
     );
 
-    copyAction = new QAction("Copy", this);
+    copyAction = new QAction(tr("Copy"), this);
     copyAction->setShortcut(QKeySequence("Ctrl+C"));
     copyAction->setIcon(QIcon(":/images/edit-copy.png"));
     connect(copyAction, &QAction::triggered, this, &ResultsDialog::copy);
@@ -373,7 +373,7 @@ void ResultsDialog::copy()
 void ResultsDialog::on_pushButton_2_clicked()
 {
     QString selFilter="Spreadsheet (*.xlsx)";
-    QString file_name = QFileDialog::getSaveFileName(this, "Save file", QDir::homePath(), "Spreadsheet (*.xlsx)", &selFilter);
+    QString file_name = QFileDialog::getSaveFileName(this, "Save file", QDir::homePath(), tr("Spreadsheet (*.xlsx)"), &selFilter);
 
     if(!file_name.trimmed().isEmpty())
     {

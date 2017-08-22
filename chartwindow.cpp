@@ -216,7 +216,7 @@ void ChartWindow::buildProbabilityPlot()
     barAxisX = new QBarCategoryAxis();
     barAxisX->append(modelAxisCategories);
     barAxisX->setGridLineColor(Qt::transparent);
-    barAxisX->setTitleText("Model Candidates");
+    barAxisX->setTitleText(tr("Model Candidates"));
     barAxisX->setTitleBrush(Qt::black);
     barAxisX->setTitleFont(QFont("Serif", 10, -1, false));
     barAxisX->setLabelsFont(QFont("Serif", 7, -1, false));
@@ -230,7 +230,7 @@ void ChartWindow::buildProbabilityPlot()
     barAxisY = new QValueAxis();
     barAxisY->setMin(0.0);
     barAxisY->setMax(1.0);
-    barAxisY->setTitleText("Probability");
+    barAxisY->setTitleText(tr("Probability"));
     barAxisY->setTitleFont(QFont("Serif", 10, -1, false));
     barAxisY->setTitleBrush(Qt::black);
     barAxisY->setGridLineColor(Qt::transparent);   
@@ -268,7 +268,7 @@ void ChartWindow::buildErrorPlot()
 
     axisXerror = new QValueAxis;
     axisXerror->setGridLineColor(Qt::transparent);
-    axisXerror->setTitleText("Residual");
+    axisXerror->setTitleText(tr("Residual"));
     axisXerror->setMin(0);
     axisXerror->setLabelsFont(QFont("Serif", 10, -1, false));
     axisXerror->setLabelsColor(Qt::black);
@@ -280,7 +280,7 @@ void ChartWindow::buildErrorPlot()
 
     axisYerror = new QValueAxis;
     axisYerror->setGridLineColor(Qt::transparent);
-    axisYerror->setTitleText("Error Value Value");
+    axisYerror->setTitleText(tr("Error Value Value"));
     axisYerror->setTickCount(9);
     axisYerror->setLabelsFont(QFont("Serif", 10, -1, false));
     axisYerror->setLabelsColor(Qt::black);
@@ -293,13 +293,14 @@ void ChartWindow::buildErrorPlot()
 
     errSeries = new QLineSeries();
     errSeries->setName("");
+    errSeries->setPointsVisible(false);
     errSeries->setPen(QPen(Qt::black));
     //errSeries->setPointsVisible(false);
     chartError->addSeries(errSeries);
 
     errDataPoints = new QScatterSeries();
 
-    errDataPoints->setName("err");
+    errDataPoints->setName(tr("err"));
     errDataPoints->setMarkerShape(QScatterSeries::MarkerShapeRectangle);
     errDataPoints->setPen(QPen(Qt::black));
     errDataPoints->setBrush(QBrush(Qt::black));
@@ -331,7 +332,7 @@ void ChartWindow::buildAUCPlot()
 
     axisXarea = new QValueAxis;
     axisXarea->setGridLineColor(Qt::transparent);
-    axisXarea->setTitleText("ln(Delay)");
+    axisXarea->setTitleText(tr("ln(Delay)"));
     axisXarea->setTitleBrush(Qt::black);
     axisXarea->setTitleFont(QFont("Serif", 10, -1, false));
     axisXarea->setMin(0);
@@ -344,7 +345,7 @@ void ChartWindow::buildAUCPlot()
 
     axisYarea = new QValueAxis;
     axisYarea->setGridLineColor(Qt::transparent);
-    axisYarea->setTitleText("Value");
+    axisYarea->setTitleText(tr("Value"));
     axisYarea->setTitleBrush(Qt::black);
     axisYarea->setTitleFont(QFont("Serif", 10, -1, false));
     axisYarea->setTickCount(5);
@@ -464,7 +465,7 @@ void ChartWindow::buildED50Plot()
 
     axisX = new QValueAxis;
     axisX->setGridLineColor(Qt::transparent);
-    axisX->setTitleText("ln(Delay)");
+    axisX->setTitleText(tr("ln(Delay)"));
     axisX->setTitleFont(QFont("Serif", 10, -1, false));
     axisX->setTitleBrush(Qt::black);
     axisX->setMin(0);
@@ -477,7 +478,7 @@ void ChartWindow::buildED50Plot()
 
     axisY = new QValueAxis;
     axisY->setGridLineColor(Qt::transparent);
-    axisY->setTitleText("Value");
+    axisY->setTitleText(tr("Value"));
     axisY->setTitleFont(QFont("Serif", 10, -1, false));
     axisY->setTitleBrush(Qt::black);
     axisY->setTickCount(5);
@@ -1175,7 +1176,7 @@ void ChartWindow::saveSVGasPNG()
 
 #elif TARGET_OS_MAC
 
-        file_name = QFileDialog::getSaveFileName(this, "Save PNG", QDir::homePath(),
+        file_name = QFileDialog::getSaveFileName(this, tr("Save PNG"), QDir::homePath(),
                                          fileFilter, &fileFilter, QFileDialog::Option::DontUseNativeDialog);
 
         if (!file_name.contains(".png"))
