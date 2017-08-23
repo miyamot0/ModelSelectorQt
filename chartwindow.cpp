@@ -128,6 +128,7 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
 
     plotED50Series(0);
     plotAUCSeries(0);
+    plotResiduals(0);
 }
 
 void ChartWindow::buildProbabilityPlot()
@@ -599,30 +600,6 @@ void ChartWindow::plotAUCSeries(int index)
 {
     mList = mDisplayData.at(index);
 
-    errSeries->clear();
-    errDataPoints->clear();
-
-    *errSeries << QPointF(0, 0);
-
-    for (int j=0; j<mList.TopErrPar.length(); j++)
-    {
-        *errSeries << QPointF(j+1, 0);
-        *errDataPoints << QPointF(j+1, mList.TopErrPar[j]);
-    }
-
-    if (mList.TopErrPar.length() > 0)
-    {
-        minList = abs(*std::min_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
-        maxList = abs(*std::max_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
-
-        axisYerror->setMin((maxList >= minList) ? -maxList : -minList);
-        axisYerror->setMax((maxList >= minList) ? maxList : minList);
-    }
-
-    axisXerror->setMin(0);
-    axisXerror->setMax(mList.TopErrPar.length());
-    axisXerror->setTickCount(mList.TopErrPar.count() + 1);
-
     expSeriesArea->clear();
     hypSeriesArea->clear();
     quasiSeriesArea->clear();
@@ -638,13 +615,11 @@ void ChartWindow::plotAUCSeries(int index)
     if (mList.Header.contains("dropped", Qt::CaseInsensitive))
     {
         chartArea->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
-        chartError->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
 
         return;
     }
 
     chartArea->setTitle(QString("Participant #%1: %2 Scaled AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopAUCLog));
-    chartError->setTitle(QString("Participant #%1: %2 Residual Plot").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel));
 
     expSeriesArea->hide();
     hypSeriesArea->hide();
@@ -762,10 +737,13 @@ void ChartWindow::plotAUCSeries(int index)
 
     int tickHack = ((int) log(lastDelay)) + 1;
 
-    axisXarea->setMax(tickHack);
-    axisXarea->setTickCount(tickHack + 1);
+    int negLogs = 3;
 
-    for (double i = 0; i < (log(lastDelay)+1); i = i + chartIterator)
+    axisXarea->setMin(-negLogs);
+    axisXarea->setMax(tickHack + negLogs);
+    axisXarea->setTickCount(tickHack + 1 + negLogs);
+
+    for (double i = 0 - 3; i < (log(lastDelay)+1); i = i + chartIterator)
     {
         plotAUCPoint(i);
     }
@@ -980,10 +958,13 @@ void ChartWindow::plotED50Series(int index)
 
     int tickHack = ((int) log(lastDelay)) + 1;
 
-    axisX->setMax(tickHack);
-    axisX->setTickCount(tickHack + 1);
+    int negLogs = 3;
 
-    for (double i = 0; i < (log(lastDelay)+1); i = i + chartIterator)
+    axisX->setMin(-negLogs);
+    axisX->setMax(tickHack + negLogs);
+    axisX->setTickCount(tickHack + 1 + negLogs);
+
+    for (double i = 0 - 3; i < (log(lastDelay)+1); i = i + chartIterator)
     {
         plotED50Point(i);
     }
@@ -1205,7 +1186,40 @@ void ChartWindow::plotProbabilities(int index)
 
 void ChartWindow::plotResiduals(int index)
 {
+    mList = mDisplayData.at(index);
 
+    errSeries->clear();
+    errDataPoints->clear();
+
+    *errSeries << QPointF(0, 0);
+
+    for (int j=0; j<mList.TopErrPar.length(); j++)
+    {
+        *errSeries << QPointF(j+1, 0);
+        *errDataPoints << QPointF(j+1, mList.TopErrPar[j]);
+    }
+
+    if (mList.TopErrPar.length() > 0)
+    {
+        minList = abs(*std::min_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
+        maxList = abs(*std::max_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
+
+        axisYerror->setMin((maxList >= minList) ? -maxList : -minList);
+        axisYerror->setMax((maxList >= minList) ? maxList : minList);
+    }
+
+    axisXerror->setMin(0);
+    axisXerror->setMax(mList.TopErrPar.length());
+    axisXerror->setTickCount(mList.TopErrPar.count() + 1);
+
+    if (mList.Header.contains("dropped", Qt::CaseInsensitive))
+    {
+        chartError->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
+
+        return;
+    }
+
+    chartError->setTitle(QString("Participant #%1: %2 Residual Plot").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel));
 }
 
 double ChartWindow::exponential_plotting(double k, double x)
@@ -1353,6 +1367,7 @@ void ChartWindow::on_NextButton_clicked()
     plotED50Series(currentIndexShown);
     plotAUCSeries(currentIndexShown);
     //plotProbabilities(currentIndexShown);
+    plotResiduals(currentIndexShown);
 }
 
 void ChartWindow::on_PreviousButton_clicked()
@@ -1367,4 +1382,5 @@ void ChartWindow::on_PreviousButton_clicked()
     plotED50Series(currentIndexShown);
     plotAUCSeries(currentIndexShown);
     //plotProbabilities(currentIndexShown);
+    plotResiduals(currentIndexShown);
 }
