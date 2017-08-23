@@ -90,9 +90,8 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
     stackedWidget->addWidget(chartView);
     stackedWidget->addWidget(chartViewArea);
 
-    buildProbabilityPlot();
-
-    stackedWidget->addWidget(barChartView);
+    //buildProbabilityPlot();
+    //stackedWidget->addWidget(barChartView);
 
     buildErrorPlot();
 
@@ -864,30 +863,14 @@ void ChartWindow::plotED50Series(int index)
     ebertSeries->hide();
     bleichrodtSeries->hide();
 
-    for (int l=0; l<9; l++)
-    {
-        expProbSet->replace(l, NULL);
-        expProbSet->replace(l, NULL);
-        hypProbSet->replace(l, NULL);
-        quasiProbSet->replace(l, NULL);
-        myerProbSet->replace(l, NULL);
-        rachProbSet->replace(l, NULL);
-        rodriguezProbSet->replace(l, NULL);
-        ebertProbSet->replace(l, NULL);
-        bleichrodtProbSet->replace(l, NULL);
-        noiseProbSet->replace(l, NULL);
-    }
-
     if (mList.Header.contains("dropped", Qt::CaseInsensitive))
     {
         chart->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
-        barChart->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
 
         return;
     }
 
     chart->setTitle(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopED50));
-    barChart->setTitle(QString("Participant #%1: Model Probabilities").arg(QString::number(currentIndexShown + 1)));
 
     expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
 
@@ -896,7 +879,6 @@ void ChartWindow::plotED50Series(int index)
         if (mList.FittingResults[i]->Model == ModelType::Noise)
         {
             noise = mList.FittingResults[i]->Params.first().second;
-            noiseProbSet->replace(8, mList.FittingResults[i]->Probability);
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Exponential)
@@ -907,7 +889,6 @@ void ChartWindow::plotED50Series(int index)
             {
                 expCheck = true;
                 expSeries->show();
-                expProbSet->replace(0, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -919,7 +900,6 @@ void ChartWindow::plotED50Series(int index)
             {
                 hypCheck = true;
                 hypSeries->show();
-                hypProbSet->replace(1, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -932,7 +912,6 @@ void ChartWindow::plotED50Series(int index)
             {
                 quasiCheck = true;
                 quasiSeries->show();
-                quasiProbSet->replace(2, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -945,7 +924,6 @@ void ChartWindow::plotED50Series(int index)
             {
                 myerCheck = true;
                 myerSeries->show();
-                myerProbSet->replace(3, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -958,7 +936,6 @@ void ChartWindow::plotED50Series(int index)
             {
                 rachCheck = true;
                 rachSeries->show();
-                rachProbSet->replace(4, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -971,7 +948,6 @@ void ChartWindow::plotED50Series(int index)
             {
                 rodriguezCheck = true;
                 rodriguezSeries->show();
-                rodriguezProbSet->replace(5, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -984,7 +960,6 @@ void ChartWindow::plotED50Series(int index)
             {
                 ebertCheck = true;
                 ebertSeries->show();
-                ebertProbSet->replace(6, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -999,7 +974,6 @@ void ChartWindow::plotED50Series(int index)
             {
                 bleichrodtCheck = true;
                 bleichrodtSeries->show();
-                bleichrodtProbSet->replace(7, mList.FittingResults[i]->Probability);
             }
         }
     }
@@ -1079,6 +1053,159 @@ void ChartWindow::plotED50Point(double i)
     {
         *bleichrodtSeries << QPointF(i, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
     }
+}
+
+void ChartWindow::plotProbabilities(int index)
+{
+    mList = mDisplayData.at(index);
+
+    if (mList.Header.contains("dropped", Qt::CaseInsensitive))
+    {
+        barChart->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
+
+        return;
+    }
+
+    barChart->setTitle(QString("Participant #%1: Model Probabilities").arg(QString::number(currentIndexShown + 1)));
+
+    expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
+
+    for (int i=0; i<mList.FittingResults.length(); i++)
+    {
+        if (mList.FittingResults[i]->Model == ModelType::Noise)
+        {
+            noiseProbSet->replace(8, mList.FittingResults[i]->Probability);
+        }
+        else
+        {
+            noiseProbSet->replace(8, 0);
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Exponential)
+        {
+            expK = mList.FittingResults[i]->Params.first().second;
+
+            if (expK != NULL)
+            {
+                expProbSet->replace(0, mList.FittingResults[i]->Probability);
+            }
+            else
+            {
+                expProbSet->replace(0, 0);
+            }
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Hyperbolic)
+        {
+            hypK = mList.FittingResults[i]->Params.first().second;
+
+            if (hypK != NULL)
+            {
+                hypProbSet->replace(1, mList.FittingResults[i]->Probability);
+            }
+            else
+            {
+                hypProbSet->replace(1, 0);
+            }
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::BetaDelta)
+        {
+            quasiB = mList.FittingResults[i]->Params.first().second;
+            quasiD = mList.FittingResults[i]->Params.last().second;
+
+            if (quasiB != NULL && quasiD != NULL)
+            {
+                quasiProbSet->replace(2, mList.FittingResults[i]->Probability);
+            }
+            else
+            {
+                quasiProbSet->replace(2, 0);
+            }
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Myerson)
+        {
+            myerK = mList.FittingResults[i]->Params.first().second;
+            myerS = mList.FittingResults[i]->Params.last().second;
+
+            if (myerK != NULL && myerS != NULL)
+            {
+                myerProbSet->replace(3, mList.FittingResults[i]->Probability);
+            }
+            else
+            {
+                myerProbSet->replace(3, 0);
+            }
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Rachlin)
+        {
+            rachK = mList.FittingResults[i]->Params.first().second;
+            rachS = mList.FittingResults[i]->Params.last().second;
+
+            if (rachK != NULL && rachS != NULL)
+            {
+                rachProbSet->replace(4, mList.FittingResults[i]->Probability);
+            }
+            else
+            {
+                rachProbSet->replace(4, 0);
+            }
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::RodriguezLogue)
+        {
+            rodriguezK = mList.FittingResults[i]->Params.first().second;
+            rodriguezS = mList.FittingResults[i]->Params.last().second;
+
+            if (rodriguezK != NULL && rodriguezS != NULL)
+            {
+                rodriguezProbSet->replace(5, mList.FittingResults[i]->Probability);
+            }
+            else
+            {
+                rodriguezProbSet->replace(5, 0);
+            }
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::EbertPrelec)
+        {
+            ebertK = mList.FittingResults[i]->Params.first().second;
+            ebertS = mList.FittingResults[i]->Params.last().second;
+
+            if (ebertK != NULL && ebertS != NULL)
+            {
+                ebertProbSet->replace(6, mList.FittingResults[i]->Probability);
+            }
+            else
+            {
+                ebertProbSet->replace(6, 0);
+            }
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Beleichrodt)
+        {
+            bleichrodtCheck = true;
+            bleichrodtK = mList.FittingResults[i]->Params.first().second;
+            bleichrodtS = mList.FittingResults[i]->Params[1].second;
+            bleichrodtBeta = mList.FittingResults[i]->Params.last().second;
+
+            if (bleichrodtK != NULL && bleichrodtS != NULL && bleichrodtBeta != NULL)
+            {
+                bleichrodtProbSet->replace(7, mList.FittingResults[i]->Probability);
+            }
+            else
+            {
+                bleichrodtProbSet->replace(7, 0);
+            }
+        }
+    }
+}
+
+void ChartWindow::plotResiduals(int index)
+{
+
 }
 
 double ChartWindow::exponential_plotting(double k, double x)
@@ -1225,6 +1352,7 @@ void ChartWindow::on_NextButton_clicked()
 
     plotED50Series(currentIndexShown);
     plotAUCSeries(currentIndexShown);
+    //plotProbabilities(currentIndexShown);
 }
 
 void ChartWindow::on_PreviousButton_clicked()
@@ -1238,4 +1366,5 @@ void ChartWindow::on_PreviousButton_clicked()
 
     plotED50Series(currentIndexShown);
     plotAUCSeries(currentIndexShown);
+    //plotProbabilities(currentIndexShown);
 }

@@ -56,6 +56,9 @@ public:
     void plotAUCSeries(int index);
     void plotAUCPoint(double i);
 
+    void plotProbabilities(int index);
+    void plotResiduals(int index);
+
     double exponential_plotting(double k, double x);
     double hyperbolic_plotting(double k, double x);
     double quasi_hyperbolic_plotting(double beta, double delta, double x);
