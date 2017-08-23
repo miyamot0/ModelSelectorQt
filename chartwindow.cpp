@@ -187,6 +187,7 @@ void ChartWindow::buildProbabilityPlot()
     }
 
     barSeries = new QStackedBarSeries();
+    barSeries->setUseOpenGL(true);
     barSeries->append(expProbSet);
     barSeries->append(hypProbSet);
     barSeries->append(quasiProbSet);
@@ -292,6 +293,7 @@ void ChartWindow::buildErrorPlot()
     axisYerror->setTitleFont(QFont("Serif", 10, -1, false));
 
     errSeries = new QLineSeries();
+    errSeries->setUseOpenGL(true);
     errSeries->setName("");
     errSeries->setPointsVisible(false);
     errSeries->setPen(QPen(Qt::black));
@@ -358,51 +360,61 @@ void ChartWindow::buildAUCPlot()
     axisYarea->setLinePen(QPen(Qt::black));
 
     expSeriesArea = new QLineSeries();
+    expSeriesArea->setUseOpenGL(true);
     expSeriesArea->setName("Exponential");
     expSeriesArea->setPen(QPen(Qt::black));
     chartArea->addSeries(expSeriesArea);
 
     hypSeriesArea = new QLineSeries();
+    hypSeriesArea->setUseOpenGL(true);
     hypSeriesArea->setName("Hyperbolic");
     hypSeriesArea->setPen(QPen(Qt::green));
     chartArea->addSeries(hypSeriesArea);
 
     quasiSeriesArea = new QLineSeries();
+    quasiSeriesArea->setUseOpenGL(true);
     quasiSeriesArea->setName("QuasiHyperbolic");
     quasiSeriesArea->setPen(QPen(Qt::blue));
     chartArea->addSeries(quasiSeriesArea);
 
     myerSeriesArea = new QLineSeries();
+    myerSeriesArea->setUseOpenGL(true);
     myerSeriesArea->setName("Green-Myerson");
     myerSeriesArea->setPen(QPen(Qt::cyan));
     chartArea->addSeries(myerSeriesArea);
 
     rachSeriesArea = new QLineSeries();
+    rachSeriesArea->setUseOpenGL(true);
     rachSeriesArea->setName("Rachlin");
     rachSeriesArea->setPen(QPen(Qt::magenta));
     chartArea->addSeries(rachSeriesArea);
 
     rodriguezSeriesArea = new QLineSeries();
+    rodriguezSeriesArea->setUseOpenGL(true);
     rodriguezSeriesArea->setName("Rodriguez-Logue");
     rodriguezSeriesArea->setPen(QPen(Qt::yellow));
     chartArea->addSeries(rodriguezSeriesArea);
 
     ebertSeriesArea = new QLineSeries();
+    ebertSeriesArea->setUseOpenGL(true);
     ebertSeriesArea->setName("Ebert-Prelec");
     ebertSeriesArea->setPen(QPen(Qt::red));
     chartArea->addSeries(ebertSeriesArea);
 
     bleichrodtSeriesArea = new QLineSeries();
+    bleichrodtSeriesArea->setUseOpenGL(true);
     bleichrodtSeriesArea->setName("Bleichrodt");
     bleichrodtSeriesArea->setPen(QPen(Qt::darkCyan));
     chartArea->addSeries(bleichrodtSeriesArea);
 
     noiseSeriesArea = new QLineSeries();
+    noiseSeriesArea->setUseOpenGL(true);
     noiseSeriesArea->setName("Noise");
     noiseSeriesArea->setPen(QPen(Qt::darkGray));
     chartArea->addSeries(noiseSeriesArea);
 
     empiricalSeries = new QLineSeries();
+    empiricalSeries->setUseOpenGL(true);
     empiricalSeries->setName("AUC");
     empiricalSeries->setPen(QPen(Qt::black));
     chartArea->addSeries(empiricalSeries);
@@ -491,51 +503,61 @@ void ChartWindow::buildED50Plot()
     axisY->setLinePen(QPen(Qt::black));
 
     expSeries = new QLineSeries();
+    expSeries->setUseOpenGL(true);
     expSeries->setName("Exponential");
     expSeries->setPen(QPen(Qt::black));
     chart->addSeries(expSeries);
 
     hypSeries = new QLineSeries();
+    hypSeries->setUseOpenGL(true);
     hypSeries->setName("Hyperbolic");
     hypSeries->setPen(QPen(Qt::green));
     chart->addSeries(hypSeries);
 
     quasiSeries = new QLineSeries();
+    quasiSeries->setUseOpenGL(true);
     quasiSeries->setName("QuasiHyperbolic");
     quasiSeries->setPen(QPen(Qt::blue));
     chart->addSeries(quasiSeries);
 
     myerSeries = new QLineSeries();
+    myerSeries->setUseOpenGL(true);
     myerSeries->setName("Green-Myerson");
     myerSeries->setPen(QPen(Qt::cyan));
     chart->addSeries(myerSeries);
 
     rachSeries = new QLineSeries();
+    rachSeries->setUseOpenGL(true);
     rachSeries->setName("Rachlin");
     rachSeries->setPen(QPen(Qt::magenta));
     chart->addSeries(rachSeries);
 
     rodriguezSeries = new QLineSeries();
+    rodriguezSeries->setUseOpenGL(true);
     rodriguezSeries->setName("Rodriguez-Logue");
     rodriguezSeries->setPen(QPen(Qt::yellow));
     chart->addSeries(rodriguezSeries);
 
     ebertSeries = new QLineSeries();
+    ebertSeries->setUseOpenGL(true);
     ebertSeries->setName("Ebert-Prelec");
     ebertSeries->setPen(QPen(Qt::red));
     chart->addSeries(ebertSeries);
 
     bleichrodtSeries = new QLineSeries();
+    bleichrodtSeries->setUseOpenGL(true);
     bleichrodtSeries->setName("Bleichrodt");
     bleichrodtSeries->setPen(QPen(Qt::darkCyan));
     chart->addSeries(bleichrodtSeries);
 
     noiseSeries = new QLineSeries();
+    noiseSeries->setUseOpenGL(true);
     noiseSeries->setName("Noise");
     noiseSeries->setPen(QPen(QPen(Qt::darkGray)));
     chart->addSeries(noiseSeries);
 
     dataPoints = new QScatterSeries();
+    dataPoints->setUseOpenGL(true);
     dataPoints->setName("Raw Data");
     dataPoints->setMarkerShape(QScatterSeries::MarkerShapeRectangle);
     dataPoints->setPen(QPen(Qt::black));
