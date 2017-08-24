@@ -266,6 +266,7 @@ void ChartWindow::buildErrorPlot()
     chartError.setTitleFont(mTitle);
     chartError.setFont(mTitle);
     chartError.setTitleBrush(Qt::black);
+
     chartError.legend()->setFont(mLegendFont);
     chartError.legend()->setAlignment(Qt::AlignBottom);
     chartError.legend()->setBrush(Qt::black);
@@ -1186,11 +1187,12 @@ void ChartWindow::plotResiduals(int index)
 
     if (mList.TopErrPar.length() > 0)
     {
-        minList = abs(*std::min_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
-        maxList = abs(*std::max_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
+        minList = std::abs(*std::min_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
+        maxList = std::abs(*std::max_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
 
         axisYerror.setMin((maxList >= minList) ? -maxList : -minList);
         axisYerror.setMax((maxList >= minList) ? maxList : minList);
+        axisYerror.setTickCount(9);
     }
 
     axisXerror.setMin(0);
