@@ -909,6 +909,8 @@ void CalculationWorker::working()
             fitResultNoise->ErrPar.append(mFittingObject->ErrorResidual[v]);
         }
 
+        fitResults->FittingResults.clear();
+
         fitResultNoise->Status = QString("---");
 
         mFittingObject->PrepareProbabilities();

@@ -81,79 +81,87 @@ private:
      *
      */
     QWidget *window;
-    QVBoxLayout *windowLayout;
-    QStackedWidget *stackedWidget;
+
+    QVBoxLayout windowLayout;
+    QStackedWidget stackedWidget;
+
+    QToolBar tb;
 
     /** Display Widgets
      *
      */
-    QChart *chart;
-    QChartView *chartView;
+    QChart chart,
+           chartArea,
+           chartError,
+           barChart;
 
-    QValueAxis *axisX,
-               *axisY,
-               *axisXarea,
-               *axisYarea,
-               *axisXerror,
-               *axisYerror;
-
-    QChart *chartArea,
-           *barChart,
-           *chartError;
-
-    QChartView *chartViewArea,
+    QChartView *chartView,
+               *chartViewArea,
                *barChartView,
                *chartViewError;
 
-    QLineSeries *errSeries;
-    QScatterSeries *errDataPoints;
-
-    QBarSet *expProbSet;
-    QBarSet *hypProbSet;
-    QBarSet *quasiProbSet;
-    QBarSet *myerProbSet;
-    QBarSet *rachProbSet;
-    QBarSet *rodriguezProbSet;
-    QBarSet *ebertProbSet;
-    QBarSet *bleichrodtProbSet;
-    QBarSet *noiseProbSet;
-
-    QStackedBarSeries *barSeries;
+    QValueAxis axisX,
+               axisY,
+               axisXarea,
+               axisYarea,
+               axisXerror,
+               axisYerror,
+               barAxisX,
+               barAxisY;
 
     QStringList modelAxisCategories,
                 delayPoints,
                 valuePoints;
 
-    QBarCategoryAxis *barAxisX;
-    QValueAxis *barAxisY;
+    QLineSeries expSeries,
+                hypSeries,
+                quasiSeries,
+                myerSeries,
+                rachSeries,
+                rodriguezSeries,
+                ebertSeries,
+                bleichrodtSeries,
+                noiseSeries,
 
+                errSeries,
 
-    QLineSeries *expSeries,
-                *hypSeries,
-                *quasiSeries,
-                *myerSeries,
-                *rachSeries,
-                *rodriguezSeries,
-                *ebertSeries,
-                *bleichrodtSeries,
-                *noiseSeries;
+                expProbSet,
+                hypProbSet,
+                quasiProbSet,
+                myerProbSet,
+                rachProbSet,
+                rodriguezProbSet,
+                ebertProbSet,
+                bleichrodtProbSet,
+                noiseProbSet,
 
-    QScatterSeries *dataPoints,
-                   *dataPointsArea;
+                expSeriesArea,
+                hypSeriesArea,
+                quasiSeriesArea,
+                myerSeriesArea,
+                rachSeriesArea,
+                rodriguezSeriesArea,
+                ebertSeriesArea,
+                bleichrodtSeriesArea,
+                noiseSeriesArea,
+                empiricalSeries;
 
-    QLineSeries *expSeriesArea,
-                *hypSeriesArea,
-                *quasiSeriesArea,
-                *myerSeriesArea,
-                *rachSeriesArea,
-                *rodriguezSeriesArea,
-                *ebertSeriesArea,
-                *bleichrodtSeriesArea,
-                *noiseSeriesArea,
-                *empiricalSeries;
+    QScatterSeries dataPoints,
+                   dataPointsArea,
+                   errDataPoints;
 
     QFont mTitle = QFont("Serif", 14, -1, false),
           mLegendFont = QFont("Serif", 10, -1, false);
+
+    QPen expPen,
+         hypPen,
+         quasiPen,
+         myerPen,
+         rachPen,
+         rodriguezPen,
+         ebertPen,
+         bleichrodtPen,
+         noisePen;
 
     /** Actions
      *
@@ -189,10 +197,7 @@ private:
          rachCheck,
          rodriguezCheck,
          ebertCheck,
-         bleichrodtCheck,
-         isED50Figure,
-         isAUCFigure,
-         isAUCLogFigure;
+         bleichrodtCheck;
 
     double expK,
            hypK,
@@ -217,7 +222,8 @@ private:
            lastDelay,
            minList,
            maxList,
-           chartIterator = 0.25;
+           chartIterator = 0.25,
+           colWidth = 100;
 };
 
 #endif // CHARTWINDOW_H

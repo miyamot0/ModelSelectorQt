@@ -29,22 +29,14 @@
 
 ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, ChartingOptions chartOption, QWidget *parent)
 {
-    mDisplayData = stringList;
-
-    mList = mDisplayData[0];
-
-    isED50Figure = (chartOption == ChartingOptions::ED50);
-    isAUCLogFigure = (chartOption == ChartingOptions::AreaLog);
-
     if (chartOption == ChartingOptions::None)
-    {
-        isED50Figure = isAUCFigure = isAUCLogFigure = false;
-    }
-
-    if (!isED50Figure && !isAUCLogFigure)
     {
         close();
     }
+
+    mDisplayData = stringList;
+
+    mList = mDisplayData[0];
 
     isLogNormalParamerized = isLogNormal;
 
@@ -71,40 +63,30 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
 
     installEventFilter(this);
 
-    chart = new QChart();
-
     buildED50Plot();
 
-    chartView = new QChartView(chart);
+    chartView = new QChartView(&chart);
     chartView->setRenderHint(QPainter::Antialiasing);
-
-    chartArea = new QChart();
 
     buildAUCPlot();
 
-    chartViewArea = new QChartView(chartArea);
+    chartViewArea = new QChartView(&chartArea);
     chartViewArea->setRenderHint(QPainter::Antialiasing);
 
-    windowLayout = new QVBoxLayout;
-    stackedWidget = new QStackedWidget;
-    stackedWidget->addWidget(chartView);
-    stackedWidget->addWidget(chartViewArea);
+    stackedWidget.addWidget(chartView);
+    stackedWidget.addWidget(chartViewArea);
 
-    //buildProbabilityPlot();
-    //stackedWidget->addWidget(barChartView);
+    buildProbabilityPlot();
+    stackedWidget.addWidget(barChartView);
 
     buildErrorPlot();
+    stackedWidget.addWidget(chartViewError);
 
-    stackedWidget->addWidget(chartViewError);
+    windowLayout.addWidget(&stackedWidget);
 
-    // Add stacked widget
-    windowLayout->addWidget(stackedWidget);
-
-    // Set window layout
     window = new QWidget(parent);
-    window->setLayout(windowLayout);
+    window->setLayout(&windowLayout);
 
-    QToolBar *tb = new QToolBar();
 
     saveAction = new QAction(tr("Save"), this);
     connect(saveAction, &QAction::triggered, this, &ChartWindow::saveSVGasPNG);
@@ -115,12 +97,12 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
     nextAction = new QAction(tr("Next"), this);
     connect(nextAction, &QAction::triggered, this, &ChartWindow::on_NextButton_clicked);
 
-    tb->addAction(saveAction);
-    tb->addAction(prevAction);
-    tb->addAction(nextAction);
+    tb.addAction(saveAction);
+    tb.addAction(prevAction);
+    tb.addAction(nextAction);
 
     setWindowTitle(tr("Discounting Model Selection Plots (Use Arrows to Change Plots)"));
-    windowLayout->setMenuBar(tb);
+    windowLayout.setMenuBar(&tb);
     setCentralWidget(window);
     resize(800, 600);
 
@@ -128,545 +110,543 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
 
     plotED50Series(0);
     plotAUCSeries(0);
+    plotProbabilities(0);
     plotResiduals(0);
 }
 
+/**
+ * @brief ChartWindow::buildProbabilityPlot
+ */
 void ChartWindow::buildProbabilityPlot()
 {
-    barChart = new QChart();
-    barChart->setTitleFont(mTitle);
-    barChart->setFont(mTitle);
+    barChart.setTitleFont(mTitle);
+    barChart.setFont(mTitle);
+    barChart.setTitleBrush(Qt::black);
 
-    expProbSet = new QBarSet("Exponential");
-    expProbSet->setColor(Qt::black);
-    expProbSet->setBorderColor(Qt::black);
+    barChart.legend()->setFont(mLegendFont);
+    barChart.legend()->setAlignment(Qt::AlignBottom);
+    barChart.legend()->setLabelBrush(Qt::black);
+    barChart.legend()->setLabelColor(Qt::black);
+    barChart.legend()->setFont(QFont("Serif", 8, -1, false));
 
-    hypProbSet = new QBarSet("Hyperbolic");
-    hypProbSet->setColor(Qt::green);
-    hypProbSet->setBorderColor(Qt::green);
+    expPen.setBrush(Qt::black);
+    hypPen.setBrush(Qt::green);
+    quasiPen.setBrush(Qt::blue);
+    myerPen.setBrush(Qt::cyan);
+    rachPen.setBrush(Qt::magenta);
+    rodriguezPen.setBrush(Qt::yellow);
+    ebertPen.setBrush(Qt::red);
+    bleichrodtPen.setBrush(Qt::darkCyan);
+    noisePen.setBrush(Qt::darkGray);
 
-    quasiProbSet = new QBarSet("QuasiHyperbolic");
-    quasiProbSet->setColor(Qt::blue);
-    quasiProbSet->setBorderColor(Qt::blue);
+    expPen.setWidthF(colWidth);
+    hypPen.setWidthF(colWidth);
+    quasiPen.setWidthF(colWidth);
+    myerPen.setWidthF(colWidth);
+    rachPen.setWidthF(colWidth);
+    rodriguezPen.setWidthF(colWidth);
+    ebertPen.setWidthF(colWidth);
+    bleichrodtPen.setWidthF(colWidth);
+    noisePen.setWidthF(colWidth);
 
-    myerProbSet = new QBarSet("Green-Myerson");
-    myerProbSet->setColor(Qt::cyan);
-    myerProbSet->setBorderColor(Qt::cyan);
+    expProbSet.setName("Exponential");
+    expProbSet.setUseOpenGL(true);
+    expProbSet.setColor(Qt::black);
+    expProbSet.setPen(expPen);
 
-    rachProbSet = new QBarSet("Rachlin");
-    rachProbSet->setColor(Qt::magenta);
-    rachProbSet->setBorderColor(Qt::magenta);
+    hypProbSet.setName("Hyperbolic");
+    hypProbSet.setUseOpenGL(true);
+    hypProbSet.setColor(Qt::green);
+    hypProbSet.setPen(hypPen);
 
-    rodriguezProbSet = new QBarSet("Rodriguez-Logue");
-    rodriguezProbSet->setColor(Qt::yellow);
-    rodriguezProbSet->setBorderColor(Qt::yellow);
+    quasiProbSet.setName("QuasiHyperbolic");
+    quasiProbSet.setUseOpenGL(true);
+    quasiProbSet.setColor(Qt::blue);
+    quasiProbSet.setPen(quasiPen);
 
-    ebertProbSet = new QBarSet("Ebert-Prelec");
-    ebertProbSet->setColor(Qt::red);
-    ebertProbSet->setBorderColor(Qt::red);
+    myerProbSet.setName("Green-Myerson");
+    myerProbSet.setUseOpenGL(true);
+    myerProbSet.setColor(Qt::cyan);
+    myerProbSet.setPen(myerPen);
 
-    bleichrodtProbSet = new QBarSet("Belechrodt");
-    bleichrodtProbSet->setColor(Qt::darkCyan);
-    bleichrodtProbSet->setBorderColor(Qt::darkCyan);
+    rachProbSet.setName("Rachlin");
+    rachProbSet.setUseOpenGL(true);
+    rachProbSet.setColor(Qt::magenta);
+    rachProbSet.setPen(rachPen);
 
-    noiseProbSet = new QBarSet("Noise");
-    noiseProbSet->setColor(Qt::darkGray);
-    noiseProbSet->setBorderColor(Qt::darkGray);
+    rodriguezProbSet.setName("Rodriguez-Logue");
+    rodriguezProbSet.setUseOpenGL(true);
+    rodriguezProbSet.setColor(Qt::yellow);
+    rodriguezProbSet.setPen(rodriguezPen);
 
-    for (int l=0; l<9; l++)
-    {
-        *expProbSet << NULL;
-        *hypProbSet << NULL;
-        *quasiProbSet << NULL;
-        *myerProbSet << NULL;
-        *rachProbSet << NULL;
-        *rodriguezProbSet << NULL;
-        *ebertProbSet << NULL;
-        *bleichrodtProbSet << NULL;
-        *noiseProbSet << NULL;
-    }
+    ebertProbSet.setName("Ebert-Prelec");
+    ebertProbSet.setUseOpenGL(true);
+    ebertProbSet.setColor(Qt::red);
+    ebertProbSet.setPen(ebertPen);
 
-    barSeries = new QStackedBarSeries();
-    barSeries->setUseOpenGL(true);
-    barSeries->append(expProbSet);
-    barSeries->append(hypProbSet);
-    barSeries->append(quasiProbSet);
-    barSeries->append(myerProbSet);
-    barSeries->append(rachProbSet);
-    barSeries->append(rodriguezProbSet);
-    barSeries->append(ebertProbSet);
-    barSeries->append(bleichrodtProbSet);
-    barSeries->append(noiseProbSet);
+    bleichrodtProbSet.setName("Bleichrodt");
+    bleichrodtProbSet.setUseOpenGL(true);
+    bleichrodtProbSet.setColor(Qt::darkCyan);
+    bleichrodtProbSet.setPen(bleichrodtPen);
 
-    barChart->addSeries(barSeries);
-    barChart->setTitle("Simple barchart example");
-    barChart->setTitleBrush(Qt::black);
-    barChart->setTitleFont(mTitle);
-    barChart->setFont(mTitle);
+    noiseProbSet.setName("Noise");
+    noiseProbSet.setUseOpenGL(true);
+    noiseProbSet.setColor(Qt::darkGray);
+    noiseProbSet.setPen(noisePen);
 
-    modelAxisCategories << "Exponential" <<
-                           "Hyperbolic" <<
-                           "QuasiHyperbolic" <<
-                           "Green-Myerson" <<
-                           "Rachlin" <<
-                           "Rodriguez-Logue" <<
-                           "Ebert-Prelec" <<
-                           "Belechrodt" <<
-                           "Noise";
+    barChart.addSeries(&expProbSet);
+    barChart.addSeries(&hypProbSet);
+    barChart.addSeries(&quasiProbSet);
+    barChart.addSeries(&myerProbSet);
+    barChart.addSeries(&rachProbSet);
+    barChart.addSeries(&rodriguezProbSet);
+    barChart.addSeries(&ebertProbSet);
+    barChart.addSeries(&bleichrodtProbSet);
+    barChart.addSeries(&noiseProbSet);
 
-    barAxisX = new QBarCategoryAxis();
-    barAxisX->append(modelAxisCategories);
-    barAxisX->setGridLineColor(Qt::transparent);
-    barAxisX->setTitleText(tr("Model Candidates"));
-    barAxisX->setTitleBrush(Qt::black);
-    barAxisX->setTitleFont(QFont("Serif", 10, -1, false));
-    barAxisX->setLabelsFont(QFont("Serif", 7, -1, false));
-    barAxisX->setLabelsColor(Qt::black);
-    barAxisX->setLinePenColor(Qt::black);
-    barAxisX->setLinePen(QPen(Qt::black));
+    barAxisX.setMin(0);
+    barAxisX.setMax(10);
+    barAxisX.setTickCount(11);
+    barAxisX.applyNiceNumbers();
+    barAxisX.setGridLineColor(Qt::transparent);
+    barAxisX.setTitleText(tr("Model Candidates"));
+    barAxisX.setTitleBrush(Qt::white);
+    barAxisX.setTitleFont(QFont("Serif", 10, -1, false));
+    barAxisX.setLabelsFont(QFont("Serif", 7, -1, false));
+    barAxisX.setLabelsColor(Qt::white);
+    barAxisX.setLinePenColor(Qt::black);
+    barAxisX.setLinePen(QPen(Qt::black));
 
-    barChart->setAxisX(barAxisX, barSeries);
-    //barChart->setAnimationOptions(QChart::SeriesAnimations);
+    barAxisY.setMin(0.0);
+    barAxisY.setMax(1.0);
+    barAxisY.setTitleText(tr("Probability"));
+    barAxisY.setTitleFont(QFont("Serif", 10, -1, false));
+    barAxisY.setTitleBrush(Qt::black);
+    barAxisY.setGridLineColor(Qt::transparent);
+    barAxisY.setLabelsFont(QFont("Serif", 10, -1, false));
+    barAxisY.setLabelsColor(Qt::black);
+    barAxisY.setLinePenColor(Qt::black);
+    barAxisY.setLinePen(QPen(Qt::black));
 
-    barAxisY = new QValueAxis();
-    barAxisY->setMin(0.0);
-    barAxisY->setMax(1.0);
-    barAxisY->setTitleText(tr("Probability"));
-    barAxisY->setTitleFont(QFont("Serif", 10, -1, false));
-    barAxisY->setTitleBrush(Qt::black);
-    barAxisY->setGridLineColor(Qt::transparent);   
-    barAxisY->setLabelsFont(QFont("Serif", 10, -1, false));
-    barAxisY->setLabelsColor(Qt::black);
-    barAxisY->setLinePenColor(Qt::black);
-    barAxisY->setLinePen(QPen(Qt::black));
+    barChart.setAxisX(&barAxisX, &expProbSet);
+    barChart.setAxisY(&barAxisY, &expProbSet);
 
-    barChart->setAxisY(barAxisY, barSeries);
+    barChart.setAxisX(&barAxisX, &hypProbSet);
+    barChart.setAxisY(&barAxisY, &hypProbSet);
 
-    barChart->legend()->setVisible(false);
-    barChart->legend()->setFont(QFont("Serif", 8, -1, false));
-    barChart->legend()->setBrush(Qt::black);
-    barChart->legend()->setColor(Qt::black);
+    barChart.setAxisX(&barAxisX, &quasiProbSet);
+    barChart.setAxisY(&barAxisY, &quasiProbSet);
 
-    barChartView = new QChartView(barChart);
+    barChart.setAxisX(&barAxisX, &myerProbSet);
+    barChart.setAxisY(&barAxisY, &myerProbSet);
+
+    barChart.setAxisX(&barAxisX, &rachProbSet);
+    barChart.setAxisY(&barAxisY, &rachProbSet);
+
+    barChart.setAxisX(&barAxisX, &rodriguezProbSet);
+    barChart.setAxisY(&barAxisY, &rodriguezProbSet);
+
+    barChart.setAxisX(&barAxisX, &ebertProbSet);
+    barChart.setAxisY(&barAxisY, &ebertProbSet);
+
+    barChart.setAxisX(&barAxisX, &bleichrodtProbSet);
+    barChart.setAxisY(&barAxisY, &bleichrodtProbSet);
+
+    barChart.setAxisX(&barAxisX, &noiseProbSet);
+    barChart.setAxisY(&barAxisY, &noiseProbSet);
+
+    barChartView = new QChartView(&barChart);
 }
 
+/**
+ * @brief ChartWindow::buildErrorPlot
+ */
 void ChartWindow::buildErrorPlot()
 {
-    chartError = new QChart();
-    chartError->setTitleFont(mTitle);
-    chartError->setFont(mTitle);
-    chartError->setTitleBrush(Qt::black);
+    chartError.setTitleFont(mTitle);
+    chartError.setFont(mTitle);
+    chartError.setTitleBrush(Qt::black);
+    chartError.legend()->setFont(mLegendFont);
+    chartError.legend()->setAlignment(Qt::AlignBottom);
+    chartError.legend()->setBrush(Qt::black);
+    chartError.legend()->setColor(Qt::black);
 
-    auto mLegendArea = chartError->legend();
+    // do we need a table?
+    chartError.legend()->setVisible(false);
 
-    mLegendArea->setFont(mLegendFont);
-    mLegendArea->setAlignment(Qt::AlignBottom);
-    mLegendArea->setBrush(Qt::black);
-    mLegendArea->setColor(Qt::black);
+    axisXerror.setGridLineColor(Qt::transparent);
+    axisXerror.setTitleText(tr("Residual"));
+    axisXerror.setMin(0);
+    axisXerror.setLabelsFont(QFont("Serif", 10, -1, false));
+    axisXerror.setLabelsColor(Qt::black);
+    axisXerror.setLabelFormat(QString("%.0f"));
+    axisXerror.setLinePenColor(Qt::black);
+    axisXerror.setLinePen(QPen(Qt::black));
+    axisXerror.setTitleBrush(Qt::black);
+    axisXerror.setTitleFont(QFont("Serif", 10, -1, false));
 
-    // TODO do we need a table?
-    mLegendArea->setVisible(false);
+    axisYerror.setGridLineColor(Qt::transparent);
+    axisYerror.setTitleText(tr("Error Value Value"));
+    axisYerror.setTickCount(9);
+    axisYerror.setLabelsFont(QFont("Serif", 10, -1, false));
+    axisYerror.setLabelsColor(Qt::black);
+    axisYerror.setMin(-1);
+    axisYerror.setMax(1);
+    axisYerror.setLinePenColor(Qt::black);
+    axisYerror.setLinePen(QPen(Qt::black));
+    axisYerror.setTitleBrush(Qt::black);
+    axisYerror.setTitleFont(QFont("Serif", 10, -1, false));
 
-    axisXerror = new QValueAxis;
-    axisXerror->setGridLineColor(Qt::transparent);
-    axisXerror->setTitleText(tr("Residual"));
-    axisXerror->setMin(0);
-    axisXerror->setLabelsFont(QFont("Serif", 10, -1, false));
-    axisXerror->setLabelsColor(Qt::black);
-    axisXerror->setLabelFormat(QString("%.0f"));
-    axisXerror->setLinePenColor(Qt::black);
-    axisXerror->setLinePen(QPen(Qt::black));
-    axisXerror->setTitleBrush(Qt::black);
-    axisXerror->setTitleFont(QFont("Serif", 10, -1, false));
+    errSeries.setUseOpenGL(true);
+    errSeries.setName("");
+    errSeries.setPointsVisible(false);
+    errSeries.setPen(QPen(Qt::black));
+    chartError.addSeries(&errSeries);
 
-    axisYerror = new QValueAxis;
-    axisYerror->setGridLineColor(Qt::transparent);
-    axisYerror->setTitleText(tr("Error Value Value"));
-    axisYerror->setTickCount(9);
-    axisYerror->setLabelsFont(QFont("Serif", 10, -1, false));
-    axisYerror->setLabelsColor(Qt::black);
-    axisYerror->setMin(-1);
-    axisYerror->setMax(1);
-    axisYerror->setLinePenColor(Qt::black);
-    axisYerror->setLinePen(QPen(Qt::black));
-    axisYerror->setTitleBrush(Qt::black);
-    axisYerror->setTitleFont(QFont("Serif", 10, -1, false));
+    errDataPoints.setName(tr("err"));
+    errDataPoints.setMarkerShape(QScatterSeries::MarkerShapeRectangle);
+    errDataPoints.setPen(QPen(Qt::black));
+    errDataPoints.setBrush(QBrush(Qt::black));
+    errDataPoints.setMarkerSize(10);
+    chartError.addSeries(&errDataPoints);
 
-    errSeries = new QLineSeries();
-    errSeries->setUseOpenGL(true);
-    errSeries->setName("");
-    errSeries->setPointsVisible(false);
-    errSeries->setPen(QPen(Qt::black));
-    //errSeries->setPointsVisible(false);
-    chartError->addSeries(errSeries);
+    chartError.setAxisX(&axisXerror, &errSeries);
+    chartError.setAxisY(&axisYerror, &errSeries);
 
-    errDataPoints = new QScatterSeries();
+    chartError.setAxisX(&axisXerror, &errDataPoints);
+    chartError.setAxisY(&axisYerror, &errDataPoints);
 
-    errDataPoints->setName(tr("err"));
-    errDataPoints->setMarkerShape(QScatterSeries::MarkerShapeRectangle);
-    errDataPoints->setPen(QPen(Qt::black));
-    errDataPoints->setBrush(QBrush(Qt::black));
-    errDataPoints->setMarkerSize(10);
-
-    chartError->addSeries(errDataPoints);
-
-    chartError->setAxisX(axisXerror, errSeries);
-    chartError->setAxisY(axisYerror, errSeries);
-
-    chartError->setAxisX(axisXerror, errDataPoints);
-    chartError->setAxisY(axisYerror, errDataPoints);
-
-    chartViewError = new QChartView(chartError);
+    chartViewError = new QChartView(&chartError);
 }
 
+/**
+ * @brief ChartWindow::buildAUCPlot
+ */
 void ChartWindow::buildAUCPlot()
 {
-    chartArea->setTitleFont(mTitle);
-    chartArea->setTitleBrush(Qt::black);
+    chartArea.setTitleFont(mTitle);
+    chartArea.setTitleBrush(Qt::black);
 
-    auto mLegendArea = chartArea->legend();
+    chartArea.legend()->setFont(mLegendFont);
+    chartArea.legend()->setAlignment(Qt::AlignBottom);
+    chartArea.legend()->setLabelBrush(Qt::black);
+    chartArea.legend()->setLabelColor(Qt::black);
+    chartArea.legend()->setFont(QFont("Serif", 8, -1, false));
 
-    mLegendArea->setFont(mLegendFont);
-    mLegendArea->setAlignment(Qt::AlignBottom);
-    mLegendArea->setLabelBrush(Qt::black);
-    mLegendArea->setLabelColor(Qt::black);
-    mLegendArea->setFont(QFont("Serif", 8, -1, false));
+    axisXarea.setGridLineColor(Qt::transparent);
+    axisXarea.setTitleText(tr("ln(Delay)"));
+    axisXarea.setTitleBrush(Qt::black);
+    axisXarea.setTitleFont(QFont("Serif", 10, -1, false));
+    axisXarea.setMin(0);
+    axisXarea.setLabelsFont(QFont("Serif", 10, -1, false));
+    axisXarea.setLabelsBrush(Qt::black);
+    axisXarea.setLabelsColor(Qt::black);
+    axisXarea.setLabelFormat(QString("%.0f"));
+    axisXarea.setLinePenColor(Qt::black);
+    axisXarea.setLinePen(QPen(Qt::black));
 
-    axisXarea = new QValueAxis;
-    axisXarea->setGridLineColor(Qt::transparent);
-    axisXarea->setTitleText(tr("ln(Delay)"));
-    axisXarea->setTitleBrush(Qt::black);
-    axisXarea->setTitleFont(QFont("Serif", 10, -1, false));
-    axisXarea->setMin(0);
-    axisXarea->setLabelsFont(QFont("Serif", 10, -1, false));
-    axisXarea->setLabelsBrush(Qt::black);
-    axisXarea->setLabelsColor(Qt::black);
-    axisXarea->setLabelFormat(QString("%.0f"));
-    axisXarea->setLinePenColor(Qt::black);
-    axisXarea->setLinePen(QPen(Qt::black));
+    axisYarea.setGridLineColor(Qt::transparent);
+    axisYarea.setTitleText(tr("Value"));
+    axisYarea.setTitleBrush(Qt::black);
+    axisYarea.setTitleFont(QFont("Serif", 10, -1, false));
+    axisYarea.setTickCount(5);
+    axisYarea.setLabelsFont(QFont("Serif", 10, -1, false));
+    axisYarea.setLabelsBrush(Qt::black);
+    axisYarea.setLabelsColor(Qt::black);
+    axisYarea.setMin(0);
+    axisYarea.setMax(1);
+    axisYarea.setLinePenColor(Qt::black);
+    axisYarea.setLinePen(QPen(Qt::black));
 
-    axisYarea = new QValueAxis;
-    axisYarea->setGridLineColor(Qt::transparent);
-    axisYarea->setTitleText(tr("Value"));
-    axisYarea->setTitleBrush(Qt::black);
-    axisYarea->setTitleFont(QFont("Serif", 10, -1, false));
-    axisYarea->setTickCount(5);
-    axisYarea->setLabelsFont(QFont("Serif", 10, -1, false));
-    axisYarea->setLabelsBrush(Qt::black);
-    axisYarea->setLabelsColor(Qt::black);
-    axisYarea->setMin(0);
-    axisYarea->setMax(1);
-    axisYarea->setLinePenColor(Qt::black);
-    axisYarea->setLinePen(QPen(Qt::black));
+    expSeriesArea.setUseOpenGL(true);
+    expSeriesArea.setName("Exponential");
+    expSeriesArea.setPen(QPen(Qt::black));
+    chartArea.addSeries(&expSeriesArea);
 
-    expSeriesArea = new QLineSeries();
-    expSeriesArea->setUseOpenGL(true);
-    expSeriesArea->setName("Exponential");
-    expSeriesArea->setPen(QPen(Qt::black));
-    chartArea->addSeries(expSeriesArea);
+    hypSeriesArea.setUseOpenGL(true);
+    hypSeriesArea.setName("Hyperbolic");
+    hypSeriesArea.setPen(QPen(Qt::green));
+    chartArea.addSeries(&hypSeriesArea);
 
-    hypSeriesArea = new QLineSeries();
-    hypSeriesArea->setUseOpenGL(true);
-    hypSeriesArea->setName("Hyperbolic");
-    hypSeriesArea->setPen(QPen(Qt::green));
-    chartArea->addSeries(hypSeriesArea);
+    quasiSeriesArea.setUseOpenGL(true);
+    quasiSeriesArea.setName("QuasiHyperbolic");
+    quasiSeriesArea.setPen(QPen(Qt::blue));
+    chartArea.addSeries(&quasiSeriesArea);
 
-    quasiSeriesArea = new QLineSeries();
-    quasiSeriesArea->setUseOpenGL(true);
-    quasiSeriesArea->setName("QuasiHyperbolic");
-    quasiSeriesArea->setPen(QPen(Qt::blue));
-    chartArea->addSeries(quasiSeriesArea);
+    myerSeriesArea.setUseOpenGL(true);
+    myerSeriesArea.setName("Green-Myerson");
+    myerSeriesArea.setPen(QPen(Qt::cyan));
+    chartArea.addSeries(&myerSeriesArea);
 
-    myerSeriesArea = new QLineSeries();
-    myerSeriesArea->setUseOpenGL(true);
-    myerSeriesArea->setName("Green-Myerson");
-    myerSeriesArea->setPen(QPen(Qt::cyan));
-    chartArea->addSeries(myerSeriesArea);
+    rachSeriesArea.setUseOpenGL(true);
+    rachSeriesArea.setName("Rachlin");
+    rachSeriesArea.setPen(QPen(Qt::magenta));
+    chartArea.addSeries(&rachSeriesArea);
 
-    rachSeriesArea = new QLineSeries();
-    rachSeriesArea->setUseOpenGL(true);
-    rachSeriesArea->setName("Rachlin");
-    rachSeriesArea->setPen(QPen(Qt::magenta));
-    chartArea->addSeries(rachSeriesArea);
+    rodriguezSeriesArea.setUseOpenGL(true);
+    rodriguezSeriesArea.setName("Rodriguez-Logue");
+    rodriguezSeriesArea.setPen(QPen(Qt::yellow));
+    chartArea.addSeries(&rodriguezSeriesArea);
 
-    rodriguezSeriesArea = new QLineSeries();
-    rodriguezSeriesArea->setUseOpenGL(true);
-    rodriguezSeriesArea->setName("Rodriguez-Logue");
-    rodriguezSeriesArea->setPen(QPen(Qt::yellow));
-    chartArea->addSeries(rodriguezSeriesArea);
+    ebertSeriesArea.setUseOpenGL(true);
+    ebertSeriesArea.setName("Ebert-Prelec");
+    ebertSeriesArea.setPen(QPen(Qt::red));
+    chartArea.addSeries(&ebertSeriesArea);
 
-    ebertSeriesArea = new QLineSeries();
-    ebertSeriesArea->setUseOpenGL(true);
-    ebertSeriesArea->setName("Ebert-Prelec");
-    ebertSeriesArea->setPen(QPen(Qt::red));
-    chartArea->addSeries(ebertSeriesArea);
+    bleichrodtSeriesArea.setUseOpenGL(true);
+    bleichrodtSeriesArea.setName("Bleichrodt");
+    bleichrodtSeriesArea.setPen(QPen(Qt::darkCyan));
+    chartArea.addSeries(&bleichrodtSeriesArea);
 
-    bleichrodtSeriesArea = new QLineSeries();
-    bleichrodtSeriesArea->setUseOpenGL(true);
-    bleichrodtSeriesArea->setName("Bleichrodt");
-    bleichrodtSeriesArea->setPen(QPen(Qt::darkCyan));
-    chartArea->addSeries(bleichrodtSeriesArea);
+    noiseSeriesArea.setUseOpenGL(true);
+    noiseSeriesArea.setName("Noise");
+    noiseSeriesArea.setPen(QPen(Qt::darkGray));
+    chartArea.addSeries(&noiseSeriesArea);
 
-    noiseSeriesArea = new QLineSeries();
-    noiseSeriesArea->setUseOpenGL(true);
-    noiseSeriesArea->setName("Noise");
-    noiseSeriesArea->setPen(QPen(Qt::darkGray));
-    chartArea->addSeries(noiseSeriesArea);
+    empiricalSeries.setUseOpenGL(true);
+    empiricalSeries.setName("AUC");
+    empiricalSeries.setPen(QPen(Qt::black));
+    chartArea.addSeries(&empiricalSeries);
 
-    empiricalSeries = new QLineSeries();
-    empiricalSeries->setUseOpenGL(true);
-    empiricalSeries->setName("AUC");
-    empiricalSeries->setPen(QPen(Qt::black));
-    chartArea->addSeries(empiricalSeries);
+    dataPointsArea.setName("Raw Data");
+    dataPointsArea.setMarkerShape(QScatterSeries::MarkerShapeRectangle);
+    dataPointsArea.setPen(QPen(Qt::black));
+    dataPointsArea.setBrush(QBrush(Qt::black));
+    dataPointsArea.setMarkerSize(10);
+    chartArea.addSeries(&dataPointsArea);
 
-    dataPointsArea = new QScatterSeries();
-    dataPointsArea->setName("Raw Data");
-    dataPointsArea->setMarkerShape(QScatterSeries::MarkerShapeRectangle);
-    dataPointsArea->setPen(QPen(Qt::black));
-    dataPointsArea->setBrush(QBrush(Qt::black));
-    dataPointsArea->setMarkerSize(10);
-    chartArea->addSeries(dataPointsArea);
+    chartArea.setAxisX(&axisXarea, &expSeriesArea);
+    chartArea.setAxisY(&axisYarea, &expSeriesArea);
 
-    chartArea->setAxisX(axisXarea, expSeriesArea);
-    chartArea->setAxisY(axisYarea, expSeriesArea);
+    chartArea.setAxisX(&axisXarea, &hypSeriesArea);
+    chartArea.setAxisY(&axisYarea, &hypSeriesArea);
 
-    chartArea->setAxisX(axisXarea, hypSeriesArea);
-    chartArea->setAxisY(axisYarea, hypSeriesArea);
+    chartArea.setAxisX(&axisXarea, &quasiSeriesArea);
+    chartArea.setAxisY(&axisYarea, &quasiSeriesArea);
 
-    chartArea->setAxisX(axisXarea, quasiSeriesArea);
-    chartArea->setAxisY(axisYarea, quasiSeriesArea);
+    chartArea.setAxisX(&axisXarea, &myerSeriesArea);
+    chartArea.setAxisY(&axisYarea, &myerSeriesArea);
 
-    chartArea->setAxisX(axisXarea, myerSeriesArea);
-    chartArea->setAxisY(axisYarea, myerSeriesArea);
+    chartArea.setAxisX(&axisXarea, &rachSeriesArea);
+    chartArea.setAxisY(&axisYarea, &rachSeriesArea);
 
-    chartArea->setAxisX(axisXarea, rachSeriesArea);
-    chartArea->setAxisY(axisYarea, rachSeriesArea);
+    chartArea.setAxisX(&axisXarea, &rodriguezSeriesArea);
+    chartArea.setAxisY(&axisYarea, &rodriguezSeriesArea);
 
-    chartArea->setAxisX(axisXarea, rodriguezSeriesArea);
-    chartArea->setAxisY(axisYarea, rodriguezSeriesArea);
+    chartArea.setAxisX(&axisXarea, &ebertSeriesArea);
+    chartArea.setAxisY(&axisYarea, &ebertSeriesArea);
 
-    chartArea->setAxisX(axisXarea, ebertSeriesArea);
-    chartArea->setAxisY(axisYarea, ebertSeriesArea);
+    chartArea.setAxisX(&axisXarea, &bleichrodtSeriesArea);
+    chartArea.setAxisY(&axisYarea, &bleichrodtSeriesArea);
 
-    chartArea->setAxisX(axisXarea, bleichrodtSeriesArea);
-    chartArea->setAxisY(axisYarea, bleichrodtSeriesArea);
+    chartArea.setAxisX(&axisXarea, &noiseSeriesArea);
+    chartArea.setAxisY(&axisYarea, &noiseSeriesArea);
 
-    chartArea->setAxisX(axisXarea, noiseSeriesArea);
-    chartArea->setAxisY(axisYarea, noiseSeriesArea);
+    chartArea.setAxisX(&axisXarea, &dataPointsArea);
+    chartArea.setAxisY(&axisYarea, &dataPointsArea);
 
-    chartArea->setAxisX(axisXarea, dataPointsArea);
-    chartArea->setAxisY(axisYarea, dataPointsArea);
-
-    chartArea->setAxisX(axisXarea, empiricalSeries);
-    chartArea->setAxisY(axisYarea, empiricalSeries);
-
+    chartArea.setAxisX(&axisXarea, &empiricalSeries);
+    chartArea.setAxisY(&axisYarea, &empiricalSeries);
 }
 
+/**
+ * @brief ChartWindow::buildED50Plot
+ */
 void ChartWindow::buildED50Plot()
 {
-    chart->setTitleFont(mTitle);
-    chart->setTitleBrush(Qt::black);
+    chart.setTitleFont(mTitle);
+    chart.setTitleBrush(Qt::black);
 
-    auto mLegend = chart->legend();
+    chart.legend()->setFont(mLegendFont);
+    chart.legend()->setAlignment(Qt::AlignBottom);
+    chart.legend()->setLabelBrush(Qt::black);
+    chart.legend()->setLabelColor(Qt::black);
+    chart.legend()->setFont(QFont("Serif", 8, -1, false));
 
-    mLegend->setFont(mLegendFont);
-    mLegend->setAlignment(Qt::AlignBottom);
-    mLegend->setLabelBrush(Qt::black);
-    mLegend->setLabelColor(Qt::black);
-    mLegend->setFont(QFont("Serif", 8, -1, false));
+    axisX.setGridLineColor(Qt::transparent);
+    axisX.setTitleText(tr("ln(Delay)"));
+    axisX.setTitleFont(QFont("Serif", 10, -1, false));
+    axisX.setTitleBrush(Qt::black);
+    axisX.setMin(0);
+    axisX.setLabelsFont(QFont("Serif", 10, -1, false));
+    axisX.setLabelFormat(QString("%.0f"));
+    axisX.setLabelsBrush(Qt::black);
+    axisX.setLabelsColor(Qt::black);
+    axisX.setLinePenColor(Qt::black);
+    axisX.setLinePen(QPen(Qt::black));
 
-    axisX = new QValueAxis;
-    axisX->setGridLineColor(Qt::transparent);
-    axisX->setTitleText(tr("ln(Delay)"));
-    axisX->setTitleFont(QFont("Serif", 10, -1, false));
-    axisX->setTitleBrush(Qt::black);
-    axisX->setMin(0);
-    axisX->setLabelsFont(QFont("Serif", 10, -1, false));
-    axisX->setLabelFormat(QString("%.0f"));
-    axisX->setLabelsBrush(Qt::black);
-    axisX->setLabelsColor(Qt::black);
-    axisX->setLinePenColor(Qt::black);
-    axisX->setLinePen(QPen(Qt::black));
+    axisY.setGridLineColor(Qt::transparent);
+    axisY.setTitleText(tr("Value"));
+    axisY.setTitleFont(QFont("Serif", 10, -1, false));
+    axisY.setTitleBrush(Qt::black);
+    axisY.setTickCount(5);
+    axisY.setLabelsFont(QFont("Serif", 10, -1, false));
+    axisY.setLabelsBrush(Qt::black);
+    axisY.setLabelsColor(Qt::black);
+    axisY.setMin(0);
+    axisY.setMax(1);
+    axisY.setLinePenColor(Qt::black);
+    axisY.setLinePen(QPen(Qt::black));
 
-    axisY = new QValueAxis;
-    axisY->setGridLineColor(Qt::transparent);
-    axisY->setTitleText(tr("Value"));
-    axisY->setTitleFont(QFont("Serif", 10, -1, false));
-    axisY->setTitleBrush(Qt::black);
-    axisY->setTickCount(5);
-    axisY->setLabelsFont(QFont("Serif", 10, -1, false));
-    axisY->setLabelsBrush(Qt::black);
-    axisY->setLabelsColor(Qt::black);
-    axisY->setMin(0);
-    axisY->setMax(1);
-    axisY->setLinePenColor(Qt::black);
-    axisY->setLinePen(QPen(Qt::black));
+    expSeries.setUseOpenGL(true);
+    expSeries.setName("Exponential");
+    expSeries.setPen(QPen(Qt::black));
+    chart.addSeries(&expSeries);
 
-    expSeries = new QLineSeries();
-    expSeries->setUseOpenGL(true);
-    expSeries->setName("Exponential");
-    expSeries->setPen(QPen(Qt::black));
-    chart->addSeries(expSeries);
+    hypSeries.setUseOpenGL(true);
+    hypSeries.setName("Hyperbolic");
+    hypSeries.setPen(QPen(Qt::green));
+    chart.addSeries(&hypSeries);
 
-    hypSeries = new QLineSeries();
-    hypSeries->setUseOpenGL(true);
-    hypSeries->setName("Hyperbolic");
-    hypSeries->setPen(QPen(Qt::green));
-    chart->addSeries(hypSeries);
+    quasiSeries.setUseOpenGL(true);
+    quasiSeries.setName("QuasiHyperbolic");
+    quasiSeries.setPen(QPen(Qt::blue));
+    chart.addSeries(&quasiSeries);
 
-    quasiSeries = new QLineSeries();
-    quasiSeries->setUseOpenGL(true);
-    quasiSeries->setName("QuasiHyperbolic");
-    quasiSeries->setPen(QPen(Qt::blue));
-    chart->addSeries(quasiSeries);
+    myerSeries.setUseOpenGL(true);
+    myerSeries.setName("Green-Myerson");
+    myerSeries.setPen(QPen(Qt::cyan));
+    chart.addSeries(&myerSeries);
 
-    myerSeries = new QLineSeries();
-    myerSeries->setUseOpenGL(true);
-    myerSeries->setName("Green-Myerson");
-    myerSeries->setPen(QPen(Qt::cyan));
-    chart->addSeries(myerSeries);
+    rachSeries.setUseOpenGL(true);
+    rachSeries.setName("Rachlin");
+    rachSeries.setPen(QPen(Qt::magenta));
+    chart.addSeries(&rachSeries);
 
-    rachSeries = new QLineSeries();
-    rachSeries->setUseOpenGL(true);
-    rachSeries->setName("Rachlin");
-    rachSeries->setPen(QPen(Qt::magenta));
-    chart->addSeries(rachSeries);
+    rodriguezSeries.setUseOpenGL(true);
+    rodriguezSeries.setName("Rodriguez-Logue");
+    rodriguezSeries.setPen(QPen(Qt::yellow));
+    chart.addSeries(&rodriguezSeries);
 
-    rodriguezSeries = new QLineSeries();
-    rodriguezSeries->setUseOpenGL(true);
-    rodriguezSeries->setName("Rodriguez-Logue");
-    rodriguezSeries->setPen(QPen(Qt::yellow));
-    chart->addSeries(rodriguezSeries);
+    ebertSeries.setUseOpenGL(true);
+    ebertSeries.setName("Ebert-Prelec");
+    ebertSeries.setPen(QPen(Qt::red));
+    chart.addSeries(&ebertSeries);
 
-    ebertSeries = new QLineSeries();
-    ebertSeries->setUseOpenGL(true);
-    ebertSeries->setName("Ebert-Prelec");
-    ebertSeries->setPen(QPen(Qt::red));
-    chart->addSeries(ebertSeries);
+    bleichrodtSeries.setUseOpenGL(true);
+    bleichrodtSeries.setName("Bleichrodt");
+    bleichrodtSeries.setPen(QPen(Qt::darkCyan));
+    chart.addSeries(&bleichrodtSeries);
 
-    bleichrodtSeries = new QLineSeries();
-    bleichrodtSeries->setUseOpenGL(true);
-    bleichrodtSeries->setName("Bleichrodt");
-    bleichrodtSeries->setPen(QPen(Qt::darkCyan));
-    chart->addSeries(bleichrodtSeries);
+    noiseSeries.setUseOpenGL(true);
+    noiseSeries.setName("Noise");
+    noiseSeries.setPen(QPen(QPen(Qt::darkGray)));
+    chart.addSeries(&noiseSeries);
 
-    noiseSeries = new QLineSeries();
-    noiseSeries->setUseOpenGL(true);
-    noiseSeries->setName("Noise");
-    noiseSeries->setPen(QPen(QPen(Qt::darkGray)));
-    chart->addSeries(noiseSeries);
+    dataPoints.setUseOpenGL(true);
+    dataPoints.setName("Raw Data");
+    dataPoints.setMarkerShape(QScatterSeries::MarkerShapeRectangle);
+    dataPoints.setPen(QPen(Qt::black));
+    dataPoints.setBrush(QBrush(Qt::black));
+    dataPoints.setMarkerSize(10);
+    chart.addSeries(&dataPoints);
 
-    dataPoints = new QScatterSeries();
-    dataPoints->setUseOpenGL(true);
-    dataPoints->setName("Raw Data");
-    dataPoints->setMarkerShape(QScatterSeries::MarkerShapeRectangle);
-    dataPoints->setPen(QPen(Qt::black));
-    dataPoints->setBrush(QBrush(Qt::black));
-    dataPoints->setMarkerSize(10);
-    chart->addSeries(dataPoints);
+    chart.setAxisX(&axisX, &expSeries);
+    chart.setAxisY(&axisY, &expSeries);
 
-    chart->setAxisX(axisX, expSeries);
-    chart->setAxisY(axisY, expSeries);
+    chart.setAxisX(&axisX, &hypSeries);
+    chart.setAxisY(&axisY, &hypSeries);
 
-    chart->setAxisX(axisX, hypSeries);
-    chart->setAxisY(axisY, hypSeries);
+    chart.setAxisX(&axisX, &quasiSeries);
+    chart.setAxisY(&axisY, &quasiSeries);
 
-    chart->setAxisX(axisX, quasiSeries);
-    chart->setAxisY(axisY, quasiSeries);
+    chart.setAxisX(&axisX, &myerSeries);
+    chart.setAxisY(&axisY, &myerSeries);
 
-    chart->setAxisX(axisX, myerSeries);
-    chart->setAxisY(axisY, myerSeries);
+    chart.setAxisX(&axisX, &rachSeries);
+    chart.setAxisY(&axisY, &rachSeries);
 
-    chart->setAxisX(axisX, rachSeries);
-    chart->setAxisY(axisY, rachSeries);
+    chart.setAxisX(&axisX, &rodriguezSeries);
+    chart.setAxisY(&axisY, &rodriguezSeries);
 
-    chart->setAxisX(axisX, rodriguezSeries);
-    chart->setAxisY(axisY, rodriguezSeries);
+    chart.setAxisX(&axisX, &ebertSeries);
+    chart.setAxisY(&axisY, &ebertSeries);
 
-    chart->setAxisX(axisX, ebertSeries);
-    chart->setAxisY(axisY, ebertSeries);
+    chart.setAxisX(&axisX, &bleichrodtSeries);
+    chart.setAxisY(&axisY, &bleichrodtSeries);
 
-    chart->setAxisX(axisX, bleichrodtSeries);
-    chart->setAxisY(axisY, bleichrodtSeries);
+    chart.setAxisX(&axisX, &noiseSeries);
+    chart.setAxisY(&axisY, &noiseSeries);
 
-    chart->setAxisX(axisX, noiseSeries);
-    chart->setAxisY(axisY, noiseSeries);
-
-    chart->setAxisX(axisX, dataPoints);
-    chart->setAxisY(axisY, dataPoints);
+    chart.setAxisX(&axisX, &dataPoints);
+    chart.setAxisY(&axisY, &dataPoints);
 }
 
+/**
+ * @brief ChartWindow::plotAUCSeries
+ * @param index
+ */
 void ChartWindow::plotAUCSeries(int index)
 {
     mList = mDisplayData.at(index);
 
-    expSeriesArea->clear();
-    hypSeriesArea->clear();
-    quasiSeriesArea->clear();
-    myerSeriesArea->clear();
-    rachSeriesArea->clear();
-    rodriguezSeriesArea->clear();
-    ebertSeriesArea->clear();
-    bleichrodtSeriesArea->clear();
-    noiseSeriesArea->clear();
-    dataPointsArea->clear();
-    empiricalSeries->clear();
+    expSeriesArea.clear();
+    hypSeriesArea.clear();
+    quasiSeriesArea.clear();
+    myerSeriesArea.clear();
+    rachSeriesArea.clear();
+    rodriguezSeriesArea.clear();
+    ebertSeriesArea.clear();
+    bleichrodtSeriesArea.clear();
+    noiseSeriesArea.clear();
+    dataPointsArea.clear();
+    empiricalSeries.clear();
 
     if (mList.Header.contains("dropped", Qt::CaseInsensitive))
     {
-        chartArea->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
+        chartArea.setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
 
         return;
     }
 
-    chartArea->setTitle(QString("Participant #%1: %2 Scaled AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopAUCLog));
+    chartArea.setTitle(QString("Participant #%1: %2 Scaled AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopAUCLog));
 
-    expSeriesArea->hide();
-    hypSeriesArea->hide();
-    quasiSeriesArea->hide();
-    myerSeriesArea->hide();
-    rachSeriesArea->hide();
-    rodriguezSeriesArea->hide();
-    ebertSeriesArea->hide();
-    bleichrodtSeriesArea->hide();
-    noiseSeriesArea->hide();
+    expSeriesArea.hide();
+    hypSeriesArea.hide();
+    quasiSeriesArea.hide();
+    myerSeriesArea.hide();
+    rachSeriesArea.hide();
+    rodriguezSeriesArea.hide();
+    ebertSeriesArea.hide();
+    bleichrodtSeriesArea.hide();
+    noiseSeriesArea.hide();
 
     switch (mList.TopModelType)
     {
         case ModelType::Noise:
-            noiseSeriesArea->show();
+            noiseSeriesArea.show();
             break;
 
         case ModelType::Exponential:
-            expSeriesArea->show();
+            expSeriesArea.show();
             break;
 
         case ModelType::Hyperbolic:
-            hypSeriesArea->show();
+            hypSeriesArea.show();
             break;
 
         case ModelType::BetaDelta:
-            quasiSeriesArea->show();
+            quasiSeriesArea.show();
             break;
 
         case ModelType::Myerson:
-            myerSeriesArea->show();
+            myerSeriesArea.show();
             break;
 
         case ModelType::Rachlin:
-            rachSeriesArea->show();
+            rachSeriesArea.show();
             break;
 
         case ModelType::RodriguezLogue:
-            rodriguezSeriesArea->show();
+            rodriguezSeriesArea.show();
             break;
 
         case ModelType::EbertPrelec:
-            ebertSeriesArea->show();
+            ebertSeriesArea.show();
             break;
 
         case ModelType::Beleichrodt:
-            bleichrodtSeriesArea->show();
+            bleichrodtSeriesArea.show();
             break;
     }
 
@@ -739,9 +719,9 @@ void ChartWindow::plotAUCSeries(int index)
 
     int negLogs = 3;
 
-    axisXarea->setMin(-negLogs);
-    axisXarea->setMax(tickHack + negLogs);
-    axisXarea->setTickCount(tickHack + 1 + negLogs);
+    axisXarea.setMin(-negLogs);
+    axisXarea.setMax(tickHack + negLogs);
+    axisXarea.setTickCount(tickHack + 1 + negLogs);
 
     for (double i = 0 - 3; i < (log(lastDelay)+1); i = i + chartIterator)
     {
@@ -764,91 +744,99 @@ void ChartWindow::plotAUCSeries(int index)
             break;
         }
 
-        *dataPointsArea << QPointF(log(param1), param2);
-        *empiricalSeries << QPointF(log(param1), param2);
+        dataPointsArea << QPointF(log(param1), param2);
+        empiricalSeries << QPointF(log(param1), param2);
     }
 }
 
+/**
+ * @brief ChartWindow::plotAUCPoint
+ * @param i
+ */
 void ChartWindow::plotAUCPoint(double i)
 {
     xParam = exp(i);
 
-    *noiseSeriesArea << QPointF(i, noise);
+    noiseSeriesArea << QPointF(i, noise);
 
     if (expCheck)
     {
-        *expSeriesArea << QPointF(i, exponential_plotting(expK, xParam));
+        expSeriesArea << QPointF(i, exponential_plotting(expK, xParam));
     }
 
     if (hypCheck)
     {
-        *hypSeriesArea << QPointF(i, hyperbolic_plotting(hypK, xParam));
+        hypSeriesArea << QPointF(i, hyperbolic_plotting(hypK, xParam));
     }
 
     if (quasiCheck)
     {
-         *quasiSeriesArea << QPointF(i, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
+         quasiSeriesArea << QPointF(i, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
     }
 
     if (myerCheck)
     {
-        *myerSeriesArea << QPointF(i, myerson_plotting(myerK, myerS, xParam));
+        myerSeriesArea << QPointF(i, myerson_plotting(myerK, myerS, xParam));
     }
 
     if (rachCheck)
     {
-        *rachSeriesArea << QPointF(i, rachlin_plotting(rachK, rachS, xParam));
+        rachSeriesArea << QPointF(i, rachlin_plotting(rachK, rachS, xParam));
     }
 
     if (rodriguezCheck)
     {
-        *rodriguezSeriesArea << QPointF(i, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
+        rodriguezSeriesArea << QPointF(i, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
     }
 
     if (ebertCheck)
     {
-        *ebertSeriesArea << QPointF(i, ebert_prelec_plotting(ebertK, ebertS, xParam));
+        ebertSeriesArea << QPointF(i, ebert_prelec_plotting(ebertK, ebertS, xParam));
     }
 
     if (bleichrodtCheck)
     {
-        *bleichrodtSeriesArea << QPointF(i, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
+        bleichrodtSeriesArea << QPointF(i, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
     }
 }
 
+/**
+ * @brief ChartWindow::plotED50Series
+ * @param index
+ */
 void ChartWindow::plotED50Series(int index)
 {
     mList = mDisplayData.at(index);
 
-    expSeries->clear();
-    hypSeries->clear();
-    quasiSeries->clear();
-    myerSeries->clear();
-    rachSeries->clear();
-    noiseSeries->clear();
-    rodriguezSeries->clear();
-    ebertSeries->clear();
-    bleichrodtSeries->clear();
-    dataPoints->clear();
+    expSeries.clear();
+    hypSeries.clear();
+    quasiSeries.clear();
+    myerSeries.clear();
+    rachSeries.clear();
+    noiseSeries.clear();
+    rodriguezSeries.clear();
+    ebertSeries.clear();
+    bleichrodtSeries.clear();
+    dataPoints.clear();
 
-    expSeries->hide();
-    hypSeries->hide();
-    quasiSeries->hide();
-    myerSeries->hide();
-    rachSeries->hide();
-    noiseSeries->hide();
-    rodriguezSeries->hide();
-    ebertSeries->hide();
-    bleichrodtSeries->hide();
+    expSeries.hide();
+    hypSeries.hide();
+    quasiSeries.hide();
+    myerSeries.hide();
+    rachSeries.hide();
+    noiseSeries.hide();
+    rodriguezSeries.hide();
+    ebertSeries.hide();
+    bleichrodtSeries.hide();
 
     if (mList.Header.contains("dropped", Qt::CaseInsensitive))
     {
-        chart->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
+        chart.setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
 
         return;
     }
 
-    chart->setTitle(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopED50));
+    chart.setTitle(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopED50));
 
     expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
 
@@ -866,7 +854,7 @@ void ChartWindow::plotED50Series(int index)
             if (expK != NULL)
             {
                 expCheck = true;
-                expSeries->show();
+                expSeries.show();
             }
         }
 
@@ -877,7 +865,7 @@ void ChartWindow::plotED50Series(int index)
             if (hypK != NULL)
             {
                 hypCheck = true;
-                hypSeries->show();
+                hypSeries.show();
             }
         }
 
@@ -889,7 +877,7 @@ void ChartWindow::plotED50Series(int index)
             if (quasiB != NULL && quasiD != NULL)
             {
                 quasiCheck = true;
-                quasiSeries->show();
+                quasiSeries.show();
             }
         }
 
@@ -901,7 +889,7 @@ void ChartWindow::plotED50Series(int index)
             if (myerK != NULL && myerS != NULL)
             {
                 myerCheck = true;
-                myerSeries->show();
+                myerSeries.show();
             }
         }
 
@@ -913,7 +901,7 @@ void ChartWindow::plotED50Series(int index)
             if (rachK != NULL && rachS != NULL)
             {
                 rachCheck = true;
-                rachSeries->show();
+                rachSeries.show();
             }
         }
 
@@ -925,7 +913,7 @@ void ChartWindow::plotED50Series(int index)
             if (rodriguezK != NULL && rodriguezS != NULL)
             {
                 rodriguezCheck = true;
-                rodriguezSeries->show();
+                rodriguezSeries.show();
             }
         }
 
@@ -937,7 +925,7 @@ void ChartWindow::plotED50Series(int index)
             if (ebertK != NULL && ebertS != NULL)
             {
                 ebertCheck = true;
-                ebertSeries->show();
+                ebertSeries.show();
             }
         }
 
@@ -951,7 +939,7 @@ void ChartWindow::plotED50Series(int index)
             if (bleichrodtK != NULL && bleichrodtS != NULL && bleichrodtBeta != NULL)
             {
                 bleichrodtCheck = true;
-                bleichrodtSeries->show();
+                bleichrodtSeries.show();
             }
         }
     }
@@ -960,9 +948,9 @@ void ChartWindow::plotED50Series(int index)
 
     int negLogs = 3;
 
-    axisX->setMin(-negLogs);
-    axisX->setMax(tickHack + negLogs);
-    axisX->setTickCount(tickHack + 1 + negLogs);
+    axisX.setMin(-negLogs);
+    axisX.setMax(tickHack + negLogs);
+    axisX.setTickCount(tickHack + 1 + negLogs);
 
     for (double i = 0 - 3; i < (log(lastDelay)+1); i = i + chartIterator)
     {
@@ -985,81 +973,106 @@ void ChartWindow::plotED50Series(int index)
             break;
         }
 
-        *dataPoints << QPointF(log(param1), param2);
+        dataPoints << QPointF(log(param1), param2);
     }
 }
 
+/**
+ * @brief ChartWindow::plotED50Point
+ * @param i
+ */
 void ChartWindow::plotED50Point(double i)
 {
     xParam = exp(i);
 
-    *noiseSeries << QPointF(i, noise);
+    noiseSeries << QPointF(i, noise);
 
     if (expCheck)
     {
-        *expSeries << QPointF(i, exponential_plotting(expK, xParam));
+        expSeries << QPointF(i, exponential_plotting(expK, xParam));
     }
 
     if (hypCheck)
     {
-        *hypSeries << QPointF(i, hyperbolic_plotting(hypK, xParam));
+        hypSeries << QPointF(i, hyperbolic_plotting(hypK, xParam));
     }
 
     if (quasiCheck)
     {
-         *quasiSeries << QPointF(i, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
+        quasiSeries << QPointF(i, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
     }
 
     if (myerCheck)
     {
-        *myerSeries << QPointF(i, myerson_plotting(myerK, myerS, xParam));
+        myerSeries << QPointF(i, myerson_plotting(myerK, myerS, xParam));
     }
 
     if (rachCheck)
     {
-        *rachSeries << QPointF(i, rachlin_plotting(rachK, rachS, xParam));
+        rachSeries << QPointF(i, rachlin_plotting(rachK, rachS, xParam));
     }
 
     if (rodriguezCheck)
     {
-        *rodriguezSeries << QPointF(i, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
+        rodriguezSeries << QPointF(i, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
     }
 
     if (ebertCheck)
     {
-        *ebertSeries << QPointF(i, ebert_prelec_plotting(ebertK, ebertS, xParam));
+        ebertSeries << QPointF(i, ebert_prelec_plotting(ebertK, ebertS, xParam));
     }
 
     if (bleichrodtCheck)
     {
-        *bleichrodtSeries << QPointF(i, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
+        bleichrodtSeries << QPointF(i, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
     }
 }
 
+/**
+ * @brief ChartWindow::plotProbabilities
+ * @param index
+ */
 void ChartWindow::plotProbabilities(int index)
 {
     mList = mDisplayData.at(index);
 
     if (mList.Header.contains("dropped", Qt::CaseInsensitive))
     {
-        barChart->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
+        barChart.setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
 
         return;
     }
 
-    barChart->setTitle(QString("Participant #%1: Model Probabilities").arg(QString::number(currentIndexShown + 1)));
+    barChart.setTitle(QString("Participant #%1: Model Probabilities").arg(QString::number(currentIndexShown + 1)));
 
     expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
 
+    expProbSet.clear();
+    hypProbSet.clear();
+    quasiProbSet.clear();
+    myerProbSet.clear();
+    rachProbSet.clear();
+    rodriguezProbSet.clear();
+    ebertProbSet.clear();
+    bleichrodtProbSet.clear();
+    noiseProbSet.clear();
+
+    expProbSet << QPointF(1,0);
+    hypProbSet << QPointF(2,0);
+    quasiProbSet << QPointF(3,0);
+    myerProbSet << QPointF(4,0);
+    rachProbSet << QPointF(5,0);
+    rodriguezProbSet << QPointF(6,0);
+    ebertProbSet << QPointF(7,0);
+    bleichrodtProbSet << QPointF(8,0);
+    noiseProbSet << QPointF(9,0);
+
     for (int i=0; i<mList.FittingResults.length(); i++)
     {
+
         if (mList.FittingResults[i]->Model == ModelType::Noise)
         {
-            noiseProbSet->replace(8, mList.FittingResults[i]->Probability);
-        }
-        else
-        {
-            noiseProbSet->replace(8, 0);
+            noiseProbSet << QPointF(9, mList.FittingResults[i]->Probability);
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Exponential)
@@ -1068,11 +1081,7 @@ void ChartWindow::plotProbabilities(int index)
 
             if (expK != NULL)
             {
-                expProbSet->replace(0, mList.FittingResults[i]->Probability);
-            }
-            else
-            {
-                expProbSet->replace(0, 0);
+                expProbSet << QPointF(1, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -1082,11 +1091,7 @@ void ChartWindow::plotProbabilities(int index)
 
             if (hypK != NULL)
             {
-                hypProbSet->replace(1, mList.FittingResults[i]->Probability);
-            }
-            else
-            {
-                hypProbSet->replace(1, 0);
+                hypProbSet << QPointF(2, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -1097,11 +1102,7 @@ void ChartWindow::plotProbabilities(int index)
 
             if (quasiB != NULL && quasiD != NULL)
             {
-                quasiProbSet->replace(2, mList.FittingResults[i]->Probability);
-            }
-            else
-            {
-                quasiProbSet->replace(2, 0);
+                quasiProbSet << QPointF(3, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -1112,11 +1113,7 @@ void ChartWindow::plotProbabilities(int index)
 
             if (myerK != NULL && myerS != NULL)
             {
-                myerProbSet->replace(3, mList.FittingResults[i]->Probability);
-            }
-            else
-            {
-                myerProbSet->replace(3, 0);
+                myerProbSet << QPointF(4, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -1127,11 +1124,7 @@ void ChartWindow::plotProbabilities(int index)
 
             if (rachK != NULL && rachS != NULL)
             {
-                rachProbSet->replace(4, mList.FittingResults[i]->Probability);
-            }
-            else
-            {
-                rachProbSet->replace(4, 0);
+                rachProbSet << QPointF(5, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -1142,11 +1135,7 @@ void ChartWindow::plotProbabilities(int index)
 
             if (rodriguezK != NULL && rodriguezS != NULL)
             {
-                rodriguezProbSet->replace(5, mList.FittingResults[i]->Probability);
-            }
-            else
-            {
-                rodriguezProbSet->replace(5, 0);
+                rodriguezProbSet << QPointF(6, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -1157,11 +1146,7 @@ void ChartWindow::plotProbabilities(int index)
 
             if (ebertK != NULL && ebertS != NULL)
             {
-                ebertProbSet->replace(6, mList.FittingResults[i]->Probability);
-            }
-            else
-            {
-                ebertProbSet->replace(6, 0);
+                ebertProbSet << QPointF(7, mList.FittingResults[i]->Probability);
             }
         }
 
@@ -1174,29 +1159,29 @@ void ChartWindow::plotProbabilities(int index)
 
             if (bleichrodtK != NULL && bleichrodtS != NULL && bleichrodtBeta != NULL)
             {
-                bleichrodtProbSet->replace(7, mList.FittingResults[i]->Probability);
-            }
-            else
-            {
-                bleichrodtProbSet->replace(7, 0);
+                bleichrodtProbSet << QPointF(8, mList.FittingResults[i]->Probability);
             }
         }
     }
 }
 
+/**
+ * @brief ChartWindow::plotResiduals
+ * @param index
+ */
 void ChartWindow::plotResiduals(int index)
 {
     mList = mDisplayData.at(index);
 
-    errSeries->clear();
-    errDataPoints->clear();
+    errSeries.clear();
+    errDataPoints.clear();
 
-    *errSeries << QPointF(0, 0);
+    errSeries << QPointF(0, 0);
 
     for (int j=0; j<mList.TopErrPar.length(); j++)
     {
-        *errSeries << QPointF(j+1, 0);
-        *errDataPoints << QPointF(j+1, mList.TopErrPar[j]);
+        errSeries << QPointF(j+1, 0);
+        errDataPoints << QPointF(j+1, mList.TopErrPar[j]);
     }
 
     if (mList.TopErrPar.length() > 0)
@@ -1204,24 +1189,30 @@ void ChartWindow::plotResiduals(int index)
         minList = abs(*std::min_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
         maxList = abs(*std::max_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
 
-        axisYerror->setMin((maxList >= minList) ? -maxList : -minList);
-        axisYerror->setMax((maxList >= minList) ? maxList : minList);
+        axisYerror.setMin((maxList >= minList) ? -maxList : -minList);
+        axisYerror.setMax((maxList >= minList) ? maxList : minList);
     }
 
-    axisXerror->setMin(0);
-    axisXerror->setMax(mList.TopErrPar.length());
-    axisXerror->setTickCount(mList.TopErrPar.count() + 1);
+    axisXerror.setMin(0);
+    axisXerror.setMax(mList.TopErrPar.length());
+    axisXerror.setTickCount(mList.TopErrPar.count() + 1);
 
     if (mList.Header.contains("dropped", Qt::CaseInsensitive))
     {
-        chartError->setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
+        chartError.setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
 
         return;
     }
 
-    chartError->setTitle(QString("Participant #%1: %2 Residual Plot").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel));
+    chartError.setTitle(QString("Participant #%1: %2 Residual Plot").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel));
 }
 
+/**
+ * @brief ChartWindow::exponential_plotting
+ * @param k
+ * @param x
+ * @return
+ */
 double ChartWindow::exponential_plotting(double k, double x)
 {
     if (isLogNormalParamerized)
@@ -1234,6 +1225,12 @@ double ChartWindow::exponential_plotting(double k, double x)
     }
 }
 
+/**
+ * @brief ChartWindow::hyperbolic_plotting
+ * @param k
+ * @param x
+ * @return
+ */
 double ChartWindow::hyperbolic_plotting(double k, double x)
 {
     if (isLogNormalParamerized)
@@ -1246,11 +1243,25 @@ double ChartWindow::hyperbolic_plotting(double k, double x)
     }
 }
 
+/**
+ * @brief ChartWindow::quasi_hyperbolic_plotting
+ * @param beta
+ * @param delta
+ * @param x
+ * @return
+ */
 double ChartWindow::quasi_hyperbolic_plotting(double beta, double delta, double x)
 {
     return beta * pow(delta, x);
 }
 
+/**
+ * @brief ChartWindow::myerson_plotting
+ * @param k
+ * @param s
+ * @param x
+ * @return
+ */
 double ChartWindow::myerson_plotting(double k, double s, double x)
 {
     if (isLogNormalParamerized)
@@ -1263,6 +1274,13 @@ double ChartWindow::myerson_plotting(double k, double s, double x)
     }
 }
 
+/**
+ * @brief ChartWindow::rachlin_plotting
+ * @param k
+ * @param s
+ * @param x
+ * @return
+ */
 double ChartWindow::rachlin_plotting(double k, double s, double x)
 {
     if (isLogNormalParamerized)
@@ -1275,21 +1293,48 @@ double ChartWindow::rachlin_plotting(double k, double s, double x)
     }
 }
 
+/**
+ * @brief ChartWindow::rodriguez_logue_plotting
+ * @param k
+ * @param s
+ * @param x
+ * @return
+ */
 double ChartWindow::rodriguez_logue_plotting(double k, double s, double x)
 {
     return pow((1 + x * exp(k)),(-exp(s) / exp(k)));
 }
 
+/**
+ * @brief ChartWindow::ebert_prelec_plotting
+ * @param k
+ * @param s
+ * @param x
+ * @return
+ */
 double ChartWindow::ebert_prelec_plotting(double k, double s, double x)
 {
     return exp(-pow((exp(k)*x),s));
 }
 
+/**
+ * @brief ChartWindow::bleichrodt_plotting
+ * @param k
+ * @param s
+ * @param beta
+ * @param x
+ * @return
+ */
 double ChartWindow::bleichrodt_plotting(double k, double s, double beta, double x)
 {
     return beta * exp(-exp(k)*pow(x,s));
 }
 
+/**
+ * @brief ChartWindow::eventFilter
+ * @param e
+ * @return
+ */
 bool ChartWindow::eventFilter(QObject *, QEvent *e)
 {
     if (e->type() == QEvent::ShortcutOverride)
@@ -1306,27 +1351,30 @@ bool ChartWindow::eventFilter(QObject *, QEvent *e)
         }
         else if (keyEvent->key() == Qt::Key::Key_Up)
         {
-            if (stackedWidget->currentIndex() <= 0)
+            if (stackedWidget.currentIndex() <= 0)
             {
                 return false;
             }
 
-            stackedWidget->setCurrentIndex(stackedWidget->currentIndex() - 1);
+            stackedWidget.setCurrentIndex(stackedWidget.currentIndex() - 1);
         }
         else if (keyEvent->key() == Qt::Key::Key_Down)
         {
-            if (stackedWidget->currentIndex() >= (stackedWidget->count() - 1))
+            if (stackedWidget.currentIndex() >= (stackedWidget.count() - 1))
             {
                 return false;
             }
 
-            stackedWidget->setCurrentIndex(stackedWidget->currentIndex() + 1);
+            stackedWidget.setCurrentIndex(stackedWidget.currentIndex() + 1);
         }
     }
 
     return false;
 }
 
+/**
+ * @brief ChartWindow::saveSVGasPNG
+ */
 void ChartWindow::saveSVGasPNG()
 {
     QString file_name;
@@ -1351,10 +1399,13 @@ void ChartWindow::saveSVGasPNG()
 
     if(!file_name.trimmed().isEmpty())
     {
-        stackedWidget->currentWidget()->grab().save(file_name, "PNG", 9);
+        stackedWidget.currentWidget()->grab().save(file_name, "PNG", 9);
     }
 }
 
+/**
+ * @brief ChartWindow::on_NextButton_clicked
+ */
 void ChartWindow::on_NextButton_clicked()
 {
     if (currentIndexShown >= mDisplayData.count() - 1)
@@ -1366,10 +1417,13 @@ void ChartWindow::on_NextButton_clicked()
 
     plotED50Series(currentIndexShown);
     plotAUCSeries(currentIndexShown);
-    //plotProbabilities(currentIndexShown);
+    plotProbabilities(currentIndexShown);
     plotResiduals(currentIndexShown);
 }
 
+/**
+ * @brief ChartWindow::on_PreviousButton_clicked
+ */
 void ChartWindow::on_PreviousButton_clicked()
 {
     if (currentIndexShown <= 0)
@@ -1381,6 +1435,6 @@ void ChartWindow::on_PreviousButton_clicked()
 
     plotED50Series(currentIndexShown);
     plotAUCSeries(currentIndexShown);
-    //plotProbabilities(currentIndexShown);
+    plotProbabilities(currentIndexShown);
     plotResiduals(currentIndexShown);
 }
