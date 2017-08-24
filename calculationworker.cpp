@@ -915,7 +915,7 @@ void CalculationWorker::working()
 
         mFittingObject->PrepareProbabilities();
 
-        qSort(mFittingObject->mProbList.begin(), mFittingObject->mProbList.end(), QPairSecondComparer());
+        std::sort(mFittingObject->mProbList.begin(), mFittingObject->mProbList.end(), QPairSecondComparer());
 
         fitResultNoise->BF = mFittingObject->bfNoise;
         fitResultNoise->Probability = mFittingObject->probsNoise;
