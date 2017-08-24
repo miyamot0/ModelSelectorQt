@@ -19,6 +19,8 @@ Features include:
 
 ### Changelog
 ------
+ * 1.6.0 - Big plotting enhancements, better memory management with bigger data and more plots
+ * 1.5.1 - Expanded plots, included residual plotting and probabilities as potential displays
  * 1.5.0 - Added obnoxious, brute force options to exploring optimal start parameters
  * 1.4.3 - Perf improvements
  * 1.4.0 - Added additional models
