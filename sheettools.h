@@ -31,12 +31,12 @@
 class SheetTools {
 public:
 
-    QString static SheetTools::strippedName(const QString &fullFileName)
+    QString static strippedName(const QString &fullFileName)
     {
         return QFileInfo(fullFileName).fileName();
     }
 
-    QString static SheetTools::formatStringResult(double value, bool returnLogNormal)
+    QString static formatStringResult(double value, bool returnLogNormal)
     {
         if (!isnan(value))
         {
@@ -60,7 +60,7 @@ public:
         }
     }
 
-    bool static SheetTools::areDimensionsValid(bool isRowData, int dWidth, int vWidth,
+    bool static areDimensionsValid(bool isRowData, int dWidth, int vWidth,
                                                int dLength, int vLength,
                                                DiscountingModelSelectionED50Dialog *discountingED50Dialog)
     {
@@ -98,7 +98,7 @@ public:
         return true;
     }
 
-    bool static SheetTools::areDelayPointsValid(QStringList &delayPoints, bool isRowData,
+    bool static areDelayPointsValid(QStringList &delayPoints, bool isRowData,
                                                 int topDelay, int leftDelay, int bottomDelay, int rightDelay,
                                                 DiscountingModelSelectionED50Dialog *discountingED50Dialog, QTableWidget *table)
     {
@@ -187,7 +187,7 @@ public:
         return true;
     }
 
-    void static SheetTools::areValuePointsValid(QStringList &valuePoints, QStringList &tempDelayPoints, QStringList delayPoints,
+    void static areValuePointsValid(QStringList &valuePoints, QStringList &tempDelayPoints, QStringList delayPoints,
                                                 bool isRowData, int topValue, int leftValue, int bottomValue, int rightValue, int i,
                                                 double maxValue, QTableWidget *table)
     {
@@ -248,7 +248,7 @@ public:
         }
     }
 
-    void static SheetTools::convertExcelColumn(QString &mString, int column)
+    void static convertExcelColumn(QString &mString, int column)
     {
         int dividend = column + 1;
         QString columnName = "";
