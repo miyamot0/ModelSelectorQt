@@ -42,7 +42,7 @@ DiscountingModelSelectionED50Dialog::DiscountingModelSelectionED50Dialog(QWidget
         )
     );
 
-    //this->setWindowFlags(Qt::Tool);
+    this->setWindowFlags(Qt::Tool);
     setWindowFlags(windowFlags() | Qt::WindowMinimizeButtonHint);
 
     connect(ui->checkBoxRachlin, SIGNAL(clicked(bool)), this, SLOT(RachlinToggleButton(bool)));

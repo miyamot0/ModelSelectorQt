@@ -106,7 +106,8 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
     setCentralWidget(window);
     resize(800, 600);
 
-    setWindowFlags(Qt::WindowStaysOnTopHint);
+    //setWindowFlags(Qt::WindowStaysOnTopHint);
+    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
 
     plotED50Series(0);
     plotAUCSeries(0);
