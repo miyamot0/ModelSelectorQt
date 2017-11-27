@@ -174,7 +174,7 @@ void ChartWindow::buildProbabilityPlot()
     rachProbSet.setColor(Qt::magenta);
     rachProbSet.setPen(rachPen);
 
-    rodriguezProbSet.setName("Rodriguez-Logue");
+    rodriguezProbSet.setName("Generalized-Hyperbolic");
     rodriguezProbSet.setUseOpenGL(true);
     rodriguezProbSet.setColor(Qt::yellow);
     rodriguezProbSet.setPen(rodriguezPen);
@@ -385,7 +385,7 @@ void ChartWindow::buildAUCPlot()
     chartArea.addSeries(&rachSeriesArea);
 
     rodriguezSeriesArea.setUseOpenGL(true);
-    rodriguezSeriesArea.setName("Rodriguez-Logue");
+    rodriguezSeriesArea.setName("Generalized-Hyperbolic");
     rodriguezSeriesArea.setPen(QPen(Qt::yellow));
     chartArea.addSeries(&rodriguezSeriesArea);
 
@@ -515,7 +515,7 @@ void ChartWindow::buildED50Plot()
     chart.addSeries(&rachSeries);
 
     rodriguezSeries.setUseOpenGL(true);
-    rodriguezSeries.setName("Rodriguez-Logue");
+    rodriguezSeries.setName("Generalized-Hyperbolic");
     rodriguezSeries.setPen(QPen(Qt::yellow));
     chart.addSeries(&rodriguezSeries);
 
@@ -638,7 +638,7 @@ void ChartWindow::plotAUCSeries(int index)
             rachSeriesArea.show();
             break;
 
-        case ModelType::RodriguezLogue:
+        case ModelType::GeneralizedHyperbolic:
             rodriguezSeriesArea.show();
             break;
 
@@ -693,7 +693,7 @@ void ChartWindow::plotAUCSeries(int index)
             rachS = mList.FittingResults[i]->Params.last().second;
         }
 
-        if (mList.FittingResults[i]->Model == ModelType::RodriguezLogue)
+        if (mList.FittingResults[i]->Model == ModelType::GeneralizedHyperbolic)
         {
             rodriguezCheck = true;
             rodriguezK = mList.FittingResults[i]->Params.first().second;
@@ -787,7 +787,7 @@ void ChartWindow::plotAUCPoint(double i)
 
     if (rodriguezCheck)
     {
-        rodriguezSeriesArea << QPointF(i, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
+        rodriguezSeriesArea << QPointF(i, generalized_hyperbolic_plotting(rodriguezK, rodriguezS, xParam));
     }
 
     if (ebertCheck)
@@ -906,7 +906,7 @@ void ChartWindow::plotED50Series(int index)
             }
         }
 
-        if (mList.FittingResults[i]->Model == ModelType::RodriguezLogue)
+        if (mList.FittingResults[i]->Model == ModelType::GeneralizedHyperbolic)
         {
             rodriguezK = mList.FittingResults[i]->Params.first().second;
             rodriguezS = mList.FittingResults[i]->Params.last().second;
@@ -1015,7 +1015,7 @@ void ChartWindow::plotED50Point(double i)
 
     if (rodriguezCheck)
     {
-        rodriguezSeries << QPointF(i, rodriguez_logue_plotting(rodriguezK, rodriguezS, xParam));
+        rodriguezSeries << QPointF(i, generalized_hyperbolic_plotting(rodriguezK, rodriguezS, xParam));
     }
 
     if (ebertCheck)
@@ -1129,7 +1129,7 @@ void ChartWindow::plotProbabilities(int index)
             }
         }
 
-        if (mList.FittingResults[i]->Model == ModelType::RodriguezLogue)
+        if (mList.FittingResults[i]->Model == ModelType::GeneralizedHyperbolic)
         {
             rodriguezK = mList.FittingResults[i]->Params.first().second;
             rodriguezS = mList.FittingResults[i]->Params.last().second;
@@ -1296,13 +1296,13 @@ double ChartWindow::rachlin_plotting(double k, double s, double x)
 }
 
 /**
- * @brief ChartWindow::rodriguez_logue_plotting
+ * @brief ChartWindow::generalized_hyperbolic_plotting
  * @param k
  * @param s
  * @param x
  * @return
  */
-double ChartWindow::rodriguez_logue_plotting(double k, double s, double x)
+double ChartWindow::generalized_hyperbolic_plotting(double k, double s, double x)
 {
     return pow((1 + x * exp(k)),(-exp(s) / exp(k)));
 }

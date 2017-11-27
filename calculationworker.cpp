@@ -53,7 +53,7 @@ CalculationWorker::CalculationWorker(QList<QPair<QString, QString> > mJohnsonBic
     runLocalBetaDelta = calculationSettings->modelQuasiHyperbolic;
     runLocalMyersonGreen = calculationSettings->modelMyersonGreen;
     runLocalRachlin = calculationSettings->modelRachlin;
-    runLocalRodriguezLogue = calculationSettings->modelRodriguezLogue;
+    runLocalGeneralizedHyp = calculationSettings->modelGeneralizedHyperbolic;
     runLocalEbertPrelec = calculationSettings->modelEbertPrelec;
     runLocalBleicholdt = calculationSettings->modelBleichrodt;
 
@@ -580,7 +580,7 @@ void CalculationWorker::working()
             }
         }
 
-        if (runLocalRodriguezLogue)
+        if (runLocalGeneralizedHyp)
         {
             if (!runBruteForce)
             {
@@ -605,12 +605,12 @@ void CalculationWorker::working()
 
                 for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
                 {
-                    obj.err = mFittingObject->getErrorRodriguezLogue(obj.p1, obj.p2);
+                    obj.err = mFittingObject->getErrorGeneralizedHyperbolic(obj.p1, obj.p2);
                 }
 
                 std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
 
-                mFittingObject->FitRodriguezLogue(QString("[%1,%2]")
+                mFittingObject->FitGeneralizedHyperbolic(QString("[%1,%2]")
                                                    .arg(provisionalValues.twoParamStartingValueArray[0].p1)
                                                    .arg(exp(provisionalValues.twoParamStartingValueArray[0].p2))
                                                    .toUtf8().constData());
@@ -638,44 +638,44 @@ void CalculationWorker::working()
 
                 for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
                 {
-                    obj.err = mFittingObject->getErrorRodriguezLogue(obj.p1, obj.p2);
+                    obj.err = mFittingObject->getErrorGeneralizedHyperbolic(obj.p1, obj.p2);
                 }
 
                 std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
 
-                mFittingObject->FitRodriguezLogue(QString("[%1,%2]")
+                mFittingObject->FitGeneralizedHyperbolic(QString("[%1,%2]")
                                                    .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
                                                    .arg(exp(provisionalValues.smallBruteStartingValueArray[0].p2))
                                                    .toUtf8().constData());
             }
 
-            fitResultRodriguezLogue = new FitResult(ModelType::RodriguezLogue);
+            fitResultGeneralizedHyperbolic = new FitResult(ModelType::GeneralizedHyperbolic);
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
-                mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::RodriguezLogue, mFittingObject->bicRodriguezLogue));
+                mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::GeneralizedHyperbolic, mFittingObject->bicGeneralizedHyperbolic));
 
-                fitResultRodriguezLogue->Params.append(QPair<QString, double>(QString("Rodriguez-Logue K"), mFittingObject->fitRodriguezLogueK));
-                fitResultRodriguezLogue->Params.append(QPair<QString, double>(QString("Rodriguez-Logue Beta"), mFittingObject->fitRodriguezLogueBeta));
-                fitResultRodriguezLogue->RMS = mFittingObject->GetReport().rmserror;
-                fitResultRodriguezLogue->AIC = mFittingObject->aicRodriguezLogue;
-                fitResultRodriguezLogue->BIC = mFittingObject->bicRodriguezLogue;
+                fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic K"), mFittingObject->fitGeneralizedHyperbolicK));
+                fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic Beta"), mFittingObject->fitGeneralizedHyperbolicBeta));
+                fitResultGeneralizedHyperbolic->RMS = mFittingObject->GetReport().rmserror;
+                fitResultGeneralizedHyperbolic->AIC = mFittingObject->aicGeneralizedHyperbolic;
+                fitResultGeneralizedHyperbolic->BIC = mFittingObject->bicGeneralizedHyperbolic;
 
                 for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
                 {
-                    fitResultRodriguezLogue->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                    fitResultGeneralizedHyperbolic->ErrPar.append(mFittingObject->ErrorResidual.at(v));
                 }
 
-                fitResultRodriguezLogue->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                fitResultGeneralizedHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
             else
             {
-                fitResultRodriguezLogue->Params.append(QPair<QString, double>(QString("Rodriguez-Logue K"), NULL));
-                fitResultRodriguezLogue->Params.append(QPair<QString, double>(QString("Rodriguez-Logue Beta"), NULL));
-                fitResultRodriguezLogue->RMS = NULL;
-                fitResultRodriguezLogue->AIC = NULL;
-                fitResultRodriguezLogue->BIC = NULL;
-                fitResultRodriguezLogue->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic K"), NULL));
+                fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic Beta"), NULL));
+                fitResultGeneralizedHyperbolic->RMS = NULL;
+                fitResultGeneralizedHyperbolic->AIC = NULL;
+                fitResultGeneralizedHyperbolic->BIC = NULL;
+                fitResultGeneralizedHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
             }
         }
 
@@ -956,11 +956,11 @@ void CalculationWorker::working()
                 fitResults->FittingResults.append(fitResultRachlin);
         }
 
-        if (runLocalRodriguezLogue)
+        if (runLocalGeneralizedHyp)
         {
-            fitResultRodriguezLogue->BF = mFittingObject->bfRodriguezLogue;
-            fitResultRodriguezLogue->Probability = mFittingObject->probsRodriguezLogue;
-                fitResults->FittingResults.append(fitResultRodriguezLogue);
+            fitResultGeneralizedHyperbolic->BF = mFittingObject->bfGeneralizedHyperbolic;
+            fitResultGeneralizedHyperbolic->Probability = mFittingObject->probsGeneralizedHyperbolic;
+                fitResults->FittingResults.append(fitResultGeneralizedHyperbolic);
         }
 
         if (runLocalEbertPrelec)
@@ -1012,9 +1012,9 @@ void CalculationWorker::working()
                 mTopErrPar = fitResultRachlin->ErrPar;
                 break;
 
-            case ModelType::RodriguezLogue:
-                mModel = "Rodriguez-Logue";
-                mTopErrPar = fitResultRodriguezLogue->ErrPar;
+            case ModelType::GeneralizedHyperbolic:
+                mModel = "Generalized-Hyperbolic";
+                mTopErrPar = fitResultGeneralizedHyperbolic->ErrPar;
                 break;
 
             case ModelType::EbertPrelec:

@@ -71,7 +71,7 @@ public:
     double getErrorQuasiHyperbolic(double beta, double delta);
     double getErrorGreenMyerson(double lnK, double s);
     double getErrorGreenRachlin(double lnK, double s);
-    double getErrorRodriguezLogue(double lnK, double beta);
+    double getErrorGeneralizedHyperbolic(double lnK, double beta);
     double getErrorEbertPrelec(double lnK, double s);
     double getErrorBleichrodt(double lnK, double s, double beta);
 
@@ -81,7 +81,7 @@ public:
     void FitQuasiHyperbolic(const char *mStarts);
     void FitMyerson(const char *mStarts);
     void FitRachlin(const char *mStarts);
-    void FitRodriguezLogue(const char *mStarts);
+    void FitGeneralizedHyperbolic(const char *mStarts);
     void FitEbertPrelec(const char *mStarts);
     void FitBleichrodt(const char *mStarts);
 
@@ -99,7 +99,7 @@ public:
     double aicQuasiHyperbolic = -1;
     double aicMyerson = -1;
     double aicRachlin = -1;
-    double aicRodriguezLogue  = -1;
+    double aicGeneralizedHyperbolic  = -1;
     double aicEbertPrelec  = -1;
     double aicBleichrodt  = -1;
 
@@ -112,7 +112,7 @@ public:
     double bicQuasiHyperbolic = -1;
     double bicMyerson = -1;
     double bicRachlin = -1;
-    double bicRodriguezLogue = -1;
+    double bicGeneralizedHyperbolic = -1;
     double bicEbertPrelec  = -1;
     double bicBleichrodt  = -1;
 
@@ -125,7 +125,7 @@ public:
     double bfQuasiHyperbolic = -1;
     double bfMyerson = -1;
     double bfRachlin = -1;
-    double bfRodriguezLogue = -1;
+    double bfGeneralizedHyperbolic = -1;
     double bfEbertPrelec  = -1;
     double bfBleichrodt  = -1;
 
@@ -138,7 +138,7 @@ public:
     double probsQuasiHyperbolic = -1;
     double probsMyerson = -1;
     double probsRachlin = -1;
-    double probsRodriguezLogue = -1;
+    double probsGeneralizedHyperbolic = -1;
     double probsEbertPrelec  = -1;
     double probsBleichrodt  = -1;
 
@@ -153,8 +153,8 @@ public:
     double fitMyersonS = -1;
     double fitRachlinK = -1;
     double fitRachlinS = -1;
-    double fitRodriguezLogueK = -1;
-    double fitRodriguezLogueBeta = -1;
+    double fitGeneralizedHyperbolicK = -1;
+    double fitGeneralizedHyperbolicBeta = -1;
     double fitEbertPrelecK = -1;
     double fitEbertPrelecS = -1;
     double fitBleichrodtBeta = -1;

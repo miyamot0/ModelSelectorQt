@@ -57,7 +57,7 @@ public:
          modelQuasiHyperbolic,
          modelMyersonGreen,
          modelRachlin,
-         modelRodriguezLogue,
+         modelGeneralizedHyperbolic,
          modelEbertPrelec,
          modelBleichrodt;
 

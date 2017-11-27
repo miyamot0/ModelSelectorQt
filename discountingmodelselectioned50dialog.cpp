@@ -140,7 +140,7 @@ void DiscountingModelSelectionED50Dialog::on_pushButton_clicked()
     temp->calculationSettings->modelQuasiHyperbolic = ui->checkBoxQuasiHyperbolic->isChecked();
     temp->calculationSettings->modelMyersonGreen = ui->checkBoxMyersonHyperboloid->isChecked();
     temp->calculationSettings->modelRachlin = ui->checkBoxRachlinHyperboloid->isChecked();
-    temp->calculationSettings->modelRodriguezLogue = ui->checkBoxRodriguezLogue->isChecked();
+    temp->calculationSettings->modelGeneralizedHyperbolic = ui->checkBoxGeneralizedHyper->isChecked();
     temp->calculationSettings->modelEbertPrelec = ui->checkBoxEbertPrelec->isChecked();
     temp->calculationSettings->modelBleichrodt = ui->checkBoxBleichrodt->isChecked();
 

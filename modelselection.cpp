@@ -1124,14 +1124,14 @@ void ModelSelection::FitRachlin(const char *mStarts)
 /** Rodriguez Logue Model
   *  @brief
   */
-void ModelSelection::FitRodriguezLogue(const char *mStarts)
+void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
 {
     ErrorResidual.clear();
 
-    aicRodriguezLogue = NULL;
-    bicRodriguezLogue = NULL;
-    fitRodriguezLogueK = NULL;
-    fitRodriguezLogueBeta = NULL;
+    aicGeneralizedHyperbolic = NULL;
+    bicGeneralizedHyperbolic = NULL;
+    fitGeneralizedHyperbolicK = NULL;
+    fitGeneralizedHyperbolicBeta = NULL;
 
     SetStarts(mStarts);
 
@@ -1165,10 +1165,10 @@ void ModelSelection::FitRodriguezLogue(const char *mStarts)
 
         DF = 3;
 
-        aicRodriguezLogue = (-2 * log(L)) + (2 * DF);
-        bicRodriguezLogue = -2 * log(L) + log(N) * DF;
-        fitRodriguezLogueK = (double) c[0];
-        fitRodriguezLogueBeta = (double) c[1];
+        aicGeneralizedHyperbolic = (-2 * log(L)) + (2 * DF);
+        bicGeneralizedHyperbolic = -2 * log(L) + log(N) * DF;
+        fitGeneralizedHyperbolicK = (double) c[0];
+        fitGeneralizedHyperbolicBeta = (double) c[1];
     }
 }
 
@@ -1365,7 +1365,7 @@ QString ModelSelection::getED50BestModel(ModelType model)
 
         break;
 
-    case ModelType::RodriguezLogue:
+    case ModelType::GeneralizedHyperbolic:
         result = getED50rodriguez();
         return QString::number(result);
 
@@ -1472,9 +1472,9 @@ double ModelSelection::getED50rodriguez () {
     int i = 0;
 
     while ((highDelay - lowDelay) > 0.001 && i < 100) {
-      double lowEst = ChartWindow::rodriguez_logue_plotting(fitRodriguezLogueK, fitRodriguezLogueBeta, lowDelay);
-      double midEst = ChartWindow::rodriguez_logue_plotting(fitRodriguezLogueK, fitRodriguezLogueBeta, (lowDelay+highDelay)/2);
-      double highEst = ChartWindow::rodriguez_logue_plotting(fitRodriguezLogueK, fitRodriguezLogueBeta, highDelay);
+      double lowEst = ChartWindow::generalized_hyperbolic_plotting(fitGeneralizedHyperbolicK, fitGeneralizedHyperbolicBeta, lowDelay);
+      double midEst = ChartWindow::generalized_hyperbolic_plotting(fitGeneralizedHyperbolicK, fitGeneralizedHyperbolicBeta, (lowDelay+highDelay)/2);
+      double highEst = ChartWindow::generalized_hyperbolic_plotting(fitGeneralizedHyperbolicK, fitGeneralizedHyperbolicBeta, highDelay);
 
       if (lowEst > 0.5 && midEst > 0.5) {
         //Above 50% mark range
@@ -1587,9 +1587,9 @@ QString ModelSelection::getAUCBestModel(ModelType model)
 
         break;
 
-    case ModelType::RodriguezLogue:
-        mParams << fitRodriguezLogueK;
-        mParams << fitRodriguezLogueBeta;
+    case ModelType::GeneralizedHyperbolic:
+        mParams << fitGeneralizedHyperbolicK;
+        mParams << fitGeneralizedHyperbolicBeta;
 
         autogksmooth(a, b, s);
         alglib::autogkintegrate(s, generalized_hyperboloid_integration, &mParams);
@@ -1740,9 +1740,9 @@ QString ModelSelection::getLogAUCBestModel(ModelType model)
 
         break;
 
-    case ModelType::RodriguezLogue:
-        mParams << fitRodriguezLogueK;
-        mParams << fitRodriguezLogueBeta;
+    case ModelType::GeneralizedHyperbolic:
+        mParams << fitGeneralizedHyperbolicK;
+        mParams << fitGeneralizedHyperbolicBeta;
 
         autogksmooth(a, b, s);
         alglib::autogkintegrate(s, generalized_hyperboloid_integration_log10, &mParams);
@@ -1803,7 +1803,7 @@ void ModelSelection::PrepareProbabilities()
     bfQuasiHyperbolic = NULL;
     bfMyerson = NULL;
     bfRachlin = NULL;
-    bfRodriguezLogue = NULL;
+    bfGeneralizedHyperbolic = NULL;
     bfEbertPrelec = NULL;
     bfBleichrodt = NULL;
 
@@ -1838,10 +1838,10 @@ void ModelSelection::PrepareProbabilities()
             bfRachlin = ScaleFactor(mBicList[i].second, NoiseBIC);
             sumBayesFactors = sumBayesFactors + bfRachlin;
         }
-        else if (mBicList[i].first == ModelType::RodriguezLogue)
+        else if (mBicList[i].first == ModelType::GeneralizedHyperbolic)
         {
-            bfRodriguezLogue = ScaleFactor(mBicList[i].second, NoiseBIC);
-            sumBayesFactors = sumBayesFactors + bfRodriguezLogue;
+            bfGeneralizedHyperbolic = ScaleFactor(mBicList[i].second, NoiseBIC);
+            sumBayesFactors = sumBayesFactors + bfGeneralizedHyperbolic;
         }
         else if (mBicList[i].first == ModelType::EbertPrelec)
         {
@@ -1861,7 +1861,7 @@ void ModelSelection::PrepareProbabilities()
     probsQuasiHyperbolic = NULL;
     probsMyerson = NULL;
     probsRachlin = NULL;
-    probsRodriguezLogue = NULL;
+    probsGeneralizedHyperbolic = NULL;
     probsEbertPrelec = NULL;
 
     mProbList.clear();
@@ -1894,10 +1894,10 @@ void ModelSelection::PrepareProbabilities()
             probsRachlin = bfRachlin/sumBayesFactors;
             mProbList.append(QPair<ModelType, double>(ModelType::Rachlin, probsRachlin));
         }
-        else if (mBicList[i].first == ModelType::RodriguezLogue)
+        else if (mBicList[i].first == ModelType::GeneralizedHyperbolic)
         {
-            probsRodriguezLogue = bfRodriguezLogue/sumBayesFactors;
-            mProbList.append(QPair<ModelType, double>(ModelType::RodriguezLogue, probsRodriguezLogue));
+            probsGeneralizedHyperbolic = bfGeneralizedHyperbolic/sumBayesFactors;
+            mProbList.append(QPair<ModelType, double>(ModelType::GeneralizedHyperbolic, probsGeneralizedHyperbolic));
         }
         else if (mBicList[i].first == ModelType::EbertPrelec)
         {
@@ -2001,12 +2001,12 @@ double ModelSelection::getErrorGreenRachlin(double lnK, double s)
 }
 
 /**
- * @brief ModelSelection::getErrorRodriguezLogue
+ * @brief ModelSelection::getErrorGeneralizedHyperbolic
  * @param lnK
  * @param beta
  * @return
  */
-double ModelSelection::getErrorRodriguezLogue(double lnK, double beta)
+double ModelSelection::getErrorGeneralizedHyperbolic(double lnK, double beta)
 {
     leastSquaresError = 0;
 

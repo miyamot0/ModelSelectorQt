@@ -58,7 +58,7 @@ private:
               *fitResultBetaDelta,
               *fitResultGreenMyerson,
               *fitResultRachlin,
-              *fitResultRodriguezLogue,
+              *fitResultGeneralizedHyperbolic,
               *fitResultEbertPrelec,
               *fitResultBleichrodt,
               *fitResultNoise;
@@ -68,7 +68,7 @@ private:
          runLocalBetaDelta,
          runLocalMyersonGreen,
          runLocalRachlin,
-         runLocalRodriguezLogue,
+         runLocalGeneralizedHyp,
          runLocalEbertPrelec,
          runLocalBleicholdt;
 

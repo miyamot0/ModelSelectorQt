@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>483</width>
+    <width>576</width>
     <height>551</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Discounting ED50 Calculator</string>
+   <string>Discounting Calculator</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <property name="sizeConstraint">
@@ -303,9 +303,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="checkBoxRodriguezLogue">
+           <widget class="QCheckBox" name="checkBoxGeneralizedHyper">
             <property name="text">
-             <string>Include Rodriguez-Logue Model</string>
+             <string>Include Generalized Hyperbolic Model</string>
             </property>
             <property name="checked">
              <bool>true</bool>

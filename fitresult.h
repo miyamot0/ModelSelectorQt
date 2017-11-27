@@ -30,7 +30,7 @@ enum class ModelType {
     Noise,
     Exponential,
     Hyperbolic,
-    RodriguezLogue,
+    GeneralizedHyperbolic,
     BetaDelta,
     Myerson,
     Rachlin,

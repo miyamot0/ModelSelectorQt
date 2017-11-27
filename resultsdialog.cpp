@@ -138,14 +138,14 @@ ResultsDialog::ResultsDialog(int nSeries, bool tripLogNormal, QWidget *parent) :
     columnList << "Rachlin.prob";
     columnList << "Rachlin.notes";
 
-    columnList << "RodriguezLogue.k";
-    columnList << "RodriguezLogue.beta";
-    columnList << "RodriguezLogue.RMSE";
-    columnList << "RodriguezLogue.BIC";
-    columnList << "RodriguezLogue.AIC";
-    columnList << "RodriguezLogue.BF";
-    columnList << "RodriguezLogue.prob";
-    columnList << "RodriguezLogue.notes";
+    columnList << "GeneralizedHyperbolic.k";
+    columnList << "GeneralizedHyperbolic.beta";
+    columnList << "GeneralizedHyperbolic.RMSE";
+    columnList << "GeneralizedHyperbolic.BIC";
+    columnList << "GeneralizedHyperbolic.AIC";
+    columnList << "GeneralizedHyperbolic.BF";
+    columnList << "GeneralizedHyperbolic.prob";
+    columnList << "GeneralizedHyperbolic.notes";
 
     columnList << "EbertPrelec.k";
     columnList << "EbertPrelec.s";
@@ -265,7 +265,7 @@ void ResultsDialog::ImportDataAndShow(bool hasAreaMetrics)
                 ui->tableWidget->setItem(i,38, new QTableWidgetItem(temp->allResults.at(i).FittingResults.at(j)->Status));
             }
 
-            if (temp->allResults.at(i).FittingResults.at(j)->Model == ModelType::RodriguezLogue)
+            if (temp->allResults.at(i).FittingResults.at(j)->Model == ModelType::GeneralizedHyperbolic)
             {
                 ui->tableWidget->setItem(i,39, new QTableWidgetItem(formatNumberCatchNulls(temp->allResults.at(i).FittingResults.at(j)->Params.first().second)));
                 ui->tableWidget->setItem(i,40, new QTableWidgetItem(formatNumberCatchNulls(temp->allResults.at(i).FittingResults.at(j)->Params.last().second)));
