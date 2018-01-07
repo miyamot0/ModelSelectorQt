@@ -983,12 +983,14 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
     SetLowerUpperBounds("[1.0, 1.0]", "[0.0, 0.0]");
 
-    lsfitcreatefgh(x, y, c, state);
+    lsfitcreatefg(x, y, c, true, state);
+    //lsfitcreatefgh(x, y, c, state);
 
     lsfitsetbc(state, bndl, bndu);
     lsfitsetcond(state, epsx, maxits);
 
-    alglib::lsfitfit(state, quasi_hyperboloid_discounting, quasi_hyperboloid_discounting_grad, quasi_hyperboloid_discounting_hessian);
+    alglib::lsfitfit(state, quasi_hyperboloid_discounting, quasi_hyperboloid_discounting_grad);
+    //alglib::lsfitfit(state, quasi_hyperboloid_discounting, quasi_hyperboloid_discounting_grad, quasi_hyperboloid_discounting_hessian);
 
     lsfitresults(state, info, c, rep);
 
@@ -1121,7 +1123,7 @@ void ModelSelection::FitRachlin(const char *mStarts)
     }
 }
 
-/** Rodriguez Logue Model
+/** Lewenstein & Prelec Model
   *  @brief
   */
 void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
@@ -1306,12 +1308,10 @@ QString ModelSelection::formatStringResult(int value)
     else if (value == 5)
     {
         return QString("MaxIts steps was taken");
-
     }
     else if (value == 7)
     {
         return QString("stopping conditions are too stringent, further improvement is impossible");
-
     }
     else
     {
