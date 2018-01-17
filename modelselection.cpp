@@ -367,9 +367,15 @@ void quasi_hyperboloid_discounting_hessian(const real_1d_array &c, const real_1d
     grad[0] = pow(c[1], x[0]);
     grad[1] = c[0] * (pow(c[1],(x[0] - 1)) * x[0]);
 
+    //hess[0][0] = 0;
+    //hess[0][1] = (pow(c[1],(x[0] - 1)) * x[0]);
+    //hess[1][0] = (pow(c[1],(x[0] - 1)) * x[0]);
+    //hess[1][1] = c[0] * (pow(c[1],((x[0] - 1) - 1)) * (x[0] - 1) * x[0]);
+
     hess[0][0] = 0;
-    hess[0][1] = (pow(c[1],(x[0] - 1)) * x[0]);
-    hess[1][0] = (pow(c[1],(x[0] - 1)) * x[0]);
+    hess[0][1] = pow(c[1], (x[0] - 1)) * x[0];
+
+    hess[1][0] = (pow(c[1], (x[0] - 1)) * x[0]);
     hess[1][1] = c[0] * (pow(c[1],((x[0] - 1) - 1)) * (x[0] - 1) * x[0]);
 }
 
@@ -1080,16 +1086,77 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
     SetStarts(mStarts);
 
-    SetLowerUpperBounds("[1.0, 1.0]", "[0.0, 0.0]");
+    SetLowerUpperBounds("[0.9999999999999999, 0.9999999999999999]",
+                        "[0.0000000000000001, 0.0000000000000001]");
 
-    lsfitcreatefg(x, y, c, true, state);
-    //lsfitcreatefgh(x, y, c, state);
+    if (fittingAlgorithm == FittingAlgorithm::Function)
+    {
+        lsfitcreatef(x,
+                     y,
+                     c,
+                     diffstep,
+                     state);
 
-    lsfitsetbc(state, bndl, bndu);
-    lsfitsetcond(state, epsx, maxits);
+        lsfitsetbc(state,
+                   bndl,
+                   bndu);
 
-    alglib::lsfitfit(state, quasi_hyperboloid_discounting, quasi_hyperboloid_discounting_grad);
-    //alglib::lsfitfit(state, quasi_hyperboloid_discounting, quasi_hyperboloid_discounting_grad, quasi_hyperboloid_discounting_hessian);
+        lsfitsetcond(state,
+                     epsx,
+                     maxits);
+
+        alglib::lsfitfit(state,
+                         quasi_hyperboloid_discounting);
+
+    }
+    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
+    {
+        lsfitcreatefg(x,
+                      y,
+                      c,
+                      true,
+                      state);
+
+        lsfitsetbc(state,
+                   bndl,
+                   bndu);
+
+        lsfitsetcond(state,
+                     epsx,
+                     maxits);
+
+        alglib::lsfitfit(state,
+                         quasi_hyperboloid_discounting,
+                         quasi_hyperboloid_discounting_grad);
+    }
+    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+    {
+        lsfitcreatefgh(x,
+                       y,
+                       c,
+                       state);
+
+        lsfitsetbc(state,
+                   bndl,
+                   bndu);
+
+        lsfitsetcond(state,
+                     epsx,
+                     maxits);
+
+        alglib::lsfitfit(state,
+                         quasi_hyperboloid_discounting,
+                         quasi_hyperboloid_discounting_grad,
+                         quasi_hyperboloid_discounting_hessian);
+    }
+
+
+    //lsfitcreatefg(x, y, c, true, state);
+
+    //lsfitsetbc(state, bndl, bndu);
+    //lsfitsetcond(state, epsx, maxits);
+
+    //alglib::lsfitfit(state, quasi_hyperboloid_discounting, quasi_hyperboloid_discounting_grad);
 
     lsfitresults(state, info, c, rep);
 
