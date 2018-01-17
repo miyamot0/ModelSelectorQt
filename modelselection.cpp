@@ -984,11 +984,59 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
     SetStarts(mStarts);
 
-    lsfitcreatefgh(x, y, c, state);
+    if (fittingAlgorithm == FittingAlgorithm::Function)
+    {
+        lsfitcreatef(x,
+                     y,
+                     c,
+                     diffstep,
+                     state);
 
-    lsfitsetcond(state, epsx, maxits);
+        lsfitsetcond(state,
+                     epsx,
+                     maxits);
 
-    alglib::lsfitfit(state, hyperbolic_discounting, hyperbolic_discounting_grad, hyperbolic_discounting_hessian);
+        alglib::lsfitfit(state,
+                         hyperbolic_discounting);
+
+    }
+    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
+    {
+        lsfitcreatefg(x,
+                      y,
+                      c,
+                      true,
+                      state);
+
+        lsfitsetcond(state,
+                     epsx,
+                     maxits);
+
+        alglib::lsfitfit(state,
+                         hyperbolic_discounting,
+                         hyperbolic_discounting_grad);
+    }
+    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+    {
+        lsfitcreatefgh(x,
+                       y,
+                       c,
+                       state);
+
+        lsfitsetcond(state,
+                     epsx,
+                     maxits);
+
+        alglib::lsfitfit(state,
+                         hyperbolic_discounting,
+                         hyperbolic_discounting_grad,
+                         hyperbolic_discounting_hessian);
+    }
+
+    // HACK
+    //lsfitcreatefgh(x, y, c, state);
+    //lsfitsetcond(state, epsx, maxits);
+    //alglib::lsfitfit(state, hyperbolic_discounting, hyperbolic_discounting_grad, hyperbolic_discounting_hessian);
 
     lsfitresults(state, info, c, rep);
 
