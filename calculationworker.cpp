@@ -46,6 +46,7 @@ CalculationWorker::CalculationWorker(QList<QPair<QString, QString> > mJohnsonBic
     mLocalStoredValues = mStoredValues;
 
     mFittingObject = new ModelSelection();
+    mFittingObject->SetFittingAlgorithm(calculationSettings->settingsFitting);
 
     runLocalExponential = calculationSettings->modelExponential;
 
@@ -64,6 +65,8 @@ CalculationWorker::CalculationWorker(QList<QPair<QString, QString> > mJohnsonBic
     runLocalArea = calculationSettings->cbArea;
 
     runBruteForce = calculationSettings->cbBruteForce;
+
+    fittingAlgorithm = calculationSettings->settingsFitting;
 
     processCheckingLocal = processChecking;
 }
@@ -1026,6 +1029,22 @@ void CalculationWorker::working()
                 mModel = "Beleichrodt";
                 mTopErrPar = fitResultBleichrodt->ErrPar;
                 break;
+        }
+
+        if (!mModel.contains("Noise", Qt::CaseInsensitive))
+        {
+            if (fittingAlgorithm == FittingAlgorithm::Function)
+            {
+                mModel.append(" (f)");
+            }
+            else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
+            {
+                mModel.append(" (fg)");
+            }
+            else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+            {
+                mModel.append(" (fgh)");
+            }
         }
 
         fitResults->TopModel = mModel;

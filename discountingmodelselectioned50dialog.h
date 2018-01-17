@@ -25,6 +25,7 @@
 #define DISCOUNTINGMODELSELECTIONED50DIALOG_H
 
 #include <QDialog>
+#include "calculationsettings.h"
 
 namespace Ui {
 class DiscountingModelSelectionED50Dialog;
@@ -68,6 +69,11 @@ public slots:
      * @param label
      */
     void UpdateMaxValue(QString label);
+
+    /** Update value of data
+     * @brief Get Fitting Algorithm
+     */
+    FittingAlgorithm getFittingAlgorithm();
 
     /** Begin calculations, supplying commands to background worker
      * @brief ToggleButton

@@ -33,6 +33,13 @@ enum class ChartingOptions {
     All
 };
 
+enum class FittingAlgorithm
+{
+    Function,
+    FunctionGradient,
+    FunctionGradientHessian
+};
+
 class CalculationSettings
 {
 public:
@@ -62,6 +69,8 @@ public:
          modelBleichrodt;
 
     ChartingOptions chartOption;
+
+    FittingAlgorithm settingsFitting;
 
     bool cbRachlin,
          johnsonBickelTest,

@@ -83,6 +83,26 @@ void DiscountingModelSelectionED50Dialog::ToggleButton(bool status)
     ui->pushButton->setEnabled(status);
 }
 
+FittingAlgorithm DiscountingModelSelectionED50Dialog::getFittingAlgorithm()
+{
+    if (ui->comboBoxFitting->currentIndex() == 0)
+    {
+        return FittingAlgorithm::Function;
+    }
+    else if (ui->comboBoxFitting->currentIndex() == 1)
+    {
+        return FittingAlgorithm::FunctionGradient;
+    }
+    else if (ui->comboBoxFitting->currentIndex() == 2)
+    {
+        return FittingAlgorithm::FunctionGradientHessian;
+    }
+    else
+    {
+        return FittingAlgorithm::FunctionGradientHessian;
+    }
+}
+
 void DiscountingModelSelectionED50Dialog::RachlinToggleButton(bool status)
 {
     if (status)
@@ -161,6 +181,7 @@ void DiscountingModelSelectionED50Dialog::on_pushButton_clicked()
 
     temp->calculationSettings->logNormalParameters = ui->checkBoxLog->isChecked();
     temp->calculationSettings->cbArea = ui->checkBoxArea->isChecked();
+    temp->calculationSettings->settingsFitting = getFittingAlgorithm();
 
     temp->Calculate();
 }

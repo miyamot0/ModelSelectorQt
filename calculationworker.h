@@ -50,6 +50,7 @@ private:
     QList<bool> *mLocalJonhsonBickelSelections;
     QList<QStringList> mLocalStoredValues;
     ModelSelection *mFittingObject;
+    FittingAlgorithm fittingAlgorithm;
 
     FitResults *fitResults;
 

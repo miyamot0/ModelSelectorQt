@@ -57,6 +57,8 @@
 
 #include "chartwindow.h"
 
+#include <QDebug>
+
 using namespace alglib;
 
 /**
@@ -886,11 +888,60 @@ void ModelSelection::FitExponential(const char *mStarts)
 
     SetStarts(mStarts);
 
-    lsfitcreatefgh(x, y, c, state);
+    if (fittingAlgorithm == FittingAlgorithm::Function)
+    {
+        lsfitcreatef(x,
+                     y,
+                     c,
+                     diffstep,
+                     state);
 
-    lsfitsetcond(state, epsx, maxits);
+        lsfitsetcond(state,
+                     epsx,
+                     maxits);
 
-    alglib::lsfitfit(state, exponential_discounting, exponential_discounting_grad, exponential_discounting_hessian);
+        alglib::lsfitfit(state,
+                         exponential_discounting);
+
+    }
+    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
+    {
+        lsfitcreatefg(x,
+                      y,
+                      c,
+                      true,
+                      state);
+
+        lsfitsetcond(state,
+                     epsx,
+                     maxits);
+
+        alglib::lsfitfit(state,
+                         exponential_discounting,
+                         exponential_discounting_grad);
+    }
+    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+    {
+        lsfitcreatefgh(x,
+                       y,
+                       c,
+                       state);
+
+        lsfitsetcond(state,
+                     epsx,
+                     maxits);
+
+        alglib::lsfitfit(state,
+                         exponential_discounting,
+                         exponential_discounting_grad,
+                         exponential_discounting_hessian);
+
+    }
+
+    // HACK
+    //lsfitcreatefgh(x, y, c, state);
+    //lsfitsetcond(state, epsx, maxits);
+    //alglib::lsfitfit(state, exponential_discounting, exponential_discounting_grad, exponential_discounting_hessian);
 
     lsfitresults(state, info, c, rep);
 
@@ -2053,6 +2104,11 @@ double ModelSelection::getErrorBleichrodt(double lnK, double s, double beta)
     }
 
     return leastSquaresError;
+}
+
+void ModelSelection::SetFittingAlgorithm(FittingAlgorithm value)
+{
+    fittingAlgorithm = value;
 }
 
 ModelSelection::ModelSelection()

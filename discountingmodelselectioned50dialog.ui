@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>576</width>
-    <height>551</height>
+    <width>588</width>
+    <height>579</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -396,6 +396,28 @@
             <property name="text">
              <string>Restrict Rachlin s to &lt;= 1 (Warning)</string>
             </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboBoxFitting">
+            <property name="currentIndex">
+             <number>2</number>
+            </property>
+            <item>
+             <property name="text">
+              <string>Fit: Function</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Fit: Function + Gradient</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Fit: Function + Gradient + Hessian</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>

@@ -35,6 +35,7 @@
 #include "optimization.h"
 
 #include "fitresult.h"
+#include "calculationsettings.h"
 
 using namespace alglib;
 
@@ -47,6 +48,7 @@ public:
     void SetY(const char *mString);
     void SetStarts(const char *mString);
     void SetLowerUpperBounds(const char *mUpperString, const char *mLowerString);
+    void SetFittingAlgorithm(FittingAlgorithm value);
 
     real_1d_array GetParams();
     lsfitstate GetState();
@@ -62,6 +64,8 @@ public:
     double getED50ep();
     double getED50crdi();
     double getED50rodriguez();
+
+    FittingAlgorithm fittingAlgorithm;
 
     QString getAUCBestModel(ModelType model);
     QString getLogAUCBestModel(ModelType model);
