@@ -1031,7 +1031,18 @@ void CalculationWorker::working()
                 break;
         }
 
-        if (!mModel.contains("Noise", Qt::CaseInsensitive))
+        if (mModel.contains("Generalized-Hyperbolic", Qt::CaseInsensitive))
+        {
+            if (fittingAlgorithm == FittingAlgorithm::Function)
+            {
+                mModel.append(" (f)");
+            }
+            else
+            {
+                mModel.append(" (fg)");
+            }
+        }
+        else if (!mModel.contains("Noise", Qt::CaseInsensitive))
         {
             if (fittingAlgorithm == FittingAlgorithm::Function)
             {

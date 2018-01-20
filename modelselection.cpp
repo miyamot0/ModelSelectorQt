@@ -939,11 +939,6 @@ void ModelSelection::FitExponential(const char *mStarts)
 
     }
 
-    // HACK
-    //lsfitcreatefgh(x, y, c, state);
-    //lsfitsetcond(state, epsx, maxits);
-    //alglib::lsfitfit(state, exponential_discounting, exponential_discounting_grad, exponential_discounting_hessian);
-
     lsfitresults(state, info, c, rep);
 
     if ((int) info == 2 || (int) info == 5)
@@ -1033,11 +1028,6 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
                          hyperbolic_discounting_grad,
                          hyperbolic_discounting_hessian);
     }
-
-    // HACK
-    //lsfitcreatefgh(x, y, c, state);
-    //lsfitsetcond(state, epsx, maxits);
-    //alglib::lsfitfit(state, hyperbolic_discounting, hyperbolic_discounting_grad, hyperbolic_discounting_hessian);
 
     lsfitresults(state, info, c, rep);
 
@@ -1145,11 +1135,6 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
                          quasi_hyperboloid_discounting_hessian);
     }
 
-    //lsfitcreatefg(x, y, c, true, state);
-    //lsfitsetbc(state, bndl, bndu);
-    //lsfitsetcond(state, epsx, maxits);
-    //alglib::lsfitfit(state, quasi_hyperboloid_discounting, quasi_hyperboloid_discounting_grad);
-
     lsfitresults(state, info, c, rep);
 
     if ((int) info == 2 || (int) info == 5)
@@ -1241,10 +1226,6 @@ void ModelSelection::FitMyerson(const char *mStarts)
                          hyperboloid_myerson_discounting_grad,
                          hyperboloid_myerson_discounting_hessian);
     }
-
-    //lsfitcreatefgh(x, y, c, state);
-    //lsfitsetcond(state, epsx, maxits);
-    //alglib::lsfitfit(state, hyperboloid_myerson_discounting, hyperboloid_myerson_discounting_grad, hyperboloid_myerson_discounting_hessian);
 
     lsfitresults(state, info, c, rep);
 
@@ -1339,10 +1320,6 @@ void ModelSelection::FitRachlin(const char *mStarts)
                          hyperboloid_rachlin_discounting_grad,
                          hyperboloid_rachlin_discounting_hessian);
     }
-
-    //lsfitcreatefgh(x, y, c, state);
-    //lsfitsetcond(state, epsx, maxits);
-    //alglib::lsfitfit(state, hyperboloid_rachlin_discounting, hyperboloid_rachlin_discounting_grad, hyperboloid_rachlin_discounting_hessian);
 
     lsfitresults(state, info, c, rep);
 
@@ -1440,10 +1417,6 @@ void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
     }
     */
 
-    //lsfitcreatefg(x, y, c, true, state);
-    //lsfitsetcond(state, epsx, maxits);
-    //alglib::lsfitfit(state, generalized_hyperboloid_discounting, generalized_hyperboloid_discounting_grad);
-
     lsfitresults(state, info, c, rep);
 
     if ((int) GetInfo() == 2 || (int) GetInfo() == 5)
@@ -1535,10 +1508,6 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
                          ebert_prelec_discounting_grad,
                          ebert_prelec_discounting_hessian);
     }
-
-    //lsfitcreatefgh(x, y, c, state);
-    //lsfitsetcond(state, epsx, maxits);
-    //alglib::lsfitfit(state, ebert_prelec_discounting, ebert_prelec_discounting_grad, ebert_prelec_discounting_hessian);
 
     lsfitresults(state, info, c, rep);
 
@@ -1646,11 +1615,6 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
                          bleichrodt_discounting_grad,
                          bleichrodt_discounting_hessian);
     }
-
-    //lsfitcreatefgh(x, y, c, state);
-    //lsfitsetbc(state, bndl, bndu);
-    //lsfitsetcond(state, epsx, maxits);
-    //alglib::lsfitfit(state, bleichrodt_discounting, bleichrodt_discounting_grad, bleichrodt_discounting_hessian);
 
     lsfitresults(state, info, c, rep);
 
