@@ -601,7 +601,7 @@ void ChartWindow::plotAUCSeries(int index)
         return;
     }
 
-    chartArea.setTitle(QString("Participant #%1: %2 Scaled AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopAUCLog));
+    chartArea.setTitle(QString("Participant #%1: %2 Scaled AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(cleanTitle(mList.TopModel)).arg(mList.TopAUCLog));
 
     expSeriesArea.hide();
     hypSeriesArea.hide();
@@ -838,7 +838,7 @@ void ChartWindow::plotED50Series(int index)
         return;
     }
 
-    chart.setTitle(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel).arg(mList.TopED50));
+    chart.setTitle(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(cleanTitle(mList.TopModel)).arg(mList.TopED50));
 
     expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
 
@@ -1207,7 +1207,7 @@ void ChartWindow::plotResiduals(int index)
         return;
     }
 
-    chartError.setTitle(QString("Participant #%1: %2 Residual Plot").arg(QString::number(currentIndexShown + 1)).arg(mList.TopModel));
+    chartError.setTitle(QString("Participant #%1: %2 Residual Plot").arg(QString::number(currentIndexShown + 1)).arg(cleanTitle(mList.TopModel)));
 }
 
 /**

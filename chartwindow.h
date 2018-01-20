@@ -185,6 +185,24 @@ private:
     QString paramString1,
             paramString2;
 
+    QString cleanTitle(QString title)
+    {
+        if (title.contains(" (f)"))
+        {
+            return title.replace(" (f)", "");
+        }
+        else if (title.contains(" (fg)"))
+        {
+            return title.replace(" (fg)", "");
+        }
+        else if (title.contains(" (fgh)"))
+        {
+            return title.replace(" (fgh)", "");
+        }
+
+        return title;
+    }
+
     int currentIndexShown;
 
     bool isLogNormalParamerized,
