@@ -15,10 +15,11 @@ Features include:
 
 ### Version
 ------
-1.5.0 (beta)
+1.7.0 (beta)
 
 ### Changelog
 ------
+ * 1.7.0 - Fitting options added, with more customizations for model fitting
  * 1.6.0 - Big plotting enhancements, better memory management with bigger data and more plots
  * 1.5.1 - Expanded plots, included residual plotting and probabilities as potential displays
  * 1.5.0 - Added obnoxious, brute force options to exploring optimal start parameters
