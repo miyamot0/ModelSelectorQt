@@ -448,12 +448,14 @@ void SheetWidget::checkUpdatesAction()
 
     if (QFile::exists(mCommand))
     {
-        QProcess p;
-        QStringList args;
-        args << "--updater";
-        p.start(mCommand, args);
-        p.waitForStarted();
-        p.waitForFinished(-1);
+        QProcess *p = new QProcess();
+
+        connect(p, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [=](int exitCode, QProcess::ExitStatus exitStatus)
+        {
+            QMessageBox::information(this, "Information", "Please close and re-open application if updated.", QMessageBox::Ok);
+        });
+
+        p->start(mCommand, QStringList() << "--updater");
     }
 }
 
