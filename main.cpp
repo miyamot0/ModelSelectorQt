@@ -24,8 +24,8 @@
 #include <QApplication>
 #include <QDir>
 
-#include "sheetwidget.h"
-#include "fitresults.h"
+#include "Controls/sheetwidget.h"
+#include "Models/fitresults.h"
 
 #ifdef _WIN32
     #include <QSettings>

@@ -80,18 +80,22 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDomDocument>
-#include "systematicchekdialog.h"
 
-#include "calculationsettings.h"
-#include "sheetselectdialog.h"
-#include "discountingmodelselectioned50dialog.h"
-#include "resultsdialog.h"
-#include "chartwindow.h"
-#include "licensedialog.h"
-#include "creditsdialog.h"
-#include "aboutdialog.h"
-#include "calculationworker.h"
-#include "sheettools.h"
+#include "Controls/chartwindow.h"
+
+#include "Dialogs/aboutdialog.h"
+#include "Dialogs/creditsdialog.h"
+#include "Dialogs/discountingmodelselectioned50dialog.h"
+#include "Dialogs/licensedialog.h"
+#include "Dialogs/resultsdialog.h"
+#include "Dialogs/sheetselectdialog.h"
+#include "Dialogs/systematicchekdialog.h"
+
+#include "Helpers/Threading/calculationworker.h"
+
+#include "Models/calculationsettings.h"
+
+#include "Utilities/sheettools.h"
 
 class SheetWidget : public QMainWindow
 {

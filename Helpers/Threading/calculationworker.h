@@ -24,11 +24,13 @@
 #define CALCULATIONWORKER_H
 
 #include <QObject>
-#include "modelselection.h"
-#include "calculationsettings.h"
-#include "fitresults.h"
-#include "fitresult.h"
-#include "gridsearch.h"
+
+#include "Modeling/modelselection.h"
+#include "Models/calculationsettings.h"
+#include "Models/fitresults.h"
+#include "Models/fitresult.h"
+
+#include "Modeling/gridsearch.h"
 
 class CalculationWorker : public QObject
 {

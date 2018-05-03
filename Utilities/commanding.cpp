@@ -25,8 +25,9 @@
 
 #include <QtWidgets>
 
-#include "commanding.h"
-#include "sheetwidget.h"
+#include "Controls/sheetwidget.h"
+
+#include "Utilities/commanding.h"
 
 UpdateCommand::UpdateCommand(const QModelIndex *mIndex, const QString &oldContent, QString &newContent, QUndoCommand *parent)
     : QUndoCommand(parent)

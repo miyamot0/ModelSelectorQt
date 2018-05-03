@@ -26,7 +26,8 @@
 
 #include <QTableWidget>
 #include <QDialog>
-#include "fitresults.h"
+
+#include "Models/fitresults.h"
 
 namespace Ui {
 class ResultsDialog;

@@ -93,15 +93,18 @@
 #include <QtWidgets>
 #include <QtXlsx>
 #include <QTableWidgetItem>
-#include <QtCharts>
 
-#include "calculationsettings.h"
-#include "sheetwidget.h"
-#include "resultsdialog.h"
-#include "chartwindow.h"
-#include "commanding.h"
-#include "sheetdelegate.h"
-#include "calculationworker.h"
+#include "Controls/chartwindow.h"
+#include "Controls/sheetwidget.h"
+
+#include "Dialogs/resultsdialog.h"
+
+#include "Helpers/Threading/calculationworker.h"
+
+#include "Models/calculationsettings.h"
+
+#include "Utilities/commanding.h"
+#include "Utilities/sheetdelegate.h"
 
 QTXLSX_USE_NAMESPACE
 

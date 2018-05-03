@@ -34,10 +34,12 @@
 #include <QDialog>
 #include <QFile>
 #include <QTextStream>
-#include <QtCharts>
+#include <QStackedWidget>
 
-#include "fitresults.h"
-#include "calculationsettings.h"
+#include "Models/fitresults.h"
+#include "Models/calculationsettings.h"
+
+#include "Utilities/qcustomplot.h"
 
 class ChartWindow : public QMainWindow
 {
@@ -85,83 +87,38 @@ private:
     QVBoxLayout windowLayout;
     QStackedWidget stackedWidget;
 
-    QToolBar tb;
-
     /** Display Widgets
      *
      */
-    QChart chart,
-           chartArea,
-           chartError,
-           barChart;
 
-    QChartView *chartView,
-               *chartViewArea,
-               *barChartView,
-               *chartViewError;
+    QCustomPlot *chart;
+    QCustomPlot *chartArea;
+    QCustomPlot *chartError;
+    QCustomPlot *chartBar;
 
-    QValueAxis axisX,
-               axisY,
-               axisXarea,
-               axisYarea,
-               axisXerror,
-               axisYerror,
-               barAxisX,
-               barAxisY;
+    QCPTextElement *titleMainChart;
+
+    QVector<double> chartXTicks;
+    QVector<QString> chartXLabels;
+
+
+
+
 
     QStringList modelAxisCategories,
                 delayPoints,
                 valuePoints;
 
-    QLineSeries expSeries,
-                hypSeries,
-                quasiSeries,
-                myerSeries,
-                rachSeries,
-                rodriguezSeries,
-                ebertSeries,
-                bleichrodtSeries,
-                noiseSeries,
-
-                errSeries,
-
-                expProbSet,
-                hypProbSet,
-                quasiProbSet,
-                myerProbSet,
-                rachProbSet,
-                rodriguezProbSet,
-                ebertProbSet,
-                bleichrodtProbSet,
-                noiseProbSet,
-
-                expSeriesArea,
-                hypSeriesArea,
-                quasiSeriesArea,
-                myerSeriesArea,
-                rachSeriesArea,
-                rodriguezSeriesArea,
-                ebertSeriesArea,
-                bleichrodtSeriesArea,
-                noiseSeriesArea,
-                empiricalSeries;
-
-    QScatterSeries dataPoints,
-                   dataPointsArea,
-                   errDataPoints;
-
-    QFont mTitle = QFont("Serif", 14, -1, false),
-          mLegendFont = QFont("Serif", 10, -1, false);
-
-    QPen expPen,
-         hypPen,
-         quasiPen,
-         myerPen,
-         rachPen,
-         rodriguezPen,
-         ebertPen,
-         bleichrodtPen,
-         noisePen;
+    int RawData = 0,
+        ModelExponential = 1,
+        ModelHyperbolic = 2,
+        ModelQuasiHyperbolic = 3,
+        ModelGreenMyerson = 4,
+        ModelRachlin = 5,
+        ModelGeneralizedHyperbolic = 6,
+        ModelEbertPrelec = 7,
+        ModelBeleichrodt = 8,
+        ModelNoise = 9;
 
     /** Actions
      *
@@ -203,6 +160,33 @@ private:
         return title;
     }
 
+    int GetAxisMaxLog10(QVector<double> curr)
+    {
+        int lower = 0;
+
+        for (int i = 0; i < curr.length(); i++)
+        {
+            while (pow(10, lower) < curr[i])
+            {
+                lower++;
+            }
+        }
+
+        return lower;
+    }
+
+    int GetAxisMaxLog10(double curr)
+    {
+        int lower = 0;
+
+        while (pow(10, lower) < curr)
+        {
+            lower++;
+        }
+
+        return lower;
+    }
+
     int currentIndexShown;
 
     bool isLogNormalParamerized,
@@ -240,7 +224,7 @@ private:
            lastDelay,
            minList,
            maxList,
-           chartIterator = 0.25,
+           chartIterator = 0.1,
            colWidth = 100;
 };
 

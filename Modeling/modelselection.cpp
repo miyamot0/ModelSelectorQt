@@ -55,9 +55,7 @@
 #include "integration.h"
 #include "stdafx.h"
 
-#include "chartwindow.h"
-
-#include <QDebug>
+#include "Controls/chartwindow.h"
 
 using namespace alglib;
 

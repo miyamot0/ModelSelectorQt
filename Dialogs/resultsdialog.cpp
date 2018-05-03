@@ -26,9 +26,10 @@
 #include <QFileDialog>
 #include <QDesktopWidget>
 
-#include "resultsdialog.h"
 #include "ui_resultsdialog.h"
-#include "sheetwidget.h"
+
+#include "Dialogs/resultsdialog.h"
+#include "Controls/sheetwidget.h"
 
 ResultsDialog::ResultsDialog(int nSeries, bool tripLogNormal, QWidget *parent) :
     QDialog(parent),

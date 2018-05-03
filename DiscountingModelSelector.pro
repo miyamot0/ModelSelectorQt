@@ -20,14 +20,14 @@ TEST_FEATURES = 1
 
 VERSION_MAJOR = 1
 VERSION_MINOR = 7
-VERSION_BUILD = 0
+VERSION_BUILD = 1
 
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
        "VERSION_MINOR=$$VERSION_MINOR"\
        "VERSION_BUILD=$$VERSION_BUILD"\
        "VERSION_TESTING=$$TEST_FEATURES"
 
-QT += core gui widgets xlsx charts network xml
+QT += core gui widgets xlsx network xml printsupport
 
 TARGET = DiscountingModelSelector
 
@@ -128,11 +128,13 @@ win32 {
 
     win32:RC_ICONS += SNS.ico
 
-    DMS_FILES.files = License_BDS.txt \
-                    License_Qt.txt \
+    DMS_FILES.files = \
                     License_ALGLIB.txt \
-                    License_Tango.txt \
+                    License_BDS.txt \
+                    License_QCustomPlot.txt \
+                    License_Qt.txt \
                     License_QtXlsx.txt \
+                    License_Tango.txt \
                     COPYING \
                     scripts/manualDiscountingEd50AreaComputation.R \
                     SNS.ico
@@ -158,11 +160,13 @@ macx {
 
     macx:ICON = $${PWD}/SNS.icns
 
-    DMS_FILES.files = License_BDS.txt \
-                    License_Qt.txt \
+    DMS_FILES.files = \
                     License_ALGLIB.txt \
-                    License_Tango.txt \
+                    License_BDS.txt \
+                    License_QCustomPlot.txt \
+                    License_Qt.txt \
                     License_QtXlsx.txt \
+                    License_Tango.txt \
                     COPYING \
                     scripts/manualDiscountingEd50AreaComputation.R \
                     SNS.icns
@@ -175,11 +179,12 @@ macx {
 DISTFILES += \
     README.md \
     COPYING \
-    License_BDS.txt \
-    License_Qt.txt \
     License_ALGLIB.txt \
-    License_Tango.txt \
+    License_BDS.txt \
+    License_QCustomPlot.txt \
+    License_Qt.txt \
     License_QtXlsx.txt \
+    License_Tango.txt \
     SNS.ico \
     SNS.icns \
     scripts/manualDiscountingEd50AreaComputation.R \

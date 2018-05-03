@@ -21,11 +21,13 @@
 
   */
 
-#include "discountingmodelselectioned50dialog.h"
-#include "ui_discountingmodelselectioned50dialog.h"
-#include "sheetwidget.h"
 #include <QMessageBox>
 #include <QDesktopWidget>
+
+#include "Dialogs/discountingmodelselectioned50dialog.h"
+#include "ui_discountingmodelselectioned50dialog.h"
+
+#include "Controls/sheetwidget.h"
 
 DiscountingModelSelectionED50Dialog::DiscountingModelSelectionED50Dialog(QWidget *parent) :
     QDialog(parent),

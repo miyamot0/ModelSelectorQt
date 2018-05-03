@@ -34,8 +34,8 @@
 #include "stdafx.h"
 #include "optimization.h"
 
-#include "fitresult.h"
-#include "calculationsettings.h"
+#include "Models/fitresult.h"
+#include "Models/calculationsettings.h"
 
 using namespace alglib;
 

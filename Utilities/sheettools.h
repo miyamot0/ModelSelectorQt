@@ -26,7 +26,7 @@
 
 #include <QtWidgets>
 
-#include "discountingmodelselectioned50dialog.h"
+#include "Dialogs/discountingmodelselectioned50dialog.h"
 
 class SheetTools {
 public:
