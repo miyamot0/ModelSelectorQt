@@ -44,14 +44,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 # DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES += main.cpp\
-    sheetselectdialog.cpp \
-    resultsdialog.cpp \
-    sheetwidget.cpp \
-    licensedialog.cpp \
-    aboutdialog.cpp \
-    creditsdialog.cpp \
-    discountingmodelselectioned50dialog.cpp \
+SOURCES += \
+    Controls/sheetwidget.cpp \
+    Controls/chartwindow.cpp \
+    Dialogs/aboutdialog.cpp \
+    Dialogs/creditsdialog.cpp \
+    Dialogs/discountingmodelselectioned50dialog.cpp \
+    Dialogs/licensedialog.cpp \
+    Dialogs/resultsdialog.cpp \
+    Dialogs/sheetselectdialog.cpp \
+    Dialogs/systematicchekdialog.cpp \
     Libraries/alglib-3.11.0/src/alglibinternal.cpp \
     Libraries/alglib-3.11.0/src/alglibmisc.cpp \
     Libraries/alglib-3.11.0/src/ap.cpp \
@@ -62,24 +64,26 @@ SOURCES += main.cpp\
     Libraries/alglib-3.11.0/src/solvers.cpp \
     Libraries/alglib-3.11.0/src/specialfunctions.cpp \
     Libraries/alglib-3.11.0/src/statistics.cpp \
-    modelselection.cpp \
-    chartwindow.cpp \
-    systematicchekdialog.cpp \
-    sheetdelegate.cpp \
-    commanding.cpp \
-    calculationworker.cpp \
-    calculationsettings.cpp \
-    fitresult.cpp \
-    fitresults.cpp
+    Helpers/Threading/calculationworker.cpp \
+    Modeling/modelselection.cpp \
+    Models/calculationsettings.cpp \
+    Models/fitresult.cpp \
+    Models/fitresults.cpp \
+    Utilities/commanding.cpp \
+    Utilities/qcustomplot.cpp \
+    Utilities/sheetdelegate.cpp \
+    main.cpp
 
 HEADERS  += \
-    sheetselectdialog.h \
-    resultsdialog.h \
-    sheetwidget.h \
-    licensedialog.h \
-    aboutdialog.h \
-    creditsdialog.h \
-    discountingmodelselectioned50dialog.h \
+    Controls/sheetwidget.h \
+    Controls/chartwindow.h \
+    Dialogs/aboutdialog.h \
+    Dialogs/creditsdialog.h \
+    Dialogs/discountingmodelselectioned50dialog.h \
+    Dialogs/licensedialog.h \
+    Dialogs/resultsdialog.h \
+    Dialogs/sheetselectdialog.h \
+    Dialogs/systematicchekdialog.h \
     Libraries/alglib-3.11.0/src/alglibinternal.h \
     Libraries/alglib-3.11.0/src/alglibmisc.h \
     Libraries/alglib-3.11.0/src/ap.h \
@@ -91,26 +95,25 @@ HEADERS  += \
     Libraries/alglib-3.11.0/src/specialfunctions.h \
     Libraries/alglib-3.11.0/src/statistics.h \
     Libraries/alglib-3.11.0/src/stdafx.h \
-    modelselection.h \
-    chartwindow.h \
-    systematicchekdialog.h \
-    sheetdelegate.h \
-    commanding.h \
-    calculationworker.h \
-    calculationsettings.h \
-    fitresult.h \
-    fitresults.h \
-    gridsearch.h \
-    sheettools.h
+    Helpers/Threading/calculationworker.h \
+    Modeling/modelselection.h \
+    Models/calculationsettings.h \
+    Models/fitresult.h \
+    Models/fitresults.h \
+    Modeling/gridsearch.h \
+    Utilities/commanding.h \
+    Utilities/qcustomplot.h \
+    Utilities/sheetdelegate.h \
+    Utilities/sheettools.h
 
 FORMS    += \
-    sheetselectdialog.ui \
-    resultsdialog.ui \
-    licensedialog.ui \
-    aboutdialog.ui \
-    creditsdialog.ui \
-    discountingmodelselectioned50dialog.ui \
-    systematicchekdialog.ui
+    Dialogs/aboutdialog.ui \
+    Dialogs/creditsdialog.ui \
+    Dialogs/discountingmodelselectioned50dialog.ui \
+    Dialogs/licensedialog.ui \
+    Dialogs/resultsdialog.ui \
+    Dialogs/sheetselectdialog.ui \
+    Dialogs/systematicchekdialog.ui
 
 RESOURCES += \
     spreadsheet.qrc
