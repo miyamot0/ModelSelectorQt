@@ -63,6 +63,8 @@ The Small N Stats Discounting Model Selector is based on the following academic 
 * Johnson, M. W., & Bickel, W. K. (2008). An algorithm for identifying nonsystematic delay-discounting data. Experimental and Clinical Psychopharmacology, 16(3), 264-274. https://doi.org/10.1037/1064-1297.16.3.264
 * Franck, C. T., Koffarnus, M. N., House, L. L., & Bickel, W. K. (2015). Accurate characterization of delay discounting: a multiple model approach using approximate Bayesian model selection and a unified discounting measure. Journal of the Experimental Analysis of Behavior, 103(1), 218-233. https://doi.org/10.1002/jeab.128
 * Gilroy, S. P., Franck, C. T., & Hantula, D. A. (2017). The discounting model selector: Statistical software for delay discounting applications. Journal of the Experimental Analysis of Behavior, 107(3), 388-401. https://doi.org/10.1002/jeab.257
+* Gilroy, S. P., & Hantula, D. A. (2018). Discounting model selection with area-based measures: A case for numerical integration: Model Selection with Numerical Integration. Journal of the Experimental Analysis of Behavior. https://doi.org/10.1002/jeab.318
+
 
 ### Acknowledgements and Credits
 ------
