@@ -123,9 +123,11 @@ void ChartWindow::buildED50Plot()
     chart->yAxis->setLabel("Value");
     chart->yAxis->setScaleType(QCPAxis::stLinear);
     chart->yAxis->setBasePen(QPen(Qt::black));
+    chart->yAxis->grid()->setPen(Qt::NoPen);
 
     chart->xAxis->setScaleType(QCPAxis::stLogarithmic);
     chart->xAxis->setLabel("Delay");
+    chart->xAxis->grid()->setPen(Qt::NoPen);
 
     chart->yAxis->setRangeLower(0);
 
@@ -134,59 +136,67 @@ void ChartWindow::buildED50Plot()
     chart->plotLayout()->insertRow(0);
     chart->plotLayout()->addElement(0, 0, titleMainChart);
 
+    QCPLayoutGrid *subLayout = new QCPLayoutGrid;
+    chart->plotLayout()->addElement(1, 1, subLayout);
+    subLayout->setMargins(QMargins(0, 0, 10, 0));
+    subLayout->addElement(0, 1, new QCPLayoutElement);
+    subLayout->addElement(1, 1, chart->legend);
+    subLayout->addElement(2, 1, new QCPLayoutElement);
+    chart->plotLayout()->setColumnStretchFactor(1, 0.001);
+
     // Add Points
     chart->addGraph();
     chart->graph(RawData)->setLineStyle(QCPGraph::lsNone);
     chart->graph(RawData)->setName("Raw Data");
     chart->graph(RawData)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle,
-                                                     Qt::blue,
-                                                     Qt::white,
-                                                     7));
+                                                     Qt::black,
+                                                     Qt::black,
+                                                     8));
 
     chart->addGraph();
     chart->graph(ModelExponential)->setLineStyle(QCPGraph::lsLine);
     chart->graph(ModelExponential)->setName("Exponential");
-    chart->graph(ModelExponential)->setPen(QPen(Qt::red));
+    chart->graph(ModelExponential)->setPen(QPen(Qt::red, penWidth));
 
     chart->addGraph();
     chart->graph(ModelHyperbolic)->setLineStyle(QCPGraph::lsLine);
     chart->graph(ModelHyperbolic)->setName("Hyperbolic");
-    chart->graph(ModelHyperbolic)->setPen(QPen(Qt::green));
+    chart->graph(ModelHyperbolic)->setPen(QPen(Qt::green, penWidth));
 
     chart->addGraph();
     chart->graph(ModelQuasiHyperbolic)->setLineStyle(QCPGraph::lsLine);
     chart->graph(ModelQuasiHyperbolic)->setName("Quasi Hyperbolic");
-    chart->graph(ModelQuasiHyperbolic)->setPen(QPen(Qt::blue));
+    chart->graph(ModelQuasiHyperbolic)->setPen(QPen(Qt::blue, penWidth));
 
     chart->addGraph();
     chart->graph(ModelGreenMyerson)->setLineStyle(QCPGraph::lsLine);
     chart->graph(ModelGreenMyerson)->setName("Green-Myerson");
-    chart->graph(ModelGreenMyerson)->setPen(QPen(Qt::lightGray));
+    chart->graph(ModelGreenMyerson)->setPen(QPen(Qt::lightGray, penWidth));
 
     chart->addGraph();
     chart->graph(ModelRachlin)->setLineStyle(QCPGraph::lsLine);
     chart->graph(ModelRachlin)->setName("Rachlin");
-    chart->graph(ModelRachlin)->setPen(QPen(Qt::gray));
+    chart->graph(ModelRachlin)->setPen(QPen(Qt::gray, penWidth));
 
     chart->addGraph();
     chart->graph(ModelGeneralizedHyperbolic)->setLineStyle(QCPGraph::lsLine);
     chart->graph(ModelGeneralizedHyperbolic)->setName("Generalized-Hyperbolic");
-    chart->graph(ModelGeneralizedHyperbolic)->setPen(QPen(Qt::darkBlue));
+    chart->graph(ModelGeneralizedHyperbolic)->setPen(QPen(Qt::darkBlue, penWidth));
 
     chart->addGraph();
     chart->graph(ModelEbertPrelec)->setLineStyle(QCPGraph::lsLine);
     chart->graph(ModelEbertPrelec)->setName("Ebert-Prelec");
-    chart->graph(ModelEbertPrelec)->setPen(QPen(Qt::darkGreen));
+    chart->graph(ModelEbertPrelec)->setPen(QPen(Qt::darkGreen, penWidth));
 
     chart->addGraph();
     chart->graph(ModelBeleichrodt)->setLineStyle(QCPGraph::lsLine);
     chart->graph(ModelBeleichrodt)->setName("Bleichrodt");
-    chart->graph(ModelBeleichrodt)->setPen(QPen(Qt::darkMagenta));
+    chart->graph(ModelBeleichrodt)->setPen(QPen(Qt::darkMagenta, penWidth));
 
     chart->addGraph();
     chart->graph(ModelNoise)->setLineStyle(QCPGraph::lsLine);
     chart->graph(ModelNoise)->setName("Noise");
-    chart->graph(ModelNoise)->setPen(QPen(Qt::darkCyan));
+    chart->graph(ModelNoise)->setPen(QPen(Qt::darkCyan, penWidth));
 }
 
 /**
@@ -405,9 +415,6 @@ void ChartWindow::plotED50Series(int index)
         chart->graph(RawData)->addData(param1, param2);
     }
 
-    chart->xAxis->setRangeLower(0.1);
-    chart->xAxis->setRangeUpper(pow(10, finalLog));
-
     chart->yAxis->setRangeLower(0);
     chart->yAxis->setRangeUpper(1);
 
@@ -425,6 +432,15 @@ void ChartWindow::plotED50Series(int index)
     QSharedPointer<QCPAxisTickerText> chartTicker(new QCPAxisTickerText);
     chartTicker->addTicks(chartXTicks, chartXLabels);
     chart->xAxis->setTicker(chartTicker);
+
+    QSharedPointer<QCPAxisTickerText> chartTicker2(new QCPAxisTickerText);
+    chartTicker2->addTicks(QVector<double>({0, 0.2, 0.4, 0.6, 0.8, 1.0}),
+                           QVector<QString>({"0", "0.2", "0.4", "0.6", "0.8", "1.0"}));
+    chart->yAxis->setTicker(chartTicker2);
+
+    chart->xAxis->setRangeLower(0.1);
+    chart->xAxis->setRangeUpper(pow(10, getXLabel));
+
 
     chart->replot();
 }

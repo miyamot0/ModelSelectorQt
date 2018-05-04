@@ -101,7 +101,7 @@ private:
     QVector<double> chartXTicks;
     QVector<QString> chartXLabels;
 
-
+    double penWidth = 1.25;
 
 
 
