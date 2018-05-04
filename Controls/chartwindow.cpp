@@ -52,7 +52,7 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
     buildED50Plot();
     stackedWidget.addWidget(chart);
 
-    //buildAUCPlot();
+    buildAUCPlot();
     stackedWidget.addWidget(chartArea);
 
     //buildErrorPlot();
@@ -441,8 +441,350 @@ void ChartWindow::plotED50Series(int index)
     chart->xAxis->setRangeLower(0.1);
     chart->xAxis->setRangeUpper(pow(10, getXLabel));
 
-
     chart->replot();
+}
+
+/**
+ * @brief ChartWindow::buildAUCPlot
+ */
+void ChartWindow::buildAUCPlot()
+{
+
+    chartArea->legend->setVisible(true);
+    chartArea->yAxis->setLabel("Value");
+    chartArea->yAxis->setScaleType(QCPAxis::stLinear);
+    chartArea->yAxis->setBasePen(QPen(Qt::black));
+    chartArea->yAxis->grid()->setPen(Qt::NoPen);
+
+    chartArea->xAxis->setScaleType(QCPAxis::stLogarithmic);
+    chartArea->xAxis->setLabel("Delay");
+    chartArea->xAxis->grid()->setPen(Qt::NoPen);
+
+    chartArea->yAxis->setRangeLower(0);
+
+    titleAreaChart = new QCPTextElement(chartArea, "test", QFont("sans", 12, QFont::Bold));
+
+    chartArea->plotLayout()->insertRow(0);
+    chartArea->plotLayout()->addElement(0, 0, titleAreaChart);
+
+    QCPLayoutGrid *subLayout = new QCPLayoutGrid;
+    chartArea->plotLayout()->addElement(1, 1, subLayout);
+    subLayout->setMargins(QMargins(0, 0, 10, 0));
+    subLayout->addElement(0, 1, new QCPLayoutElement);
+    subLayout->addElement(1, 1, chartArea->legend);
+    subLayout->addElement(2, 1, new QCPLayoutElement);
+    chartArea->plotLayout()->setColumnStretchFactor(1, 0.001);
+
+    // Add Points
+    chartArea->addGraph();
+    chartArea->graph(RawData)->setLineStyle(QCPGraph::lsNone);
+    chartArea->graph(RawData)->setName("Raw Data");
+    chartArea->graph(RawData)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle,
+                                                     Qt::black,
+                                                     Qt::black,
+                                                     8));
+
+    chartArea->addGraph();
+    chartArea->graph(ModelExponential)->setLineStyle(QCPGraph::lsLine);
+    chartArea->graph(ModelExponential)->setName("Exponential");
+    chartArea->graph(ModelExponential)->setPen(QPen(Qt::red, penWidth));
+
+    chartArea->addGraph();
+    chartArea->graph(ModelHyperbolic)->setLineStyle(QCPGraph::lsLine);
+    chartArea->graph(ModelHyperbolic)->setName("Hyperbolic");
+    chartArea->graph(ModelHyperbolic)->setPen(QPen(Qt::green, penWidth));
+
+    chartArea->addGraph();
+    chartArea->graph(ModelQuasiHyperbolic)->setLineStyle(QCPGraph::lsLine);
+    chartArea->graph(ModelQuasiHyperbolic)->setName("Quasi Hyperbolic");
+    chartArea->graph(ModelQuasiHyperbolic)->setPen(QPen(Qt::blue, penWidth));
+
+    chartArea->addGraph();
+    chartArea->graph(ModelGreenMyerson)->setLineStyle(QCPGraph::lsLine);
+    chartArea->graph(ModelGreenMyerson)->setName("Green-Myerson");
+    chartArea->graph(ModelGreenMyerson)->setPen(QPen(Qt::lightGray, penWidth));
+
+    chartArea->addGraph();
+    chartArea->graph(ModelRachlin)->setLineStyle(QCPGraph::lsLine);
+    chartArea->graph(ModelRachlin)->setName("Rachlin");
+    chartArea->graph(ModelRachlin)->setPen(QPen(Qt::gray, penWidth));
+
+    chartArea->addGraph();
+    chartArea->graph(ModelGeneralizedHyperbolic)->setLineStyle(QCPGraph::lsLine);
+    chartArea->graph(ModelGeneralizedHyperbolic)->setName("Generalized-Hyperbolic");
+    chartArea->graph(ModelGeneralizedHyperbolic)->setPen(QPen(Qt::darkBlue, penWidth));
+
+    chartArea->addGraph();
+    chartArea->graph(ModelEbertPrelec)->setLineStyle(QCPGraph::lsLine);
+    chartArea->graph(ModelEbertPrelec)->setName("Ebert-Prelec");
+    chartArea->graph(ModelEbertPrelec)->setPen(QPen(Qt::darkGreen, penWidth));
+
+    chartArea->addGraph();
+    chartArea->graph(ModelBeleichrodt)->setLineStyle(QCPGraph::lsLine);
+    chartArea->graph(ModelBeleichrodt)->setName("Bleichrodt");
+    chartArea->graph(ModelBeleichrodt)->setPen(QPen(Qt::darkMagenta, penWidth));
+
+    chartArea->addGraph();
+    chartArea->graph(ModelNoise)->setLineStyle(QCPGraph::lsLine);
+    chartArea->graph(ModelNoise)->setName("Noise");
+    chartArea->graph(ModelNoise)->setPen(QPen(Qt::darkCyan, penWidth));
+
+    chartArea->addGraph();
+    chartArea->graph(ModelEmpirical)->setLineStyle(QCPGraph::lsLine);
+    chartArea->graph(ModelEmpirical)->setName("Empirical");
+    chartArea->graph(ModelEmpirical)->setPen(QPen(Qt::black, penWidth));
+}
+
+/**
+ * @brief ChartWindow::plotAUCSeries
+ * @param index
+ */
+void ChartWindow::plotAUCSeries(int index)
+{
+    mList = mDisplayData.at(index);
+
+    for (int i = 0; i < 10; i++)
+    {
+        chartArea->graph(i)->setVisible(false);
+        chartArea->graph(i)->data().data()->clear();
+    }
+
+    chartArea->graph(RawData)->setVisible(true);
+    chartArea->graph(ModelEmpirical)->data().data()->clear();
+    chartArea->graph(ModelEmpirical)->setVisible(true);
+
+    if (mList.Header.contains("dropped", Qt::CaseInsensitive))
+    {
+        titleAreaChart->setText(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
+
+        return;
+    }
+
+    titleAreaChart->setText(QString("Participant #%1: %2 log10(MB-AUC) = %3").arg(QString::number(currentIndexShown + 1)).arg(cleanTitle(mList.TopModel)).arg(mList.TopAUCLog));
+
+    expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
+
+    switch (mList.TopModelType)
+    {
+        case ModelType::Noise:
+            chartArea->graph(ModelNoise)->setVisible(true);
+            break;
+
+        case ModelType::Exponential:
+            chartArea->graph(ModelExponential)->setVisible(true);
+            break;
+
+        case ModelType::Hyperbolic:
+            chartArea->graph(ModelHyperbolic)->setVisible(true);
+            break;
+
+        case ModelType::BetaDelta:
+            chartArea->graph(ModelQuasiHyperbolic)->setVisible(true);
+            break;
+
+        case ModelType::Myerson:
+            chartArea->graph(ModelGreenMyerson)->setVisible(true);
+            break;
+
+        case ModelType::Rachlin:
+            chartArea->graph(ModelRachlin)->setVisible(true);
+            break;
+
+        case ModelType::GeneralizedHyperbolic:
+            chartArea->graph(ModelGeneralizedHyperbolic)->setVisible(true);
+            break;
+
+        case ModelType::EbertPrelec:
+            chartArea->graph(ModelEbertPrelec)->setVisible(true);
+            break;
+
+        case ModelType::Beleichrodt:
+            chartArea->graph(ModelBeleichrodt)->setVisible(true);
+            break;
+    }
+
+    for (int i=0; i<mList.FittingResults.length(); i++)
+    {
+        if (mList.FittingResults[i]->Model == ModelType::Noise)
+        {
+            noise = mList.FittingResults[i]->Params.first().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Exponential)
+        {
+            expCheck = true;
+            expK = mList.FittingResults[i]->Params.first().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Hyperbolic)
+        {
+            hypCheck = true;
+            hypK = mList.FittingResults[i]->Params.first().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::BetaDelta)
+        {
+            quasiCheck = true;
+            quasiB = mList.FittingResults[i]->Params.first().second;
+            quasiD = mList.FittingResults[i]->Params.last().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Myerson)
+        {
+            myerCheck = true;
+            myerK = mList.FittingResults[i]->Params.first().second;
+            myerS = mList.FittingResults[i]->Params.last().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Rachlin)
+        {
+            rachCheck = true;
+            rachK = mList.FittingResults[i]->Params.first().second;
+            rachS = mList.FittingResults[i]->Params.last().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::GeneralizedHyperbolic)
+        {
+            rodriguezCheck = true;
+            rodriguezK = mList.FittingResults[i]->Params.first().second;
+            rodriguezS = mList.FittingResults[i]->Params.last().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::EbertPrelec)
+        {
+            ebertCheck = true;
+            ebertK = mList.FittingResults[i]->Params.first().second;
+            ebertS = mList.FittingResults[i]->Params.last().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Beleichrodt)
+        {
+            bleichrodtCheck = true;
+            bleichrodtK = mList.FittingResults[i]->Params.first().second;
+            bleichrodtS = mList.FittingResults[i]->Params[1].second;
+            bleichrodtBeta = mList.FittingResults[i]->Params.last().second;
+        }
+    }
+
+    int finalLog = GetAxisMaxLog10(lastDelay);
+
+    for (double i = -1; i < (finalLog+1); i = i + chartIterator)
+    {
+        plotAUCPoint(i);
+    }
+
+    paramString1 = mList.ParticipantDelays;
+    paramString2 = mList.ParticipantValues;
+
+    delayPoints = paramString1.split(",");
+    valuePoints = paramString2.split(",");
+
+    double maxValue = -1;
+
+    for (int i = 0; i < delayPoints.length(); i++)
+    {
+        param1 = delayPoints[i].toDouble(&checkValue1);
+        param2 = valuePoints[i].toDouble(&checkValue2);
+
+        if (!checkValue1 || !checkValue2)
+        {
+            break;
+        }
+
+        //Hack
+
+        if (param1 == 0)
+        {
+            param1 = 0.1;
+        }
+
+        if (param1 > maxValue)
+        {
+            maxValue = param1;
+        }
+
+        chartArea->graph(RawData)->addData(param1, param2);
+        chartArea->graph(ModelEmpirical)->addData(param1, param2);
+    }
+
+    chartArea->yAxis->setRangeLower(0);
+    chartArea->yAxis->setRangeUpper(1);
+
+    int getXLabel = GetAxisMaxLog10(maxValue);
+
+    chartXTicks.clear();
+    chartXLabels.clear();
+
+    for (int i = -1; i <= getXLabel; i++)
+    {
+        chartXTicks.append(pow(10, i));
+        chartXLabels.append(QString("%1").arg(pow(10, i)));
+    }
+
+    QSharedPointer<QCPAxisTickerText> chartTicker(new QCPAxisTickerText);
+    chartTicker->addTicks(chartXTicks, chartXLabels);
+    chartArea->xAxis->setTicker(chartTicker);
+
+    QSharedPointer<QCPAxisTickerText> chartTicker2(new QCPAxisTickerText);
+    chartTicker2->addTicks(QVector<double>({0, 0.2, 0.4, 0.6, 0.8, 1.0}),
+                           QVector<QString>({"0", "0.2", "0.4", "0.6", "0.8", "1.0"}));
+    chartArea->yAxis->setTicker(chartTicker2);
+
+    chartArea->xAxis->setRangeLower(0.1);
+    chartArea->xAxis->setRangeUpper(pow(10, getXLabel));
+
+    chartArea->replot();
+}
+
+/**
+ * @brief ChartWindow::plotAUCPoint
+ * @param i
+ */
+void ChartWindow::plotAUCPoint(double i)
+{
+    xParam = pow(10, i);
+
+    chartArea->graph(ModelNoise)->addData(xParam, noise);
+
+    if (expCheck)
+    {
+        chartArea->graph(ModelExponential)->addData(xParam, exponential_plotting(expK, xParam));
+    }
+
+    if (hypCheck)
+    {
+        chartArea->graph(ModelHyperbolic)->addData(xParam, hyperbolic_plotting(hypK, xParam));
+    }
+
+    if (quasiCheck)
+    {
+        chartArea->graph(ModelQuasiHyperbolic)->addData(xParam, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
+    }
+
+    if (myerCheck)
+    {
+        chartArea->graph(ModelGreenMyerson)->addData(xParam, myerson_plotting(myerK, myerS, xParam));
+    }
+
+    if (rachCheck)
+    {
+        chartArea->graph(ModelRachlin)->addData(xParam, rachlin_plotting(rachK, rachS, xParam));
+    }
+
+    if (rodriguezCheck)
+    {
+        chartArea->graph(ModelGeneralizedHyperbolic)->addData(xParam, generalized_hyperbolic_plotting(rodriguezK, rodriguezS, xParam));
+    }
+
+    if (ebertCheck)
+    {
+        chartArea->graph(ModelEbertPrelec)->addData(xParam, ebert_prelec_plotting(ebertK, ebertS, xParam));
+    }
+
+    if (bleichrodtCheck)
+    {
+        chartArea->graph(ModelBeleichrodt)->addData(xParam, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
+    }
 }
 
 /**
@@ -658,372 +1000,9 @@ void ChartWindow::buildErrorPlot()
     */
 }
 
-/**
- * @brief ChartWindow::buildAUCPlot
- */
-void ChartWindow::buildAUCPlot()
-{
 
-    /*
-    chartArea.setTitleFont(mTitle);
-    chartArea.setTitleBrush(Qt::black);
 
-    chartArea.legend()->setFont(mLegendFont);
-    chartArea.legend()->setAlignment(Qt::AlignBottom);
-    chartArea.legend()->setLabelBrush(Qt::black);
-    chartArea.legend()->setLabelColor(Qt::black);
-    chartArea.legend()->setFont(QFont("Serif", 8, -1, false));
 
-    axisXarea.setGridLineColor(Qt::transparent);
-    axisXarea.setTitleText(tr("ln(Delay)"));
-    axisXarea.setTitleBrush(Qt::black);
-    axisXarea.setTitleFont(QFont("Serif", 10, -1, false));
-    axisXarea.setMin(0);
-    axisXarea.setLabelsFont(QFont("Serif", 10, -1, false));
-    axisXarea.setLabelsBrush(Qt::black);
-    axisXarea.setLabelsColor(Qt::black);
-    axisXarea.setLabelFormat(QString("%.0f"));
-    axisXarea.setLinePenColor(Qt::black);
-    axisXarea.setLinePen(QPen(Qt::black));
-
-    axisYarea.setGridLineColor(Qt::transparent);
-    axisYarea.setTitleText(tr("Value"));
-    axisYarea.setTitleBrush(Qt::black);
-    axisYarea.setTitleFont(QFont("Serif", 10, -1, false));
-    axisYarea.setTickCount(5);
-    axisYarea.setLabelsFont(QFont("Serif", 10, -1, false));
-    axisYarea.setLabelsBrush(Qt::black);
-    axisYarea.setLabelsColor(Qt::black);
-    axisYarea.setMin(0);
-    axisYarea.setMax(1);
-    axisYarea.setLinePenColor(Qt::black);
-    axisYarea.setLinePen(QPen(Qt::black));
-
-    expSeriesArea.setUseOpenGL(true);
-    expSeriesArea.setName("Exponential");
-    expSeriesArea.setPen(QPen(Qt::black));
-    chartArea.addSeries(&expSeriesArea);
-
-    hypSeriesArea.setUseOpenGL(true);
-    hypSeriesArea.setName("Hyperbolic");
-    hypSeriesArea.setPen(QPen(Qt::green));
-    chartArea.addSeries(&hypSeriesArea);
-
-    quasiSeriesArea.setUseOpenGL(true);
-    quasiSeriesArea.setName("QuasiHyperbolic");
-    quasiSeriesArea.setPen(QPen(Qt::blue));
-    chartArea.addSeries(&quasiSeriesArea);
-
-    myerSeriesArea.setUseOpenGL(true);
-    myerSeriesArea.setName("Green-Myerson");
-    myerSeriesArea.setPen(QPen(Qt::cyan));
-    chartArea.addSeries(&myerSeriesArea);
-
-    rachSeriesArea.setUseOpenGL(true);
-    rachSeriesArea.setName("Rachlin");
-    rachSeriesArea.setPen(QPen(Qt::magenta));
-    chartArea.addSeries(&rachSeriesArea);
-
-    rodriguezSeriesArea.setUseOpenGL(true);
-    rodriguezSeriesArea.setName("Generalized-Hyperbolic");
-    rodriguezSeriesArea.setPen(QPen(Qt::yellow));
-    chartArea.addSeries(&rodriguezSeriesArea);
-
-    ebertSeriesArea.setUseOpenGL(true);
-    ebertSeriesArea.setName("Ebert-Prelec");
-    ebertSeriesArea.setPen(QPen(Qt::red));
-    chartArea.addSeries(&ebertSeriesArea);
-
-    bleichrodtSeriesArea.setUseOpenGL(true);
-    bleichrodtSeriesArea.setName("Bleichrodt");
-    bleichrodtSeriesArea.setPen(QPen(Qt::darkCyan));
-    chartArea.addSeries(&bleichrodtSeriesArea);
-
-    noiseSeriesArea.setUseOpenGL(true);
-    noiseSeriesArea.setName("Noise");
-    noiseSeriesArea.setPen(QPen(Qt::darkGray));
-    chartArea.addSeries(&noiseSeriesArea);
-
-    empiricalSeries.setUseOpenGL(true);
-    empiricalSeries.setName("AUC");
-    empiricalSeries.setPen(QPen(Qt::black));
-    chartArea.addSeries(&empiricalSeries);
-
-    dataPointsArea.setName("Raw Data");
-    dataPointsArea.setMarkerShape(QScatterSeries::MarkerShapeRectangle);
-    dataPointsArea.setPen(QPen(Qt::black));
-    dataPointsArea.setBrush(QBrush(Qt::black));
-    dataPointsArea.setMarkerSize(10);
-    chartArea.addSeries(&dataPointsArea);
-
-    chartArea.setAxisX(&axisXarea, &expSeriesArea);
-    chartArea.setAxisY(&axisYarea, &expSeriesArea);
-
-    chartArea.setAxisX(&axisXarea, &hypSeriesArea);
-    chartArea.setAxisY(&axisYarea, &hypSeriesArea);
-
-    chartArea.setAxisX(&axisXarea, &quasiSeriesArea);
-    chartArea.setAxisY(&axisYarea, &quasiSeriesArea);
-
-    chartArea.setAxisX(&axisXarea, &myerSeriesArea);
-    chartArea.setAxisY(&axisYarea, &myerSeriesArea);
-
-    chartArea.setAxisX(&axisXarea, &rachSeriesArea);
-    chartArea.setAxisY(&axisYarea, &rachSeriesArea);
-
-    chartArea.setAxisX(&axisXarea, &rodriguezSeriesArea);
-    chartArea.setAxisY(&axisYarea, &rodriguezSeriesArea);
-
-    chartArea.setAxisX(&axisXarea, &ebertSeriesArea);
-    chartArea.setAxisY(&axisYarea, &ebertSeriesArea);
-
-    chartArea.setAxisX(&axisXarea, &bleichrodtSeriesArea);
-    chartArea.setAxisY(&axisYarea, &bleichrodtSeriesArea);
-
-    chartArea.setAxisX(&axisXarea, &noiseSeriesArea);
-    chartArea.setAxisY(&axisYarea, &noiseSeriesArea);
-
-    chartArea.setAxisX(&axisXarea, &dataPointsArea);
-    chartArea.setAxisY(&axisYarea, &dataPointsArea);
-
-    chartArea.setAxisX(&axisXarea, &empiricalSeries);
-    chartArea.setAxisY(&axisYarea, &empiricalSeries);
-
-    */
-}
-
-/**
- * @brief ChartWindow::plotAUCSeries
- * @param index
- */
-void ChartWindow::plotAUCSeries(int index)
-{
-    /*
-    mList = mDisplayData.at(index);
-
-    expSeriesArea.clear();
-    hypSeriesArea.clear();
-    quasiSeriesArea.clear();
-    myerSeriesArea.clear();
-    rachSeriesArea.clear();
-    rodriguezSeriesArea.clear();
-    ebertSeriesArea.clear();
-    bleichrodtSeriesArea.clear();
-    noiseSeriesArea.clear();
-    dataPointsArea.clear();
-    empiricalSeries.clear();
-
-    if (mList.Header.contains("dropped", Qt::CaseInsensitive))
-    {
-        chartArea.setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
-
-        return;
-    }
-
-    chartArea.setTitle(QString("Participant #%1: %2 Scaled AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(cleanTitle(mList.TopModel)).arg(mList.TopAUCLog));
-
-    expSeriesArea.hide();
-    hypSeriesArea.hide();
-    quasiSeriesArea.hide();
-    myerSeriesArea.hide();
-    rachSeriesArea.hide();
-    rodriguezSeriesArea.hide();
-    ebertSeriesArea.hide();
-    bleichrodtSeriesArea.hide();
-    noiseSeriesArea.hide();
-
-    switch (mList.TopModelType)
-    {
-        case ModelType::Noise:
-            noiseSeriesArea.show();
-            break;
-
-        case ModelType::Exponential:
-            expSeriesArea.show();
-            break;
-
-        case ModelType::Hyperbolic:
-            hypSeriesArea.show();
-            break;
-
-        case ModelType::BetaDelta:
-            quasiSeriesArea.show();
-            break;
-
-        case ModelType::Myerson:
-            myerSeriesArea.show();
-            break;
-
-        case ModelType::Rachlin:
-            rachSeriesArea.show();
-            break;
-
-        case ModelType::GeneralizedHyperbolic:
-            rodriguezSeriesArea.show();
-            break;
-
-        case ModelType::EbertPrelec:
-            ebertSeriesArea.show();
-            break;
-
-        case ModelType::Beleichrodt:
-            bleichrodtSeriesArea.show();
-            break;
-    }
-
-    expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
-
-    for (int i=0; i<mList.FittingResults.length(); i++)
-    {
-        if (mList.FittingResults[i]->Model == ModelType::Noise)
-        {
-            noise = mList.FittingResults[i]->Params.first().second;
-        }
-
-        if (mList.FittingResults[i]->Model == ModelType::Exponential)
-        {
-            expCheck = true;
-            expK = mList.FittingResults[i]->Params.first().second;
-        }
-
-        if (mList.FittingResults[i]->Model == ModelType::Hyperbolic)
-        {
-            hypCheck = true;
-            hypK = mList.FittingResults[i]->Params.first().second;
-        }
-
-        if (mList.FittingResults[i]->Model == ModelType::BetaDelta)
-        {
-            quasiCheck = true;
-            quasiB = mList.FittingResults[i]->Params.first().second;
-            quasiD = mList.FittingResults[i]->Params.last().second;
-        }
-
-        if (mList.FittingResults[i]->Model == ModelType::Myerson)
-        {
-            myerCheck = true;
-            myerK = mList.FittingResults[i]->Params.first().second;
-            myerS = mList.FittingResults[i]->Params.last().second;
-        }
-
-        if (mList.FittingResults[i]->Model == ModelType::Rachlin)
-        {
-            rachCheck = true;
-            rachK = mList.FittingResults[i]->Params.first().second;
-            rachS = mList.FittingResults[i]->Params.last().second;
-        }
-
-        if (mList.FittingResults[i]->Model == ModelType::GeneralizedHyperbolic)
-        {
-            rodriguezCheck = true;
-            rodriguezK = mList.FittingResults[i]->Params.first().second;
-            rodriguezS = mList.FittingResults[i]->Params.last().second;
-        }
-
-        if (mList.FittingResults[i]->Model == ModelType::EbertPrelec)
-        {
-            ebertCheck = true;
-            ebertK = mList.FittingResults[i]->Params.first().second;
-            ebertS = mList.FittingResults[i]->Params.last().second;
-        }
-
-        if (mList.FittingResults[i]->Model == ModelType::Beleichrodt)
-        {
-            bleichrodtCheck = true;
-            bleichrodtK = mList.FittingResults[i]->Params.first().second;
-            bleichrodtS = mList.FittingResults[i]->Params[1].second;
-            bleichrodtBeta = mList.FittingResults[i]->Params.last().second;
-        }
-    }
-
-    int tickHack = ((int) log(lastDelay)) + 1;
-
-    int negLogs = 3;
-
-    axisXarea.setMin(-negLogs);
-    axisXarea.setMax(tickHack + negLogs);
-    axisXarea.setTickCount(tickHack + 1 + negLogs);
-
-    for (double i = 0 - 3; i < (log(lastDelay)+1); i = i + chartIterator)
-    {
-        plotAUCPoint(i);
-    }
-
-    paramString1 = mList.ParticipantDelays;
-    paramString2 = mList.ParticipantValues;
-
-    delayPoints = paramString1.split(",");
-    valuePoints = paramString2.split(",");
-
-    for (int i = 0; i < delayPoints.length(); i++)
-    {
-        param1 = delayPoints[i].toDouble(&checkValue1);
-        param2 = valuePoints[i].toDouble(&checkValue2);
-
-        if (!checkValue1 || !checkValue2)
-        {
-            break;
-        }
-
-        dataPointsArea << QPointF(log(param1), param2);
-        empiricalSeries << QPointF(log(param1), param2);
-    }
-    */
-}
-
-/**
- * @brief ChartWindow::plotAUCPoint
- * @param i
- */
-void ChartWindow::plotAUCPoint(double i)
-{
-    /*
-    xParam = exp(i);
-
-    noiseSeriesArea << QPointF(i, noise);
-
-    if (expCheck)
-    {
-        expSeriesArea << QPointF(i, exponential_plotting(expK, xParam));
-    }
-
-    if (hypCheck)
-    {
-        hypSeriesArea << QPointF(i, hyperbolic_plotting(hypK, xParam));
-    }
-
-    if (quasiCheck)
-    {
-         quasiSeriesArea << QPointF(i, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
-    }
-
-    if (myerCheck)
-    {
-        myerSeriesArea << QPointF(i, myerson_plotting(myerK, myerS, xParam));
-    }
-
-    if (rachCheck)
-    {
-        rachSeriesArea << QPointF(i, rachlin_plotting(rachK, rachS, xParam));
-    }
-
-    if (rodriguezCheck)
-    {
-        rodriguezSeriesArea << QPointF(i, generalized_hyperbolic_plotting(rodriguezK, rodriguezS, xParam));
-    }
-
-    if (ebertCheck)
-    {
-        ebertSeriesArea << QPointF(i, ebert_prelec_plotting(ebertK, ebertS, xParam));
-    }
-
-    if (bleichrodtCheck)
-    {
-        bleichrodtSeriesArea << QPointF(i, bleichrodt_plotting(bleichrodtK, bleichrodtS, bleichrodtBeta, xParam));
-    }
-
-    */
-}
 
 /**
  * @brief ChartWindow::plotProbabilities

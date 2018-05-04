@@ -96,7 +96,8 @@ private:
     QCustomPlot *chartError;
     QCustomPlot *chartBar;
 
-    QCPTextElement *titleMainChart;
+    QCPTextElement *titleMainChart,
+                   *titleAreaChart;
 
     QVector<double> chartXTicks;
     QVector<QString> chartXLabels;
@@ -118,7 +119,8 @@ private:
         ModelGeneralizedHyperbolic = 6,
         ModelEbertPrelec = 7,
         ModelBeleichrodt = 8,
-        ModelNoise = 9;
+        ModelNoise = 9,
+        ModelEmpirical = 10;
 
     /** Actions
      *
