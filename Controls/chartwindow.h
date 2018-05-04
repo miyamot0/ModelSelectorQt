@@ -96,8 +96,12 @@ private:
     QCustomPlot *chartError;
     QCustomPlot *chartBar;
 
+    QCPBars *chartBarsSeries;
+
     QCPTextElement *titleMainChart,
-                   *titleAreaChart;
+                   *titleAreaChart,
+                   *titleErrorChart,
+                   *titleBarChart;
 
     QVector<double> chartXTicks;
     QVector<QString> chartXLabels;

@@ -55,10 +55,10 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
     buildAUCPlot();
     stackedWidget.addWidget(chartArea);
 
-    //buildErrorPlot();
+    buildErrorPlot();
     stackedWidget.addWidget(chartError);
 
-    //buildProbabilityPlot();
+    buildProbabilityPlot();
     stackedWidget.addWidget(chartBar);
 
     windowLayout->addWidget(&stackedWidget);
@@ -113,6 +113,8 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
     plotProbabilities(0);
     plotResiduals(0);
 }
+
+// Series
 
 /**
  * @brief ChartWindow::buildED50Plot
@@ -444,6 +446,8 @@ void ChartWindow::plotED50Series(int index)
     chart->replot();
 }
 
+// Area
+
 /**
  * @brief ChartWindow::buildAUCPlot
  */
@@ -692,7 +696,6 @@ void ChartWindow::plotAUCSeries(int index)
         }
 
         //Hack
-
         if (param1 == 0)
         {
             param1 = 0.1;
@@ -787,222 +790,102 @@ void ChartWindow::plotAUCPoint(double i)
     }
 }
 
-/**
- * @brief ChartWindow::buildProbabilityPlot
- */
-void ChartWindow::buildProbabilityPlot()
-{
-
-    /*
-    barChart.setTitleFont(mTitle);
-    barChart.setFont(mTitle);
-    barChart.setTitleBrush(Qt::black);
-
-    barChart.legend()->setFont(mLegendFont);
-    barChart.legend()->setAlignment(Qt::AlignBottom);
-    barChart.legend()->setLabelBrush(Qt::black);
-    barChart.legend()->setLabelColor(Qt::black);
-    barChart.legend()->setFont(QFont("Serif", 8, -1, false));
-
-    expPen.setBrush(Qt::black);
-    hypPen.setBrush(Qt::green);
-    quasiPen.setBrush(Qt::blue);
-    myerPen.setBrush(Qt::cyan);
-    rachPen.setBrush(Qt::magenta);
-    rodriguezPen.setBrush(Qt::yellow);
-    ebertPen.setBrush(Qt::red);
-    bleichrodtPen.setBrush(Qt::darkCyan);
-    noisePen.setBrush(Qt::darkGray);
-
-    expPen.setWidthF(colWidth);
-    hypPen.setWidthF(colWidth);
-    quasiPen.setWidthF(colWidth);
-    myerPen.setWidthF(colWidth);
-    rachPen.setWidthF(colWidth);
-    rodriguezPen.setWidthF(colWidth);
-    ebertPen.setWidthF(colWidth);
-    bleichrodtPen.setWidthF(colWidth);
-    noisePen.setWidthF(colWidth);
-
-    expProbSet.setName("Exponential");
-    expProbSet.setUseOpenGL(true);
-    expProbSet.setColor(Qt::black);
-    expProbSet.setPen(expPen);
-
-    hypProbSet.setName("Hyperbolic");
-    hypProbSet.setUseOpenGL(true);
-    hypProbSet.setColor(Qt::green);
-    hypProbSet.setPen(hypPen);
-
-    quasiProbSet.setName("QuasiHyperbolic");
-    quasiProbSet.setUseOpenGL(true);
-    quasiProbSet.setColor(Qt::blue);
-    quasiProbSet.setPen(quasiPen);
-
-    myerProbSet.setName("Green-Myerson");
-    myerProbSet.setUseOpenGL(true);
-    myerProbSet.setColor(Qt::cyan);
-    myerProbSet.setPen(myerPen);
-
-    rachProbSet.setName("Rachlin");
-    rachProbSet.setUseOpenGL(true);
-    rachProbSet.setColor(Qt::magenta);
-    rachProbSet.setPen(rachPen);
-
-    rodriguezProbSet.setName("Generalized-Hyperbolic");
-    rodriguezProbSet.setUseOpenGL(true);
-    rodriguezProbSet.setColor(Qt::yellow);
-    rodriguezProbSet.setPen(rodriguezPen);
-
-    ebertProbSet.setName("Ebert-Prelec");
-    ebertProbSet.setUseOpenGL(true);
-    ebertProbSet.setColor(Qt::red);
-    ebertProbSet.setPen(ebertPen);
-
-    bleichrodtProbSet.setName("Bleichrodt");
-    bleichrodtProbSet.setUseOpenGL(true);
-    bleichrodtProbSet.setColor(Qt::darkCyan);
-    bleichrodtProbSet.setPen(bleichrodtPen);
-
-    noiseProbSet.setName("Noise");
-    noiseProbSet.setUseOpenGL(true);
-    noiseProbSet.setColor(Qt::darkGray);
-    noiseProbSet.setPen(noisePen);
-
-    barChart.addSeries(&expProbSet);
-    barChart.addSeries(&hypProbSet);
-    barChart.addSeries(&quasiProbSet);
-    barChart.addSeries(&myerProbSet);
-    barChart.addSeries(&rachProbSet);
-    barChart.addSeries(&rodriguezProbSet);
-    barChart.addSeries(&ebertProbSet);
-    barChart.addSeries(&bleichrodtProbSet);
-    barChart.addSeries(&noiseProbSet);
-
-    barAxisX.setMin(0);
-    barAxisX.setMax(10);
-    barAxisX.setTickCount(11);
-    barAxisX.applyNiceNumbers();
-    barAxisX.setGridLineColor(Qt::transparent);
-    barAxisX.setTitleText(tr("Model Candidates"));
-    barAxisX.setTitleBrush(Qt::white);
-    barAxisX.setTitleFont(QFont("Serif", 10, -1, false));
-    barAxisX.setLabelsFont(QFont("Serif", 7, -1, false));
-    barAxisX.setLabelsColor(Qt::white);
-    barAxisX.setLinePenColor(Qt::black);
-    barAxisX.setLinePen(QPen(Qt::black));
-
-    barAxisY.setMin(0.0);
-    barAxisY.setMax(1.0);
-    barAxisY.setTitleText(tr("Probability"));
-    barAxisY.setTitleFont(QFont("Serif", 10, -1, false));
-    barAxisY.setTitleBrush(Qt::black);
-    barAxisY.setGridLineColor(Qt::transparent);
-    barAxisY.setLabelsFont(QFont("Serif", 10, -1, false));
-    barAxisY.setLabelsColor(Qt::black);
-    barAxisY.setLinePenColor(Qt::black);
-    barAxisY.setLinePen(QPen(Qt::black));
-
-    barChart.setAxisX(&barAxisX, &expProbSet);
-    barChart.setAxisY(&barAxisY, &expProbSet);
-
-    barChart.setAxisX(&barAxisX, &hypProbSet);
-    barChart.setAxisY(&barAxisY, &hypProbSet);
-
-    barChart.setAxisX(&barAxisX, &quasiProbSet);
-    barChart.setAxisY(&barAxisY, &quasiProbSet);
-
-    barChart.setAxisX(&barAxisX, &myerProbSet);
-    barChart.setAxisY(&barAxisY, &myerProbSet);
-
-    barChart.setAxisX(&barAxisX, &rachProbSet);
-    barChart.setAxisY(&barAxisY, &rachProbSet);
-
-    barChart.setAxisX(&barAxisX, &rodriguezProbSet);
-    barChart.setAxisY(&barAxisY, &rodriguezProbSet);
-
-    barChart.setAxisX(&barAxisX, &ebertProbSet);
-    barChart.setAxisY(&barAxisY, &ebertProbSet);
-
-    barChart.setAxisX(&barAxisX, &bleichrodtProbSet);
-    barChart.setAxisY(&barAxisY, &bleichrodtProbSet);
-
-    barChart.setAxisX(&barAxisX, &noiseProbSet);
-    barChart.setAxisY(&barAxisY, &noiseProbSet);
-
-    barChartView = new QChartView(&barChart);
-    */
-}
+// Residuals
 
 /**
  * @brief ChartWindow::buildErrorPlot
  */
 void ChartWindow::buildErrorPlot()
 {
+    chartError->legend->setVisible(true);
 
-    /*
-    chartError.setTitleFont(mTitle);
-    chartError.setFont(mTitle);
-    chartError.setTitleBrush(Qt::black);
+    chartError->yAxis->setLabel(tr("Error Value"));
+    chartError->yAxis->setScaleType(QCPAxis::stLinear);
+    chartError->yAxis->setBasePen(QPen(Qt::black));
+    chartError->yAxis->grid()->setPen(Qt::NoPen);
 
-    chartError.legend()->setFont(mLegendFont);
-    chartError.legend()->setAlignment(Qt::AlignBottom);
-    chartError.legend()->setBrush(Qt::black);
-    chartError.legend()->setColor(Qt::black);
+    chartError->xAxis->setLabel(tr("Residual"));
+    chartError->xAxis->setScaleType(QCPAxis::stLinear);
+    chartError->xAxis->setBasePen(QPen(Qt::black));
+    chartError->xAxis->grid()->setPen(Qt::NoPen);
 
-    // do we need a table?
-    chartError.legend()->setVisible(false);
+    titleErrorChart = new QCPTextElement(chartError, "test", QFont("sans", 12, QFont::Bold));
 
-    axisXerror.setGridLineColor(Qt::transparent);
-    axisXerror.setTitleText(tr("Residual"));
-    axisXerror.setMin(0);
-    axisXerror.setLabelsFont(QFont("Serif", 10, -1, false));
-    axisXerror.setLabelsColor(Qt::black);
-    axisXerror.setLabelFormat(QString("%.0f"));
-    axisXerror.setLinePenColor(Qt::black);
-    axisXerror.setLinePen(QPen(Qt::black));
-    axisXerror.setTitleBrush(Qt::black);
-    axisXerror.setTitleFont(QFont("Serif", 10, -1, false));
+    chartError->plotLayout()->insertRow(0);
+    chartError->plotLayout()->addElement(0, 0, titleErrorChart);
 
-    axisYerror.setGridLineColor(Qt::transparent);
-    axisYerror.setTitleText(tr("Error Value Value"));
-    axisYerror.setTickCount(9);
-    axisYerror.setLabelsFont(QFont("Serif", 10, -1, false));
-    axisYerror.setLabelsColor(Qt::black);
-    axisYerror.setMin(-1);
-    axisYerror.setMax(1);
-    axisYerror.setLinePenColor(Qt::black);
-    axisYerror.setLinePen(QPen(Qt::black));
-    axisYerror.setTitleBrush(Qt::black);
-    axisYerror.setTitleFont(QFont("Serif", 10, -1, false));
-
-    errSeries.setUseOpenGL(true);
-    errSeries.setName("");
-    errSeries.setPointsVisible(false);
-    errSeries.setPen(QPen(Qt::black));
-    chartError.addSeries(&errSeries);
-
-    errDataPoints.setName(tr("err"));
-    errDataPoints.setMarkerShape(QScatterSeries::MarkerShapeRectangle);
-    errDataPoints.setPen(QPen(Qt::black));
-    errDataPoints.setBrush(QBrush(Qt::black));
-    errDataPoints.setMarkerSize(10);
-    chartError.addSeries(&errDataPoints);
-
-    chartError.setAxisX(&axisXerror, &errSeries);
-    chartError.setAxisY(&axisYerror, &errSeries);
-
-    chartError.setAxisX(&axisXerror, &errDataPoints);
-    chartError.setAxisY(&axisYerror, &errDataPoints);
-
-    chartViewError = new QChartView(&chartError);
-
-    */
+    // Add Points
+    chartError->addGraph();
+    chartError->graph(0)->setLineStyle(QCPGraph::lsNone);
+    chartError->graph(0)->setName("Error");
+    chartError->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssSquare,
+                                                     Qt::black,
+                                                     Qt::black,
+                                                     8));
 }
 
+/**
+ * @brief ChartWindow::plotResiduals
+ * @param index
+ */
+void ChartWindow::plotResiduals(int index)
+{
+    mList = mDisplayData.at(index);
 
+    if (mList.Header.contains("dropped", Qt::CaseInsensitive))
+    {
+        titleErrorChart->setText(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
 
+        return;
+    }
 
+    titleErrorChart->setText(QString("Residual Error for Participant #%1").arg(QString::number(currentIndexShown + 1)));
+
+    chartError->graph(0)->data().data()->clear();
+
+    for (int j=0; j<mList.TopErrPar.length(); j++)
+    {
+        chartError->graph(0)->addData(j+1, mList.TopErrPar[j]);
+    }
+
+    if (mList.TopErrPar.length() > 0)
+    {
+        minList = std::abs(*std::min_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
+        maxList = std::abs(*std::max_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
+
+        chartError->yAxis->setRangeLower((maxList >= minList) ? -maxList : -minList);
+        chartError->yAxis->setRangeUpper((maxList >= minList) ? maxList : minList);
+    }
+
+    chartError->xAxis->setRangeLower(0);
+    chartError->xAxis->setRangeUpper(mList.TopErrPar.length() + 1);
+
+    chartError->replot();
+}
+
+// Probabilities
+
+/**
+ * @brief ChartWindow::buildProbabilityPlot
+ */
+void ChartWindow::buildProbabilityPlot()
+{
+    chartBarsSeries = new QCPBars(chartBar->xAxis, chartBar->yAxis);
+    chartBarsSeries->setName("Model Probability");
+
+    titleBarChart = new QCPTextElement(chartBar, "test", QFont("sans", 12, QFont::Bold));
+
+    chartBar->plotLayout()->insertRow(0);
+    chartBar->plotLayout()->addElement(0, 0, titleBarChart);
+
+    chartBar->yAxis->setRangeLower(0);
+    chartBar->yAxis->setRangeUpper(1);
+    chartBar->yAxis->setLabel("Probability");
+
+    chartBar->xAxis->setLabel("Model");
+    chartBar->xAxis->setRangeLower(0);
+    chartBar->xAxis->setRangeUpper(9);
+}
 
 /**
  * @brief ChartWindow::plotProbabilities
@@ -1010,46 +893,34 @@ void ChartWindow::buildErrorPlot()
  */
 void ChartWindow::plotProbabilities(int index)
 {
-    /*
     mList = mDisplayData.at(index);
 
     if (mList.Header.contains("dropped", Qt::CaseInsensitive))
     {
-        barChart.setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
+        titleBarChart->setText(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
 
         return;
     }
 
-    barChart.setTitle(QString("Participant #%1: Model Probabilities").arg(QString::number(currentIndexShown + 1)));
+    titleBarChart->setText(QString("Participant #%1: Model Probabilities").arg(QString::number(currentIndexShown + 1)));
+
+    chartBarsSeries->data().data()->clear();
 
     expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
 
-    expProbSet.clear();
-    hypProbSet.clear();
-    quasiProbSet.clear();
-    myerProbSet.clear();
-    rachProbSet.clear();
-    rodriguezProbSet.clear();
-    ebertProbSet.clear();
-    bleichrodtProbSet.clear();
-    noiseProbSet.clear();
+    QVector<QString> modelStrings({"Exponential", "Hyperbolic", "BetaDelta",
+                                   "Green-Myerson", "Rachlin", "Generalized Hyperbolic",
+                                   "Ebert-Prelec", "Beleichrodt", "Noise"});
 
-    expProbSet << QPointF(1,0);
-    hypProbSet << QPointF(2,0);
-    quasiProbSet << QPointF(3,0);
-    myerProbSet << QPointF(4,0);
-    rachProbSet << QPointF(5,0);
-    rodriguezProbSet << QPointF(6,0);
-    ebertProbSet << QPointF(7,0);
-    bleichrodtProbSet << QPointF(8,0);
-    noiseProbSet << QPointF(9,0);
+    QVector<double> modelTicks({1, 2, 3, 4, 5, 6, 7, 8, 9});
+    QVector<double> modelProbabilities({0, 0, 0, 0, 0, 0, 0, 0, 0});
 
     for (int i=0; i<mList.FittingResults.length(); i++)
     {
 
         if (mList.FittingResults[i]->Model == ModelType::Noise)
         {
-            noiseProbSet << QPointF(9, mList.FittingResults[i]->Probability);
+            modelProbabilities[8] = mList.FittingResults[i]->Probability;
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Exponential)
@@ -1058,7 +929,7 @@ void ChartWindow::plotProbabilities(int index)
 
             if (expK != NULL)
             {
-                expProbSet << QPointF(1, mList.FittingResults[i]->Probability);
+                modelProbabilities[0] = mList.FittingResults[i]->Probability;
             }
         }
 
@@ -1068,7 +939,7 @@ void ChartWindow::plotProbabilities(int index)
 
             if (hypK != NULL)
             {
-                hypProbSet << QPointF(2, mList.FittingResults[i]->Probability);
+                modelProbabilities[1] = mList.FittingResults[i]->Probability;
             }
         }
 
@@ -1079,7 +950,7 @@ void ChartWindow::plotProbabilities(int index)
 
             if (quasiB != NULL && quasiD != NULL)
             {
-                quasiProbSet << QPointF(3, mList.FittingResults[i]->Probability);
+                modelProbabilities[2] = mList.FittingResults[i]->Probability;
             }
         }
 
@@ -1090,7 +961,7 @@ void ChartWindow::plotProbabilities(int index)
 
             if (myerK != NULL && myerS != NULL)
             {
-                myerProbSet << QPointF(4, mList.FittingResults[i]->Probability);
+                modelProbabilities[3] = mList.FittingResults[i]->Probability;
             }
         }
 
@@ -1101,7 +972,7 @@ void ChartWindow::plotProbabilities(int index)
 
             if (rachK != NULL && rachS != NULL)
             {
-                rachProbSet << QPointF(5, mList.FittingResults[i]->Probability);
+                modelProbabilities[4] = mList.FittingResults[i]->Probability;
             }
         }
 
@@ -1112,7 +983,7 @@ void ChartWindow::plotProbabilities(int index)
 
             if (rodriguezK != NULL && rodriguezS != NULL)
             {
-                rodriguezProbSet << QPointF(6, mList.FittingResults[i]->Probability);
+                modelProbabilities[5] = mList.FittingResults[i]->Probability;
             }
         }
 
@@ -1123,7 +994,7 @@ void ChartWindow::plotProbabilities(int index)
 
             if (ebertK != NULL && ebertS != NULL)
             {
-                ebertProbSet << QPointF(7, mList.FittingResults[i]->Probability);
+                modelProbabilities[6] = mList.FittingResults[i]->Probability;
             }
         }
 
@@ -1136,56 +1007,18 @@ void ChartWindow::plotProbabilities(int index)
 
             if (bleichrodtK != NULL && bleichrodtS != NULL && bleichrodtBeta != NULL)
             {
-                bleichrodtProbSet << QPointF(8, mList.FittingResults[i]->Probability);
+                modelProbabilities[7] = mList.FittingResults[i]->Probability;
             }
         }
     }
-    */
-}
 
-/**
- * @brief ChartWindow::plotResiduals
- * @param index
- */
-void ChartWindow::plotResiduals(int index)
-{
-    /*
-    mList = mDisplayData.at(index);
+    chartBarsSeries->setData(modelTicks, modelProbabilities);
 
-    errSeries.clear();
-    errDataPoints.clear();
+    QSharedPointer<QCPAxisTickerText> chartTicker(new QCPAxisTickerText);
+    chartTicker->addTicks(modelTicks, modelStrings);
+    chartBar->xAxis->setTicker(chartTicker);
 
-    errSeries << QPointF(0, 0);
-
-    for (int j=0; j<mList.TopErrPar.length(); j++)
-    {
-        errSeries << QPointF(j+1, 0);
-        errDataPoints << QPointF(j+1, mList.TopErrPar[j]);
-    }
-
-    if (mList.TopErrPar.length() > 0)
-    {
-        minList = std::abs(*std::min_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
-        maxList = std::abs(*std::max_element(mList.TopErrPar.begin(), mList.TopErrPar.end())) * 1.5;
-
-        axisYerror.setMin((maxList >= minList) ? -maxList : -minList);
-        axisYerror.setMax((maxList >= minList) ? maxList : minList);
-        axisYerror.setTickCount(9);
-    }
-
-    axisXerror.setMin(0);
-    axisXerror.setMax(mList.TopErrPar.length());
-    axisXerror.setTickCount(mList.TopErrPar.count() + 1);
-
-    if (mList.Header.contains("dropped", Qt::CaseInsensitive))
-    {
-        chartError.setTitle(QString("Participant #%1: Dropped").arg(QString::number(currentIndexShown + 1)));
-
-        return;
-    }
-
-    chartError.setTitle(QString("Participant #%1: %2 Residual Plot").arg(QString::number(currentIndexShown + 1)).arg(cleanTitle(mList.TopModel)));
-    */
+    chartBar->replot();
 }
 
 /**
