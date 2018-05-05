@@ -88,7 +88,7 @@ ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, Chartin
     }
 
     saveAction = new QAction(tr("Save"), this);
-    connect(saveAction, &QAction::triggered, this, &ChartWindow::saveSVGasPNG);
+    connect(saveAction, &QAction::triggered, this, &ChartWindow::saveImage);
 
     prevAction = new QAction(tr("Previous"), this);
     connect(prevAction, &QAction::triggered, this, &ChartWindow::on_PreviousButton_clicked);
@@ -1181,7 +1181,7 @@ double ChartWindow::bleichrodt_plotting(double k, double s, double beta, double 
     }
     else
     {
-        return beta * exp(-exp(k)*pow(x,exp(s)));
+        return beta * exp(-exp(k)*pow(x,s));
     }
 }
 
@@ -1235,46 +1235,71 @@ bool ChartWindow::eventFilter(QObject *, QEvent *e)
 /**
  * @brief ChartWindow::saveSVGasPNG
  */
-void ChartWindow::saveSVGasPNG()
+void ChartWindow::saveImage()
 {
     QString file_name;
-    QString fileFilter = "PNG (*.png)";
+    QString fileFilter = "PNG (*.png);;JPEG (*.jpeg);;BMP (*.bmp);;PDF (*.pdf)";
+    QString selectedType;
 
 #ifdef _WIN32
 
-        file_name = QFileDialog::getSaveFileName(this, tr("Save PNG"), QDir::homePath(),
-                                         fileFilter);
+        file_name = QFileDialog::getSaveFileName(this, tr("Save current chart?"),
+                                                 QDir::homePath(),
+                                                 fileFilter,
+                                                 &selectedType,
+                                                 QFileDialog::Option::DontUseNativeDialog);
 
 #elif TARGET_OS_MAC
 
         file_name = QFileDialog::getSaveFileName(this, tr("Save PNG"), QDir::homePath(),
                                          fileFilter, &fileFilter, QFileDialog::Option::DontUseNativeDialog);
 
-        if (!file_name.contains(".png"))
-        {
-            file_name.append(".png");
-        }
+//        if (!file_name.contains(".png"))
+//        {
+//            file_name.append(".png");
+//        }
 
 #endif
+
 
     if(!file_name.trimmed().isEmpty())
     {
         switch (stackedWidget.currentIndex()) {
         case 0:
-            chart->savePng(file_name);
+            saveChartImage(chart, file_name, selectedType);
             break;
         case 1:
-            chartArea->savePng(file_name);
+            saveChartImage(chartArea, file_name, selectedType);
             break;
         case 2:
-            chartError->savePng(file_name);
+            saveChartImage(chartError, file_name, selectedType);
             break;
         case 3:
-            chartBar->savePng(file_name);
+            saveChartImage(chartBar, file_name, selectedType);
             break;
         default:
             break;
         }
+    }
+}
+
+void ChartWindow::saveChartImage(QCustomPlot *currPlot, QString filePath, QString fileExt)
+{
+    if (fileExt.contains(".png"))
+    {
+        currPlot->savePng(filePath.append(".png"));
+    }
+    else if (fileExt.contains(".bmp"))
+    {
+        currPlot->saveBmp(filePath.append(".bmp"));
+    }
+    else if (fileExt.contains(".pdf"))
+    {
+        currPlot->savePdf(filePath.append(".pdf"));
+    }
+    else if (fileExt.contains(".jpeg"))
+    {
+        currPlot->saveJpg(filePath.append(".jpeg"));
     }
 }
 

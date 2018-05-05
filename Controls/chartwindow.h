@@ -70,6 +70,8 @@ public:
     double ebert_prelec_plotting(double k, double s, double x);
     double bleichrodt_plotting(double k, double s, double beta, double x);
 
+    void saveChartImage(QCustomPlot *currPlot, QString filePath, QString fileExt);
+
     double static generalized_hyperbolic_prediction(double k, double s, double x);
     double static ebert_prelec_prediction(double k, double s, double x);
     double static bleichrodt_prediction(double k, double s, double beta, double x);
@@ -79,7 +81,7 @@ public:
 private slots:
     void on_NextButton_clicked();
     void on_PreviousButton_clicked();
-    void saveSVGasPNG();
+    void saveImage();
 
 private:
 
