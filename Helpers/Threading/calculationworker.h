@@ -58,16 +58,13 @@ public:
                       int processChecking);
 
 private:
-    QString computationTypeLocal;
 
-    // TODO: remove
-    //QString formatStringResult(double value, bool returnLogNormal);
+    // TODO: new models need to have lognormal options
 
     QList<QPair<QString, QString>> mLocalJohnsonBickelResults;
     QList<bool> *mLocalJonhsonBickelSelections;
     QList<QStringList> mLocalStoredValues;
     ModelSelection *mFittingObject;
-    FittingAlgorithm fittingAlgorithm;
 
     FitResults *fitResults;
 
@@ -81,17 +78,7 @@ private:
               *fitResultBleichrodt,
               *fitResultNoise;
 
-    bool runLocalHyperbolic,
-         runLocalExponential,
-         runLocalBetaDelta,
-         runLocalMyersonGreen,
-         runLocalRachlin,
-         runLocalGeneralizedHyp,
-         runLocalEbertPrelec,
-         runLocalBleicholdt;
-
-    int processCheckingLocal,
-        grandLoop;
+    int processCheckingLocal, grandLoop;
 
     double p1Span,
            p1Step,

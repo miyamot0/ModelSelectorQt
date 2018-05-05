@@ -34,34 +34,12 @@ CalculationWorker::CalculationWorker(QList<QPair<QString, QString> > mJohnsonBic
 {
     settings = calculationSettings;
 
-    computationTypeLocal = calculationSettings->scriptName;
-
     mLocalJohnsonBickelResults = mJohnsonBickelResults;
     mLocalJonhsonBickelSelections = mJonhsonBickelSelections;
     mLocalStoredValues = mStoredValues;
 
     mFittingObject = new ModelSelection();
     mFittingObject->SetFittingAlgorithm(calculationSettings->settingsFitting);
-
-    runLocalExponential = calculationSettings->modelExponential;
-
-    runLocalHyperbolic =  calculationSettings->modelHyperbolic;
-    runLocalBetaDelta = calculationSettings->modelQuasiHyperbolic;
-    runLocalMyersonGreen = calculationSettings->modelMyersonGreen;
-    runLocalRachlin = calculationSettings->modelRachlin;
-    runLocalGeneralizedHyp = calculationSettings->modelGeneralizedHyperbolic;
-    runLocalEbertPrelec = calculationSettings->modelEbertPrelec;
-    runLocalBleicholdt = calculationSettings->modelBleichrodt;
-
-    //runLogarithmicResults = calculationSettings->logNormalParameters;
-
-    //boundRachlinModel = calculationSettings->cbRachlin;
-
-    //runLocalArea = calculationSettings->cbArea;
-
-    //runBruteForce = calculationSettings->cbBruteForce;
-
-    fittingAlgorithm = calculationSettings->settingsFitting;
 
     processCheckingLocal = processChecking;
 }
@@ -107,9 +85,8 @@ void CalculationWorker::working()
         mFittingObject->SetY(tempList[1].toUtf8().constData());
         mFittingObject->mBicList.clear();
 
-        if (runLocalExponential)
+        if (settings->modelExponential)
         {
-            //if (!runBruteForce)
             if (!settings->cbBruteForce)
             {
                 p1Span = abs(-12) + abs(12); // -12 to 12
@@ -186,9 +163,8 @@ void CalculationWorker::working()
             }
         }
 
-        if (runLocalHyperbolic)
+        if (settings->modelHyperbolic)
         {
-            //if (!runBruteForce)
             if (!settings->cbBruteForce)
             {
                 p1Span = abs(-12) + abs(12); // -12 to 12
@@ -266,9 +242,8 @@ void CalculationWorker::working()
             }
         }
 
-        if (runLocalBetaDelta)
+        if (settings->modelQuasiHyperbolic)
         {
-            //if (!runBruteForce)
             if (!settings->cbBruteForce)
             {
                 p1Span = 1; // 0 to 1
@@ -366,9 +341,8 @@ void CalculationWorker::working()
             }
         }
 
-        if (runLocalMyersonGreen)
+        if (settings->modelMyersonGreen)
         {
-            //if (!runBruteForce)
             if (!settings->cbBruteForce)
             {
                 p1Span = abs(-12) + abs(12);
@@ -466,9 +440,8 @@ void CalculationWorker::working()
             }
         }
 
-        if (runLocalRachlin)
+        if (settings->modelRachlin)
         {
-            //if (!runBruteForce)
             if (!settings->cbBruteForce)
             {
                 p1Span = abs(-12) + abs(12);
@@ -585,9 +558,8 @@ void CalculationWorker::working()
             }
         }
 
-        if (runLocalGeneralizedHyp)
+        if (settings->modelGeneralizedHyperbolic)
         {
-            //if (!runBruteForce)
             if (!settings->cbBruteForce)
             {
                 p1Span = abs(-12) + abs(12); // -12 to 12
@@ -685,9 +657,8 @@ void CalculationWorker::working()
             }
         }
 
-        if (runLocalEbertPrelec)
+        if (settings->modelEbertPrelec)
         {
-            //if (!runBruteForce)
             if (!settings->cbBruteForce)
             {
                 p1Span = abs(-12) + abs(12); // -12 to 12
@@ -785,9 +756,8 @@ void CalculationWorker::working()
             }
         }
 
-        if (runLocalBleicholdt)
+        if (settings->modelBleichrodt)
         {
-            //if (!runBruteForce)
             if (!settings->cbBruteForce)
             {
                 p1Span = abs(-12) + abs(12);
@@ -931,56 +901,56 @@ void CalculationWorker::working()
         fitResultNoise->Probability = mFittingObject->probsNoise;
             fitResults->FittingResults.append(fitResultNoise);
 
-        if (runLocalExponential)
+        if (settings->modelExponential)
         {
             fitResultExponential->BF = mFittingObject->bfExponential;
             fitResultExponential->Probability = mFittingObject->probsExponential;
                 fitResults->FittingResults.append(fitResultExponential);
         }
 
-        if (runLocalHyperbolic)
+        if (settings->modelHyperbolic)
         {
             fitResultHyperbolic->BF = mFittingObject->bfHyperbolic;
             fitResultHyperbolic->Probability = mFittingObject->probsHyperbolic;
                 fitResults->FittingResults.append(fitResultHyperbolic);
         }
 
-        if (runLocalBetaDelta)
+        if (settings->modelQuasiHyperbolic)
         {
             fitResultBetaDelta->BF = mFittingObject->bfQuasiHyperbolic;
             fitResultBetaDelta->Probability = mFittingObject->probsQuasiHyperbolic;
                 fitResults->FittingResults.append(fitResultBetaDelta);
         }
 
-        if (runLocalMyersonGreen)
+        if (settings->modelMyersonGreen)
         {
             fitResultGreenMyerson->BF = mFittingObject->bfMyerson;
             fitResultGreenMyerson->Probability = mFittingObject->probsMyerson;
                 fitResults->FittingResults.append(fitResultGreenMyerson);
         }
 
-        if (runLocalRachlin)
+        if (settings->modelRachlin)
         {
             fitResultRachlin->BF = mFittingObject->bfRachlin;
             fitResultRachlin->Probability = mFittingObject->probsRachlin;
                 fitResults->FittingResults.append(fitResultRachlin);
         }
 
-        if (runLocalGeneralizedHyp)
+        if (settings->modelGeneralizedHyperbolic)
         {
             fitResultGeneralizedHyperbolic->BF = mFittingObject->bfGeneralizedHyperbolic;
             fitResultGeneralizedHyperbolic->Probability = mFittingObject->probsGeneralizedHyperbolic;
                 fitResults->FittingResults.append(fitResultGeneralizedHyperbolic);
         }
 
-        if (runLocalEbertPrelec)
+        if (settings->modelEbertPrelec)
         {
             fitResultEbertPrelec->BF = mFittingObject->bfEbertPrelec;
             fitResultEbertPrelec->Probability = mFittingObject->probsEbertPrelec;
                 fitResults->FittingResults.append(fitResultEbertPrelec);
         }
 
-        if (runLocalBleicholdt)
+        if (settings->modelBleichrodt)
         {
             fitResultBleichrodt->BF = mFittingObject->bfBleichrodt;
             fitResultBleichrodt->Probability = mFittingObject->probsBleichrodt;
@@ -1040,7 +1010,7 @@ void CalculationWorker::working()
 
         if (mModel.contains("Generalized-Hyperbolic", Qt::CaseInsensitive))
         {
-            if (fittingAlgorithm == FittingAlgorithm::Function)
+            if (settings->settingsFitting == FittingAlgorithm::Function)
             {
                 mModel.append(" (f)");
             }
@@ -1051,15 +1021,15 @@ void CalculationWorker::working()
         }
         else if (!mModel.contains("Noise", Qt::CaseInsensitive))
         {
-            if (fittingAlgorithm == FittingAlgorithm::Function)
+            if (settings->settingsFitting == FittingAlgorithm::Function)
             {
                 mModel.append(" (f)");
             }
-            else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
+            else if (settings->settingsFitting == FittingAlgorithm::FunctionGradient)
             {
                 mModel.append(" (fg)");
             }
-            else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+            else if (settings->settingsFitting == FittingAlgorithm::FunctionGradientHessian)
             {
                 mModel.append(" (fgh)");
             }
