@@ -1602,7 +1602,7 @@ void SheetWidget::Calculate()
     resultsDialog = new ResultsDialog(nSeries, tripLogNormal, this);
     resultsDialog->setModal(false);
 
-    statusBar()->showMessage(tr("Beginning calculations..."), 3000);
+    statusBar()->showMessage(tr("Beginning calculations..."), 10000);
     allResults.clear();
 
     mStoredValues.clear();
@@ -1657,7 +1657,11 @@ void SheetWidget::WorkUpdate(FitResults results)
 {
     allResults.append(results);
 
-    if (calculationSettings->cbBruteForce)
+    if (calculationSettings->settingsFitting == FittingAlgorithm::DifferentialEvolution)
+    {
+        statusBar()->showMessage(QString("Series #%1 Computed... Genetic Algorithms require more processing time").arg(allResults.count()), 10000);
+    }
+    else if (calculationSettings->cbBruteForce)
     {
         statusBar()->showMessage(QString("Series #%1 Computed... Brute Force mode will take time").arg(allResults.count()), 10000);
     }
