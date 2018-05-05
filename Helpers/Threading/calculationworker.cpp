@@ -53,11 +53,11 @@ CalculationWorker::CalculationWorker(QList<QPair<QString, QString> > mJohnsonBic
     runLocalEbertPrelec = calculationSettings->modelEbertPrelec;
     runLocalBleicholdt = calculationSettings->modelBleichrodt;
 
-    runLogarithmicResults = calculationSettings->logNormalParameters;
+    //runLogarithmicResults = calculationSettings->logNormalParameters;
 
-    boundRachlinModel = calculationSettings->cbRachlin;
+    //boundRachlinModel = calculationSettings->cbRachlin;
 
-    runLocalArea = calculationSettings->cbArea;
+    //runLocalArea = calculationSettings->cbArea;
 
     //runBruteForce = calculationSettings->cbBruteForce;
 
@@ -163,7 +163,7 @@ void CalculationWorker::working()
             {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Exponential, mFittingObject->bicExponential));
 
-                double lnK = (runLogarithmicResults) ? exp(mFittingObject->fitExponentialK) : mFittingObject->fitExponentialK;
+                double lnK = (settings->logNormalParameters) ? exp(mFittingObject->fitExponentialK) : mFittingObject->fitExponentialK;
                 fitResultExponential->Params.append(QPair<QString, double>(QString("Exponential K"), lnK));
                 fitResultExponential->RMS = mFittingObject->GetReport().rmserror;
                 fitResultExponential->AIC = mFittingObject->aicExponential;
@@ -242,7 +242,7 @@ void CalculationWorker::working()
             {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Hyperbolic, mFittingObject->bicHyperbolic));
 
-                double lnK = (runLogarithmicResults) ? exp(mFittingObject->fitHyperbolicK) : mFittingObject->fitHyperbolicK;
+                double lnK = (settings->logNormalParameters) ? exp(mFittingObject->fitHyperbolicK) : mFittingObject->fitHyperbolicK;
 
                 fitResultHyperbolic->Params.append(QPair<QString, double>(QString("Hyperbolic K"), lnK));
                 fitResultHyperbolic->RMS = mFittingObject->GetReport().rmserror;
@@ -540,7 +540,7 @@ void CalculationWorker::working()
 
             if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
             {
-                if (boundRachlinModel && mFittingObject->GetParams()[1] > 1)
+                if (settings->cbRachlin && mFittingObject->GetParams()[1] > 1)
                 {
                     fitResultRachlin = new FitResult(ModelType::Rachlin);
 
@@ -1074,7 +1074,7 @@ void CalculationWorker::working()
 
         fitResults->TopED50 = mFittingObject->getED50BestModel(mFittingObject->mProbList.first().first);
 
-        if (runLocalArea)
+        if (settings->cbArea)
         {
             fitResults->TopAUC = mFittingObject->getAUCBestModel(mFittingObject->mProbList.first().first);
             fitResults->TopAUCLog = mFittingObject->getLogAUCBestModel(mFittingObject->mProbList.first().first);

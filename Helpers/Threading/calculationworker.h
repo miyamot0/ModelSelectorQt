@@ -90,11 +90,6 @@ private:
          runLocalEbertPrelec,
          runLocalBleicholdt;
 
-    bool runLogarithmicResults,
-         boundRachlinModel,
-         runLocalArea;
-         //runBruteForce;
-
     int processCheckingLocal,
         grandLoop;
 
