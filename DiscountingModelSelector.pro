@@ -134,6 +134,7 @@ win32 {
     DMS_FILES.files = \
                     License_ALGLIB.txt \
                     License_BDS.txt \
+                    License_differential-evolution.txt \
                     License_QCustomPlot.txt \
                     License_Qt.txt \
                     License_QtXlsx.txt \
@@ -166,6 +167,7 @@ macx {
     DMS_FILES.files = \
                     License_ALGLIB.txt \
                     License_BDS.txt \
+                    License_differential-evolution.txt \
                     License_QCustomPlot.txt \
                     License_Qt.txt \
                     License_QtXlsx.txt \
@@ -184,6 +186,7 @@ DISTFILES += \
     COPYING \
     License_ALGLIB.txt \
     License_BDS.txt \
+    License_differential-evolution.txt \
     License_QCustomPlot.txt \
     License_Qt.txt \
     License_QtXlsx.txt \

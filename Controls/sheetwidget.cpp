@@ -325,6 +325,14 @@ void SheetWidget::buildMenus()
     openLicenseQtXlsx->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openLicenseQtXlsx, &QAction::triggered, this, &SheetWidget::showQtXlsxLicenseWindow);
 
+    openLicenseQCustomPlot = new QAction(tr("QCustomPlot License (GPLv3)"), this);
+    openLicenseQCustomPlot->setIcon(QIcon(":/images/format-justify-center.png"));
+    connect(openLicenseQCustomPlot, &QAction::triggered, this, &SheetWidget::showQCustomPlotLicenseWindow);
+
+    openLicenseDifferentialEvolution = new QAction(tr("Differential Evolution License (...)"), this);
+    openLicenseDifferentialEvolution->setIcon(QIcon(":/images/format-justify-center.png"));
+    connect(openLicenseDifferentialEvolution, &QAction::triggered, this, &SheetWidget::showDifferentialEvolutionLicenseWindow);
+
     openAbout = new QAction(tr("Credits"), this);
     openAbout->setIcon(QIcon(":/images/format-justify-center.png"));
     connect(openAbout, &QAction::triggered, this, &SheetWidget::showCreditsWindow);
@@ -394,8 +402,6 @@ void SheetWidget::buildMenus()
     QMenu *sheetCalculationsMenu = menuBar()->addMenu(tr("&Discounting"));
     sheetCalculationsMenu->addAction(openDiscountingED50Window);
 
-    // TODO: Add license for differential-evolution here
-
     QMenu *sheetLicensesMenu = menuBar()->addMenu(tr("&Licenses"));
     sheetLicensesMenu->addAction(openLicenseALGLIB);
     sheetLicensesMenu->addAction(openLicenseDMS);
@@ -403,6 +409,8 @@ void SheetWidget::buildMenus()
     sheetLicensesMenu->addAction(openLicenseQt);
     sheetLicensesMenu->addAction(openLicenseTango);
     sheetLicensesMenu->addAction(openLicenseQtXlsx);
+    sheetLicensesMenu->addAction(openLicenseQCustomPlot);
+    sheetLicensesMenu->addAction(openLicenseDifferentialEvolution);
     sheetLicensesMenu->addAction(openAbout);
 
     QMenu *sheetAboutMenu = menuBar()->addMenu(tr("&Help"));
@@ -1004,6 +1012,56 @@ void SheetWidget::showQtXlsxLicenseWindow()
 
     licenseDialog = new LicenseDialog(mFilePath, this);
     licenseDialog->setWindowTitle(tr("QtXlsx License (MIT)"));
+    licenseDialog->setModal(true);
+    licenseDialog->show();
+}
+
+/**
+ * @brief SheetWidget::showQtXlsxLicenseWindow
+ */
+void SheetWidget::showQCustomPlotLicenseWindow()
+{
+    QString mFilePath = "";
+
+    #ifdef _WIN32
+            mFilePath = "License_QCustomPlot.txt";
+    #elif TARGET_OS_MAC
+            QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
+            runDirectory.cdUp();
+            runDirectory.cd("Resources");
+            mFilePath = runDirectory.path() + "/";
+
+            mFilePath = mFilePath + "License_QCustomPlot.txt";
+
+    #endif
+
+    licenseDialog = new LicenseDialog(mFilePath, this);
+    licenseDialog->setWindowTitle(tr("QCustomPlot License (GPLv3)"));
+    licenseDialog->setModal(true);
+    licenseDialog->show();
+}
+
+/**
+ * @brief SheetWidget::showQtXlsxLicenseWindow
+ */
+void SheetWidget::showDifferentialEvolutionLicenseWindow()
+{
+    QString mFilePath = "";
+
+    #ifdef _WIN32
+            mFilePath = "License_differential-evolution.txt";
+    #elif TARGET_OS_MAC
+            QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
+            runDirectory.cdUp();
+            runDirectory.cd("Resources");
+            mFilePath = runDirectory.path() + "/";
+
+            mFilePath = mFilePath + "License_differential-evolution.txt";
+
+    #endif
+
+    licenseDialog = new LicenseDialog(mFilePath, this);
+    licenseDialog->setWindowTitle(tr("Differential Evolution License (...)"));
     licenseDialog->setModal(true);
     licenseDialog->show();
 }

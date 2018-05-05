@@ -155,6 +155,8 @@ public slots:
     void showQTLicenseWindow();
     void showTangoLicenseWindow();
     void showQtXlsxLicenseWindow();
+    void showQCustomPlotLicenseWindow();
+    void showDifferentialEvolutionLicenseWindow();
     void showTestingFeatures();
 
     bool isToolWindowShown();
@@ -173,7 +175,6 @@ public slots:
 
     void WorkFinished();
 
-    // TODO: clean up comments
     void WrapXValueArray(QString *xString, QStringList *xValues)
     {
         *xString = "[";
@@ -185,21 +186,18 @@ public slots:
                 xString->append("[");
                 xString->append(xValues->at(i));
                 xString->append("]");
-                //xString->append("[" + xValues[i] + "]");
             }
             else
             {
                 xString->append(",[");
                 xString->append(xValues->at(i));
                 xString->append("]");
-                //xString->append(",[" + xValues[i] + "]");
             }
         }
 
         xString->append("]");
     }
 
-    // TODO: clean up comments
     void WrapYValueArray(QString *yString, QStringList *yValues)
     {
         *yString = "[";
@@ -209,13 +207,11 @@ public slots:
             if (i == 0)
             {
                 yString->append(yValues->at(i));
-                //mYString.append(valuePoints[i]);
             }
             else
             {
                 yString->append(",");
                 yString->append(yValues->at(i));
-                //mYString.append("," + valuePoints[i]);
             }
         }
 
@@ -247,6 +243,8 @@ private:
             *openLicenseQt,
             *openLicenseTango,
             *openLicenseQtXlsx,
+            *openLicenseQCustomPlot,
+            *openLicenseDifferentialEvolution,
             *openAbout,
             *openFAQ;
 
