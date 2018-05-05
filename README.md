@@ -15,10 +15,13 @@ Features include:
 
 ### Version
 ------
-1.7.0 (beta)
+1.8.0 (beta)
 
 ### Changelog
 ------
+ * 1.8.0 - Added differential evolution methods for derivative-free fitting
+ * 1.7.2 - Better charting libaries
+ * 1.7.1 - Bug fixes
  * 1.7.0 - Fitting options added, with more customizations for model fitting
  * 1.6.0 - Big plotting enhancements, better memory management with bigger data and more plots
  * 1.5.1 - Expanded plots, included residual plotting and probabilities as potential displays
