@@ -139,7 +139,15 @@ ResultsDialog::ResultsDialog(int nSeries, bool tripLogNormal, QWidget *parent) :
     columnList << "Rachlin.prob";
     columnList << "Rachlin.notes";
 
-    columnList << "GeneralizedHyperbolic.k";
+    // 35
+    if (tripLogNormal)
+    {
+        columnList << "GeneralizedHyperbolic.k";
+    }
+    else
+    {
+        columnList << "GeneralizedHyperbolic.lnk";
+    }
     columnList << "GeneralizedHyperbolic.beta";
     columnList << "GeneralizedHyperbolic.RMSE";
     columnList << "GeneralizedHyperbolic.BIC";
@@ -148,7 +156,15 @@ ResultsDialog::ResultsDialog(int nSeries, bool tripLogNormal, QWidget *parent) :
     columnList << "GeneralizedHyperbolic.prob";
     columnList << "GeneralizedHyperbolic.notes";
 
-    columnList << "EbertPrelec.k";
+    // 35
+    if (tripLogNormal)
+    {
+        columnList << "EbertPrelec.k";
+    }
+    else
+    {
+        columnList << "EbertPrelec.lnk";
+    }
     columnList << "EbertPrelec.s";
     columnList << "EbertPrelec.RMSE";
     columnList << "EbertPrelec.BIC";
@@ -157,7 +173,14 @@ ResultsDialog::ResultsDialog(int nSeries, bool tripLogNormal, QWidget *parent) :
     columnList << "EbertPrelec.prob";
     columnList << "EbertPrelec.notes";
 
-    columnList << "Bleichrodt.k";
+    if (tripLogNormal)
+    {
+        columnList << "Bleichrodt.k";
+    }
+    else
+    {
+        columnList << "Bleichrodt.lnk";
+    }
     columnList << "Bleichrodt.s";
     columnList << "Bleichrodt.beta";
     columnList << "Bleichrodt.RMSE";

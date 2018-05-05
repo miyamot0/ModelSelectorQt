@@ -27,10 +27,6 @@
 #include "Controls/sheetwidget.h"
 #include "Models/fitresults.h"
 
-// TODO: remove
-//#include "Libraries/differential-evolution/differentialevolution.h"
-//#include "Helpers/GeneticAlgorithms/evolutionfunctions.h"
-
 #ifdef _WIN32
     #include <QSettings>
 #endif
