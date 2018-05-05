@@ -25,6 +25,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QHBoxLayout>
+
 #include "chartwindow.h"
 
 ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, ChartingOptions chartOption, QWidget *parent)
@@ -881,10 +882,12 @@ void ChartWindow::buildProbabilityPlot()
     chartBar->yAxis->setRangeLower(0);
     chartBar->yAxis->setRangeUpper(1);
     chartBar->yAxis->setLabel("Probability");
+    chartBar->yAxis->grid()->setPen(Qt::NoPen);
 
     chartBar->xAxis->setLabel("Model");
     chartBar->xAxis->setRangeLower(0);
-    chartBar->xAxis->setRangeUpper(9);
+    chartBar->xAxis->setRangeUpper(10);
+    chartBar->xAxis->grid()->setPen(Qt::NoPen);
 }
 
 /**

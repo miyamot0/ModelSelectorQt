@@ -95,6 +95,8 @@ HEADERS  += \
     Libraries/alglib-3.11.0/src/specialfunctions.h \
     Libraries/alglib-3.11.0/src/statistics.h \
     Libraries/alglib-3.11.0/src/stdafx.h \
+    Libraries/differential-evolution/differentialevolution.h \
+    Helpers/GeneticAlgorithms/evolutionfunctions.h \
     Helpers/Threading/calculationworker.h \
     Modeling/modelselection.h \
     Models/calculationsettings.h \
@@ -104,7 +106,8 @@ HEADERS  += \
     Utilities/commanding.h \
     Utilities/qcustomplot.h \
     Utilities/sheetdelegate.h \
-    Utilities/sheettools.h
+    Utilities/sheettools.h \
+    Utilities/tags.h
 
 FORMS    += \
     Dialogs/aboutdialog.ui \

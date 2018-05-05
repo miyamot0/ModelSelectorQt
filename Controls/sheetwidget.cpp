@@ -394,6 +394,8 @@ void SheetWidget::buildMenus()
     QMenu *sheetCalculationsMenu = menuBar()->addMenu(tr("&Discounting"));
     sheetCalculationsMenu->addAction(openDiscountingED50Window);
 
+    // TODO: Add license for differential-evolution here
+
     QMenu *sheetLicensesMenu = menuBar()->addMenu(tr("&Licenses"));
     sheetLicensesMenu->addAction(openLicenseALGLIB);
     sheetLicensesMenu->addAction(openLicenseDMS);
@@ -453,7 +455,7 @@ void SheetWidget::checkUpdatesAction()
     {
         QProcess *p = new QProcess();
 
-        connect(p, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [=](int exitCode, QProcess::ExitStatus exitStatus)
+        connect(p, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [=](int, QProcess::ExitStatus)
         {
             QMessageBox::information(this, "Information", "Please close and re-open application if updated.", QMessageBox::Ok);
         });
@@ -1413,6 +1415,20 @@ bool SheetWidget::isToolWindowShown()
  * @brief
  */
 
+void SheetWidget::SetDimensions()
+{
+    isRowData = (calculationSettings->rightDelay - calculationSettings->leftDelay == 0) ? false : true;
+
+    nSeries = (isRowData) ? calculationSettings->bottomValue - calculationSettings->topValue + 1 :
+                                nSeries = calculationSettings->rightValue - calculationSettings->leftValue + 1;
+
+    dWidth = calculationSettings->rightDelay - calculationSettings->leftDelay + 1;
+    dLength = calculationSettings->bottomDelay - calculationSettings->topDelay + 1;
+
+    vWidth = calculationSettings->rightValue - calculationSettings->leftValue + 1;
+    vLength = calculationSettings->bottomValue - calculationSettings->topValue + 1;
+}
+
 /**
  * @brief SheetWidget::Calculate
  */
@@ -1420,23 +1436,16 @@ void SheetWidget::Calculate()
 {
     tripLogNormal = calculationSettings->logNormalParameters;
 
+    displayFigures = calculationSettings->showCharts;
+
     if (discountingED50Dialog->isVisible())
     {
         discountingED50Dialog->ToggleButton(false);
     }
 
-    displayFigures = calculationSettings->showCharts;
+    SetDimensions();
 
-    bool isRowData = (calculationSettings->rightDelay - calculationSettings->leftDelay == 0) ? false : true;
-    int nSeries = (isRowData) ? calculationSettings->bottomValue - calculationSettings->topValue + 1 :
-                                nSeries = calculationSettings->rightValue - calculationSettings->leftValue + 1;
-
-    int dWidth = calculationSettings->rightDelay - calculationSettings->leftDelay + 1;
-    int dLength = calculationSettings->bottomDelay - calculationSettings->topDelay + 1;
-
-    int vWidth = calculationSettings->rightValue - calculationSettings->leftValue + 1;
-    int vLength = calculationSettings->bottomValue - calculationSettings->topValue + 1;
-
+    /* Fail out if dimensions and matrix of values is not well-formed */
     if (!SheetTools::areDimensionsValid(isRowData, dWidth, vWidth, dLength, vLength, discountingED50Dialog))
     {
         if (discountingED50Dialog->isVisible())
@@ -1447,8 +1456,9 @@ void SheetWidget::Calculate()
         return;
     }
 
-    QStringList delayPoints;
+    delayPoints.clear();
 
+    /* Fail out if the delay points in the study are not-well formed */
     if(!SheetTools::areDelayPointsValid(delayPoints, isRowData,
                             calculationSettings->topDelay, calculationSettings->leftDelay,
                             calculationSettings->bottomDelay, calculationSettings->rightDelay, discountingED50Dialog, table))
@@ -1461,19 +1471,16 @@ void SheetWidget::Calculate()
         return;
     }
 
-    QStringList valuePoints;
-    QStringList delayPointsTemp;
+    valuePoints.clear();
+    delayPointsTemp.clear();
 
-    int mSeriesScoring = 0;
+    mSeriesScoring = 0;
 
     mJohnsonBickelResults.clear();
 
     if (calculationSettings->johnsonBickelTest)
     {
         checkDialog = new SystematicChekDialog(this);
-        double prev, curr;
-        bool criteriaOne, criteriaTwo;
-        QString criteriaOneStr, criteriaTwoStr;
 
         for (int i = 0; i < nSeries; i++)
         {
@@ -1483,10 +1490,15 @@ void SheetWidget::Calculate()
             valuePoints.clear();
             delayPointsTemp.clear();
 
-            SheetTools::areValuePointsValid(valuePoints, delayPointsTemp, delayPoints, isRowData,
-                                calculationSettings->topValue, calculationSettings->leftValue, calculationSettings->bottomValue, calculationSettings->rightValue,
-                                i, calculationSettings->maxValue, table);
+            /* Check included values, pulls series into local stringlist */
+            SheetTools::areValuePointsValid(valuePoints, delayPointsTemp,
+                                delayPoints, isRowData,
+                                calculationSettings->topValue, calculationSettings->leftValue,
+                                calculationSettings->bottomValue, calculationSettings->rightValue,
+                                i, calculationSettings->maxValue,
+                                table);
 
+            /* Bounce check */
             for (int i=1; i<valuePoints.length(); i++)
             {
                 prev = valuePoints[i-1].toDouble();
@@ -1501,6 +1513,7 @@ void SheetWidget::Calculate()
             prev = valuePoints[0].toDouble();
             curr = valuePoints[valuePoints.count() - 1].toDouble();
 
+            /* Discounting check, first vs. last */
             if ((prev - curr) < 0.1)
             {
                 criteriaTwo = false;
@@ -1531,13 +1544,10 @@ void SheetWidget::Calculate()
     resultsDialog = new ResultsDialog(nSeries, tripLogNormal, this);
     resultsDialog->setModal(false);
 
-    QDir runDirectory = QDir(QCoreApplication::applicationDirPath());
-
     statusBar()->showMessage(tr("Beginning calculations..."), 3000);
     allResults.clear();
 
-    QList<QStringList> mStoredValues;
-    QStringList mStoredValueHolder;
+    mStoredValues.clear();
 
     for (int i = 0; i < nSeries; i++)
     {
@@ -1548,37 +1558,8 @@ void SheetWidget::Calculate()
                             calculationSettings->topValue, calculationSettings->leftValue, calculationSettings->bottomValue, calculationSettings->rightValue,
                             i, calculationSettings->maxValue, table);
 
-        mXString = "[";
-
-        for (int i=0; i<delayPointsTemp.length(); i++)
-        {
-            if (i == 0)
-            {
-                mXString.append("[" + delayPointsTemp[i] + "]");
-            }
-            else
-            {
-                mXString.append(",[" + delayPointsTemp[i] + "]");
-            }
-        }
-
-        mXString.append("]");
-
-        mYString = "[";
-
-        for (int i=0; i<valuePoints.length(); i++)
-        {
-            if (i == 0)
-            {
-                mYString.append(valuePoints[i]);
-            }
-            else
-            {
-                mYString.append("," + valuePoints[i]);
-            }
-        }
-
-        mYString.append("]");
+        WrapXValueArray(&mXString, &delayPointsTemp);
+        WrapYValueArray(&mYString, &valuePoints);
 
         mStoredValueHolder.clear();
         mStoredValueHolder << mXString << mYString << delayPointsTemp.join(",") << valuePoints.join(",");
@@ -1588,8 +1569,9 @@ void SheetWidget::Calculate()
 
     workerThread = new QThread();
 
-    worker = new CalculationWorker(mJohnsonBickelResults, &checkDialog->mJonhsonBickelSelections, mStoredValues,
-                                   calculationSettings, mSeriesScoring);
+    worker = new CalculationWorker(mJohnsonBickelResults, &checkDialog->mJonhsonBickelSelections,
+                                   mStoredValues, calculationSettings,
+                                   mSeriesScoring);
 
     worker->moveToThread(workerThread);
 

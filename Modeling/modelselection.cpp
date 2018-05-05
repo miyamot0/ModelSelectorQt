@@ -2341,6 +2341,8 @@ double ModelSelection::getErrorGreenMyerson(double lnK, double s)
 {
     leastSquaresError = 0;
 
+    s = exp(s);
+
     for (int i=0; i<y.length(); i++)
     {
         leastSquaresError = leastSquaresError + pow((y[i] - (pow((1+exp(lnK)*x[i][0]), (-s)))), 2);
@@ -2355,9 +2357,11 @@ double ModelSelection::getErrorGreenMyerson(double lnK, double s)
  * @param s
  * @return
  */
-double ModelSelection::getErrorGreenRachlin(double lnK, double s)
+double ModelSelection::getErrorRachlin(double lnK, double s)
 {
     leastSquaresError = 0;
+
+    s = exp(s);
 
     for (int i=0; i<y.length(); i++)
     {
@@ -2395,6 +2399,8 @@ double ModelSelection::getErrorEbertPrelec(double lnK, double s)
 {
     leastSquaresError = 0;
 
+    s = exp(s);
+
     for (int i=0; i<y.length(); i++)
     {
         leastSquaresError = leastSquaresError + pow((y[i] - exp(-pow((exp(lnK)*x[i][0]),s))), 2);
@@ -2413,6 +2419,8 @@ double ModelSelection::getErrorEbertPrelec(double lnK, double s)
 double ModelSelection::getErrorBleichrodt(double lnK, double s, double beta)
 {
     leastSquaresError = 0;
+
+    s = exp(s);
 
     for (int i=0; i<y.length(); i++)
     {

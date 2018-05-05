@@ -32,6 +32,20 @@
 
 #include "Modeling/gridsearch.h"
 
+#include "Utilities/tags.h"
+
+/**
+ * @brief The QPairSecondComparer struct
+ */
+struct QPairSecondComparer
+{
+    template<typename T1, typename T2>
+    bool operator()(const QPair<T1,T2> &one, const QPair<T1,T2> &two) const
+    {
+        return one.second > two.second;
+    }
+};
+
 class CalculationWorker : public QObject
 {
     Q_OBJECT
@@ -46,7 +60,8 @@ public:
 private:
     QString computationTypeLocal;
 
-    QString formatStringResult(double value, bool returnLogNormal);
+    // TODO: remove
+    //QString formatStringResult(double value, bool returnLogNormal);
 
     QList<QPair<QString, QString>> mLocalJohnsonBickelResults;
     QList<bool> *mLocalJonhsonBickelSelections;
@@ -77,8 +92,8 @@ private:
 
     bool runLogarithmicResults,
          boundRachlinModel,
-         runLocalArea,
-         runBruteForce;
+         runLocalArea;
+         //runBruteForce;
 
     int processCheckingLocal,
         grandLoop;
@@ -90,11 +105,41 @@ private:
            p3Span,
            p3Step;
 
+    CalculationSettings *settings;
+
     BruteForceValues provisionalValues;
 
     bool BruteSorter(BruteForce const& lhs, BruteForce const& rhs) {
         return lhs.err < rhs.err;
     }
+
+    QString formatStringResult(double value, bool returnLogNormal)
+    {
+        if (!isnan(value))
+        {
+            if (value == 0)
+            {
+                return QString("NA");
+            }
+            else if (returnLogNormal)
+            {
+                qreal res = exp(value);
+                return QString::number(res);
+            }
+            else
+            {
+                return QString::number(value);
+            }
+        }
+        else
+        {
+            return QString("NA");
+        }
+    }
+
+    unsigned int popSize = 100;
+
+    QStringList tempList;
 
 signals:
     void workStarted();

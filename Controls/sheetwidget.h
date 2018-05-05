@@ -108,15 +108,10 @@ enum
 
 public:
     SheetWidget(QWidget *parent = 0);
-
     QList<FitResults> allResults;
-
     QList<QStringList> allCharts;
-
     QUndoStack *undoStack;
-
     QTableWidget *table;
-
     CalculationSettings *calculationSettings;
 
 public slots:
@@ -164,6 +159,8 @@ public slots:
 
     bool isToolWindowShown();
 
+    void SetDimensions();
+
     void Calculate();
 
     void closeEvent(QCloseEvent* event);
@@ -175,6 +172,55 @@ public slots:
     void WorkUpdate(FitResults results);
 
     void WorkFinished();
+
+    // TODO: clean up comments
+    void WrapXValueArray(QString *xString, QStringList *xValues)
+    {
+        *xString = "[";
+
+        for (int i = 0; i < xValues->length(); i++)
+        {
+            if (i == 0)
+            {
+                xString->append("[");
+                xString->append(xValues->at(i));
+                xString->append("]");
+                //xString->append("[" + xValues[i] + "]");
+            }
+            else
+            {
+                xString->append(",[");
+                xString->append(xValues->at(i));
+                xString->append("]");
+                //xString->append(",[" + xValues[i] + "]");
+            }
+        }
+
+        xString->append("]");
+    }
+
+    // TODO: clean up comments
+    void WrapYValueArray(QString *yString, QStringList *yValues)
+    {
+        *yString = "[";
+
+        for (int i = 0; i < valuePoints.length(); i++)
+        {
+            if (i == 0)
+            {
+                yString->append(yValues->at(i));
+                //mYString.append(valuePoints[i]);
+            }
+            else
+            {
+                yString->append(",");
+                yString->append(yValues->at(i));
+                //mYString.append("," + valuePoints[i]);
+            }
+        }
+
+        yString->append("]");
+    }
 
 private:
     QAction *newSheetAction,
@@ -237,6 +283,29 @@ private:
 
     QThread *workerThread;
     CalculationWorker *worker;
+
+    QStringList delayPoints;
+
+    QStringList valuePoints;
+    QStringList delayPointsTemp;
+
+    QList<QStringList> mStoredValues;
+    QStringList mStoredValueHolder;
+
+    int mSeriesScoring;
+
+    bool isRowData;
+    bool criteriaOne, criteriaTwo;
+
+    int nSeries;
+
+    int dWidth, dLength,
+        vWidth, vLength;
+
+    double prev, curr;
+
+    QString criteriaOneStr, criteriaTwoStr;
+
 };
 
 #endif // SHEETWIDGET_H
