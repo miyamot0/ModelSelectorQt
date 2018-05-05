@@ -123,6 +123,32 @@ private:
 
     QStringList tempList;
 
+    QList<double> UnwrapArray(QString array)
+    {
+        QList<double> holder;
+
+        QString preString1 = array.replace('[',' ');
+        QString preString2 = preString1.replace(']',' ');
+
+        QStringList elements = preString2.split(',', QString::SkipEmptyParts);
+
+        bool isValid;
+
+        double tempResult;
+
+        for (int i = 0; i < elements.length(); i++)
+        {
+            tempResult = elements[i].toDouble(&isValid);
+
+            if (isValid)
+            {
+                holder.append(tempResult);
+            }
+        }
+
+        return holder;
+    }
+
 signals:
     void workStarted();
     void workingResult(const FitResults &value);
