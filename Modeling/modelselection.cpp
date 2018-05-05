@@ -2123,9 +2123,9 @@ double ModelSelection::getED50ep () {
     int i = 0;
 
     while ((highDelay - lowDelay) > 0.001 && i < 100) {
-      double lowEst = ChartWindow::ebert_prelec_plotting(fitEbertPrelecK, fitEbertPrelecS, lowDelay);
-      double midEst = ChartWindow::ebert_prelec_plotting(fitEbertPrelecK, fitEbertPrelecS, (lowDelay+highDelay)/2);
-      double highEst = ChartWindow::ebert_prelec_plotting(fitEbertPrelecK, fitEbertPrelecS, highDelay);
+      double lowEst = ChartWindow::ebert_prelec_prediction(fitEbertPrelecK, fitEbertPrelecS, lowDelay);
+      double midEst = ChartWindow::ebert_prelec_prediction(fitEbertPrelecK, fitEbertPrelecS, (lowDelay+highDelay)/2);
+      double highEst = ChartWindow::ebert_prelec_prediction(fitEbertPrelecK, fitEbertPrelecS, highDelay);
 
       if (lowEst > 0.5 && midEst > 0.5) {
         //Above 50% mark range
@@ -2158,9 +2158,9 @@ double ModelSelection::getED50crdi () {
     int i = 0;
 
     while ((highDelay - lowDelay) > 0.001 && i < 100) {
-      double lowEst = ChartWindow::bleichrodt_plotting(fitBleichrodtK, fitBleichrodtS, fitBleichrodtBeta, lowDelay);
-      double midEst = ChartWindow::bleichrodt_plotting(fitBleichrodtK, fitBleichrodtS, fitBleichrodtBeta, (lowDelay+highDelay)/2);
-      double highEst = ChartWindow::bleichrodt_plotting(fitBleichrodtK, fitBleichrodtS, fitBleichrodtBeta, highDelay);
+      double lowEst = ChartWindow::bleichrodt_prediction(fitBleichrodtK, fitBleichrodtS, fitBleichrodtBeta, lowDelay);
+      double midEst = ChartWindow::bleichrodt_prediction(fitBleichrodtK, fitBleichrodtS, fitBleichrodtBeta, (lowDelay+highDelay)/2);
+      double highEst = ChartWindow::bleichrodt_prediction(fitBleichrodtK, fitBleichrodtS, fitBleichrodtBeta, highDelay);
 
       if (lowEst > 0.5 && midEst > 0.5) {
         //Above 50% mark range
@@ -2193,9 +2193,9 @@ double ModelSelection::getED50rodriguez () {
     int i = 0;
 
     while ((highDelay - lowDelay) > 0.001 && i < 100) {
-      double lowEst = ChartWindow::generalized_hyperbolic_plotting(fitGeneralizedHyperbolicK, fitGeneralizedHyperbolicBeta, lowDelay);
-      double midEst = ChartWindow::generalized_hyperbolic_plotting(fitGeneralizedHyperbolicK, fitGeneralizedHyperbolicBeta, (lowDelay+highDelay)/2);
-      double highEst = ChartWindow::generalized_hyperbolic_plotting(fitGeneralizedHyperbolicK, fitGeneralizedHyperbolicBeta, highDelay);
+      double lowEst = ChartWindow::generalized_hyperbolic_prediction(fitGeneralizedHyperbolicK, fitGeneralizedHyperbolicBeta, lowDelay);
+      double midEst = ChartWindow::generalized_hyperbolic_prediction(fitGeneralizedHyperbolicK, fitGeneralizedHyperbolicBeta, (lowDelay+highDelay)/2);
+      double highEst = ChartWindow::generalized_hyperbolic_prediction(fitGeneralizedHyperbolicK, fitGeneralizedHyperbolicBeta, highDelay);
 
       if (lowEst > 0.5 && midEst > 0.5) {
         //Above 50% mark range

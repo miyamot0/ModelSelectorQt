@@ -66,9 +66,13 @@ public:
     double quasi_hyperbolic_plotting(double beta, double delta, double x);
     double myerson_plotting(double k, double s, double x);
     double rachlin_plotting(double k, double s, double x);
-    double static generalized_hyperbolic_plotting(double k, double s, double x);
-    double static ebert_prelec_plotting(double k, double s, double x);
-    double static bleichrodt_plotting(double k, double s, double beta, double x);
+    double generalized_hyperbolic_plotting(double k, double s, double x);
+    double ebert_prelec_plotting(double k, double s, double x);
+    double bleichrodt_plotting(double k, double s, double beta, double x);
+
+    double static generalized_hyperbolic_prediction(double k, double s, double x);
+    double static ebert_prelec_prediction(double k, double s, double x);
+    double static bleichrodt_prediction(double k, double s, double beta, double x);
 
     bool eventFilter(QObject *, QEvent *e);
 

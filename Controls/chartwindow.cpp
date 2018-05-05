@@ -1069,7 +1069,14 @@ double ChartWindow::hyperbolic_plotting(double k, double x)
  */
 double ChartWindow::quasi_hyperbolic_plotting(double beta, double delta, double x)
 {
-    return beta * pow(delta, x);
+    if (isLogNormalParamerized)
+    {
+        return beta * pow((1-delta), x);
+    }
+    else
+    {
+        return beta * pow(delta, x);
+    }
 }
 
 /**
@@ -1119,6 +1126,18 @@ double ChartWindow::rachlin_plotting(double k, double s, double x)
  */
 double ChartWindow::generalized_hyperbolic_plotting(double k, double s, double x)
 {
+    if (isLogNormalParamerized)
+    {
+        return pow((1 + x * k),(-s/k));
+    }
+    else
+    {
+        return pow((1 + x * exp(k)),(-exp(s) / exp(k)));
+    }
+}
+
+double ChartWindow::generalized_hyperbolic_prediction(double k, double s, double x)
+{
     return pow((1 + x * exp(k)),(-exp(s) / exp(k)));
 }
 
@@ -1130,6 +1149,18 @@ double ChartWindow::generalized_hyperbolic_plotting(double k, double s, double x
  * @return
  */
 double ChartWindow::ebert_prelec_plotting(double k, double s, double x)
+{
+    if (isLogNormalParamerized)
+    {
+        return exp(-pow((k*x),s));
+    }
+    else
+    {
+        return exp(-pow((exp(k)*x),s));
+    }
+}
+
+double ChartWindow::ebert_prelec_prediction(double k, double s, double x)
 {
     return exp(-pow((exp(k)*x),s));
 }
@@ -1143,6 +1174,18 @@ double ChartWindow::ebert_prelec_plotting(double k, double s, double x)
  * @return
  */
 double ChartWindow::bleichrodt_plotting(double k, double s, double beta, double x)
+{
+    if (isLogNormalParamerized)
+    {
+        return beta * exp(-k*pow(x,s));
+    }
+    else
+    {
+        return beta * exp(-exp(k)*pow(x,exp(s)));
+    }
+}
+
+double ChartWindow::bleichrodt_prediction(double k, double s, double beta, double x)
 {
     return beta * exp(-exp(k)*pow(x,s));
 }
