@@ -34,8 +34,12 @@
 #include "stdafx.h"
 #include "optimization.h"
 
+#include "Helpers/GeneticAlgorithms/evolutionfunctions.h"
+
 #include "Models/fitresult.h"
 #include "Models/calculationsettings.h"
+
+#include "Libraries/differential-evolution/differentialevolution.h"
 
 using namespace alglib;
 
@@ -175,6 +179,30 @@ public:
 
     QString errorCode;
     int statusValue;
+
+    QVector<double> GetXVector()
+    {
+        QVector<double> returnVector;
+
+        for (int i = 0; i < x.rows(); i++)
+        {
+            returnVector.append(x[i][0]);
+        }
+
+        return returnVector;
+    }
+
+    QVector<double> GetYVector()
+    {
+        QVector<double> returnVector;
+
+        for (int i = 0; i < y.length(); i++)
+        {
+            returnVector.append(y[i]);
+        }
+
+        return returnVector;
+    }
 
 private:
     real_2d_array x;

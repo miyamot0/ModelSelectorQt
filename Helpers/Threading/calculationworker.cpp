@@ -87,62 +87,18 @@ void CalculationWorker::working()
 
         if (settings->modelExponential)
         {
-            if (!settings->cbBruteForce)
+            if (settings->settingsFitting == FittingAlgorithm::DifferentialEvolution)
             {
-                p1Span = abs(-12) + abs(12); // -12 to 12
-                p1Step = p1Span / 100;
+                mFittingObject->FitExponential(NULL);
 
-                grandLoop = 0;
-
-                for (int kLoop = 0; kLoop < 100; kLoop++)
-                {
-                    provisionalValues.oneParamStartingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
-
-                    grandLoop++;
-                }
-
-                for (BruteForce & obj : provisionalValues.oneParamStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorExponential(obj.p1);
-                }
-
-                std::sort(provisionalValues.oneParamStartingValueArray, provisionalValues.oneParamStartingValueArray + 100);
-
-                mFittingObject->FitExponential(QString("[%1]").arg(provisionalValues.oneParamStartingValueArray[0].p1).toUtf8().constData());
-            }
-            else
-            {
-                p1Span = abs(-100) + abs(100); // -100 to 100
-                p1Step = p1Span / 10000;
-
-                grandLoop = 0;
-
-                for (int kLoop = 0; kLoop < 10000; kLoop++)
-                {
-                    provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 20 - ((kLoop + 1) * p1Step);
-
-                    grandLoop++;
-                }
-
-                for (BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorExponential(obj.p1);
-                }
-
-                std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
-
-                mFittingObject->FitExponential(QString("[%1]").arg(provisionalValues.smallBruteStartingValueArray[0].p1).toUtf8().constData());
-            }
-
-            fitResultExponential = new FitResult(ModelType::Exponential);
-
-            if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
-            {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Exponential, mFittingObject->bicExponential));
 
                 double lnK = (settings->logNormalParameters) ? exp(mFittingObject->fitExponentialK) : mFittingObject->fitExponentialK;
+
+                fitResultExponential = new FitResult(ModelType::Exponential);
                 fitResultExponential->Params.append(QPair<QString, double>(QString("Exponential K"), lnK));
-                fitResultExponential->RMS = mFittingObject->GetReport().rmserror;
+
+                fitResultExponential->RMS = -1;
                 fitResultExponential->AIC = mFittingObject->aicExponential;
                 fitResultExponential->BIC = mFittingObject->bicExponential;
 
@@ -151,77 +107,101 @@ void CalculationWorker::working()
                     fitResultExponential->ErrPar.append(mFittingObject->ErrorResidual.at(v));
                 }
 
-                fitResultExponential->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                fitResultExponential->Status = "---";
             }
             else
             {
-                fitResultExponential->Params.append(QPair<QString, double>(QString("Exponential K"), NULL));
-                fitResultExponential->RMS = NULL;
-                fitResultExponential->AIC = NULL;
-                fitResultExponential->BIC = NULL;
-                fitResultExponential->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                if (!settings->cbBruteForce)
+                {
+                    p1Span = abs(-12) + abs(12); // -12 to 12
+                    p1Step = p1Span / 100;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 100; kLoop++)
+                    {
+                        provisionalValues.oneParamStartingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+
+                        grandLoop++;
+                    }
+
+                    for (BruteForce & obj : provisionalValues.oneParamStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorExponential(obj.p1);
+                    }
+
+                    std::sort(provisionalValues.oneParamStartingValueArray, provisionalValues.oneParamStartingValueArray + 100);
+
+                    mFittingObject->FitExponential(QString("[%1]").arg(provisionalValues.oneParamStartingValueArray[0].p1).toUtf8().constData());
+                }
+                else
+                {
+                    p1Span = abs(-100) + abs(100); // -100 to 100
+                    p1Step = p1Span / 10000;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 10000; kLoop++)
+                    {
+                        provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 20 - ((kLoop + 1) * p1Step);
+
+                        grandLoop++;
+                    }
+
+                    for (BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorExponential(obj.p1);
+                    }
+
+                    std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+
+                    mFittingObject->FitExponential(QString("[%1]").arg(provisionalValues.smallBruteStartingValueArray[0].p1).toUtf8().constData());
+                }
+
+                fitResultExponential = new FitResult(ModelType::Exponential);
+
+                if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
+                {
+                    mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Exponential, mFittingObject->bicExponential));
+
+                    double lnK = (settings->logNormalParameters) ? exp(mFittingObject->fitExponentialK) : mFittingObject->fitExponentialK;
+                    fitResultExponential->Params.append(QPair<QString, double>(QString("Exponential K"), lnK));
+                    fitResultExponential->RMS = mFittingObject->GetReport().rmserror;
+                    fitResultExponential->AIC = mFittingObject->aicExponential;
+                    fitResultExponential->BIC = mFittingObject->bicExponential;
+
+                    for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                    {
+                        fitResultExponential->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                    }
+
+                    fitResultExponential->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
+                else
+                {
+                    fitResultExponential->Params.append(QPair<QString, double>(QString("Exponential K"), NULL));
+                    fitResultExponential->RMS = NULL;
+                    fitResultExponential->AIC = NULL;
+                    fitResultExponential->BIC = NULL;
+                    fitResultExponential->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
             }
         }
 
         if (settings->modelHyperbolic)
         {
-            if (!settings->cbBruteForce)
+            if (settings->settingsFitting == FittingAlgorithm::DifferentialEvolution)
             {
-                p1Span = abs(-12) + abs(12); // -12 to 12
-                p1Step = p1Span / 100;
+                mFittingObject->FitHyperbolic(NULL);
 
-                grandLoop = 0;
-
-                for (int kLoop = 0; kLoop < 100; kLoop++)
-                {
-                    provisionalValues.oneParamStartingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
-
-                    grandLoop++;
-                }
-
-                for(BruteForce & obj : provisionalValues.oneParamStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorHyperbolic(obj.p1);
-                }
-
-                std::sort(provisionalValues.oneParamStartingValueArray, provisionalValues.oneParamStartingValueArray + 100);
-
-                mFittingObject->FitHyperbolic(QString("[%1]").arg(provisionalValues.oneParamStartingValueArray[0].p1).toUtf8().constData());
-            }
-            else
-            {
-                p1Span = abs(-100) + abs(100); // -20 to 20
-                p1Step = p1Span / 10000;
-
-                grandLoop = 0;
-
-                for (int kLoop = 0; kLoop < 10000; kLoop++)
-                {
-                    provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 20 - ((kLoop + 1) * p1Step);
-
-                    grandLoop++;
-                }
-
-                for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorHyperbolic(obj.p1);
-                }
-
-                std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
-
-                mFittingObject->FitHyperbolic(QString("[%1]").arg(provisionalValues.smallBruteStartingValueArray[0].p1).toUtf8().constData());
-            }
-
-            fitResultHyperbolic = new FitResult(ModelType::Hyperbolic);
-
-            if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
-            {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Hyperbolic, mFittingObject->bicHyperbolic));
 
                 double lnK = (settings->logNormalParameters) ? exp(mFittingObject->fitHyperbolicK) : mFittingObject->fitHyperbolicK;
 
+                fitResultHyperbolic = new FitResult(ModelType::Hyperbolic);
                 fitResultHyperbolic->Params.append(QPair<QString, double>(QString("Hyperbolic K"), lnK));
-                fitResultHyperbolic->RMS = mFittingObject->GetReport().rmserror;
+
+                fitResultHyperbolic->RMS = -1;
                 fitResultHyperbolic->AIC = mFittingObject->aicHyperbolic;
                 fitResultHyperbolic->BIC = mFittingObject->bicHyperbolic;
 
@@ -230,96 +210,102 @@ void CalculationWorker::working()
                     fitResultHyperbolic->ErrPar.append(mFittingObject->ErrorResidual.at(v));
                 }
 
-                fitResultHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                fitResultHyperbolic->Status = "---";
+
             }
             else
             {
-                fitResultHyperbolic->Params.append(QPair<QString, double>(QString("Hyperbolic K"), NULL));
-                fitResultHyperbolic->RMS = NULL;
-                fitResultHyperbolic->AIC = NULL;
-                fitResultHyperbolic->BIC = NULL;
-                fitResultHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                if (!settings->cbBruteForce)
+                {
+                    p1Span = abs(-12) + abs(12); // -12 to 12
+                    p1Step = p1Span / 100;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 100; kLoop++)
+                    {
+                        provisionalValues.oneParamStartingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+
+                        grandLoop++;
+                    }
+
+                    for(BruteForce & obj : provisionalValues.oneParamStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorHyperbolic(obj.p1);
+                    }
+
+                    std::sort(provisionalValues.oneParamStartingValueArray, provisionalValues.oneParamStartingValueArray + 100);
+
+                    mFittingObject->FitHyperbolic(QString("[%1]").arg(provisionalValues.oneParamStartingValueArray[0].p1).toUtf8().constData());
+                }
+                else
+                {
+                    p1Span = abs(-100) + abs(100); // -20 to 20
+                    p1Step = p1Span / 10000;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 10000; kLoop++)
+                    {
+                        provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 20 - ((kLoop + 1) * p1Step);
+
+                        grandLoop++;
+                    }
+
+                    for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorHyperbolic(obj.p1);
+                    }
+
+                    std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+
+                    mFittingObject->FitHyperbolic(QString("[%1]").arg(provisionalValues.smallBruteStartingValueArray[0].p1).toUtf8().constData());
+                }
+
+                fitResultHyperbolic = new FitResult(ModelType::Hyperbolic);
+
+                if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
+                {
+                    mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Hyperbolic, mFittingObject->bicHyperbolic));
+
+                    double lnK = (settings->logNormalParameters) ? exp(mFittingObject->fitHyperbolicK) : mFittingObject->fitHyperbolicK;
+
+                    fitResultHyperbolic->Params.append(QPair<QString, double>(QString("Hyperbolic K"), lnK));
+                    fitResultHyperbolic->RMS = mFittingObject->GetReport().rmserror;
+                    fitResultHyperbolic->AIC = mFittingObject->aicHyperbolic;
+                    fitResultHyperbolic->BIC = mFittingObject->bicHyperbolic;
+
+                    for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                    {
+                        fitResultHyperbolic->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                    }
+
+                    fitResultHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
+                else
+                {
+                    fitResultHyperbolic->Params.append(QPair<QString, double>(QString("Hyperbolic K"), NULL));
+                    fitResultHyperbolic->RMS = NULL;
+                    fitResultHyperbolic->AIC = NULL;
+                    fitResultHyperbolic->BIC = NULL;
+                    fitResultHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
             }
         }
 
         if (settings->modelQuasiHyperbolic)
         {
-            if (!settings->cbBruteForce)
+            if (settings->settingsFitting == FittingAlgorithm::DifferentialEvolution)
             {
-                p1Span = 1; // 0 to 1
-                p1Step = p1Span / 10;
+                mFittingObject->FitQuasiHyperbolic(NULL);
 
-                p2Span = 1;
-                p2Step = p2Span / 100;
-
-                grandLoop = 0;
-
-                for (int bLoop = 0; bLoop < 10; bLoop++)
-                {
-                    for (int dLoop = 0; dLoop < 100; dLoop++)
-                    {
-                        provisionalValues.twoParamStartingValueArray[grandLoop].p1 = ((bLoop + 1) * p1Step);
-                        provisionalValues.twoParamStartingValueArray[grandLoop].p2 = ((dLoop + 1) * p2Step);
-
-                        grandLoop++;
-                    }
-                }
-
-                for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorQuasiHyperbolic(obj.p1, obj.p2);
-                }
-
-                std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
-
-                mFittingObject->FitQuasiHyperbolic(QString("[%1,%2]")
-                                                   .arg(provisionalValues.twoParamStartingValueArray[0].p1)
-                                                   .arg(provisionalValues.twoParamStartingValueArray[0].p2)
-                                                   .toUtf8().constData());
-            }
-            else
-            {
-                p1Span = 1; // 0 to 1
-                p1Step = p1Span / 100;
-
-                p2Span = 1;
-                p2Step = p2Span / 100;
-
-                grandLoop = 0;
-
-                for (int bLoop = 0; bLoop < 100; bLoop++)
-                {
-                    for (int dLoop = 0; dLoop < 100; dLoop++)
-                    {
-                        provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = ((bLoop + 1) * p1Step);
-                        provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = ((dLoop + 1) * p2Step);
-
-                        grandLoop++;
-                    }
-                }
-
-                for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorQuasiHyperbolic(obj.p1, obj.p2);
-                }
-
-                std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
-
-                mFittingObject->FitQuasiHyperbolic(QString("[%1,%2]")
-                                                   .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
-                                                   .arg(provisionalValues.smallBruteStartingValueArray[0].p2)
-                                                   .toUtf8().constData());
-            }
-
-            fitResultBetaDelta = new FitResult(ModelType::BetaDelta);
-
-            if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
-            {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::BetaDelta, mFittingObject->bicQuasiHyperbolic));
 
+                fitResultBetaDelta = new FitResult(ModelType::BetaDelta);
                 fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Beta"), mFittingObject->fitQuasiHyperbolicBeta));
                 fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Delta"), mFittingObject->fitQuasiHyperbolicDelta));
-                fitResultBetaDelta->RMS = mFittingObject->GetReport().rmserror;
+
+                fitResultBetaDelta->RMS = -1;
                 fitResultBetaDelta->AIC = mFittingObject->aicQuasiHyperbolic;
                 fitResultBetaDelta->BIC = mFittingObject->bicQuasiHyperbolic;
 
@@ -328,97 +314,121 @@ void CalculationWorker::working()
                     fitResultBetaDelta->ErrPar.append(mFittingObject->ErrorResidual.at(v));
                 }
 
-                fitResultBetaDelta->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                fitResultBetaDelta->Status = "---";
             }
             else
             {
-                fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Beta"), NULL));
-                fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Delta"), NULL));
-                fitResultBetaDelta->RMS = NULL;
-                fitResultBetaDelta->AIC = NULL;
-                fitResultBetaDelta->BIC = NULL;
-                fitResultBetaDelta->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                if (!settings->cbBruteForce)
+                {
+                    p1Span = 1; // 0 to 1
+                    p1Step = p1Span / 10;
+
+                    p2Span = 1;
+                    p2Step = p2Span / 100;
+
+                    grandLoop = 0;
+
+                    for (int bLoop = 0; bLoop < 10; bLoop++)
+                    {
+                        for (int dLoop = 0; dLoop < 100; dLoop++)
+                        {
+                            provisionalValues.twoParamStartingValueArray[grandLoop].p1 = ((bLoop + 1) * p1Step);
+                            provisionalValues.twoParamStartingValueArray[grandLoop].p2 = ((dLoop + 1) * p2Step);
+
+                            grandLoop++;
+                        }
+                    }
+
+                    for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorQuasiHyperbolic(obj.p1, obj.p2);
+                    }
+
+                    std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
+
+                    mFittingObject->FitQuasiHyperbolic(QString("[%1,%2]")
+                                                       .arg(provisionalValues.twoParamStartingValueArray[0].p1)
+                                                       .arg(provisionalValues.twoParamStartingValueArray[0].p2)
+                                                       .toUtf8().constData());
+                }
+                else
+                {
+                    p1Span = 1; // 0 to 1
+                    p1Step = p1Span / 100;
+
+                    p2Span = 1;
+                    p2Step = p2Span / 100;
+
+                    grandLoop = 0;
+
+                    for (int bLoop = 0; bLoop < 100; bLoop++)
+                    {
+                        for (int dLoop = 0; dLoop < 100; dLoop++)
+                        {
+                            provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = ((bLoop + 1) * p1Step);
+                            provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = ((dLoop + 1) * p2Step);
+
+                            grandLoop++;
+                        }
+                    }
+
+                    for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorQuasiHyperbolic(obj.p1, obj.p2);
+                    }
+
+                    std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+
+                    mFittingObject->FitQuasiHyperbolic(QString("[%1,%2]")
+                                                       .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
+                                                       .arg(provisionalValues.smallBruteStartingValueArray[0].p2)
+                                                       .toUtf8().constData());
+                }
+
+                fitResultBetaDelta = new FitResult(ModelType::BetaDelta);
+
+                if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
+                {
+                    mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::BetaDelta, mFittingObject->bicQuasiHyperbolic));
+
+                    fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Beta"), mFittingObject->fitQuasiHyperbolicBeta));
+                    fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Delta"), mFittingObject->fitQuasiHyperbolicDelta));
+                    fitResultBetaDelta->RMS = mFittingObject->GetReport().rmserror;
+                    fitResultBetaDelta->AIC = mFittingObject->aicQuasiHyperbolic;
+                    fitResultBetaDelta->BIC = mFittingObject->bicQuasiHyperbolic;
+
+                    for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                    {
+                        fitResultBetaDelta->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                    }
+
+                    fitResultBetaDelta->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
+                else
+                {
+                    fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Beta"), NULL));
+                    fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Delta"), NULL));
+                    fitResultBetaDelta->RMS = NULL;
+                    fitResultBetaDelta->AIC = NULL;
+                    fitResultBetaDelta->BIC = NULL;
+                    fitResultBetaDelta->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
             }
         }
 
         if (settings->modelMyersonGreen)
         {
-            if (!settings->cbBruteForce)
+            if (settings->settingsFitting == FittingAlgorithm::DifferentialEvolution)
             {
-                p1Span = abs(-12) + abs(12);
-                p1Step = (double) p1Span / 10;
+                mFittingObject->FitMyerson(NULL);
 
-                p2Span = abs(-12) + abs(12);
-                p2Step = (double) p2Span / 100;
-
-                grandLoop = 0;
-
-                for (int kLoop = 0; kLoop < 10; kLoop++)
-                {
-                    for (int sLoop = 0; sLoop < 100; sLoop++)
-                    {
-                        provisionalValues.twoParamStartingValueArray[grandLoop].p1 = 12.0 - (((double) kLoop + 1) * p1Step);
-                        provisionalValues.twoParamStartingValueArray[grandLoop].p2 = 12.0 - (((double) sLoop + 1) * p2Step);
-
-                        grandLoop++;
-                    }
-                }
-
-                for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorGreenMyerson(obj.p1, obj.p2);
-                }
-
-                std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
-
-                mFittingObject->FitMyerson(QString("[%1,%2]")
-                                                   .arg(provisionalValues.twoParamStartingValueArray[0].p1)
-                                                   .arg(exp(provisionalValues.twoParamStartingValueArray[0].p2))
-                                                   .toUtf8().constData());
-            }
-            else
-            {
-                p1Span = abs(-100) + abs(100);
-                p1Step = (double) p1Span / 100;
-
-                p2Span = abs(-100) + abs(100);
-                p2Step = (double) p2Span / 100;
-
-                grandLoop = 0;
-
-                for (int kLoop = 0; kLoop < 100; kLoop++)
-                {
-                    for (int sLoop = 0; sLoop < 100; sLoop++)
-                    {
-                        provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 100.0 - (((double) kLoop + 1) * p1Step);
-                        provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = 100.0 - (((double) sLoop + 1) * p2Step);
-
-                        grandLoop++;
-                    }
-                }
-
-                for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorGreenMyerson(obj.p1, obj.p2);
-                }
-
-                std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
-
-                mFittingObject->FitMyerson(QString("[%1,%2]")
-                                                   .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
-                                                   .arg(exp(provisionalValues.smallBruteStartingValueArray[0].p2))
-                                                   .toUtf8().constData());
-            }
-
-            fitResultGreenMyerson = new FitResult(ModelType::Myerson);
-
-            if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
-            {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Myerson, mFittingObject->bicMyerson));
 
+                fitResultGreenMyerson = new FitResult(ModelType::Myerson);
                 fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson K"), mFittingObject->fitMyersonK));
                 fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson S"), mFittingObject->fitMyersonS));
-                fitResultGreenMyerson->RMS = mFittingObject->GetReport().rmserror;
+
+                fitResultGreenMyerson->RMS = -1;
                 fitResultGreenMyerson->AIC = mFittingObject->aicMyerson;
                 fitResultGreenMyerson->BIC = mFittingObject->bicMyerson;
 
@@ -427,96 +437,119 @@ void CalculationWorker::working()
                     fitResultGreenMyerson->ErrPar.append(mFittingObject->ErrorResidual.at(v));
                 }
 
-                fitResultGreenMyerson->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                fitResultGreenMyerson->Status = "---";
+
             }
             else
             {
-                fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson K"), NULL));
-                fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson S"), NULL));
-                fitResultGreenMyerson->RMS = NULL;
-                fitResultGreenMyerson->AIC = NULL;
-                fitResultGreenMyerson->BIC = NULL;
-                fitResultGreenMyerson->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                if (!settings->cbBruteForce)
+                {
+                    p1Span = abs(-12) + abs(12);
+                    p1Step = (double) p1Span / 10;
+
+                    p2Span = abs(-12) + abs(12);
+                    p2Step = (double) p2Span / 100;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 10; kLoop++)
+                    {
+                        for (int sLoop = 0; sLoop < 100; sLoop++)
+                        {
+                            provisionalValues.twoParamStartingValueArray[grandLoop].p1 = 12.0 - (((double) kLoop + 1) * p1Step);
+                            provisionalValues.twoParamStartingValueArray[grandLoop].p2 = 12.0 - (((double) sLoop + 1) * p2Step);
+
+                            grandLoop++;
+                        }
+                    }
+
+                    for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorGreenMyerson(obj.p1, obj.p2);
+                    }
+
+                    std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
+
+                    mFittingObject->FitMyerson(QString("[%1,%2]")
+                                                       .arg(provisionalValues.twoParamStartingValueArray[0].p1)
+                                                       .arg(exp(provisionalValues.twoParamStartingValueArray[0].p2))
+                                                       .toUtf8().constData());
+                }
+                else
+                {
+                    p1Span = abs(-100) + abs(100);
+                    p1Step = (double) p1Span / 100;
+
+                    p2Span = abs(-100) + abs(100);
+                    p2Step = (double) p2Span / 100;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 100; kLoop++)
+                    {
+                        for (int sLoop = 0; sLoop < 100; sLoop++)
+                        {
+                            provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 100.0 - (((double) kLoop + 1) * p1Step);
+                            provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = 100.0 - (((double) sLoop + 1) * p2Step);
+
+                            grandLoop++;
+                        }
+                    }
+
+                    for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorGreenMyerson(obj.p1, obj.p2);
+                    }
+
+                    std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+
+                    mFittingObject->FitMyerson(QString("[%1,%2]")
+                                                       .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
+                                                       .arg(exp(provisionalValues.smallBruteStartingValueArray[0].p2))
+                                                       .toUtf8().constData());
+                }
+
+                fitResultGreenMyerson = new FitResult(ModelType::Myerson);
+
+                if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
+                {
+                    mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Myerson, mFittingObject->bicMyerson));
+
+                    fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson K"), mFittingObject->fitMyersonK));
+                    fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson S"), mFittingObject->fitMyersonS));
+                    fitResultGreenMyerson->RMS = mFittingObject->GetReport().rmserror;
+                    fitResultGreenMyerson->AIC = mFittingObject->aicMyerson;
+                    fitResultGreenMyerson->BIC = mFittingObject->bicMyerson;
+
+                    for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                    {
+                        fitResultGreenMyerson->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                    }
+
+                    fitResultGreenMyerson->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
+                else
+                {
+                    fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson K"), NULL));
+                    fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson S"), NULL));
+                    fitResultGreenMyerson->RMS = NULL;
+                    fitResultGreenMyerson->AIC = NULL;
+                    fitResultGreenMyerson->BIC = NULL;
+                    fitResultGreenMyerson->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
             }
         }
 
         if (settings->modelRachlin)
         {
-            if (!settings->cbBruteForce)
+            if (settings->settingsFitting == FittingAlgorithm::DifferentialEvolution)
             {
-                p1Span = abs(-12) + abs(12);
-                p1Step = (double) p1Span / 10.0;
+                mFittingObject->FitRachlin(NULL);
 
-                p2Span = abs(-20) + abs(20);
-                p2Step = (double) p2Span / 100.0;
+                fitResultRachlin = new FitResult(ModelType::Rachlin);
 
-                grandLoop = 0;
-
-                for (int kLoop = 0; kLoop < 10; kLoop++)
+                if (settings->cbRachlin && exp(mFittingObject->fitRachlinS) > 1)
                 {
-                    for (int sLoop = 0; sLoop < 100; sLoop++)
-                    {
-                        provisionalValues.twoParamStartingValueArray[grandLoop].p1 = 12.0 - (((double) kLoop + 1) * p1Step);
-                        provisionalValues.twoParamStartingValueArray[grandLoop].p2 = 20.0 - (((double) sLoop + 1) * p2Step);
-
-                        grandLoop++;
-                    }
-                }
-
-                for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorRachlin(obj.p1, obj.p2);
-                }
-
-                std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
-
-                mFittingObject->FitRachlin(QString("[%1,%2]")
-                                                   .arg(provisionalValues.twoParamStartingValueArray[0].p1)
-                                                   .arg(exp(provisionalValues.twoParamStartingValueArray[0].p2))
-                                                   .toUtf8().constData());
-            }
-            else
-            {
-                p1Span = abs(-100) + abs(100);
-                p1Step = (double) p1Span / 100.0;
-
-                p2Span = abs(-100) + abs(100);
-                p2Step = (double) p2Span / 100.0;
-
-                grandLoop = 0;
-
-                for (int kLoop = 0; kLoop < 100; kLoop++)
-                {
-                    for (int sLoop = 0; sLoop < 100; sLoop++)
-                    {
-                        provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 100 - (((double) kLoop + 1) * p1Step);
-                        provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = 100 - (((double) sLoop + 1) * p2Step);
-
-                        grandLoop++;
-                    }
-                }
-
-                for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorRachlin(obj.p1, obj.p2);
-                }
-
-                std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
-
-                mFittingObject->FitRachlin(QString("[%1,%2]")
-                                                   .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
-                                                   .arg(exp(provisionalValues.smallBruteStartingValueArray[0].p2))
-                                                   .toUtf8().constData());
-            }
-
-            fitResultRachlin = new FitResult(ModelType::Rachlin);
-
-            if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
-            {
-                if (settings->cbRachlin && mFittingObject->GetParams()[1] > 1)
-                {
-                    fitResultRachlin = new FitResult(ModelType::Rachlin);
-
                     fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin K"), NULL));
                     fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin S"), NULL));
                     fitResultRachlin->RMS = NULL;
@@ -533,7 +566,9 @@ void CalculationWorker::working()
 
                     fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin K"), mFittingObject->fitRachlinK));
                     fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin S"), mFittingObject->fitRachlinS));
-                    fitResultRachlin->RMS = mFittingObject->GetReport().rmserror;
+
+                    fitResultRachlin->RMS = -1;
+
                     fitResultRachlin->AIC = mFittingObject->aicRachlin;
                     fitResultRachlin->BIC = mFittingObject->bicRachlin;
 
@@ -542,100 +577,142 @@ void CalculationWorker::working()
                         fitResultRachlin->ErrPar.append(mFittingObject->ErrorResidual.at(v));
                     }
 
-                    fitResultRachlin->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                    fitResultRachlin->Status = "---";
                 }
             }
             else
             {
-                fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin K"), NULL));
-                fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin S"), NULL));
-                fitResultRachlin->RMS = NULL;
-                fitResultRachlin->AIC = NULL;
-                fitResultRachlin->BIC = NULL;
-                fitResultRachlin->BF = NULL;
-                fitResultRachlin->Probability = NULL;
-                fitResultRachlin->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                if (!settings->cbBruteForce)
+                {
+                    p1Span = abs(-12) + abs(12);
+                    p1Step = (double) p1Span / 10.0;
+
+                    p2Span = abs(-20) + abs(20);
+                    p2Step = (double) p2Span / 100.0;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 10; kLoop++)
+                    {
+                        for (int sLoop = 0; sLoop < 100; sLoop++)
+                        {
+                            provisionalValues.twoParamStartingValueArray[grandLoop].p1 = 12.0 - (((double) kLoop + 1) * p1Step);
+                            provisionalValues.twoParamStartingValueArray[grandLoop].p2 = 20.0 - (((double) sLoop + 1) * p2Step);
+
+                            grandLoop++;
+                        }
+                    }
+
+                    for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorRachlin(obj.p1, obj.p2);
+                    }
+
+                    std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
+
+                    mFittingObject->FitRachlin(QString("[%1,%2]")
+                                                       .arg(provisionalValues.twoParamStartingValueArray[0].p1)
+                                                       .arg(exp(provisionalValues.twoParamStartingValueArray[0].p2))
+                                                       .toUtf8().constData());
+                }
+                else
+                {
+                    p1Span = abs(-100) + abs(100);
+                    p1Step = (double) p1Span / 100.0;
+
+                    p2Span = abs(-100) + abs(100);
+                    p2Step = (double) p2Span / 100.0;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 100; kLoop++)
+                    {
+                        for (int sLoop = 0; sLoop < 100; sLoop++)
+                        {
+                            provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 100 - (((double) kLoop + 1) * p1Step);
+                            provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = 100 - (((double) sLoop + 1) * p2Step);
+
+                            grandLoop++;
+                        }
+                    }
+
+                    for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorRachlin(obj.p1, obj.p2);
+                    }
+
+                    std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+
+                    mFittingObject->FitRachlin(QString("[%1,%2]")
+                                                       .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
+                                                       .arg(exp(provisionalValues.smallBruteStartingValueArray[0].p2))
+                                                       .toUtf8().constData());
+                }
+
+                fitResultRachlin = new FitResult(ModelType::Rachlin);
+
+                if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
+                {
+                    if (settings->cbRachlin && mFittingObject->GetParams()[1] > 1)
+                    {
+                        fitResultRachlin = new FitResult(ModelType::Rachlin);
+
+                        fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin K"), NULL));
+                        fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin S"), NULL));
+                        fitResultRachlin->RMS = NULL;
+                        fitResultRachlin->AIC = NULL;
+                        fitResultRachlin->BIC = NULL;
+                        fitResultRachlin->BF = NULL;
+                        fitResultRachlin->Probability = NULL;
+
+                        fitResultRachlin->Status = "Exceeded Bounds";
+                    }
+                    else
+                    {
+                        mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Rachlin, mFittingObject->bicRachlin));
+
+                        fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin K"), mFittingObject->fitRachlinK));
+                        fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin S"), mFittingObject->fitRachlinS));
+                        fitResultRachlin->RMS = mFittingObject->GetReport().rmserror;
+                        fitResultRachlin->AIC = mFittingObject->aicRachlin;
+                        fitResultRachlin->BIC = mFittingObject->bicRachlin;
+
+                        for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                        {
+                            fitResultRachlin->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                        }
+
+                        fitResultRachlin->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                    }
+                }
+                else
+                {
+                    fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin K"), NULL));
+                    fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin S"), NULL));
+                    fitResultRachlin->RMS = NULL;
+                    fitResultRachlin->AIC = NULL;
+                    fitResultRachlin->BIC = NULL;
+                    fitResultRachlin->BF = NULL;
+                    fitResultRachlin->Probability = NULL;
+                    fitResultRachlin->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
             }
         }
 
         if (settings->modelGeneralizedHyperbolic)
         {
-            if (!settings->cbBruteForce)
+            if (settings->settingsFitting == FittingAlgorithm::DifferentialEvolution)
             {
-                p1Span = abs(-12) + abs(12); // -12 to 12
-                p1Step = (double) p1Span / 10;
+                mFittingObject->FitGeneralizedHyperbolic(NULL);
 
-                p2Span = abs(-12) + abs(12); // -12 to 12
-                p2Step = (double) p2Span / 100;
-
-                grandLoop = 0;
-
-                for (int kLoop = 0; kLoop < 10; kLoop++)
-                {
-                    for (int sLoop = 0; sLoop < 100; sLoop++)
-                    {
-                        provisionalValues.twoParamStartingValueArray[grandLoop].p1 = 12 - (((double) kLoop + 1) * p1Step);
-                        provisionalValues.twoParamStartingValueArray[grandLoop].p2 = 12 - (((double) sLoop + 1) * p2Step);
-
-                        grandLoop++;
-                    }
-                }
-
-                for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorGeneralizedHyperbolic(obj.p1, obj.p2);
-                }
-
-                std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
-
-                mFittingObject->FitGeneralizedHyperbolic(QString("[%1,%2]")
-                                                   .arg(provisionalValues.twoParamStartingValueArray[0].p1)
-                                                   .arg(exp(provisionalValues.twoParamStartingValueArray[0].p2))
-                                                   .toUtf8().constData());
-            }
-            else
-            {
-                p1Span = abs(-100) + abs(100);
-                p1Step = (double) p1Span / 100;
-
-                p2Span = abs(-100) + abs(100);
-                p2Step = (double) p2Span / 100;
-
-                grandLoop = 0;
-
-                for (int kLoop = 0; kLoop < 100; kLoop++)
-                {
-                    for (int sLoop = 0; sLoop < 100; sLoop++)
-                    {
-                        provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 100 - (((double) kLoop + 1) * p1Step);
-                        provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = 100 - (((double) sLoop + 1) * p2Step);
-
-                        grandLoop++;
-                    }
-                }
-
-                for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorGeneralizedHyperbolic(obj.p1, obj.p2);
-                }
-
-                std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
-
-                mFittingObject->FitGeneralizedHyperbolic(QString("[%1,%2]")
-                                                   .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
-                                                   .arg(exp(provisionalValues.smallBruteStartingValueArray[0].p2))
-                                                   .toUtf8().constData());
-            }
-
-            fitResultGeneralizedHyperbolic = new FitResult(ModelType::GeneralizedHyperbolic);
-
-            if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
-            {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::GeneralizedHyperbolic, mFittingObject->bicGeneralizedHyperbolic));
+
+                fitResultGeneralizedHyperbolic = new FitResult(ModelType::GeneralizedHyperbolic);
 
                 fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic K"), mFittingObject->fitGeneralizedHyperbolicK));
                 fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic Beta"), mFittingObject->fitGeneralizedHyperbolicBeta));
-                fitResultGeneralizedHyperbolic->RMS = mFittingObject->GetReport().rmserror;
+
+                fitResultGeneralizedHyperbolic->RMS = -1;
                 fitResultGeneralizedHyperbolic->AIC = mFittingObject->aicGeneralizedHyperbolic;
                 fitResultGeneralizedHyperbolic->BIC = mFittingObject->bicGeneralizedHyperbolic;
 
@@ -644,97 +721,123 @@ void CalculationWorker::working()
                     fitResultGeneralizedHyperbolic->ErrPar.append(mFittingObject->ErrorResidual.at(v));
                 }
 
-                fitResultGeneralizedHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                fitResultGeneralizedHyperbolic->Status = "---";
             }
             else
             {
-                fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic K"), NULL));
-                fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic Beta"), NULL));
-                fitResultGeneralizedHyperbolic->RMS = NULL;
-                fitResultGeneralizedHyperbolic->AIC = NULL;
-                fitResultGeneralizedHyperbolic->BIC = NULL;
-                fitResultGeneralizedHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                if (!settings->cbBruteForce)
+                {
+                    p1Span = abs(-12) + abs(12); // -12 to 12
+                    p1Step = (double) p1Span / 10;
+
+                    p2Span = abs(-12) + abs(12); // -12 to 12
+                    p2Step = (double) p2Span / 100;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 10; kLoop++)
+                    {
+                        for (int sLoop = 0; sLoop < 100; sLoop++)
+                        {
+                            provisionalValues.twoParamStartingValueArray[grandLoop].p1 = 12 - (((double) kLoop + 1) * p1Step);
+                            provisionalValues.twoParamStartingValueArray[grandLoop].p2 = 12 - (((double) sLoop + 1) * p2Step);
+
+                            grandLoop++;
+                        }
+                    }
+
+                    for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorGeneralizedHyperbolic(obj.p1, obj.p2);
+                    }
+
+                    std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
+
+                    mFittingObject->FitGeneralizedHyperbolic(QString("[%1,%2]")
+                                                       .arg(provisionalValues.twoParamStartingValueArray[0].p1)
+                                                       .arg(exp(provisionalValues.twoParamStartingValueArray[0].p2))
+                                                       .toUtf8().constData());
+                }
+                else
+                {
+                    p1Span = abs(-100) + abs(100);
+                    p1Step = (double) p1Span / 100;
+
+                    p2Span = abs(-100) + abs(100);
+                    p2Step = (double) p2Span / 100;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 100; kLoop++)
+                    {
+                        for (int sLoop = 0; sLoop < 100; sLoop++)
+                        {
+                            provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 100 - (((double) kLoop + 1) * p1Step);
+                            provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = 100 - (((double) sLoop + 1) * p2Step);
+
+                            grandLoop++;
+                        }
+                    }
+
+                    for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorGeneralizedHyperbolic(obj.p1, obj.p2);
+                    }
+
+                    std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+
+                    mFittingObject->FitGeneralizedHyperbolic(QString("[%1,%2]")
+                                                       .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
+                                                       .arg(exp(provisionalValues.smallBruteStartingValueArray[0].p2))
+                                                       .toUtf8().constData());
+                }
+
+                fitResultGeneralizedHyperbolic = new FitResult(ModelType::GeneralizedHyperbolic);
+
+                if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
+                {
+                    mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::GeneralizedHyperbolic, mFittingObject->bicGeneralizedHyperbolic));
+
+                    fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic K"), mFittingObject->fitGeneralizedHyperbolicK));
+                    fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic Beta"), mFittingObject->fitGeneralizedHyperbolicBeta));
+                    fitResultGeneralizedHyperbolic->RMS = mFittingObject->GetReport().rmserror;
+                    fitResultGeneralizedHyperbolic->AIC = mFittingObject->aicGeneralizedHyperbolic;
+                    fitResultGeneralizedHyperbolic->BIC = mFittingObject->bicGeneralizedHyperbolic;
+
+                    for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                    {
+                        fitResultGeneralizedHyperbolic->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                    }
+
+                    fitResultGeneralizedHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
+                else
+                {
+                    fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic K"), NULL));
+                    fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic Beta"), NULL));
+                    fitResultGeneralizedHyperbolic->RMS = NULL;
+                    fitResultGeneralizedHyperbolic->AIC = NULL;
+                    fitResultGeneralizedHyperbolic->BIC = NULL;
+                    fitResultGeneralizedHyperbolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
             }
         }
 
         if (settings->modelEbertPrelec)
         {
-            if (!settings->cbBruteForce)
+            if (settings->settingsFitting == FittingAlgorithm::DifferentialEvolution)
             {
-                p1Span = abs(-12) + abs(12); // -12 to 12
-                p1Step = (double) p1Span / 10;
+                mFittingObject->FitEbertPrelec(NULL);
 
-                p2Span = abs(-12) + abs(12); // -12 to 12
-                p2Step = (double) p2Span / 100;
-
-                grandLoop = 0;
-
-                for (int kLoop = 0; kLoop < 10; kLoop++)
-                {
-                    for (int sLoop = 0; sLoop < 100; sLoop++)
-                    {
-                        provisionalValues.twoParamStartingValueArray[grandLoop].p1 = 12 - (((double) kLoop + 1) * p1Step);
-                        provisionalValues.twoParamStartingValueArray[grandLoop].p2 = 12 - (((double) sLoop + 1) * p2Step);
-
-                        grandLoop++;
-                    }
-                }
-
-                for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorEbertPrelec(obj.p1, obj.p2);
-                }
-
-                std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
-
-                mFittingObject->FitEbertPrelec(QString("[%1,%2]")
-                                                   .arg(provisionalValues.twoParamStartingValueArray[0].p1)
-                                                   .arg(exp(provisionalValues.twoParamStartingValueArray[0].p2))
-                                                   .toUtf8().constData());
-            }
-            else
-            {
-                p1Span = abs(-100) + abs(100);
-                p1Step = (double) p1Span / 100;
-
-                p2Span = abs(-100) + abs(100);
-                p2Step = (double) p2Span / 100;
-
-                grandLoop = 0;
-
-                for (int kLoop = 0; kLoop < 100; kLoop++)
-                {
-                    for (int sLoop = 0; sLoop < 100; sLoop++)
-                    {
-                        provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 100 - (((double) kLoop + 1) * p1Step);
-                        provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = 100 - (((double) sLoop + 1) * p2Step);
-
-                        grandLoop++;
-                    }
-                }
-
-                for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorEbertPrelec(obj.p1, obj.p2);
-                }
-
-                std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
-
-                mFittingObject->FitEbertPrelec(QString("[%1,%2]")
-                                                   .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
-                                                   .arg(exp(provisionalValues.smallBruteStartingValueArray[0].p2))
-                                                   .toUtf8().constData());
-            }
-
-            fitResultEbertPrelec = new FitResult(ModelType::EbertPrelec);
-
-            if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
-            {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::EbertPrelec, mFittingObject->bicEbertPrelec));
+
+                fitResultEbertPrelec = new FitResult(ModelType::EbertPrelec);
 
                 fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec K"), mFittingObject->fitEbertPrelecK));
                 fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec S"), mFittingObject->fitEbertPrelecS));
-                fitResultEbertPrelec->RMS = mFittingObject->GetReport().rmserror;
+
+                fitResultEbertPrelec->RMS = -1;
+
                 fitResultEbertPrelec->AIC = mFittingObject->aicEbertPrelec;
                 fitResultEbertPrelec->BIC = mFittingObject->bicEbertPrelec;
 
@@ -743,114 +846,123 @@ void CalculationWorker::working()
                     fitResultEbertPrelec->ErrPar.append(mFittingObject->ErrorResidual.at(v));
                 }
 
-                fitResultEbertPrelec->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                fitResultEbertPrelec->Status = "---";
             }
             else
             {
-                fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec K"), NULL));
-                fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec S"), NULL));
-                fitResultEbertPrelec->RMS = NULL;
-                fitResultEbertPrelec->AIC = NULL;
-                fitResultEbertPrelec->BIC = NULL;
-                fitResultEbertPrelec->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                if (!settings->cbBruteForce)
+                {
+                    p1Span = abs(-12) + abs(12); // -12 to 12
+                    p1Step = (double) p1Span / 10;
+
+                    p2Span = abs(-12) + abs(12); // -12 to 12
+                    p2Step = (double) p2Span / 100;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 10; kLoop++)
+                    {
+                        for (int sLoop = 0; sLoop < 100; sLoop++)
+                        {
+                            provisionalValues.twoParamStartingValueArray[grandLoop].p1 = 12 - (((double) kLoop + 1) * p1Step);
+                            provisionalValues.twoParamStartingValueArray[grandLoop].p2 = 12 - (((double) sLoop + 1) * p2Step);
+
+                            grandLoop++;
+                        }
+                    }
+
+                    for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorEbertPrelec(obj.p1, obj.p2);
+                    }
+
+                    std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
+
+                    mFittingObject->FitEbertPrelec(QString("[%1,%2]")
+                                                       .arg(provisionalValues.twoParamStartingValueArray[0].p1)
+                                                       .arg(exp(provisionalValues.twoParamStartingValueArray[0].p2))
+                                                       .toUtf8().constData());
+                }
+                else
+                {
+                    p1Span = abs(-100) + abs(100);
+                    p1Step = (double) p1Span / 100;
+
+                    p2Span = abs(-100) + abs(100);
+                    p2Step = (double) p2Span / 100;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 100; kLoop++)
+                    {
+                        for (int sLoop = 0; sLoop < 100; sLoop++)
+                        {
+                            provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 100 - (((double) kLoop + 1) * p1Step);
+                            provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = 100 - (((double) sLoop + 1) * p2Step);
+
+                            grandLoop++;
+                        }
+                    }
+
+                    for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorEbertPrelec(obj.p1, obj.p2);
+                    }
+
+                    std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+
+                    mFittingObject->FitEbertPrelec(QString("[%1,%2]")
+                                                       .arg(provisionalValues.smallBruteStartingValueArray[0].p1)
+                                                       .arg(exp(provisionalValues.smallBruteStartingValueArray[0].p2))
+                                                       .toUtf8().constData());
+                }
+
+                fitResultEbertPrelec = new FitResult(ModelType::EbertPrelec);
+
+                if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
+                {
+                    mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::EbertPrelec, mFittingObject->bicEbertPrelec));
+
+                    fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec K"), mFittingObject->fitEbertPrelecK));
+                    fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec S"), mFittingObject->fitEbertPrelecS));
+                    fitResultEbertPrelec->RMS = mFittingObject->GetReport().rmserror;
+                    fitResultEbertPrelec->AIC = mFittingObject->aicEbertPrelec;
+                    fitResultEbertPrelec->BIC = mFittingObject->bicEbertPrelec;
+
+                    for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                    {
+                        fitResultEbertPrelec->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                    }
+
+                    fitResultEbertPrelec->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
+                else
+                {
+                    fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec K"), NULL));
+                    fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec S"), NULL));
+                    fitResultEbertPrelec->RMS = NULL;
+                    fitResultEbertPrelec->AIC = NULL;
+                    fitResultEbertPrelec->BIC = NULL;
+                    fitResultEbertPrelec->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
             }
         }
 
         if (settings->modelBleichrodt)
         {
-            if (!settings->cbBruteForce)
+            if (settings->settingsFitting == FittingAlgorithm::DifferentialEvolution)
             {
-                p1Span = abs(-12) + abs(12);
-                p1Step = (double) p1Span / 10;
+                mFittingObject->FitBleichrodt(NULL);
 
-                p2Span = abs(-12) + abs(12);
-                p2Step = (double) p2Span / 10;
-
-                p3Span = 1; // .1 to 1
-                p3Step = (double) p3Span / 10;
-
-                grandLoop = 0;
-
-                for (int kLoop = 0; kLoop < 10; kLoop++)
-                {
-                    for (int sLoop = 0; sLoop < 10; sLoop++)
-                    {
-                        for (int bLoop = 0; bLoop < 10; bLoop++)
-                        {
-                            provisionalValues.threeParamStartingValueArray[grandLoop].p1 = 12 - (((double) kLoop + 1) * p1Step);
-                            provisionalValues.threeParamStartingValueArray[grandLoop].p2 = 12 - (((double) sLoop + 1) * p2Step);
-                            provisionalValues.threeParamStartingValueArray[grandLoop].p3 = (((double) bLoop + 1) * p3Step);
-
-                            grandLoop++;
-                        }
-                   }
-                }
-
-                for(BruteForce & obj : provisionalValues.threeParamStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorBleichrodt(obj.p1, obj.p2, obj.p3);
-                }
-
-                std::sort(provisionalValues.threeParamStartingValueArray, provisionalValues.threeParamStartingValueArray + 1000);
-
-                mFittingObject->FitBleichrodt(QString("[%1,%2,%3]")
-                                                   .arg(provisionalValues.threeParamStartingValueArray[0].p1)
-                                                   .arg(exp(provisionalValues.threeParamStartingValueArray[0].p2))
-                                                   .arg(provisionalValues.threeParamStartingValueArray[0].p3)
-                                                   .toUtf8().constData());
-            }
-            else
-            {
-                p1Span = abs(-100) + abs(100);
-                p1Step = (double) p1Span / 100;
-
-                p2Span = abs(-100) + abs(100);
-                p2Step = (double) p2Span / 100;
-
-                p3Span = 1;
-                p3Step = (double) p3Span / 100;
-
-                grandLoop = 0;
-
-                for (int kLoop = 0; kLoop < 100; kLoop++)
-                {
-                    for (int sLoop = 0; sLoop < 100; sLoop++)
-                    {
-                        for (int bLoop = 0; bLoop < 100; bLoop++)
-                        {
-                            provisionalValues.largeBruteStartingValueArray[grandLoop].p1 = 100 - (((double) kLoop + 1) * p1Step);
-                            provisionalValues.largeBruteStartingValueArray[grandLoop].p2 = 100 - (((double) sLoop + 1) * p2Step);
-                            provisionalValues.largeBruteStartingValueArray[grandLoop].p3 = (((double) bLoop + 1) * p3Step);
-
-                            grandLoop++;
-                        }
-                   }
-                }
-
-                for(BruteForce & obj : provisionalValues.largeBruteStartingValueArray)
-                {
-                    obj.err = mFittingObject->getErrorBleichrodt(obj.p1, obj.p2, obj.p3);
-                }
-
-                std::sort(provisionalValues.largeBruteStartingValueArray, provisionalValues.largeBruteStartingValueArray + 1000000);
-
-                mFittingObject->FitBleichrodt(QString("[%1,%2,%3]")
-                                                   .arg(provisionalValues.largeBruteStartingValueArray[0].p1)
-                                                   .arg(exp(provisionalValues.largeBruteStartingValueArray[0].p2))
-                                                   .arg(provisionalValues.largeBruteStartingValueArray[0].p3)
-                                                   .toUtf8().constData());
-            }
-
-            fitResultBleichrodt = new FitResult(ModelType::Beleichrodt);
-
-            if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
-            {
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Beleichrodt, mFittingObject->bicBleichrodt));
+
+                fitResultBleichrodt = new FitResult(ModelType::Beleichrodt);
 
                 fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt K"), mFittingObject->fitBleichrodtK));
                 fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt S"), mFittingObject->fitBleichrodtS));
                 fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt Beta"), mFittingObject->fitBleichrodtBeta));
-                fitResultBleichrodt->RMS = mFittingObject->GetReport().rmserror;
+
+                fitResultBleichrodt->RMS = -1;
                 fitResultBleichrodt->AIC = mFittingObject->aicBleichrodt;
                 fitResultBleichrodt->BIC = mFittingObject->bicBleichrodt;
 
@@ -859,17 +971,123 @@ void CalculationWorker::working()
                     fitResultBleichrodt->ErrPar.append(mFittingObject->ErrorResidual.at(v));
                 }
 
-                fitResultBleichrodt->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                fitResultBleichrodt->Status = "---";
             }
             else
             {
-                fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt K"), NULL));
-                fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt S"), NULL));
-                fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt Beta"), NULL));
-                fitResultBleichrodt->RMS = NULL;
-                fitResultBleichrodt->AIC = NULL;
-                fitResultBleichrodt->BIC = NULL;
-                fitResultBleichrodt->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                if (!settings->cbBruteForce)
+                {
+                    p1Span = abs(-12) + abs(12);
+                    p1Step = (double) p1Span / 10;
+
+                    p2Span = abs(-12) + abs(12);
+                    p2Step = (double) p2Span / 10;
+
+                    p3Span = 1; // .1 to 1
+                    p3Step = (double) p3Span / 10;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 10; kLoop++)
+                    {
+                        for (int sLoop = 0; sLoop < 10; sLoop++)
+                        {
+                            for (int bLoop = 0; bLoop < 10; bLoop++)
+                            {
+                                provisionalValues.threeParamStartingValueArray[grandLoop].p1 = 12 - (((double) kLoop + 1) * p1Step);
+                                provisionalValues.threeParamStartingValueArray[grandLoop].p2 = 12 - (((double) sLoop + 1) * p2Step);
+                                provisionalValues.threeParamStartingValueArray[grandLoop].p3 = (((double) bLoop + 1) * p3Step);
+
+                                grandLoop++;
+                            }
+                       }
+                    }
+
+                    for(BruteForce & obj : provisionalValues.threeParamStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorBleichrodt(obj.p1, obj.p2, obj.p3);
+                    }
+
+                    std::sort(provisionalValues.threeParamStartingValueArray, provisionalValues.threeParamStartingValueArray + 1000);
+
+                    mFittingObject->FitBleichrodt(QString("[%1,%2,%3]")
+                                                       .arg(provisionalValues.threeParamStartingValueArray[0].p1)
+                                                       .arg(exp(provisionalValues.threeParamStartingValueArray[0].p2))
+                                                       .arg(provisionalValues.threeParamStartingValueArray[0].p3)
+                                                       .toUtf8().constData());
+                }
+                else
+                {
+                    p1Span = abs(-100) + abs(100);
+                    p1Step = (double) p1Span / 100;
+
+                    p2Span = abs(-100) + abs(100);
+                    p2Step = (double) p2Span / 100;
+
+                    p3Span = 1;
+                    p3Step = (double) p3Span / 100;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 100; kLoop++)
+                    {
+                        for (int sLoop = 0; sLoop < 100; sLoop++)
+                        {
+                            for (int bLoop = 0; bLoop < 100; bLoop++)
+                            {
+                                provisionalValues.largeBruteStartingValueArray[grandLoop].p1 = 100 - (((double) kLoop + 1) * p1Step);
+                                provisionalValues.largeBruteStartingValueArray[grandLoop].p2 = 100 - (((double) sLoop + 1) * p2Step);
+                                provisionalValues.largeBruteStartingValueArray[grandLoop].p3 = (((double) bLoop + 1) * p3Step);
+
+                                grandLoop++;
+                            }
+                       }
+                    }
+
+                    for(BruteForce & obj : provisionalValues.largeBruteStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorBleichrodt(obj.p1, obj.p2, obj.p3);
+                    }
+
+                    std::sort(provisionalValues.largeBruteStartingValueArray, provisionalValues.largeBruteStartingValueArray + 1000000);
+
+                    mFittingObject->FitBleichrodt(QString("[%1,%2,%3]")
+                                                       .arg(provisionalValues.largeBruteStartingValueArray[0].p1)
+                                                       .arg(exp(provisionalValues.largeBruteStartingValueArray[0].p2))
+                                                       .arg(provisionalValues.largeBruteStartingValueArray[0].p3)
+                                                       .toUtf8().constData());
+                }
+
+                fitResultBleichrodt = new FitResult(ModelType::Beleichrodt);
+
+                if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
+                {
+                    mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Beleichrodt, mFittingObject->bicBleichrodt));
+
+                    fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt K"), mFittingObject->fitBleichrodtK));
+                    fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt S"), mFittingObject->fitBleichrodtS));
+                    fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt Beta"), mFittingObject->fitBleichrodtBeta));
+                    fitResultBleichrodt->RMS = mFittingObject->GetReport().rmserror;
+                    fitResultBleichrodt->AIC = mFittingObject->aicBleichrodt;
+                    fitResultBleichrodt->BIC = mFittingObject->bicBleichrodt;
+
+                    for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                    {
+                        fitResultBleichrodt->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                    }
+
+                    fitResultBleichrodt->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
+                else
+                {
+                    fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt K"), NULL));
+                    fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt S"), NULL));
+                    fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt Beta"), NULL));
+                    fitResultBleichrodt->RMS = NULL;
+                    fitResultBleichrodt->AIC = NULL;
+                    fitResultBleichrodt->BIC = NULL;
+                    fitResultBleichrodt->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
             }
         }
 
@@ -1032,6 +1250,10 @@ void CalculationWorker::working()
             else if (settings->settingsFitting == FittingAlgorithm::FunctionGradientHessian)
             {
                 mModel.append(" (fgh)");
+            }
+            else if (settings->settingsFitting == FittingAlgorithm::DifferentialEvolution)
+            {
+                mModel.append(" (de)");
             }
         }
 

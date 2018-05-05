@@ -405,17 +405,22 @@
             </property>
             <item>
              <property name="text">
-              <string>Fit: Function</string>
+              <string>Fit: LM-Function</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>Fit: Function + Gradient</string>
+              <string>Fit: LM-Function + Gradient</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>Fit: Function + Gradient + Hessian</string>
+              <string>Fit: LM-Function + Gradient + Hessian</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Fit: GA-Differential Evolution</string>
              </property>
             </item>
            </widget>

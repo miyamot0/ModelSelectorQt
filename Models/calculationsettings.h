@@ -37,7 +37,8 @@ enum class FittingAlgorithm
 {
     Function,
     FunctionGradient,
-    FunctionGradientHessian
+    FunctionGradientHessian,
+    DifferentialEvolution
 };
 
 class CalculationSettings

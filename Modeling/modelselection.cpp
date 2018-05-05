@@ -57,6 +57,9 @@
 
 #include "Controls/chartwindow.h"
 
+// TODO: remove
+#include <QDebug>
+
 using namespace alglib;
 
 /**
@@ -885,68 +888,25 @@ void ModelSelection::FitExponential(const char *mStarts)
     bicExponential = NULL;
     fitExponentialK = NULL;
 
-    SetStarts(mStarts);
-
-    if (fittingAlgorithm == FittingAlgorithm::Function)
+    if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        lsfitcreatef(x,
-                     y,
-                     c,
-                     diffstep,
-                     state);
+        QVector<double> xValues = GetXVector();
+        QVector<double> yValues = GetYVector();
 
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
+        ExponentialModel exponentialFunction(xValues, yValues);
 
-        alglib::lsfitfit(state,
-                         exponential_discounting);
+        de::DifferentialEvolution de(exponentialFunction, 100);
 
-    }
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
-    {
-        lsfitcreatefg(x,
-                      y,
-                      c,
-                      true,
-                      state);
+        de.Optimize(1000, false);
 
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
+        std::vector<double> result = de.GetBestAgent();
 
-        alglib::lsfitfit(state,
-                         exponential_discounting,
-                         exponential_discounting_grad);
-    }
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
-    {
-        lsfitcreatefgh(x,
-                       y,
-                       c,
-                       state);
-
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
-
-        alglib::lsfitfit(state,
-                         exponential_discounting,
-                         exponential_discounting_grad,
-                         exponential_discounting_hessian);
-
-    }
-
-    lsfitresults(state, info, c, rep);
-
-    if ((int) info == 2 || (int) info == 5)
-    {
         N = y.length();
         SSR = 0;
 
         for (int i = 0; i < N; i++)
         {
-            holder = (exp(-exp( (double) c[0])* (double) x[i][0]));
+            holder = (exp(-exp( (double) result[0])* (double) x[i][0]));
 
             ErrorResidual.append(((double) y[i] - holder));
 
@@ -961,7 +921,88 @@ void ModelSelection::FitExponential(const char *mStarts)
 
         aicExponential = (-2 * log(L)) + (2 * DF);
         bicExponential = -2 * log(L) + log(N) * DF;
-        fitExponentialK = (double) c[0];
+        fitExponentialK = (double) result[0];
+    }
+    else
+    {
+        SetStarts(mStarts);
+
+        if (fittingAlgorithm == FittingAlgorithm::Function)
+        {
+            lsfitcreatef(x,
+                         y,
+                         c,
+                         diffstep,
+                         state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             exponential_discounting);
+
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
+        {
+            lsfitcreatefg(x,
+                          y,
+                          c,
+                          true,
+                          state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             exponential_discounting,
+                             exponential_discounting_grad);
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+        {
+            lsfitcreatefgh(x,
+                           y,
+                           c,
+                           state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             exponential_discounting,
+                             exponential_discounting_grad,
+                             exponential_discounting_hessian);
+
+        }
+
+        lsfitresults(state, info, c, rep);
+
+        if ((int) info == 2 || (int) info == 5)
+        {
+            N = y.length();
+            SSR = 0;
+
+            for (int i = 0; i < N; i++)
+            {
+                holder = (exp(-exp( (double) c[0])* (double) x[i][0]));
+
+                ErrorResidual.append(((double) y[i] - holder));
+
+                SSR += pow(ErrorResidual[i], 2);
+            }
+
+            S2 = SSR / N;
+
+            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
+
+            DF = 2;
+
+            aicExponential = (-2 * log(L)) + (2 * DF);
+            bicExponential = -2 * log(L) + log(N) * DF;
+            fitExponentialK = (double) c[0];
+        }
     }
 }
 
@@ -976,67 +1017,25 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
     bicHyperbolic = NULL;
     fitHyperbolicK = NULL;
 
-    SetStarts(mStarts);
-
-    if (fittingAlgorithm == FittingAlgorithm::Function)
+    if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        lsfitcreatef(x,
-                     y,
-                     c,
-                     diffstep,
-                     state);
+        QVector<double> xValues = GetXVector();
+        QVector<double> yValues = GetYVector();
 
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
+        HyperbolicModel hyperbolicFunction(xValues, yValues);
 
-        alglib::lsfitfit(state,
-                         hyperbolic_discounting);
+        de::DifferentialEvolution de(hyperbolicFunction, 100);
 
-    }
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
-    {
-        lsfitcreatefg(x,
-                      y,
-                      c,
-                      true,
-                      state);
+        de.Optimize(1000, false);
 
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
+        std::vector<double> result = de.GetBestAgent();
 
-        alglib::lsfitfit(state,
-                         hyperbolic_discounting,
-                         hyperbolic_discounting_grad);
-    }
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
-    {
-        lsfitcreatefgh(x,
-                       y,
-                       c,
-                       state);
-
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
-
-        alglib::lsfitfit(state,
-                         hyperbolic_discounting,
-                         hyperbolic_discounting_grad,
-                         hyperbolic_discounting_hessian);
-    }
-
-    lsfitresults(state, info, c, rep);
-
-    if ((int) info == 2 || (int) info == 5)
-    {
         N = y.length();
         SSR = 0;
 
         for (int i = 0; i < N; i++)
         {
-            holder = pow((1+exp( (double) c[0])* (double) x[i][0]), -1);
+            holder = pow((1+exp( (double) result[0])* (double) x[i][0]), -1);
 
             ErrorResidual.append(((double) y[i] - holder));
 
@@ -1051,7 +1050,87 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
         aicHyperbolic = (-2 * log(L)) + (2 * DF);
         bicHyperbolic = -2 * log(L) + log(N) * DF;
-        fitHyperbolicK = (double) c[0];
+        fitHyperbolicK = (double) result[0];
+    }
+    else
+    {
+        SetStarts(mStarts);
+
+        if (fittingAlgorithm == FittingAlgorithm::Function)
+        {
+            lsfitcreatef(x,
+                         y,
+                         c,
+                         diffstep,
+                         state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             hyperbolic_discounting);
+
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
+        {
+            lsfitcreatefg(x,
+                          y,
+                          c,
+                          true,
+                          state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             hyperbolic_discounting,
+                             hyperbolic_discounting_grad);
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+        {
+            lsfitcreatefgh(x,
+                           y,
+                           c,
+                           state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             hyperbolic_discounting,
+                             hyperbolic_discounting_grad,
+                             hyperbolic_discounting_hessian);
+        }
+
+        lsfitresults(state, info, c, rep);
+
+        if ((int) info == 2 || (int) info == 5)
+        {
+            N = y.length();
+            SSR = 0;
+
+            for (int i = 0; i < N; i++)
+            {
+                holder = pow((1+exp( (double) c[0])* (double) x[i][0]), -1);
+
+                ErrorResidual.append(((double) y[i] - holder));
+
+                SSR += pow(ErrorResidual[i], 2);
+            }
+
+            S2 = SSR / N;
+
+            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
+
+            DF = 2;
+
+            aicHyperbolic = (-2 * log(L)) + (2 * DF);
+            bicHyperbolic = -2 * log(L) + log(N) * DF;
+            fitHyperbolicK = (double) c[0];
+        }
     }
 }
 
@@ -1067,82 +1146,25 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
     fitQuasiHyperbolicBeta = NULL;
     fitQuasiHyperbolicDelta = NULL;
 
-    SetStarts(mStarts);
-
-    SetLowerUpperBounds("[0.9999999999999999, 0.9999999999999999]",
-                        "[0.0000000000000001, 0.0000000000000001]");
-
-    if (fittingAlgorithm == FittingAlgorithm::Function)
+    if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        lsfitcreatef(x,
-                     y,
-                     c,
-                     diffstep,
-                     state);
+        QVector<double> xValues = GetXVector();
+        QVector<double> yValues = GetYVector();
 
-        lsfitsetbc(state,
-                   bndl,
-                   bndu);
+        BetaDeltaModel quasiHyperbolicFunction(xValues, yValues);
 
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
+        de::DifferentialEvolution de(quasiHyperbolicFunction, 100);
 
-        alglib::lsfitfit(state,
-                         quasi_hyperboloid_discounting);
+        de.Optimize(1000, false);
 
-    }
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
-    {
-        lsfitcreatefg(x,
-                      y,
-                      c,
-                      true,
-                      state);
+        std::vector<double> result = de.GetBestAgent();
 
-        lsfitsetbc(state,
-                   bndl,
-                   bndu);
-
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
-
-        alglib::lsfitfit(state,
-                         quasi_hyperboloid_discounting,
-                         quasi_hyperboloid_discounting_grad);
-    }
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
-    {
-        lsfitcreatefgh(x,
-                       y,
-                       c,
-                       state);
-
-        lsfitsetbc(state,
-                   bndl,
-                   bndu);
-
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
-
-        alglib::lsfitfit(state,
-                         quasi_hyperboloid_discounting,
-                         quasi_hyperboloid_discounting_grad,
-                         quasi_hyperboloid_discounting_hessian);
-    }
-
-    lsfitresults(state, info, c, rep);
-
-    if ((int) info == 2 || (int) info == 5)
-    {
         N = y.length();
         SSR = 0;
 
         for (int i = 0; i < N; i++)
         {
-            holder = (double) c[0] * pow( (double) c[1], (double) x[i][0]);
+            holder = (double) result[0] * pow( (double) result[1], (double) x[i][0]);
 
             ErrorResidual.append(((double) y[i] - holder));
 
@@ -1157,8 +1179,104 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
         aicQuasiHyperbolic = (-2 * log(L)) + (2 * DF);
         bicQuasiHyperbolic = -2 * log(L) + log(N) * DF;
-        fitQuasiHyperbolicBeta = (double) c[0];
-        fitQuasiHyperbolicDelta = (double) c[1];
+        fitQuasiHyperbolicBeta = (double) result[0];
+        fitQuasiHyperbolicDelta = (double) result[1];
+    }
+    else
+    {
+        SetStarts(mStarts);
+
+        SetLowerUpperBounds("[0.9999999999999999, 0.9999999999999999]",
+                            "[0.0000000000000001, 0.0000000000000001]");
+
+        if (fittingAlgorithm == FittingAlgorithm::Function)
+        {
+            lsfitcreatef(x,
+                         y,
+                         c,
+                         diffstep,
+                         state);
+
+            lsfitsetbc(state,
+                       bndl,
+                       bndu);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             quasi_hyperboloid_discounting);
+
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
+        {
+            lsfitcreatefg(x,
+                          y,
+                          c,
+                          true,
+                          state);
+
+            lsfitsetbc(state,
+                       bndl,
+                       bndu);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             quasi_hyperboloid_discounting,
+                             quasi_hyperboloid_discounting_grad);
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+        {
+            lsfitcreatefgh(x,
+                           y,
+                           c,
+                           state);
+
+            lsfitsetbc(state,
+                       bndl,
+                       bndu);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             quasi_hyperboloid_discounting,
+                             quasi_hyperboloid_discounting_grad,
+                             quasi_hyperboloid_discounting_hessian);
+        }
+
+        lsfitresults(state, info, c, rep);
+
+        if ((int) info == 2 || (int) info == 5)
+        {
+            N = y.length();
+            SSR = 0;
+
+            for (int i = 0; i < N; i++)
+            {
+                holder = (double) c[0] * pow( (double) c[1], (double) x[i][0]);
+
+                ErrorResidual.append(((double) y[i] - holder));
+
+                SSR += pow(ErrorResidual[i], 2);
+            }
+
+            S2 = SSR / N;
+
+            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
+
+            DF = 3;
+
+            aicQuasiHyperbolic = (-2 * log(L)) + (2 * DF);
+            bicQuasiHyperbolic = -2 * log(L) + log(N) * DF;
+            fitQuasiHyperbolicBeta = (double) c[0];
+            fitQuasiHyperbolicDelta = (double) c[1];
+        }
     }
 }
 
@@ -1174,68 +1292,26 @@ void ModelSelection::FitMyerson(const char *mStarts)
     fitMyersonK = NULL;
     fitMyersonS = NULL;
 
-    SetStarts(mStarts);
-
-    if (fittingAlgorithm == FittingAlgorithm::Function)
+    if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        lsfitcreatef(x,
-                     y,
-                     c,
-                     diffstep,
-                     state);
+        QVector<double> xValues = GetXVector();
+        QVector<double> yValues = GetYVector();
 
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
+        GreenMyersonModel greenMyersonFunction(xValues, yValues);
 
-        alglib::lsfitfit(state,
-                         hyperboloid_myerson_discounting);
+        de::DifferentialEvolution de(greenMyersonFunction, 100);
 
-    }
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
-    {
-        lsfitcreatefg(x,
-                      y,
-                      c,
-                      true,
-                      state);
+        de.Optimize(1000, false);
 
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
+        std::vector<double> result = de.GetBestAgent();
 
-        alglib::lsfitfit(state,
-                         hyperboloid_myerson_discounting,
-                         hyperboloid_myerson_discounting_grad);
-    }
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
-    {
-        lsfitcreatefgh(x,
-                       y,
-                       c,
-                       state);
-
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
-
-        alglib::lsfitfit(state,
-                         hyperboloid_myerson_discounting,
-                         hyperboloid_myerson_discounting_grad,
-                         hyperboloid_myerson_discounting_hessian);
-    }
-
-    lsfitresults(state, info, c, rep);
-
-    if ((int) info == 2 || (int) info == 5)
-    {
         N = y.length();
 
         SSR = 0;
 
         for (int i = 0; i < N; i++)
         {
-            holder = pow((1+exp( (double) c[0])* (double) x[i][0]),  (double) -c[1]);
+            holder = pow((1+exp( (double) result[0])* (double) x[i][0]),  (double) -exp(result[1]));
 
             ErrorResidual.append(((double) y[i] - holder));
 
@@ -1250,8 +1326,90 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
         aicMyerson = (-2 * log(L)) + (2 * DF);
         bicMyerson = -2 * log(L) + log(N) * DF;
-        fitMyersonK = (double) c[0];
-        fitMyersonS = (double) c[1];
+        fitMyersonK = (double) result[0];
+        fitMyersonS = (double) exp(result[1]);
+    }
+    else
+    {
+        SetStarts(mStarts);
+
+        if (fittingAlgorithm == FittingAlgorithm::Function)
+        {
+            lsfitcreatef(x,
+                         y,
+                         c,
+                         diffstep,
+                         state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             hyperboloid_myerson_discounting);
+
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
+        {
+            lsfitcreatefg(x,
+                          y,
+                          c,
+                          true,
+                          state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             hyperboloid_myerson_discounting,
+                             hyperboloid_myerson_discounting_grad);
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+        {
+            lsfitcreatefgh(x,
+                           y,
+                           c,
+                           state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             hyperboloid_myerson_discounting,
+                             hyperboloid_myerson_discounting_grad,
+                             hyperboloid_myerson_discounting_hessian);
+        }
+
+        lsfitresults(state, info, c, rep);
+
+        if ((int) info == 2 || (int) info == 5)
+        {
+            N = y.length();
+
+            SSR = 0;
+
+            for (int i = 0; i < N; i++)
+            {
+                holder = pow((1+exp( (double) c[0])* (double) x[i][0]),  (double) -c[1]);
+
+                ErrorResidual.append(((double) y[i] - holder));
+
+                SSR += pow(ErrorResidual[i], 2);
+            }
+
+            S2 = SSR / N;
+
+            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
+
+            DF = 3;
+
+            aicMyerson = (-2 * log(L)) + (2 * DF);
+            bicMyerson = -2 * log(L) + log(N) * DF;
+            fitMyersonK = (double) c[0];
+            fitMyersonS = (double) c[1];
+        }
     }
 }
 
@@ -1268,67 +1426,25 @@ void ModelSelection::FitRachlin(const char *mStarts)
     fitRachlinK = NULL;
     fitRachlinS = NULL;
 
-    SetStarts(mStarts);
-
-    if (fittingAlgorithm == FittingAlgorithm::Function)
+    if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        lsfitcreatef(x,
-                     y,
-                     c,
-                     diffstep,
-                     state);
+        QVector<double> xValues = GetXVector();
+        QVector<double> yValues = GetYVector();
 
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
+        RachlinModel rachlinFunction(xValues, yValues);
 
-        alglib::lsfitfit(state,
-                         hyperboloid_rachlin_discounting);
+        de::DifferentialEvolution de(rachlinFunction, 100);
 
-    }
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
-    {
-        lsfitcreatefg(x,
-                      y,
-                      c,
-                      true,
-                      state);
+        de.Optimize(1000, false);
 
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
+        std::vector<double> result = de.GetBestAgent();
 
-        alglib::lsfitfit(state,
-                         hyperboloid_rachlin_discounting,
-                         hyperboloid_rachlin_discounting_grad);
-    }
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
-    {
-        lsfitcreatefgh(x,
-                       y,
-                       c,
-                       state);
-
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
-
-        alglib::lsfitfit(state,
-                         hyperboloid_rachlin_discounting,
-                         hyperboloid_rachlin_discounting_grad,
-                         hyperboloid_rachlin_discounting_hessian);
-    }
-
-    lsfitresults(state, info, c, rep);
-
-    if ((int) GetInfo() == 2 || (int) GetInfo() == 5)
-    {
         N = y.length();
         SSR = 0;
 
         for (int i = 0; i < N; i++)
         {
-            holder = pow((1+exp( (double) c[0])*pow( (double) x[i][0], (double) c[1])), -1);
+            holder = pow((1+exp((double) result[0])*pow((double) x[i][0], exp(result[1]))), -1);
 
             ErrorResidual.append(((double) y[i] - holder));
 
@@ -1343,10 +1459,93 @@ void ModelSelection::FitRachlin(const char *mStarts)
 
         aicRachlin = (-2 * log(L)) + (2 * DF);
         bicRachlin = -2 * log(L) + log(N) * DF;
-        fitRachlinK = (double) c[0];
-        fitRachlinS = (double) c[1];
+        fitRachlinK = (double) result[0];
+        fitRachlinS = exp(result[1]);
 
-        statusValue = (int) info;
+        statusValue = -1;
+    }
+    else
+    {
+        SetStarts(mStarts);
+
+        if (fittingAlgorithm == FittingAlgorithm::Function)
+        {
+            lsfitcreatef(x,
+                         y,
+                         c,
+                         diffstep,
+                         state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             hyperboloid_rachlin_discounting);
+
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
+        {
+            lsfitcreatefg(x,
+                          y,
+                          c,
+                          true,
+                          state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             hyperboloid_rachlin_discounting,
+                             hyperboloid_rachlin_discounting_grad);
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+        {
+            lsfitcreatefgh(x,
+                           y,
+                           c,
+                           state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             hyperboloid_rachlin_discounting,
+                             hyperboloid_rachlin_discounting_grad,
+                             hyperboloid_rachlin_discounting_hessian);
+        }
+
+        lsfitresults(state, info, c, rep);
+
+        if ((int) GetInfo() == 2 || (int) GetInfo() == 5)
+        {
+            N = y.length();
+            SSR = 0;
+
+            for (int i = 0; i < N; i++)
+            {
+                holder = pow((1+exp( (double) c[0])*pow( (double) x[i][0], (double) c[1])), -1);
+
+                ErrorResidual.append(((double) y[i] - holder));
+
+                SSR += pow(ErrorResidual[i], 2);
+            }
+
+            S2 = SSR / N;
+
+            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
+
+            DF = 3;
+
+            aicRachlin = (-2 * log(L)) + (2 * DF);
+            bicRachlin = -2 * log(L) + log(N) * DF;
+            fitRachlinK = (double) c[0];
+            fitRachlinS = (double) c[1];
+
+            statusValue = (int) info;
+        }
     }
 }
 
@@ -1362,69 +1561,25 @@ void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
     fitGeneralizedHyperbolicK = NULL;
     fitGeneralizedHyperbolicBeta = NULL;
 
-    SetStarts(mStarts);
-
-    if (fittingAlgorithm == FittingAlgorithm::Function)
+    if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        lsfitcreatef(x,
-                     y,
-                     c,
-                     diffstep,
-                     state);
+        QVector<double> xValues = GetXVector();
+        QVector<double> yValues = GetYVector();
 
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
+        GeneralizedHyperbolicModel generalizedHyperbolicFunction(xValues, yValues);
 
-        alglib::lsfitfit(state,
-                         generalized_hyperboloid_discounting);
+        de::DifferentialEvolution de(generalizedHyperbolicFunction, 100);
 
-    }
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient || fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
-    {
-        lsfitcreatefg(x,
-                      y,
-                      c,
-                      true,
-                      state);
+        de.Optimize(1000, false);
 
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
+        std::vector<double> result = de.GetBestAgent();
 
-        alglib::lsfitfit(state,
-                         generalized_hyperboloid_discounting,
-                         generalized_hyperboloid_discounting_grad);
-    }
-    /*
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
-    {
-        lsfitcreatefgh(x,
-                       y,
-                       c,
-                       state);
-
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
-
-        alglib::lsfitfit(state,
-                         generalized_hyperboloid_discounting,
-                         generalized_hyperboloid_discounting_grad,
-                         generalized_hyperboloid_discounting_hessian);
-    }
-    */
-
-    lsfitresults(state, info, c, rep);
-
-    if ((int) GetInfo() == 2 || (int) GetInfo() == 5)
-    {
         N = y.length();
         SSR = 0;
 
         for (int i = 0; i < N; i++)
         {
-            holder = pow((1 + x[i][0] * exp(c[0])),(-exp(c[1]) / exp(c[0])));
+            holder = pow((1 + x[i][0] * exp(result[0])),(-exp(result[1]) / exp(result[0])));
 
             ErrorResidual.append(((double) y[i] - holder));
 
@@ -1439,8 +1594,91 @@ void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
 
         aicGeneralizedHyperbolic = (-2 * log(L)) + (2 * DF);
         bicGeneralizedHyperbolic = -2 * log(L) + log(N) * DF;
-        fitGeneralizedHyperbolicK = (double) c[0];
-        fitGeneralizedHyperbolicBeta = (double) c[1];
+        fitGeneralizedHyperbolicK = (double) result[0];
+        fitGeneralizedHyperbolicBeta = (double) result[1];
+    }
+    else
+    {
+        SetStarts(mStarts);
+
+        if (fittingAlgorithm == FittingAlgorithm::Function)
+        {
+            lsfitcreatef(x,
+                         y,
+                         c,
+                         diffstep,
+                         state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             generalized_hyperboloid_discounting);
+
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient || fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+        {
+            lsfitcreatefg(x,
+                          y,
+                          c,
+                          true,
+                          state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             generalized_hyperboloid_discounting,
+                             generalized_hyperboloid_discounting_grad);
+        }
+        /*
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+        {
+            lsfitcreatefgh(x,
+                           y,
+                           c,
+                           state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             generalized_hyperboloid_discounting,
+                             generalized_hyperboloid_discounting_grad,
+                             generalized_hyperboloid_discounting_hessian);
+        }
+        */
+
+        lsfitresults(state, info, c, rep);
+
+        if ((int) GetInfo() == 2 || (int) GetInfo() == 5)
+        {
+            N = y.length();
+            SSR = 0;
+
+            for (int i = 0; i < N; i++)
+            {
+                holder = pow((1 + x[i][0] * exp(c[0])),(-exp(c[1]) / exp(c[0])));
+
+                ErrorResidual.append(((double) y[i] - holder));
+
+                SSR += pow(ErrorResidual[i], 2);
+            }
+
+            S2 = SSR / N;
+
+            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
+
+            DF = 3;
+
+            aicGeneralizedHyperbolic = (-2 * log(L)) + (2 * DF);
+            bicGeneralizedHyperbolic = -2 * log(L) + log(N) * DF;
+            fitGeneralizedHyperbolicK = (double) c[0];
+            fitGeneralizedHyperbolicBeta = (double) c[1];
+        }
     }
 }
 
@@ -1456,67 +1694,25 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
     fitEbertPrelecK = NULL;
     fitEbertPrelecS = NULL;
 
-    SetStarts(mStarts);
-
-    if (fittingAlgorithm == FittingAlgorithm::Function)
+    if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        lsfitcreatef(x,
-                     y,
-                     c,
-                     diffstep,
-                     state);
+        QVector<double> xValues = GetXVector();
+        QVector<double> yValues = GetYVector();
 
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
+        EbertPrelecModel ebertPrelecFunction(xValues, yValues);
 
-        alglib::lsfitfit(state,
-                         ebert_prelec_discounting);
+        de::DifferentialEvolution de(ebertPrelecFunction, 100);
 
-    }
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
-    {
-        lsfitcreatefg(x,
-                      y,
-                      c,
-                      true,
-                      state);
+        de.Optimize(1000, false);
 
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
+        std::vector<double> result = de.GetBestAgent();
 
-        alglib::lsfitfit(state,
-                         ebert_prelec_discounting,
-                         ebert_prelec_discounting_grad);
-    }
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
-    {
-        lsfitcreatefgh(x,
-                       y,
-                       c,
-                       state);
-
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
-
-        alglib::lsfitfit(state,
-                         ebert_prelec_discounting,
-                         ebert_prelec_discounting_grad,
-                         ebert_prelec_discounting_hessian);
-    }
-
-    lsfitresults(state, info, c, rep);
-
-    if ((int) GetInfo() == 2 || (int) GetInfo() == 5)
-    {
         N = y.length();
         SSR = 0;
 
         for (int i = 0; i < N; i++)
         {
-            holder = exp(-pow((exp(c[0])*x[i][0]), c[1]));
+            holder = exp(-pow((exp(result[0])*x[i][0]), exp(result[1])));
 
             ErrorResidual.append(((double) y[i] - holder));
 
@@ -1531,8 +1727,89 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
 
         aicEbertPrelec = (-2 * log(L)) + (2 * DF);
         bicEbertPrelec = -2 * log(L) + log(N) * DF;
-        fitEbertPrelecK = (double) c[0];
-        fitEbertPrelecS = (double) c[1];
+        fitEbertPrelecK = (double) result[0];
+        fitEbertPrelecS = (double) exp(result[1]);
+    }
+    else
+    {
+        SetStarts(mStarts);
+
+        if (fittingAlgorithm == FittingAlgorithm::Function)
+        {
+            lsfitcreatef(x,
+                         y,
+                         c,
+                         diffstep,
+                         state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             ebert_prelec_discounting);
+
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
+        {
+            lsfitcreatefg(x,
+                          y,
+                          c,
+                          true,
+                          state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             ebert_prelec_discounting,
+                             ebert_prelec_discounting_grad);
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+        {
+            lsfitcreatefgh(x,
+                           y,
+                           c,
+                           state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             ebert_prelec_discounting,
+                             ebert_prelec_discounting_grad,
+                             ebert_prelec_discounting_hessian);
+        }
+
+        lsfitresults(state, info, c, rep);
+
+        if ((int) GetInfo() == 2 || (int) GetInfo() == 5)
+        {
+            N = y.length();
+            SSR = 0;
+
+            for (int i = 0; i < N; i++)
+            {
+                holder = exp(-pow((exp(c[0])*x[i][0]), c[1]));
+
+                ErrorResidual.append(((double) y[i] - holder));
+
+                SSR += pow(ErrorResidual[i], 2);
+            }
+
+            S2 = SSR / N;
+
+            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
+
+            DF = 3;
+
+            aicEbertPrelec = (-2 * log(L)) + (2 * DF);
+            bicEbertPrelec = -2 * log(L) + log(N) * DF;
+            fitEbertPrelecK = (double) c[0];
+            fitEbertPrelecS = (double) c[1];
+        }
     }
 }
 
@@ -1549,81 +1826,25 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
     fitBleichrodtS = NULL;
     fitBleichrodtBeta = NULL;
 
-    SetStarts(mStarts);
-
-    SetLowerUpperBounds("[Inf, Inf, 1.0]", "[-Inf, -Inf, 0.0]");
-
-    if (fittingAlgorithm == FittingAlgorithm::Function)
+    if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        lsfitcreatef(x,
-                     y,
-                     c,
-                     diffstep,
-                     state);
+        QVector<double> xValues = GetXVector();
+        QVector<double> yValues = GetYVector();
 
-        lsfitsetbc(state,
-                   bndl,
-                   bndu);
+        BeleichrodtModel beleichrodtFunction(xValues, yValues);
 
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
+        de::DifferentialEvolution de(beleichrodtFunction, 100);
 
-        alglib::lsfitfit(state,
-                         bleichrodt_discounting);
+        de.Optimize(1000, false);
 
-    }
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
-    {
-        lsfitcreatefg(x,
-                      y,
-                      c,
-                      true,
-                      state);
+        std::vector<double> result = de.GetBestAgent();
 
-        lsfitsetbc(state,
-                   bndl,
-                   bndu);
-
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
-
-        alglib::lsfitfit(state,
-                         bleichrodt_discounting,
-                         bleichrodt_discounting_grad);
-    }
-    else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
-    {
-        lsfitcreatefgh(x,
-                       y,
-                       c,
-                       state);
-
-        lsfitsetbc(state,
-                   bndl,
-                   bndu);
-
-        lsfitsetcond(state,
-                     epsx,
-                     maxits);
-
-        alglib::lsfitfit(state,
-                         bleichrodt_discounting,
-                         bleichrodt_discounting_grad,
-                         bleichrodt_discounting_hessian);
-    }
-
-    lsfitresults(state, info, c, rep);
-
-    if ((int) GetInfo() == 2 || (int) GetInfo() == 5)
-    {
         N = y.length();
         SSR = 0;
 
         for (int i = 0; i < N; i++)
         {
-            holder = c[2] * exp(-exp(c[0])*pow(x[i][0], c[1]));
+            holder = result[2] * exp(-exp(result[0])*pow(x[i][0], exp(result[1])));
 
             ErrorResidual.append(((double) y[i] - holder));
 
@@ -1638,9 +1859,106 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
 
         aicBleichrodt = (-2 * log(L)) + (2 * DF);
         bicBleichrodt = -2 * log(L) + log(N) * DF;
-        fitBleichrodtK = (double) c[0];
-        fitBleichrodtS = (double) c[1];
-        fitBleichrodtBeta = (double) c[2];
+        fitBleichrodtK = (double) result[0];
+        fitBleichrodtS = (double) exp(result[1]);
+        fitBleichrodtBeta = (double) result[2];
+
+    }
+    else
+    {
+        SetStarts(mStarts);
+
+        SetLowerUpperBounds("[Inf, Inf, 1.0]", "[-Inf, -Inf, 0.0]");
+
+        if (fittingAlgorithm == FittingAlgorithm::Function)
+        {
+            lsfitcreatef(x,
+                         y,
+                         c,
+                         diffstep,
+                         state);
+
+            lsfitsetbc(state,
+                       bndl,
+                       bndu);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             bleichrodt_discounting);
+
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
+        {
+            lsfitcreatefg(x,
+                          y,
+                          c,
+                          true,
+                          state);
+
+            lsfitsetbc(state,
+                       bndl,
+                       bndu);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             bleichrodt_discounting,
+                             bleichrodt_discounting_grad);
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+        {
+            lsfitcreatefgh(x,
+                           y,
+                           c,
+                           state);
+
+            lsfitsetbc(state,
+                       bndl,
+                       bndu);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             bleichrodt_discounting,
+                             bleichrodt_discounting_grad,
+                             bleichrodt_discounting_hessian);
+        }
+
+        lsfitresults(state, info, c, rep);
+
+        if ((int) GetInfo() == 2 || (int) GetInfo() == 5)
+        {
+            N = y.length();
+            SSR = 0;
+
+            for (int i = 0; i < N; i++)
+            {
+                holder = c[2] * exp(-exp(c[0])*pow(x[i][0], c[1]));
+
+                ErrorResidual.append(((double) y[i] - holder));
+
+                SSR += pow(ErrorResidual[i], 2);
+            }
+
+            S2 = SSR / N;
+
+            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
+
+            DF = 4;
+
+            aicBleichrodt = (-2 * log(L)) + (2 * DF);
+            bicBleichrodt = -2 * log(L) + log(N) * DF;
+            fitBleichrodtK = (double) c[0];
+            fitBleichrodtS = (double) c[1];
+            fitBleichrodtBeta = (double) c[2];
+        }
     }
 }
 
@@ -2430,6 +2748,10 @@ double ModelSelection::getErrorBleichrodt(double lnK, double s, double beta)
     return leastSquaresError;
 }
 
+/**
+ * @brief ModelSelection::SetFittingAlgorithm
+ * @param value
+ */
 void ModelSelection::SetFittingAlgorithm(FittingAlgorithm value)
 {
     fittingAlgorithm = value;
