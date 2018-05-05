@@ -1259,7 +1259,22 @@ void ChartWindow::saveSVGasPNG()
 
     if(!file_name.trimmed().isEmpty())
     {
-        //stackedWidget.currentWidget()->grab().save(file_name, "PNG", 9);
+        switch (stackedWidget.currentIndex()) {
+        case 0:
+            chart->savePng(file_name);
+            break;
+        case 1:
+            chartArea->savePng(file_name);
+            break;
+        case 2:
+            chartError->savePng(file_name);
+            break;
+        case 3:
+            chartBar->savePng(file_name);
+            break;
+        default:
+            break;
+        }
     }
 }
 
