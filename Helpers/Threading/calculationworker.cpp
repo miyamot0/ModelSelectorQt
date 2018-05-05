@@ -98,7 +98,7 @@ void CalculationWorker::working()
                 fitResultExponential = new FitResult(ModelType::Exponential);
                 fitResultExponential->Params.append(QPair<QString, double>(QString("Exponential K"), lnK));
 
-                fitResultExponential->RMS = -1;
+                fitResultExponential->RMS = mFittingObject->rmseExponential;
                 fitResultExponential->AIC = mFittingObject->aicExponential;
                 fitResultExponential->BIC = mFittingObject->bicExponential;
 
@@ -201,7 +201,7 @@ void CalculationWorker::working()
                 fitResultHyperbolic = new FitResult(ModelType::Hyperbolic);
                 fitResultHyperbolic->Params.append(QPair<QString, double>(QString("Hyperbolic K"), lnK));
 
-                fitResultHyperbolic->RMS = -1;
+                fitResultHyperbolic->RMS = mFittingObject->rmseHyperbolic;
                 fitResultHyperbolic->AIC = mFittingObject->aicHyperbolic;
                 fitResultHyperbolic->BIC = mFittingObject->bicHyperbolic;
 
@@ -305,7 +305,7 @@ void CalculationWorker::working()
                 fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Beta"), mFittingObject->fitQuasiHyperbolicBeta));
                 fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Delta"), mFittingObject->fitQuasiHyperbolicDelta));
 
-                fitResultBetaDelta->RMS = -1;
+                fitResultBetaDelta->RMS = mFittingObject->rmseQuasiHyperbolic;
                 fitResultBetaDelta->AIC = mFittingObject->aicQuasiHyperbolic;
                 fitResultBetaDelta->BIC = mFittingObject->bicQuasiHyperbolic;
 
@@ -428,7 +428,7 @@ void CalculationWorker::working()
                 fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson K"), mFittingObject->fitMyersonK));
                 fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson S"), mFittingObject->fitMyersonS));
 
-                fitResultGreenMyerson->RMS = -1;
+                fitResultGreenMyerson->RMS = mFittingObject->rmseMyerson;
                 fitResultGreenMyerson->AIC = mFittingObject->aicMyerson;
                 fitResultGreenMyerson->BIC = mFittingObject->bicMyerson;
 
@@ -567,7 +567,7 @@ void CalculationWorker::working()
                     fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin K"), mFittingObject->fitRachlinK));
                     fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin S"), mFittingObject->fitRachlinS));
 
-                    fitResultRachlin->RMS = -1;
+                    fitResultRachlin->RMS = mFittingObject->rmseRachlin;
 
                     fitResultRachlin->AIC = mFittingObject->aicRachlin;
                     fitResultRachlin->BIC = mFittingObject->bicRachlin;
@@ -712,7 +712,7 @@ void CalculationWorker::working()
                 fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic K"), mFittingObject->fitGeneralizedHyperbolicK));
                 fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic Beta"), mFittingObject->fitGeneralizedHyperbolicBeta));
 
-                fitResultGeneralizedHyperbolic->RMS = -1;
+                fitResultGeneralizedHyperbolic->RMS = mFittingObject->rmseGeneralizedHyperbolic;
                 fitResultGeneralizedHyperbolic->AIC = mFittingObject->aicGeneralizedHyperbolic;
                 fitResultGeneralizedHyperbolic->BIC = mFittingObject->bicGeneralizedHyperbolic;
 
@@ -836,7 +836,7 @@ void CalculationWorker::working()
                 fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec K"), mFittingObject->fitEbertPrelecK));
                 fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec S"), mFittingObject->fitEbertPrelecS));
 
-                fitResultEbertPrelec->RMS = -1;
+                fitResultEbertPrelec->RMS = mFittingObject->rmseEbertPrelec;
 
                 fitResultEbertPrelec->AIC = mFittingObject->aicEbertPrelec;
                 fitResultEbertPrelec->BIC = mFittingObject->bicEbertPrelec;
@@ -962,7 +962,7 @@ void CalculationWorker::working()
                 fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt S"), mFittingObject->fitBleichrodtS));
                 fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt Beta"), mFittingObject->fitBleichrodtBeta));
 
-                fitResultBleichrodt->RMS = -1;
+                fitResultBleichrodt->RMS = mFittingObject->rmseBleichrodt;
                 fitResultBleichrodt->AIC = mFittingObject->aicBleichrodt;
                 fitResultBleichrodt->BIC = mFittingObject->bicBleichrodt;
 

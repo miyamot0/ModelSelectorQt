@@ -150,6 +150,19 @@ public:
     double probsEbertPrelec  = -1;
     double probsBleichrodt  = -1;
 
+    /** RMSE
+      *
+      */
+    double rmseNoise = -1;
+    double rmseHyperbolic = -1;
+    double rmseExponential = -1;
+    double rmseQuasiHyperbolic = -1;
+    double rmseMyerson = -1;
+    double rmseRachlin = -1;
+    double rmseGeneralizedHyperbolic = -1;
+    double rmseEbertPrelec  = -1;
+    double rmseBleichrodt  = -1;
+
     /** Fits
       *
       */

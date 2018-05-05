@@ -922,6 +922,11 @@ void ModelSelection::FitExponential(const char *mStarts)
         aicExponential = (-2 * log(L)) + (2 * DF);
         bicExponential = -2 * log(L) + log(N) * DF;
         fitExponentialK = (double) result[0];
+
+        if (SSR > 0)
+        {
+            rmseExponential = sqrt(SSR/(double) N);
+        }
     }
     else
     {
@@ -1051,6 +1056,11 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
         aicHyperbolic = (-2 * log(L)) + (2 * DF);
         bicHyperbolic = -2 * log(L) + log(N) * DF;
         fitHyperbolicK = (double) result[0];
+
+        if (SSR > 0)
+        {
+            rmseHyperbolic = sqrt(SSR/(double) N);
+        }
     }
     else
     {
@@ -1181,6 +1191,11 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
         bicQuasiHyperbolic = -2 * log(L) + log(N) * DF;
         fitQuasiHyperbolicBeta = (double) result[0];
         fitQuasiHyperbolicDelta = (double) result[1];
+
+        if (SSR > 0)
+        {
+            rmseQuasiHyperbolic = sqrt(SSR/(double) N);
+        }
     }
     else
     {
@@ -1328,6 +1343,11 @@ void ModelSelection::FitMyerson(const char *mStarts)
         bicMyerson = -2 * log(L) + log(N) * DF;
         fitMyersonK = (double) result[0];
         fitMyersonS = (double) exp(result[1]);
+
+        if (SSR > 0)
+        {
+            rmseMyerson = sqrt(SSR/(double) N);
+        }
     }
     else
     {
@@ -1463,6 +1483,11 @@ void ModelSelection::FitRachlin(const char *mStarts)
         fitRachlinS = exp(result[1]);
 
         statusValue = -1;
+
+        if (SSR > 0)
+        {
+            rmseRachlin = sqrt(SSR/(double) N);
+        }
     }
     else
     {
@@ -1596,6 +1621,11 @@ void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
         bicGeneralizedHyperbolic = -2 * log(L) + log(N) * DF;
         fitGeneralizedHyperbolicK = (double) result[0];
         fitGeneralizedHyperbolicBeta = (double) result[1];
+
+        if (SSR > 0)
+        {
+            rmseGeneralizedHyperbolic = sqrt(SSR/(double) N);
+        }
     }
     else
     {
@@ -1729,6 +1759,11 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
         bicEbertPrelec = -2 * log(L) + log(N) * DF;
         fitEbertPrelecK = (double) result[0];
         fitEbertPrelecS = (double) exp(result[1]);
+
+        if (SSR > 0)
+        {
+            rmseEbertPrelec = sqrt(SSR/(double) N);
+        }
     }
     else
     {
@@ -1863,6 +1898,10 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
         fitBleichrodtS = (double) exp(result[1]);
         fitBleichrodtBeta = (double) result[2];
 
+        if (SSR > 0)
+        {
+            rmseBleichrodt = sqrt(SSR/(double) N);
+        }
     }
     else
     {
