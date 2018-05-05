@@ -139,14 +139,6 @@ void ChartWindow::buildED50Plot()
     chart->plotLayout()->insertRow(0);
     chart->plotLayout()->addElement(0, 0, titleMainChart);
 
-    QCPLayoutGrid *subLayout = new QCPLayoutGrid;
-    chart->plotLayout()->addElement(1, 1, subLayout);
-    subLayout->setMargins(QMargins(0, 0, 10, 0));
-    subLayout->addElement(0, 1, new QCPLayoutElement);
-    subLayout->addElement(1, 1, chart->legend);
-    subLayout->addElement(2, 1, new QCPLayoutElement);
-    chart->plotLayout()->setColumnStretchFactor(1, 0.001);
-
     // Add Points
     chart->addGraph();
     chart->graph(RawData)->setLineStyle(QCPGraph::lsNone);
@@ -264,11 +256,14 @@ void ChartWindow::plotED50Series(int index)
     for (int i = 0; i < 10; i++)
     {
         chart->graph(i)->setVisible(false);
+        chart->graph(i)->removeFromLegend();
         chart->graph(i)->data().data()->clear();
     }
 
     chart->graph(RawData)->setVisible(true);
+
     chart->graph(ModelNoise)->setVisible(true);
+    chart->graph(ModelNoise)->addToLegend();
 
     if (mList.Header.contains("dropped", Qt::CaseInsensitive))
     {
@@ -296,6 +291,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 expCheck = true;
                 chart->graph(ModelExponential)->setVisible(true);
+                chart->graph(ModelExponential)->addToLegend();
             }
         }
 
@@ -307,6 +303,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 hypCheck = true;
                 chart->graph(ModelHyperbolic)->setVisible(true);
+                chart->graph(ModelHyperbolic)->addToLegend();
             }
         }
 
@@ -319,6 +316,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 quasiCheck = true;
                 chart->graph(ModelQuasiHyperbolic)->setVisible(true);
+                chart->graph(ModelQuasiHyperbolic)->addToLegend();
             }
         }
 
@@ -331,6 +329,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 myerCheck = true;
                 chart->graph(ModelGreenMyerson)->setVisible(true);
+                chart->graph(ModelGreenMyerson)->addToLegend();
             }
         }
 
@@ -343,6 +342,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 rachCheck = true;
                 chart->graph(ModelRachlin)->setVisible(true);
+                chart->graph(ModelRachlin)->addToLegend();
             }
         }
 
@@ -355,6 +355,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 rodriguezCheck = true;
                 chart->graph(ModelGeneralizedHyperbolic)->setVisible(true);
+                chart->graph(ModelGeneralizedHyperbolic)->addToLegend();
             }
         }
 
@@ -367,6 +368,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 ebertCheck = true;
                 chart->graph(ModelEbertPrelec)->setVisible(true);
+                chart->graph(ModelEbertPrelec)->addToLegend();
             }
         }
 
@@ -381,6 +383,7 @@ void ChartWindow::plotED50Series(int index)
             {
                 bleichrodtCheck = true;
                 chart->graph(ModelBeleichrodt)->setVisible(true);
+                chart->graph(ModelBeleichrodt)->addToLegend();
             }
         }
     }
@@ -454,7 +457,6 @@ void ChartWindow::plotED50Series(int index)
  */
 void ChartWindow::buildAUCPlot()
 {
-
     chartArea->legend->setVisible(true);
     chartArea->yAxis->setLabel("Value");
     chartArea->yAxis->setScaleType(QCPAxis::stLinear);
@@ -471,14 +473,6 @@ void ChartWindow::buildAUCPlot()
 
     chartArea->plotLayout()->insertRow(0);
     chartArea->plotLayout()->addElement(0, 0, titleAreaChart);
-
-    QCPLayoutGrid *subLayout = new QCPLayoutGrid;
-    chartArea->plotLayout()->addElement(1, 1, subLayout);
-    subLayout->setMargins(QMargins(0, 0, 10, 0));
-    subLayout->addElement(0, 1, new QCPLayoutElement);
-    subLayout->addElement(1, 1, chartArea->legend);
-    subLayout->addElement(2, 1, new QCPLayoutElement);
-    chartArea->plotLayout()->setColumnStretchFactor(1, 0.001);
 
     // Add Points
     chartArea->addGraph();
@@ -551,12 +545,15 @@ void ChartWindow::plotAUCSeries(int index)
     for (int i = 0; i < 10; i++)
     {
         chartArea->graph(i)->setVisible(false);
+        chartArea->graph(i)->removeFromLegend();
         chartArea->graph(i)->data().data()->clear();
     }
 
     chartArea->graph(RawData)->setVisible(true);
+
     chartArea->graph(ModelEmpirical)->data().data()->clear();
     chartArea->graph(ModelEmpirical)->setVisible(true);
+    chartArea->graph(ModelEmpirical)->removeFromLegend();
 
     if (mList.Header.contains("dropped", Qt::CaseInsensitive))
     {
@@ -565,7 +562,7 @@ void ChartWindow::plotAUCSeries(int index)
         return;
     }
 
-    titleAreaChart->setText(QString("Participant #%1: %2 log10(MB-AUC) = %3").arg(QString::number(currentIndexShown + 1)).arg(cleanTitle(mList.TopModel)).arg(mList.TopAUCLog));
+    titleAreaChart->setText(QString("Participant #%1: %2 Log Scaled MB-AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(cleanTitle(mList.TopModel)).arg(mList.TopAUCLog));
 
     expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
 
@@ -573,38 +570,47 @@ void ChartWindow::plotAUCSeries(int index)
     {
         case ModelType::Noise:
             chartArea->graph(ModelNoise)->setVisible(true);
+            chartArea->graph(ModelNoise)->addToLegend();
             break;
 
         case ModelType::Exponential:
             chartArea->graph(ModelExponential)->setVisible(true);
+            chartArea->graph(ModelExponential)->addToLegend();
             break;
 
         case ModelType::Hyperbolic:
             chartArea->graph(ModelHyperbolic)->setVisible(true);
+            chartArea->graph(ModelHyperbolic)->addToLegend();
             break;
 
         case ModelType::BetaDelta:
             chartArea->graph(ModelQuasiHyperbolic)->setVisible(true);
+            chartArea->graph(ModelQuasiHyperbolic)->addToLegend();
             break;
 
         case ModelType::Myerson:
             chartArea->graph(ModelGreenMyerson)->setVisible(true);
+            chartArea->graph(ModelGreenMyerson)->addToLegend();
             break;
 
         case ModelType::Rachlin:
             chartArea->graph(ModelRachlin)->setVisible(true);
+            chartArea->graph(ModelRachlin)->addToLegend();
             break;
 
         case ModelType::GeneralizedHyperbolic:
             chartArea->graph(ModelGeneralizedHyperbolic)->setVisible(true);
+            chartArea->graph(ModelGeneralizedHyperbolic)->addToLegend();
             break;
 
         case ModelType::EbertPrelec:
             chartArea->graph(ModelEbertPrelec)->setVisible(true);
+            chartArea->graph(ModelEbertPrelec)->addToLegend();
             break;
 
         case ModelType::Beleichrodt:
             chartArea->graph(ModelBeleichrodt)->setVisible(true);
+            chartArea->graph(ModelBeleichrodt)->addToLegend();
             break;
     }
 
@@ -798,7 +804,7 @@ void ChartWindow::plotAUCPoint(double i)
  */
 void ChartWindow::buildErrorPlot()
 {
-    chartError->legend->setVisible(true);
+    chartError->legend->setVisible(false);
 
     chartError->yAxis->setLabel(tr("Error Value"));
     chartError->yAxis->setScaleType(QCPAxis::stLinear);
@@ -843,6 +849,7 @@ void ChartWindow::plotResiduals(int index)
     titleErrorChart->setText(QString("Residual Error for Participant #%1").arg(QString::number(currentIndexShown + 1)));
 
     chartError->graph(0)->data().data()->clear();
+    chartError->graph(0)->removeFromLegend();
 
     for (int j=0; j<mList.TopErrPar.length(); j++)
     {
@@ -911,8 +918,8 @@ void ChartWindow::plotProbabilities(int index)
 
     expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
 
-    QVector<QString> modelStrings({"Exponential", "Hyperbolic", "BetaDelta",
-                                   "Green-Myerson", "Rachlin", "Generalized Hyperbolic",
+    QVector<QString> modelStrings({"Exponential", "Hyperbolic", "Beta Delta",
+                                   "Green-Myerson", "Rachlin", "G. Hyperbolic",
                                    "Ebert-Prelec", "Beleichrodt", "Noise"});
 
     QVector<double> modelTicks({1, 2, 3, 4, 5, 6, 7, 8, 9});
