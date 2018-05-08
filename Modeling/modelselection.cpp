@@ -1085,13 +1085,12 @@ void ModelSelection::FitParabolic(const char *mStarts)
 
     if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        /*
         QVector<double> xValues = GetXVector();
         QVector<double> yValues = GetYVector();
 
-        ExponentialModel exponentialFunction(xValues, yValues);
+        ParabolicModel parabolicFunction(xValues, yValues);
 
-        de::DifferentialEvolution de(exponentialFunction, 100);
+        de::DifferentialEvolution de(parabolicFunction, 100);
 
         de.Optimize(1000, false);
 
@@ -1102,7 +1101,7 @@ void ModelSelection::FitParabolic(const char *mStarts)
 
         for (int i = 0; i < N; i++)
         {
-            holder = (exp(-exp( (double) result[0])* (double) x[i][0]));
+            holder = 1.0 - (exp((double) c[0]) * pow(x[i][0], 2));
 
             ErrorResidual.append(((double) y[i] - holder));
 
@@ -1123,7 +1122,6 @@ void ModelSelection::FitParabolic(const char *mStarts)
         {
             rmseExponential = sqrt(SSR/(double) N);
         }
-        */
     }
     else
     {

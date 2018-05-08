@@ -121,6 +121,95 @@ private:
     bool isWeighted = false;
 };
 
+class ParabolicModel : public IOptimizable
+{
+public:
+    ParabolicModel(QVector<double> delays, QVector<double> values)
+    {
+        _delays = delays;
+        _values = values;
+    }
+
+    void SetWeights(QString customWeights)
+    {
+        weights = SplitWeights(customWeights);
+        isWeighted = true;
+    }
+
+    QList<double> SplitWeights(QString value)
+    {
+        QString temp = value.replace("[", "");
+        QString temp2 = temp.replace("]", "");
+
+        QStringList tempList = temp2.split(",");
+
+        QList<double> returnList;
+
+        double num;
+        foreach (QString str, tempList) {
+            num = str.toDouble();
+
+            returnList << num;
+        }
+
+        return returnList;
+    }
+
+    double EvaluteCost(std::vector<double> inputs) const override
+    {
+        double val = 0.0;
+
+        double lnk = inputs[0];
+
+        double tempDelay, tempValue;
+
+        double temp;
+
+        for (int j = 0; j < _delays.length(); j++)
+        {
+            tempDelay = _delays[j];
+            tempValue = _values[j];
+
+            temp = tempValue - (1.0 - (exp(lnk) * pow(tempDelay, 2)));
+
+            if (isWeighted)
+            {
+                val = val + (temp * temp) * weights[j];
+            }
+            else
+            {
+                val = val + (temp * temp);
+            }
+        }
+
+        val = val / (double) _delays.length();
+
+        return val;
+    }
+
+    unsigned int NumberOfParameters() const override
+    {
+        return m_dim;
+    }
+
+    std::vector<Constraints> GetConstraints() const override
+    {
+        std::vector<Constraints> constr(1);
+
+        constr[0] = Constraints(-100, 100, true);
+
+        return constr;
+    }
+private:
+    unsigned int m_dim = 1;
+
+    QVector<double> _delays;
+    QVector<double> _values;
+
+    QList<double> weights;
+    bool isWeighted = false;
+};
+
 class HyperbolicModel : public IOptimizable
 {
 public:
