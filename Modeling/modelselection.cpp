@@ -1072,6 +1072,142 @@ void ModelSelection::FitExponential(const char *mStarts)
     }
 }
 
+/** Exponentials
+ * @brief
+ */
+void ModelSelection::FitParabolic(const char *mStarts)
+{
+    ErrorResidual.clear();
+
+    aicParabolic = NULL;
+    bicParabolic = NULL;
+    fitParabolicK = NULL;
+
+    if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
+    {
+        /*
+        QVector<double> xValues = GetXVector();
+        QVector<double> yValues = GetYVector();
+
+        ExponentialModel exponentialFunction(xValues, yValues);
+
+        de::DifferentialEvolution de(exponentialFunction, 100);
+
+        de.Optimize(1000, false);
+
+        std::vector<double> result = de.GetBestAgent();
+
+        N = y.length();
+        SSR = 0;
+
+        for (int i = 0; i < N; i++)
+        {
+            holder = (exp(-exp( (double) result[0])* (double) x[i][0]));
+
+            ErrorResidual.append(((double) y[i] - holder));
+
+            SSR += pow(ErrorResidual[i], 2);
+        }
+
+        S2 = SSR / N;
+
+        L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
+
+        DF = 2;
+
+        aicExponential = (-2 * log(L)) + (2 * DF);
+        bicExponential = -2 * log(L) + log(N) * DF;
+        fitExponentialK = (double) result[0];
+
+        if (SSR > 0)
+        {
+            rmseExponential = sqrt(SSR/(double) N);
+        }
+        */
+    }
+    else
+    {
+        SetStarts(mStarts);
+
+        if (fittingAlgorithm == FittingAlgorithm::Function)
+        {
+            lsfitcreatef(x,
+                         y,
+                         c,
+                         diffstep,
+                         state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             parabolic_discounting);
+
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
+        {
+            lsfitcreatefg(x,
+                          y,
+                          c,
+                          true,
+                          state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             parabolic_discounting,
+                             parabolic_discounting_grad);
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+        {
+            lsfitcreatefgh(x,
+                           y,
+                           c,
+                           state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             parabolic_discounting,
+                             parabolic_discounting_grad,
+                             parabolic_discounting_hessian);
+
+        }
+
+        lsfitresults(state, info, c, rep);
+
+        if ((int) info == 2 || (int) info == 5)
+        {
+            N = y.length();
+            SSR = 0;
+
+            for (int i = 0; i < N; i++)
+            {
+                holder = 1.0 - (exp((double) c[0]) * pow(x[i][0], 2));
+
+                ErrorResidual.append(((double) y[i] - holder));
+
+                SSR += pow(ErrorResidual[i], 2);
+            }
+
+            S2 = SSR / N;
+
+            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
+
+            DF = 2;
+
+            aicParabolic = (-2 * log(L)) + (2 * DF);
+            bicParabolic = -2 * log(L) + log(N) * DF;
+            fitParabolicK = (double) c[0];
+        }
+    }
+}
+
 /** Hyperbolics
  * @brief
  */

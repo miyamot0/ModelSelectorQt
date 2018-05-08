@@ -75,6 +75,7 @@ public:
     QString getLogAUCBestModel(ModelType model);
 
     double getErrorExponential(double lnK);
+    double getErrorParabolic(double lnK);
     double getErrorHyperbolic(double lnK);
     double getErrorQuasiHyperbolic(double beta, double delta);
     double getErrorGreenMyerson(double lnK, double s);
@@ -85,6 +86,7 @@ public:
 
     void FitNoise();
     void FitExponential(const char *mStarts);
+    void FitParabolic(const char *mStarts);
     void FitHyperbolic(const char *mStarts);
     void FitQuasiHyperbolic(const char *mStarts);
     void FitMyerson(const char *mStarts);
@@ -104,6 +106,7 @@ public:
     double aicNoise = -1;
     double aicHyperbolic = -1;
     double aicExponential = -1;
+    double aicParabolic = -1;
     double aicQuasiHyperbolic = -1;
     double aicMyerson = -1;
     double aicRachlin = -1;
@@ -117,6 +120,7 @@ public:
     double bicNoise = -1;
     double bicHyperbolic = -1;
     double bicExponential = -1;
+    double bicParabolic = -1;
     double bicQuasiHyperbolic = -1;
     double bicMyerson = -1;
     double bicRachlin = -1;
@@ -130,6 +134,7 @@ public:
     double bfNoise = -1;
     double bfHyperbolic = -1;
     double bfExponential = -1;
+    double bfParabolic = -1;
     double bfQuasiHyperbolic = -1;
     double bfMyerson = -1;
     double bfRachlin = -1;
@@ -143,6 +148,7 @@ public:
     double probsNoise = -1;
     double probsHyperbolic = -1;
     double probsExponential = -1;
+    double probsParabolic = -1;
     double probsQuasiHyperbolic = -1;
     double probsMyerson = -1;
     double probsRachlin = -1;
@@ -156,6 +162,7 @@ public:
     double rmseNoise = -1;
     double rmseHyperbolic = -1;
     double rmseExponential = -1;
+    double rmseParabolic = -1;
     double rmseQuasiHyperbolic = -1;
     double rmseMyerson = -1;
     double rmseRachlin = -1;
@@ -168,6 +175,7 @@ public:
       */
     double fitHyperbolicK = -1;
     double fitExponentialK = -1;
+    double fitParabolicK = -1;
     double fitQuasiHyperbolicBeta = -1;
     double fitQuasiHyperbolicDelta = -1;
     double fitMyersonK = -1;
