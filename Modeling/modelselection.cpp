@@ -125,6 +125,71 @@ void exponential_integration_log10(double x, double, double, double &y, void *pt
 }
 
 /**
+ * @brief parabolic_discounting
+ * @param c
+ * @param x
+ * @param func
+ */
+void parabolic_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
+{
+    func = 1.0 - (exp(c[0]) * pow(x[0], 2));
+}
+
+/**
+ * @brief parabolic_discounting_grad
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ */
+void parabolic_discounting_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *)
+{
+    func = 1.0 - (exp(c[0]) * pow(x[0], 2));
+    grad[0] = -(exp(c[0]) * pow(x[0],2));
+}
+
+/**
+ * @brief parabolic_discounting_hessian
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ * @param hess
+ */
+void parabolic_discounting_hessian(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, real_2d_array &hess, void *)
+{
+    func = 1.0 - (exp(c[0]) * pow(x[0], 2));
+    grad[0] = -(exp(c[0]) * pow(x[0],2));
+    hess[0][0] = -(exp(c[0]) * pow(x[0],2));
+}
+
+/**
+ * @brief parabolic_integration
+ * @param x
+ * @param y
+ * @param ptr
+ */
+void parabolic_integration(double x, double, double, double &y, void *ptr)
+{
+    QList<double> *param = (QList<double> *) ptr;
+    double k = param->at(0);
+    y = 1.0 - (exp(k) * pow(x, 2));
+}
+
+/**
+ * @brief parabolic_integration_log10
+ * @param x
+ * @param y
+ * @param ptr
+ */
+void parabolic_integration_log10(double x, double, double, double &y, void *ptr)
+{
+    QList<double> *param = (QList<double> *) ptr;
+    double k = param->at(0);
+    y = 1.0 - (exp(k) * pow(pow(10,x), 2));
+}
+
+/**
  * @brief hyperbolic_discounting
  * @param c
  * @param x
@@ -212,14 +277,13 @@ void generalized_hyperboloid_discounting_grad(const real_1d_array &c, const real
 {
     func = pow((1 + x[0] * exp(c[0])),(-exp(c[1]) / exp(c[0])));
 
-    grad[0] = pow((1 + x[0] * exp(c[0])),((-exp(c[1])/exp(c[0])) - 1)) *
-            ((-exp(c[1])/exp(c[0])) * (x[0] * exp(c[0]))) +
-            pow((1 + x[0] * exp(c[0])), (-exp(c[1])/exp(c[0]))) *
-            (log((1 + x[0] * exp(c[0]))) * (exp(c[1]) * exp(c[0])/pow(exp(c[0]),2)));
+    grad[0] = pow((1 + x[0] * exp(c[0])), ((-exp(c[1])/exp(c[0])) - 1)) *
+              ((-exp(c[1])/exp(c[0])) * (x[0] * exp(c[0]))) +
+              pow((1 + x[0] * exp(c[0])), (-exp(c[1])/exp(c[0]))) *
+              (log((1 + x[0] * exp(c[0]))) * (exp(c[1]) * exp(c[0])/pow(exp(c[0]),2)));
 
-    grad[1] = -(pow((1 + x[0] * exp(c[0])),(-exp(c[1])/exp(c[0]))) *
-            (log((1 + x[0] * exp(c[0]))) *
-            (exp(c[1])/exp(c[0]))));
+    grad[1] = -(pow((1 + x[0] * exp(c[0])), (-exp(c[1])/exp(c[0]))) *
+               (log((1 + x[0] * exp(c[0]))) * (exp(c[1])/exp(c[0]))));
 }
 
 /**
