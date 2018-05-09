@@ -623,7 +623,9 @@ void CalculationWorker::working()
                 {
                     mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Myerson, mFittingObject->bicMyerson));
 
-                    fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson K"), mFittingObject->fitMyersonK));
+                    double lnK = (settings->logNormalParameters) ? exp(mFittingObject->fitMyersonK) : mFittingObject->fitMyersonK;
+
+                    fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson K"), lnK));
                     fitResultGreenMyerson->Params.append(QPair<QString, double>(QString("Myerson S"), mFittingObject->fitMyersonS));
                     fitResultGreenMyerson->RMS = mFittingObject->GetReport().rmserror;
                     fitResultGreenMyerson->AIC = mFittingObject->aicMyerson;
@@ -781,7 +783,9 @@ void CalculationWorker::working()
                     {
                         mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Rachlin, mFittingObject->bicRachlin));
 
-                        fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin K"), mFittingObject->fitRachlinK));
+                        double lnK = (settings->logNormalParameters) ? exp(mFittingObject->fitRachlinK) : mFittingObject->fitRachlinK;
+
+                        fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin K"), lnK));
                         fitResultRachlin->Params.append(QPair<QString, double>(QString("Rachlin S"), mFittingObject->fitRachlinS));
                         fitResultRachlin->RMS = mFittingObject->GetReport().rmserror;
                         fitResultRachlin->AIC = mFittingObject->aicRachlin;
@@ -911,8 +915,11 @@ void CalculationWorker::working()
                 {
                     mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::GeneralizedHyperbolic, mFittingObject->bicGeneralizedHyperbolic));
 
-                    fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic K"), mFittingObject->fitGeneralizedHyperbolicK));
-                    fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic Beta"), mFittingObject->fitGeneralizedHyperbolicBeta));
+                    double lnK = (settings->logNormalParameters) ? exp(mFittingObject->fitGeneralizedHyperbolicK) : mFittingObject->fitGeneralizedHyperbolicK;
+                    double lnB = (settings->logNormalParameters) ? exp(mFittingObject->fitGeneralizedHyperbolicBeta) : mFittingObject->fitGeneralizedHyperbolicBeta;
+
+                    fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic K"), lnK));
+                    fitResultGeneralizedHyperbolic->Params.append(QPair<QString, double>(QString("Generalized-Hyperbolic Beta"), lnB));
                     fitResultGeneralizedHyperbolic->RMS = mFittingObject->GetReport().rmserror;
                     fitResultGeneralizedHyperbolic->AIC = mFittingObject->aicGeneralizedHyperbolic;
                     fitResultGeneralizedHyperbolic->BIC = mFittingObject->bicGeneralizedHyperbolic;
@@ -1038,7 +1045,9 @@ void CalculationWorker::working()
                 {
                     mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::EbertPrelec, mFittingObject->bicEbertPrelec));
 
-                    fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec K"), mFittingObject->fitEbertPrelecK));
+                    double lnK = (settings->logNormalParameters) ? exp(mFittingObject->fitEbertPrelecK) : mFittingObject->fitEbertPrelecK;
+
+                    fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec K"), lnK));
                     fitResultEbertPrelec->Params.append(QPair<QString, double>(QString("Ebert-Prelec S"), mFittingObject->fitEbertPrelecS));
                     fitResultEbertPrelec->RMS = mFittingObject->GetReport().rmserror;
                     fitResultEbertPrelec->AIC = mFittingObject->aicEbertPrelec;
@@ -1181,7 +1190,9 @@ void CalculationWorker::working()
                 {
                     mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Beleichrodt, mFittingObject->bicBleichrodt));
 
-                    fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt K"), mFittingObject->fitBleichrodtK));
+                    double lnK = (settings->logNormalParameters) ? exp(mFittingObject->fitBleichrodtK) : mFittingObject->fitBleichrodtK;
+
+                    fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt K"), lnK));
                     fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt S"), mFittingObject->fitBleichrodtS));
                     fitResultBleichrodt->Params.append(QPair<QString, double>(QString("Bleichrodt Beta"), mFittingObject->fitBleichrodtBeta));
                     fitResultBleichrodt->RMS = mFittingObject->GetReport().rmserror;
