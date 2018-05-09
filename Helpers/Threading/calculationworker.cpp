@@ -185,8 +185,7 @@ void CalculationWorker::working()
             }
         }
 
-        // TODO: add cb for parabolic
-        if (true)
+        if (settings->modelParabolic)
         {
             if (settings->settingsFitting == FittingAlgorithm::DifferentialEvolution)
             {
@@ -214,14 +213,14 @@ void CalculationWorker::working()
             {
                 if (!settings->cbBruteForce)
                 {
-                    p1Span = abs(-12) + abs(12); // -12 to 12
+                    p1Span = abs(-30) + abs(30);
                     p1Step = p1Span / 100;
 
                     grandLoop = 0;
 
                     for (int kLoop = 0; kLoop < 100; kLoop++)
                     {
-                        provisionalValues.oneParamStartingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+                        provisionalValues.oneParamStartingValueArray[grandLoop].p1 = 30 - ((kLoop + 1) * p1Step);
 
                         grandLoop++;
                     }
@@ -1244,6 +1243,13 @@ void CalculationWorker::working()
                 fitResults->FittingResults.append(fitResultExponential);
         }
 
+        if (settings->modelParabolic)
+        {
+            fitResultParabolic->BF = mFittingObject->bfParabolic;
+            fitResultParabolic->Probability = mFittingObject->probsParabolic;
+                fitResults->FittingResults.append(fitResultParabolic);
+        }
+
         if (settings->modelHyperbolic)
         {
             fitResultHyperbolic->BF = mFittingObject->bfHyperbolic;
@@ -1306,6 +1312,11 @@ void CalculationWorker::working()
             case ModelType::Exponential:
                 mModel = "Exponential";
                 mTopErrPar = fitResultExponential->ErrPar;
+                break;
+
+            case ModelType::Parabolic:
+                mModel = "Parabolic";
+                mTopErrPar = fitResultParabolic->ErrPar;
                 break;
 
             case ModelType::Hyperbolic:

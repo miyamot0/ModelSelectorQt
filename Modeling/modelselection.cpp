@@ -2718,6 +2718,7 @@ void ModelSelection::PrepareProbabilities()
 {
     bfNoise = ScaleFactor(NoiseBIC, NoiseBIC);
     bfExponential = NULL;
+    bfParabolic = NULL;
     bfHyperbolic = NULL;
     bfQuasiHyperbolic = NULL;
     bfMyerson = NULL;
@@ -2736,6 +2737,11 @@ void ModelSelection::PrepareProbabilities()
         {
             bfExponential = ScaleFactor(mBicList[i].second, NoiseBIC);
             sumBayesFactors = sumBayesFactors + bfExponential;
+        }
+        else if (mBicList[i].first == ModelType::Parabolic)
+        {
+            bfParabolic = ScaleFactor(mBicList[i].second, NoiseBIC);
+            sumBayesFactors = sumBayesFactors + bfParabolic;
         }
         else if (mBicList[i].first == ModelType::Hyperbolic)
         {
@@ -2792,6 +2798,11 @@ void ModelSelection::PrepareProbabilities()
         {
             probsExponential = bfExponential/sumBayesFactors;
             mProbList.append(QPair<ModelType, double>(ModelType::Exponential, probsExponential));
+        }
+        else if (mBicList[i].first == ModelType::Parabolic)
+        {
+            probsParabolic = bfParabolic/sumBayesFactors;
+            mProbList.append(QPair<ModelType, double>(ModelType::Parabolic, probsParabolic));
         }
         else if (mBicList[i].first == ModelType::Hyperbolic)
         {
