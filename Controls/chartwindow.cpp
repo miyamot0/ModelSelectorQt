@@ -1115,6 +1115,11 @@ double ChartWindow::parabolic_plotting(double k, double x)
     }
 }
 
+double ChartWindow::parabolic_prediction(double k, double x)
+{
+    return 1.0 - (exp(k) * pow(x, 2));
+}
+
 /**
  * @brief ChartWindow::hyperbolic_plotting
  * @param k

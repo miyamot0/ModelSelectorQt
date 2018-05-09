@@ -1101,7 +1101,7 @@ void ModelSelection::FitParabolic(const char *mStarts)
 
         for (int i = 0; i < N; i++)
         {
-            holder = 1.0 - (exp((double) c[0]) * pow(x[i][0], 2));
+            holder = 1.0 - (exp((double) result[0]) * pow(x[i][0], 2));
 
             ErrorResidual.append(((double) y[i] - holder));
 
@@ -1114,13 +1114,13 @@ void ModelSelection::FitParabolic(const char *mStarts)
 
         DF = 2;
 
-        aicExponential = (-2 * log(L)) + (2 * DF);
-        bicExponential = -2 * log(L) + log(N) * DF;
-        fitExponentialK = (double) result[0];
+        aicParabolic = (-2 * log(L)) + (2 * DF);
+        bicParabolic = -2 * log(L) + log(N) * DF;
+        fitParabolicK = (double) result[0];
 
         if (SSR > 0)
         {
-            rmseExponential = sqrt(SSR/(double) N);
+            rmseParabolic = sqrt(SSR/(double) N);
         }
     }
     else
@@ -2266,6 +2266,12 @@ QString ModelSelection::getED50BestModel(ModelType model)
 
         break;
 
+    case ModelType::Parabolic:
+        result = getED50parabolic();
+        return QString::number(result);
+
+        break;
+
     case ModelType::BetaDelta:
         result = log(log((1/(2*fitQuasiHyperbolicBeta)))/log(fitQuasiHyperbolicDelta));
         return QString::number(result);
@@ -2324,6 +2330,41 @@ double ModelSelection::getED50ep () {
       double lowEst = ChartWindow::ebert_prelec_prediction(fitEbertPrelecK, fitEbertPrelecS, lowDelay);
       double midEst = ChartWindow::ebert_prelec_prediction(fitEbertPrelecK, fitEbertPrelecS, (lowDelay+highDelay)/2);
       double highEst = ChartWindow::ebert_prelec_prediction(fitEbertPrelecK, fitEbertPrelecS, highDelay);
+
+      if (lowEst > 0.5 && midEst > 0.5) {
+        //Above 50% mark range
+        lowDelay  = (lowDelay+highDelay)/2;
+        highDelay = highDelay;
+
+      } else if (highEst < 0.5 && midEst < 0.5) {
+        //Below 50% mark range
+        lowDelay  = lowDelay;
+        highDelay = (lowDelay+highDelay)/2;
+
+      }
+
+      i++;
+    }
+
+    double returnValue = log((lowDelay+highDelay)/2);
+
+    return returnValue;
+}
+
+/**
+ * @brief ModelSelection::getED50parabolic
+ * @return
+ */
+double ModelSelection::getED50parabolic () {
+    double lowDelay = 0;
+    double highDelay = x[x.rows()-1][0] * 100;
+
+    int i = 0;
+
+    while ((highDelay - lowDelay) > 0.001 && i < 100) {
+      double lowEst = ChartWindow::parabolic_prediction(fitParabolicK, lowDelay);
+      double midEst = ChartWindow::parabolic_prediction(fitParabolicK, (lowDelay+highDelay)/2);
+      double highEst = ChartWindow::parabolic_prediction(fitParabolicK, highDelay);
 
       if (lowEst > 0.5 && midEst > 0.5) {
         //Above 50% mark range
@@ -2443,6 +2484,19 @@ QString ModelSelection::getAUCBestModel(ModelType model)
 
         autogksmooth(a, b, s);
         alglib::autogkintegrate(s, exponential_integration, &mParams);
+        autogkresults(s, v, rep);
+
+        result = double(v) / (b - a);
+
+        return QString::number(result);
+
+        break;
+
+    case ModelType::Parabolic:
+        mParams << fitParabolicK;
+
+        autogksmooth(a, b, s);
+        alglib::autogkintegrate(s, parabolic_integration, &mParams);
         autogkresults(s, v, rep);
 
         result = double(v) / (b - a);
@@ -2596,6 +2650,19 @@ QString ModelSelection::getLogAUCBestModel(ModelType model)
 
         autogksmooth(a, b, s);
         alglib::autogkintegrate(s, exponential_integration_log10, &mParams);
+        autogkresults(s, v, rep);
+
+        result = double(v) / (b - a);
+
+        return QString::number(result);
+
+        break;
+
+    case ModelType::Parabolic:
+        mParams << fitParabolicK;
+
+        autogksmooth(a, b, s);
+        alglib::autogkintegrate(s, parabolic_integration_log10, &mParams);
         autogkresults(s, v, rep);
 
         result = double(v) / (b - a);

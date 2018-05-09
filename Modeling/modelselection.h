@@ -66,6 +66,7 @@ public:
     QString getED50BestModel(ModelType model);
 
     double getED50ep();
+    double getED50parabolic();
     double getED50crdi();
     double getED50rodriguez();
 

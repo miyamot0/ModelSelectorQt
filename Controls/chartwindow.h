@@ -73,6 +73,7 @@ public:
 
     void saveChartImage(QCustomPlot *currPlot, QString filePath, QString fileExt);
 
+    double static parabolic_prediction(double k, double x);
     double static generalized_hyperbolic_prediction(double k, double s, double x);
     double static ebert_prelec_prediction(double k, double s, double x);
     double static bleichrodt_prediction(double k, double s, double beta, double x);
