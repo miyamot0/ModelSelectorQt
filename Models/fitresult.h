@@ -29,6 +29,7 @@
 enum class ModelType {
     Noise,
     Exponential,
+    Parabolic,
     Hyperbolic,
     GeneralizedHyperbolic,
     BetaDelta,

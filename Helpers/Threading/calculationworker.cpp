@@ -185,6 +185,111 @@ void CalculationWorker::working()
             }
         }
 
+        // TODO: add cb for parabolic
+        if (true)
+        {
+            if (settings->settingsFitting == FittingAlgorithm::DifferentialEvolution)
+            {
+                mFittingObject->FitParabolic(NULL);
+
+                mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Parabolic, mFittingObject->bicParabolic));
+
+                double lnK = (settings->logNormalParameters) ? exp(mFittingObject->fitParabolicK) : mFittingObject->fitParabolicK;
+
+                fitResultParabolic = new FitResult(ModelType::Parabolic);
+                fitResultParabolic->Params.append(QPair<QString, double>(QString("Parabolic K"), lnK));
+
+                fitResultParabolic->RMS = mFittingObject->rmseParabolic;
+                fitResultParabolic->AIC = mFittingObject->aicParabolic;
+                fitResultParabolic->BIC = mFittingObject->bicParabolic;
+
+                for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                {
+                    fitResultParabolic->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                }
+
+                fitResultParabolic->Status = "---";
+            }
+            else
+            {
+                if (!settings->cbBruteForce)
+                {
+                    p1Span = abs(-12) + abs(12); // -12 to 12
+                    p1Step = p1Span / 100;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 100; kLoop++)
+                    {
+                        provisionalValues.oneParamStartingValueArray[grandLoop].p1 = 12 - ((kLoop + 1) * p1Step);
+
+                        grandLoop++;
+                    }
+
+                    for (BruteForce & obj : provisionalValues.oneParamStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorParabolic(obj.p1);
+                    }
+
+                    std::sort(provisionalValues.oneParamStartingValueArray, provisionalValues.oneParamStartingValueArray + 100);
+
+                    mFittingObject->FitParabolic(QString("[%1]").arg(provisionalValues.oneParamStartingValueArray[0].p1).toUtf8().constData());
+                }
+                else
+                {
+                    p1Span = abs(-100) + abs(100); // -100 to 100
+                    p1Step = p1Span / 10000;
+
+                    grandLoop = 0;
+
+                    for (int kLoop = 0; kLoop < 10000; kLoop++)
+                    {
+                        provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = 20 - ((kLoop + 1) * p1Step);
+
+                        grandLoop++;
+                    }
+
+                    for (BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+                    {
+                        obj.err = mFittingObject->getErrorParabolic(obj.p1);
+                    }
+
+                    std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+
+                    mFittingObject->FitParabolic(QString("[%1]").arg(provisionalValues.smallBruteStartingValueArray[0].p1).toUtf8().constData());
+                }
+
+                fitResultParabolic = new FitResult(ModelType::Parabolic);
+
+                if ((int) mFittingObject->GetInfo() == 2 || (int) mFittingObject->GetInfo() == 5)
+                {
+                    mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::Parabolic, mFittingObject->bicParabolic));
+
+                    double lnK = (settings->logNormalParameters) ? exp(mFittingObject->fitParabolicK) : mFittingObject->fitParabolicK;
+
+                    fitResultParabolic->Params.append(QPair<QString, double>(QString("Parabolic K"), lnK));
+                    fitResultParabolic->RMS = mFittingObject->GetReport().rmserror;
+                    fitResultParabolic->AIC = mFittingObject->aicParabolic;
+                    fitResultParabolic->BIC = mFittingObject->bicParabolic;
+
+                    for (int v = 0; v < mFittingObject->ErrorResidual.count(); v++)
+                    {
+                        fitResultParabolic->ErrPar.append(mFittingObject->ErrorResidual.at(v));
+                    }
+
+                    fitResultParabolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
+                else
+                {
+                    fitResultParabolic->Params.append(QPair<QString, double>(QString("Parabolic K"), NULL));
+                    fitResultParabolic->RMS = NULL;
+                    fitResultParabolic->AIC = NULL;
+                    fitResultParabolic->BIC = NULL;
+                    fitResultParabolic->Status = mFittingObject->formatStringResult((int) mFittingObject->GetInfo());
+                }
+            }
+        }
+
         if (settings->modelHyperbolic)
         {
             if (settings->settingsFitting == FittingAlgorithm::DifferentialEvolution)

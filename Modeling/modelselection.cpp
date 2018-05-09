@@ -2849,6 +2849,23 @@ double ModelSelection::getErrorExponential(double lnK)
 }
 
 /**
+ * @brief ModelSelection::getErrorParabolic
+ * @param lnK
+ * @return
+ */
+double ModelSelection::getErrorParabolic(double lnK)
+{
+    leastSquaresError = 0;
+
+    for (int i=0; i<y.length(); i++)
+    {
+        leastSquaresError = leastSquaresError + pow((y[i] - (1.0 - (exp(lnK) * pow(x[i][0], 2)))), 2);
+    }
+
+    return leastSquaresError;
+}
+
+/**
  * @brief ModelSelection::getErrorHyperbolic
  * @param lnK
  * @return

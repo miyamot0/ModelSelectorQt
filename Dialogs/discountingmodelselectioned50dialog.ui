@@ -273,6 +273,16 @@
            </widget>
           </item>
           <item>
+           <widget class="QCheckBox" name="checkBoxParabolic">
+            <property name="text">
+             <string>Include Parabolic Model</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="checkBoxQuasiHyperbolic">
             <property name="text">
              <string>Include Beta Delta Model</string>

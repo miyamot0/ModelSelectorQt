@@ -69,6 +69,7 @@ private:
     FitResults *fitResults;
 
     FitResult *fitResultExponential,
+              *fitResultParabolic,
               *fitResultHyperbolic,
               *fitResultBetaDelta,
               *fitResultGreenMyerson,

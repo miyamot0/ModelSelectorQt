@@ -62,6 +62,7 @@ public:
 
     bool modelExponential,
          modelHyperbolic,
+         modelParabolic,
          modelQuasiHyperbolic,
          modelMyersonGreen,
          modelRachlin,

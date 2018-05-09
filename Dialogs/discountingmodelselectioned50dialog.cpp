@@ -163,6 +163,7 @@ void DiscountingModelSelectionED50Dialog::on_pushButton_clicked()
 
     temp->calculationSettings->modelExponential = ui->checkBoxExponential->isChecked();
     temp->calculationSettings->modelHyperbolic = ui->checkBoxHyperbolic->isChecked();
+    temp->calculationSettings->modelParabolic = ui->checkBoxParabolic->isChecked();
     temp->calculationSettings->modelQuasiHyperbolic = ui->checkBoxQuasiHyperbolic->isChecked();
     temp->calculationSettings->modelMyersonGreen = ui->checkBoxMyersonHyperboloid->isChecked();
     temp->calculationSettings->modelRachlin = ui->checkBoxRachlinHyperboloid->isChecked();
