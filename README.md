@@ -15,10 +15,11 @@ Features include:
 
 ### Version
 ------
-1.8.0 (beta)
+1.8.1 (beta)
 
 ### Changelog
 ------
+ * 1.8.1 - Added parabolic model
  * 1.8.0 - Added differential evolution methods for derivative-free fitting
  * 1.7.2 - Better charting libaries
  * 1.7.1 - Bug fixes
@@ -42,6 +43,7 @@ Features include:
 * **Rachlin Model**: Rachlin, H. (2006). Notes on discounting. Journal of the Experimental Analysis of Behavior, 85(3), 425-435. https://doi.org/10.1901/jeab.2006.85-05
 * **Ebert & Prelec Model**: Ebert, J. E. J., & Prelec, D. (2007). The Fragility of Time: Time-Insensitivity and Valuation of the Near and Far Future. Management Science, 53(9), 1423-1438. https://doi.org/10.1287/mnsc.1060.0671
 * **Bleichrodt et al. Constant Relative Decreasing Impatience Model**: Bleichrodt, H., Rohde, K. I. M., & Wakker, P. P. (2009). Non-hyperbolic time inconsistency. Games and Economic Behavior, 66(1), 27-38. https://doi.org/10.1016/j.geb.2008.05.007
+* **Parabolic Model**: Hartmann, M. N., Hager, O. M., Tobler, P. N., & Kaiser, S. (2013). Parabolic discounting of monetary rewards by physical effort. Behavioural Processes, 100, 192?196. https://doi.org/10.1016/j.beproc.2013.09.014
 
 ### Usage
 ------
