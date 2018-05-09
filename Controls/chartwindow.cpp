@@ -192,6 +192,11 @@ void ChartWindow::buildED50Plot()
     chart->graph(ModelNoise)->setLineStyle(QCPGraph::lsLine);
     chart->graph(ModelNoise)->setName("Noise");
     chart->graph(ModelNoise)->setPen(QPen(Qt::darkCyan, penWidth));
+
+    chart->addGraph();
+    chart->graph(ModelParabolic)->setLineStyle(QCPGraph::lsLine);
+    chart->graph(ModelParabolic)->setName("Parabolic");
+    chart->graph(ModelParabolic)->setPen(QPen(Qt::darkGreen, penWidth));
 }
 
 /**
@@ -207,6 +212,11 @@ void ChartWindow::plotED50Point(double i)
     if (expCheck)
     {
         chart->graph(ModelExponential)->addData(xParam, exponential_plotting(expK, xParam));
+    }
+
+    if (paraCheck)
+    {
+        chart->graph(ModelParabolic)->addData(xParam, parabolic_plotting(paraK, xParam));
     }
 
     if (hypCheck)
@@ -253,7 +263,7 @@ void ChartWindow::plotED50Series(int index)
 {
     mList = mDisplayData.at(index);
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 11; i++)
     {
         chart->graph(i)->setVisible(false);
         chart->graph(i)->removeFromLegend();
@@ -274,13 +284,25 @@ void ChartWindow::plotED50Series(int index)
 
     titleMainChart->setText(QString("Participant #%1: %2 ln(ED50) = %3").arg(QString::number(currentIndexShown + 1)).arg(cleanTitle(mList.TopModel)).arg(mList.TopED50));
 
-    expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
+    expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = paraCheck = false;
 
     for (int i=0; i<mList.FittingResults.length(); i++)
     {
         if (mList.FittingResults[i]->Model == ModelType::Noise)
         {
             noise = mList.FittingResults[i]->Params.first().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Parabolic)
+        {
+            paraK = mList.FittingResults[i]->Params.first().second;
+
+            if (paraK != NULL)
+            {
+                paraCheck = true;
+                chart->graph(ModelParabolic)->setVisible(true);
+                chart->graph(ModelParabolic)->addToLegend();
+            }
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Exponential)
@@ -529,6 +551,11 @@ void ChartWindow::buildAUCPlot()
     chartArea->graph(ModelNoise)->setPen(QPen(Qt::darkCyan, penWidth));
 
     chartArea->addGraph();
+    chartArea->graph(ModelParabolic)->setLineStyle(QCPGraph::lsLine);
+    chartArea->graph(ModelParabolic)->setName("Parabolic");
+    chartArea->graph(ModelParabolic)->setPen(QPen(Qt::darkGreen, penWidth));
+
+    chartArea->addGraph();
     chartArea->graph(ModelEmpirical)->setLineStyle(QCPGraph::lsLine);
     chartArea->graph(ModelEmpirical)->setName("Empirical");
     chartArea->graph(ModelEmpirical)->setPen(QPen(Qt::black, penWidth));
@@ -542,7 +569,7 @@ void ChartWindow::plotAUCSeries(int index)
 {
     mList = mDisplayData.at(index);
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 11; i++)
     {
         chartArea->graph(i)->setVisible(false);
         chartArea->graph(i)->removeFromLegend();
@@ -564,7 +591,7 @@ void ChartWindow::plotAUCSeries(int index)
 
     titleAreaChart->setText(QString("Participant #%1: %2 Log Scaled MB-AUC = %3").arg(QString::number(currentIndexShown + 1)).arg(cleanTitle(mList.TopModel)).arg(mList.TopAUCLog));
 
-    expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
+    expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = paraCheck = false;
 
     switch (mList.TopModelType)
     {
@@ -576,6 +603,11 @@ void ChartWindow::plotAUCSeries(int index)
         case ModelType::Exponential:
             chartArea->graph(ModelExponential)->setVisible(true);
             chartArea->graph(ModelExponential)->addToLegend();
+            break;
+
+        case ModelType::Parabolic:
+            chartArea->graph(ModelParabolic)->setVisible(true);
+            chartArea->graph(ModelParabolic)->addToLegend();
             break;
 
         case ModelType::Hyperbolic:
@@ -625,6 +657,12 @@ void ChartWindow::plotAUCSeries(int index)
         {
             expCheck = true;
             expK = mList.FittingResults[i]->Params.first().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Parabolic)
+        {
+            paraCheck = true;
+            paraK = mList.FittingResults[i]->Params.first().second;
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Hyperbolic)
@@ -761,6 +799,11 @@ void ChartWindow::plotAUCPoint(double i)
         chartArea->graph(ModelExponential)->addData(xParam, exponential_plotting(expK, xParam));
     }
 
+    if (paraCheck)
+    {
+        chartArea->graph(ModelParabolic)->addData(xParam, parabolic_plotting(paraK, xParam));
+    }
+
     if (hypCheck)
     {
         chartArea->graph(ModelHyperbolic)->addData(xParam, hyperbolic_plotting(hypK, xParam));
@@ -893,7 +936,7 @@ void ChartWindow::buildProbabilityPlot()
 
     chartBar->xAxis->setLabel("Model");
     chartBar->xAxis->setRangeLower(0);
-    chartBar->xAxis->setRangeUpper(10);
+    chartBar->xAxis->setRangeUpper(11);
     chartBar->xAxis->grid()->setPen(Qt::NoPen);
 }
 
@@ -920,10 +963,10 @@ void ChartWindow::plotProbabilities(int index)
 
     QVector<QString> modelStrings({"Exponential", "Hyperbolic", "Beta Delta",
                                    "Green-Myerson", "Rachlin", "G. Hyperbolic",
-                                   "Ebert-Prelec", "Beleichrodt", "Noise"});
+                                   "Ebert-Prelec", "Beleichrodt", "Noise", "Parabolic"});
 
-    QVector<double> modelTicks({1, 2, 3, 4, 5, 6, 7, 8, 9});
-    QVector<double> modelProbabilities({0, 0, 0, 0, 0, 0, 0, 0, 0});
+    QVector<double> modelTicks({1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+    QVector<double> modelProbabilities({0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
 
     for (int i=0; i<mList.FittingResults.length(); i++)
     {
@@ -931,6 +974,11 @@ void ChartWindow::plotProbabilities(int index)
         if (mList.FittingResults[i]->Model == ModelType::Noise)
         {
             modelProbabilities[8] = mList.FittingResults[i]->Probability;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Parabolic)
+        {
+            modelProbabilities[9] = mList.FittingResults[i]->Probability;
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Exponential)
@@ -1046,6 +1094,24 @@ double ChartWindow::exponential_plotting(double k, double x)
     else
     {
         return exp(-exp(k)*x);
+    }
+}
+
+/**
+ * @brief ChartWindow::parabolic_plotting
+ * @param k
+ * @param x
+ * @return
+ */
+double ChartWindow::parabolic_plotting(double k, double x)
+{
+    if (isLogNormalParamerized)
+    {
+        return 1.0 - (k * pow(x, 2));
+    }
+    else
+    {
+        return 1.0 - (exp(k) * pow(x, 2));
     }
 }
 

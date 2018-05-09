@@ -62,6 +62,7 @@ public:
     void plotResiduals(int index);
 
     double exponential_plotting(double k, double x);
+    double parabolic_plotting(double k, double x);
     double hyperbolic_plotting(double k, double x);
     double quasi_hyperbolic_plotting(double beta, double delta, double x);
     double myerson_plotting(double k, double s, double x);
@@ -114,8 +115,6 @@ private:
 
     double penWidth = 1.25;
 
-
-
     QStringList modelAxisCategories,
                 delayPoints,
                 valuePoints;
@@ -130,7 +129,8 @@ private:
         ModelEbertPrelec = 7,
         ModelBeleichrodt = 8,
         ModelNoise = 9,
-        ModelEmpirical = 10;
+        ModelParabolic = 10,
+        ModelEmpirical = 11;
 
     /** Actions
      *
@@ -205,6 +205,7 @@ private:
          checkValue1,
          checkValue2,
          expCheck,
+         paraCheck,
          hypCheck,
          quasiCheck,
          myerCheck,
@@ -214,6 +215,7 @@ private:
          bleichrodtCheck;
 
     double expK,
+           paraK,
            hypK,
            quasiB,
            quasiD,

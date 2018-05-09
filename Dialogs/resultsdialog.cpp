@@ -364,17 +364,17 @@ void ResultsDialog::ImportDataAndShow(bool hasAreaMetrics)
             }
         }
 
-        ui->tableWidget->setItem(i,77, new QTableWidgetItem(temp->allResults.at(i).TopModel));
-        ui->tableWidget->setItem(i,78, new QTableWidgetItem(temp->allResults.at(i).TopED50));
+        ui->tableWidget->setItem(i, 77, new QTableWidgetItem(temp->allResults.at(i).TopModel));
+        ui->tableWidget->setItem(i, 78, new QTableWidgetItem(temp->allResults.at(i).TopED50));
 
         if (hasAreaMetrics)
         {
-            ui->tableWidget->setItem(i,79, new QTableWidgetItem(temp->allResults.at(i).TopAUC));
-            ui->tableWidget->setItem(i,80, new QTableWidgetItem(temp->allResults.at(i).TopAUCLog));
+            ui->tableWidget->setItem(i, 79, new QTableWidgetItem(temp->allResults.at(i).TopAUC));
+            ui->tableWidget->setItem(i, 80, new QTableWidgetItem(temp->allResults.at(i).TopAUCLog));
         }
 
-        ui->tableWidget->setItem(i,81, new QTableWidgetItem(temp->allResults.at(i).ParticipantDelays));
-        ui->tableWidget->setItem(i,82, new QTableWidgetItem(temp->allResults.at(i).ParticipantValues));
+        ui->tableWidget->setItem(i, 81, new QTableWidgetItem(temp->allResults.at(i).ParticipantDelays));
+        ui->tableWidget->setItem(i, 82, new QTableWidgetItem(temp->allResults.at(i).ParticipantValues));
     }
 
     ui->tableWidget->setUpdatesEnabled(true);
