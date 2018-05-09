@@ -190,6 +190,22 @@ ResultsDialog::ResultsDialog(int nSeries, bool tripLogNormal, QWidget *parent) :
     columnList << "Bleichrodt.prob";
     columnList << "Bleichrodt.notes";
 
+    if (tripLogNormal)
+    {
+        columnList << "Parabolic.k";
+    }
+    else
+    {
+        columnList << "Parabolic.lnk";
+    }
+
+    columnList << "Parabolic.RMSE";
+    columnList << "Parabolic.BIC";
+    columnList << "Parabolic.AIC";
+    columnList << "Parabolic.BF";
+    columnList << "Parabolic.prob";
+    columnList << "Parabolic.notes";
+
     columnList << "noise.mean";
     columnList << "noise.RMSE";
     columnList << "noise.BIC";
@@ -326,7 +342,7 @@ void ResultsDialog::ImportDataAndShow(bool hasAreaMetrics)
                 ui->tableWidget->setItem(i,63, new QTableWidgetItem(temp->allResults.at(i).FittingResults.at(j)->Status));
             }
 
-            if (temp->allResults.at(i).FittingResults.at(j)->Model == ModelType::Noise)
+            if (temp->allResults.at(i).FittingResults.at(j)->Model == ModelType::Parabolic)
             {
                 ui->tableWidget->setItem(i,64, new QTableWidgetItem(formatNumberCatchNulls(temp->allResults.at(i).FittingResults.at(j)->Params.first().second)));
                 ui->tableWidget->setItem(i,65, new QTableWidgetItem(formatNumberCatchNulls(temp->allResults.at(i).FittingResults.at(j)->RMS)));
@@ -334,20 +350,31 @@ void ResultsDialog::ImportDataAndShow(bool hasAreaMetrics)
                 ui->tableWidget->setItem(i,67, new QTableWidgetItem(formatNumberCatchNulls(temp->allResults.at(i).FittingResults.at(j)->AIC)));
                 ui->tableWidget->setItem(i,68, new QTableWidgetItem(formatNumberCatchNulls(temp->allResults.at(i).FittingResults.at(j)->BF)));
                 ui->tableWidget->setItem(i,69, new QTableWidgetItem(formatNumberCatchNulls(temp->allResults.at(i).FittingResults.at(j)->Probability)));
+                ui->tableWidget->setItem(i,70, new QTableWidgetItem(temp->allResults.at(i).FittingResults.at(j)->Status));
+            }
+
+            if (temp->allResults.at(i).FittingResults.at(j)->Model == ModelType::Noise)
+            {
+                ui->tableWidget->setItem(i,71, new QTableWidgetItem(formatNumberCatchNulls(temp->allResults.at(i).FittingResults.at(j)->Params.first().second)));
+                ui->tableWidget->setItem(i,72, new QTableWidgetItem(formatNumberCatchNulls(temp->allResults.at(i).FittingResults.at(j)->RMS)));
+                ui->tableWidget->setItem(i,73, new QTableWidgetItem(formatNumberCatchNulls(temp->allResults.at(i).FittingResults.at(j)->BIC)));
+                ui->tableWidget->setItem(i,74, new QTableWidgetItem(formatNumberCatchNulls(temp->allResults.at(i).FittingResults.at(j)->AIC)));
+                ui->tableWidget->setItem(i,75, new QTableWidgetItem(formatNumberCatchNulls(temp->allResults.at(i).FittingResults.at(j)->BF)));
+                ui->tableWidget->setItem(i,76, new QTableWidgetItem(formatNumberCatchNulls(temp->allResults.at(i).FittingResults.at(j)->Probability)));
             }
         }
 
-        ui->tableWidget->setItem(i,70, new QTableWidgetItem(temp->allResults.at(i).TopModel));
-        ui->tableWidget->setItem(i,71, new QTableWidgetItem(temp->allResults.at(i).TopED50));
+        ui->tableWidget->setItem(i,77, new QTableWidgetItem(temp->allResults.at(i).TopModel));
+        ui->tableWidget->setItem(i,78, new QTableWidgetItem(temp->allResults.at(i).TopED50));
 
         if (hasAreaMetrics)
         {
-            ui->tableWidget->setItem(i,72, new QTableWidgetItem(temp->allResults.at(i).TopAUC));
-            ui->tableWidget->setItem(i,73, new QTableWidgetItem(temp->allResults.at(i).TopAUCLog));
+            ui->tableWidget->setItem(i,79, new QTableWidgetItem(temp->allResults.at(i).TopAUC));
+            ui->tableWidget->setItem(i,80, new QTableWidgetItem(temp->allResults.at(i).TopAUCLog));
         }
 
-        ui->tableWidget->setItem(i,74, new QTableWidgetItem(temp->allResults.at(i).ParticipantDelays));
-        ui->tableWidget->setItem(i,75, new QTableWidgetItem(temp->allResults.at(i).ParticipantValues));
+        ui->tableWidget->setItem(i,81, new QTableWidgetItem(temp->allResults.at(i).ParticipantDelays));
+        ui->tableWidget->setItem(i,82, new QTableWidgetItem(temp->allResults.at(i).ParticipantValues));
     }
 
     ui->tableWidget->setUpdatesEnabled(true);
