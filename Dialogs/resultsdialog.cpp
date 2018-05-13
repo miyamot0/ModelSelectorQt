@@ -53,7 +53,8 @@ ResultsDialog::ResultsDialog(int nSeries, bool tripLogNormal, QWidget *parent) :
 
     addAction(copyAction);
 
-    setWindowFlags(windowFlags() | Qt::WindowMinimizeButtonHint);
+    setWindowFlags(windowFlags() | Qt::WindowMinimizeButtonHint);    
+    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
 
     QStringList columnList;
 
