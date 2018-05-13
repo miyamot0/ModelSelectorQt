@@ -1442,20 +1442,11 @@ void ChartWindow::saveImage()
     QString fileFilter = "PNG (*.png);;JPEG (*.jpeg);;BMP (*.bmp);;PDF (*.pdf)";
     QString selectedType;
 
-//#ifdef _WIN32
-
-        file_name = QFileDialog::getSaveFileName(this, tr("Save current chart?"),
-                                                 QDir::homePath(),
-                                                 fileFilter,
-                                                 &selectedType,
-                                                 QFileDialog::Option::DontUseNativeDialog);
-
-//#elif TARGET_OS_MAC
-
-//        file_name = QFileDialog::getSaveFileName(this, tr("Save PNG"), QDir::homePath(),
-//                                         fileFilter, &fileFilter, QFileDialog::Option::DontUseNativeDialog);
-//#endif
-
+    file_name = QFileDialog::getSaveFileName(this, tr("Save current chart?"),
+                                             QDir::homePath(),
+                                             fileFilter,
+                                             &selectedType,
+                                             QFileDialog::Option::DontUseNativeDialog);
 
     if(!file_name.trimmed().isEmpty())
     {
