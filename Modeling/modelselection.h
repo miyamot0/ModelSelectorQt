@@ -52,7 +52,6 @@ public:
     void SetY(const char *mString);
     void SetStarts(const char *mString);
     void SetLowerUpperBounds(const char *mUpperString, const char *mLowerString);
-    void SetFittingAlgorithm(FittingAlgorithm value);
 
     real_1d_array GetParams();
     lsfitstate GetState();
@@ -60,8 +59,6 @@ public:
     lsfitreport GetReport();
 
     double GetNoiseMean();
-
-    QString formatStringResult(int value);
 
     QString getED50BestModel(ModelType model);
 
@@ -224,6 +221,57 @@ public:
         }
 
         return returnVector;
+    }
+
+    /**
+     * @brief ScaleFactor
+     * @param modelBic
+     * @param noiseBic
+     * @return
+     */
+    double ScaleFactor(double modelBic, double noiseBic)
+    {
+        return exp(-0.5 * (modelBic - noiseBic));
+    }
+
+    /**
+     * @brief ModelSelection::formatStringResult
+     * @param value
+     * @return
+     */
+    QString formatStringResult(int value)
+    {
+        if (value == -7 || value == -8)
+        {
+            return QString("gradient verification failed");
+
+        }
+        else if (value == 2)
+        {
+            return QString("Success: relative step is no more than EpsX");
+
+        }
+        else if (value == 5)
+        {
+            return QString("MaxIts steps was taken");
+        }
+        else if (value == 7)
+        {
+            return QString("stopping conditions are too stringent, further improvement is impossible");
+        }
+        else
+        {
+            return QString("No notes supplied");
+        }
+    }
+
+    /**
+     * @brief ModelSelection::SetFittingAlgorithm
+     * @param value
+     */
+    void SetFittingAlgorithm(FittingAlgorithm value)
+    {
+        fittingAlgorithm = value;
     }
 
     double InvIt(double value) const
