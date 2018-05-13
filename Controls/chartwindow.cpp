@@ -197,6 +197,11 @@ void ChartWindow::buildED50Plot()
     chart->graph(ModelParabolic)->setLineStyle(QCPGraph::lsLine);
     chart->graph(ModelParabolic)->setName("Parabolic");
     chart->graph(ModelParabolic)->setPen(QPen(Qt::darkGreen, penWidth));
+
+    chart->addGraph();
+    chart->graph(ModelPower)->setLineStyle(QCPGraph::lsLine);
+    chart->graph(ModelPower)->setName("Power");
+    chart->graph(ModelPower)->setPen(QPen(Qt::blue, penWidth));
 }
 
 /**
@@ -227,6 +232,11 @@ void ChartWindow::plotED50Point(double i)
     if (quasiCheck)
     {
         chart->graph(ModelQuasiHyperbolic)->addData(xParam, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
+    }
+
+    if (powerCheck)
+    {
+        chart->graph(ModelPower)->addData(xParam, power_plotting(powerK, powerS, xParam));
     }
 
     if (myerCheck)
@@ -263,7 +273,7 @@ void ChartWindow::plotED50Series(int index)
 {
     mList = mDisplayData.at(index);
 
-    for (int i = 0; i < 11; i++)
+    for (int i = 0; i < ModelEmpirical; i++)
     {
         chart->graph(i)->setVisible(false);
         chart->graph(i)->removeFromLegend();
@@ -339,6 +349,19 @@ void ChartWindow::plotED50Series(int index)
                 quasiCheck = true;
                 chart->graph(ModelQuasiHyperbolic)->setVisible(true);
                 chart->graph(ModelQuasiHyperbolic)->addToLegend();
+            }
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Power)
+        {
+            powerK = mList.FittingResults[i]->Params.first().second;
+            powerS = mList.FittingResults[i]->Params.last().second;
+
+            if (powerK != NULL && powerS != NULL)
+            {
+                powerCheck = true;
+                chart->graph(ModelPower)->setVisible(true);
+                chart->graph(ModelPower)->addToLegend();
             }
         }
 
@@ -556,6 +579,11 @@ void ChartWindow::buildAUCPlot()
     chartArea->graph(ModelParabolic)->setPen(QPen(Qt::darkGreen, penWidth));
 
     chartArea->addGraph();
+    chartArea->graph(ModelPower)->setLineStyle(QCPGraph::lsLine);
+    chartArea->graph(ModelPower)->setName("Power");
+    chartArea->graph(ModelPower)->setPen(QPen(Qt::blue, penWidth));
+
+    chartArea->addGraph();
     chartArea->graph(ModelEmpirical)->setLineStyle(QCPGraph::lsLine);
     chartArea->graph(ModelEmpirical)->setName("Empirical");
     chartArea->graph(ModelEmpirical)->setPen(QPen(Qt::black, penWidth));
@@ -569,7 +597,7 @@ void ChartWindow::plotAUCSeries(int index)
 {
     mList = mDisplayData.at(index);
 
-    for (int i = 0; i < 11; i++)
+    for (int i = 0; i < ModelEmpirical; i++)
     {
         chartArea->graph(i)->setVisible(false);
         chartArea->graph(i)->removeFromLegend();
@@ -618,6 +646,11 @@ void ChartWindow::plotAUCSeries(int index)
         case ModelType::BetaDelta:
             chartArea->graph(ModelQuasiHyperbolic)->setVisible(true);
             chartArea->graph(ModelQuasiHyperbolic)->addToLegend();
+            break;
+
+        case ModelType::Power:
+            chartArea->graph(ModelPower)->setVisible(true);
+            chartArea->graph(ModelPower)->addToLegend();
             break;
 
         case ModelType::Myerson:
@@ -676,6 +709,13 @@ void ChartWindow::plotAUCSeries(int index)
             quasiCheck = true;
             quasiB = mList.FittingResults[i]->Params.first().second;
             quasiD = mList.FittingResults[i]->Params.last().second;
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Power)
+        {
+            powerCheck = true;
+            powerK = mList.FittingResults[i]->Params.first().second;
+            powerS = mList.FittingResults[i]->Params.last().second;
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Myerson)
@@ -814,6 +854,11 @@ void ChartWindow::plotAUCPoint(double i)
         chartArea->graph(ModelQuasiHyperbolic)->addData(xParam, quasi_hyperbolic_plotting(quasiB, quasiD, xParam));
     }
 
+    if (powerCheck)
+    {
+        chartArea->graph(ModelPower)->addData(xParam, power_plotting(powerK, powerS, xParam));
+    }
+
     if (myerCheck)
     {
         chartArea->graph(ModelGreenMyerson)->addData(xParam, myerson_plotting(myerK, myerS, xParam));
@@ -936,7 +981,7 @@ void ChartWindow::buildProbabilityPlot()
 
     chartBar->xAxis->setLabel("Model");
     chartBar->xAxis->setRangeLower(0);
-    chartBar->xAxis->setRangeUpper(11);
+    chartBar->xAxis->setRangeUpper(12);
     chartBar->xAxis->grid()->setPen(Qt::NoPen);
 }
 
@@ -963,10 +1008,11 @@ void ChartWindow::plotProbabilities(int index)
 
     QVector<QString> modelStrings({"Exponential", "Hyperbolic", "Beta Delta",
                                    "Green-Myerson", "Rachlin", "G. Hyperbolic",
-                                   "Ebert-Prelec", "Beleichrodt", "Noise", "Parabolic"});
+                                   "Ebert-Prelec", "Beleichrodt", "Noise", "Parabolic",
+                                   "Power"});
 
-    QVector<double> modelTicks({1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
-    QVector<double> modelProbabilities({0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+    QVector<double> modelTicks({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11});
+    QVector<double> modelProbabilities({0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
 
     for (int i=0; i<mList.FittingResults.length(); i++)
     {
@@ -978,7 +1024,22 @@ void ChartWindow::plotProbabilities(int index)
 
         if (mList.FittingResults[i]->Model == ModelType::Parabolic)
         {
-            modelProbabilities[9] = mList.FittingResults[i]->Probability;
+            paraK = mList.FittingResults[i]->Params.first().second;
+
+            if (paraK != NULL)
+            {
+                modelProbabilities[9] = mList.FittingResults[i]->Probability;
+            }
+        }
+
+        if (mList.FittingResults[i]->Model == ModelType::Power)
+        {
+            powerK = mList.FittingResults[i]->Params.first().second;
+
+            if (powerK != NULL)
+            {
+                modelProbabilities[10] = mList.FittingResults[i]->Probability;
+            }
         }
 
         if (mList.FittingResults[i]->Model == ModelType::Exponential)
@@ -1251,6 +1312,13 @@ double ChartWindow::generalized_hyperbolic_plotting(double k, double s, double x
     }
 }
 
+/**
+ * @brief ChartWindow::generalized_hyperbolic_prediction
+ * @param k
+ * @param s
+ * @param x
+ * @return
+ */
 double ChartWindow::generalized_hyperbolic_prediction(double k, double s, double x)
 {
     return pow((1 + x * exp(k)),(-exp(s) / exp(k)));
@@ -1275,6 +1343,13 @@ double ChartWindow::ebert_prelec_plotting(double k, double s, double x)
     }
 }
 
+/**
+ * @brief ChartWindow::ebert_prelec_prediction
+ * @param k
+ * @param s
+ * @param x
+ * @return
+ */
 double ChartWindow::ebert_prelec_prediction(double k, double s, double x)
 {
     return exp(-pow((exp(k)*x),s));
@@ -1300,6 +1375,14 @@ double ChartWindow::bleichrodt_plotting(double k, double s, double beta, double 
     }
 }
 
+/**
+ * @brief ChartWindow::bleichrodt_prediction
+ * @param k
+ * @param s
+ * @param beta
+ * @param x
+ * @return
+ */
 double ChartWindow::bleichrodt_prediction(double k, double s, double beta, double x)
 {
     return beta * exp(-exp(k)*pow(x,s));

@@ -133,7 +133,8 @@ private:
         ModelBeleichrodt = 8,
         ModelNoise = 9,
         ModelParabolic = 10,
-        ModelEmpirical = 11;
+        ModelPower = 11,
+        ModelEmpirical = 12;
 
     /** Actions
      *
@@ -215,7 +216,8 @@ private:
          rachCheck,
          rodriguezCheck,
          ebertCheck,
-         bleichrodtCheck;
+         bleichrodtCheck,
+         powerCheck;
 
     double expK,
            paraK,
@@ -228,6 +230,8 @@ private:
            rachS,
            rodriguezK,
            rodriguezS,
+           powerK,
+           powerS,
            ebertK,
            ebertS,
            bleichrodtK,
