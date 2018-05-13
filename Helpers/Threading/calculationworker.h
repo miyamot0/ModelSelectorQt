@@ -58,9 +58,6 @@ public:
                       int processChecking);
 
 private:
-
-    // TODO: new models need to have lognormal options
-
     QList<QPair<QString, QString>> mLocalJohnsonBickelResults;
     QList<bool> *mLocalJonhsonBickelSelections;
     QList<QStringList> mLocalStoredValues;
@@ -149,6 +146,176 @@ private:
         }
 
         return holder;
+    }
+
+    void BruteForceShortSort(ModelType model, QVector<double> lower, QVector<double> upper)
+    {
+        p1Span = abs(lower[0]) + abs(upper[0]);
+        p1Step = p1Span / 100;
+
+        grandLoop = 0;
+
+        for (int kLoop = 0; kLoop < 100; kLoop++)
+        {
+            provisionalValues.oneParamStartingValueArray[grandLoop].p1 = ((double) p1Span / 2.0) - ((kLoop + 1) * p1Step);
+
+            grandLoop++;
+        }
+
+        for (BruteForce & obj : provisionalValues.oneParamStartingValueArray)
+        {
+            if (model == ModelType::Exponential)
+            {
+                obj.err = mFittingObject->getErrorExponential(obj.p1);
+            }
+            else if (model == ModelType::Parabolic)
+            {
+                obj.err = mFittingObject->getErrorParabolic(obj.p1);
+            }
+            else if (model == ModelType::Hyperbolic)
+            {
+                obj.err = mFittingObject->getErrorHyperbolic(obj.p1);
+            }
+        }
+
+        std::sort(provisionalValues.oneParamStartingValueArray, provisionalValues.oneParamStartingValueArray + 100);
+    }
+
+    void BruteForceShortSortTwoParam(ModelType model, QVector<double> lower, QVector<double> upper)
+    {
+        p1Span = abs(lower[0]) + abs(upper[0]);
+        p1Step = p1Span / 10;
+
+        p2Span = abs(lower[1]) + abs(upper[1]);
+        p2Step = p2Span / 100;
+
+        grandLoop = 0;
+
+        for (int kLoop = 0; kLoop < 10; kLoop++)
+        {
+            for (int sLoop = 0; sLoop < 100; sLoop++)
+            {
+                provisionalValues.twoParamStartingValueArray[grandLoop].p1 = ((double) p1Span / 2.0) - (((double) kLoop + 1) * p1Step);
+                provisionalValues.twoParamStartingValueArray[grandLoop].p2 = ((double) p2Span / 2.0) - (((double) sLoop + 1) * p2Step);
+
+                grandLoop++;
+            }
+        }
+
+        for(BruteForce & obj : provisionalValues.twoParamStartingValueArray)
+        {
+            if (model == ModelType::BetaDelta)
+            {
+                obj.err = mFittingObject->getErrorQuasiHyperbolic(obj.p1, obj.p2);
+            }
+            else if (model == ModelType::Myerson)
+            {
+                obj.err = mFittingObject->getErrorGreenMyerson(obj.p1, obj.p2);
+            }
+            else if (model == ModelType::Rachlin)
+            {
+                obj.err = mFittingObject->getErrorRachlin(obj.p1, obj.p2);
+            }
+            else if (model == ModelType::GeneralizedHyperbolic)
+            {
+                obj.err = mFittingObject->getErrorGeneralizedHyperbolic(obj.p1, obj.p2);
+            }
+            else if (model == ModelType::Power)
+            {
+                obj.err = mFittingObject->getErrorPower(obj.p1, obj.p2);
+            }
+            else if (model == ModelType::EbertPrelec)
+            {
+                obj.err = mFittingObject->getErrorEbertPrelec(obj.p1, obj.p2);
+            }
+        }
+
+        std::sort(provisionalValues.twoParamStartingValueArray, provisionalValues.twoParamStartingValueArray + 1000);
+    }
+
+    void BruteForceLongSort(ModelType model, QVector<double> lower, QVector<double> upper)
+    {
+        p1Span = abs(lower[0]) + abs(upper[0]);
+        p1Step = p1Span / 10000;
+
+        grandLoop = 0;
+
+        for (int kLoop = 0; kLoop < 10000; kLoop++)
+        {
+            provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = ((double) p1Span / 2.0) - ((kLoop + 1) * p1Step);
+
+            grandLoop++;
+        }
+
+        for (BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+        {
+            if (model == ModelType::Exponential)
+            {
+                obj.err = mFittingObject->getErrorExponential(obj.p1);
+            }
+            else if (model == ModelType::Parabolic)
+            {
+                obj.err = mFittingObject->getErrorParabolic(obj.p1);
+            }
+            else if (model == ModelType::Hyperbolic)
+            {
+                obj.err = mFittingObject->getErrorHyperbolic(obj.p1);
+            }
+        }
+
+        std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
+    }
+
+    void BruteForceLongSortTwoParam(ModelType model, QVector<double> lower, QVector<double> upper)
+    {
+        p1Span = abs(lower[0]) + abs(upper[0]);
+        p1Step = (double) p1Span / 100;
+
+        p2Span = abs(lower[1]) + abs(upper[1]);
+        p2Step = (double) p2Span / 100;
+
+        grandLoop = 0;
+
+        for (int kLoop = 0; kLoop < 100; kLoop++)
+        {
+            for (int sLoop = 0; sLoop < 100; sLoop++)
+            {
+                provisionalValues.smallBruteStartingValueArray[grandLoop].p1 = ((double) p1Span / 2.0) - (((double) kLoop + 1) * p1Step);
+                provisionalValues.smallBruteStartingValueArray[grandLoop].p2 = ((double) p2Span / 2.0) - (((double) sLoop + 1) * p2Step);
+
+                grandLoop++;
+            }
+        }
+
+        for(BruteForce & obj : provisionalValues.smallBruteStartingValueArray)
+        {
+            if (model == ModelType::BetaDelta)
+            {
+                obj.err = mFittingObject->getErrorQuasiHyperbolic(obj.p1, obj.p2);
+            }
+            else if (model == ModelType::Myerson)
+            {
+                obj.err = mFittingObject->getErrorGreenMyerson(obj.p1, obj.p2);
+            }
+            else if (model == ModelType::Rachlin)
+            {
+                obj.err = mFittingObject->getErrorRachlin(obj.p1, obj.p2);
+            }
+            else if (model == ModelType::GeneralizedHyperbolic)
+            {
+                obj.err = mFittingObject->getErrorGeneralizedHyperbolic(obj.p1, obj.p2);
+            }
+            else if (model == ModelType::Power)
+            {
+                obj.err = mFittingObject->getErrorPower(obj.p1, obj.p2);
+            }
+            else if (model == ModelType::EbertPrelec)
+            {
+                obj.err = mFittingObject->getErrorEbertPrelec(obj.p1, obj.p2);
+            }
+        }
+
+        std::sort(provisionalValues.smallBruteStartingValueArray, provisionalValues.smallBruteStartingValueArray + 10000);
     }
 
 signals:
