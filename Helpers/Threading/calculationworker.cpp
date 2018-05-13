@@ -1124,7 +1124,7 @@ void CalculationWorker::working()
                 break;
 
             case ModelType::BetaDelta:
-                mModel = "Quasi-Hyperbolic";
+                mModel = "Beta-Delta";
                 mTopErrPar = fitResultBetaDelta->ErrPar;
                 break;
 
@@ -1144,7 +1144,7 @@ void CalculationWorker::working()
                 break;
 
             case ModelType::GeneralizedHyperbolic:
-                mModel = "Generalized-Hyperbolic";
+                mModel = "Loewenstein-Prelec";
                 mTopErrPar = fitResultGeneralizedHyperbolic->ErrPar;
                 break;
 
@@ -1159,7 +1159,7 @@ void CalculationWorker::working()
                 break;
         }
 
-        if (mModel.contains("Generalized-Hyperbolic", Qt::CaseInsensitive))
+        if (mModel.contains("Loewenstein-Prelec", Qt::CaseInsensitive))
         {
             if (settings->settingsFitting == FittingAlgorithm::DifferentialEvolution)
             {

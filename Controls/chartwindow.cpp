@@ -163,7 +163,7 @@ void ChartWindow::buildED50Plot()
 
     chart->addGraph();
     chart->graph(ModelQuasiHyperbolic)->setLineStyle(QCPGraph::lsLine);
-    chart->graph(ModelQuasiHyperbolic)->setName("Quasi Hyperbolic");
+    chart->graph(ModelQuasiHyperbolic)->setName("Beta-Delta");
     chart->graph(ModelQuasiHyperbolic)->setPen(QPen(Qt::blue, penWidth));
 
     chart->addGraph();
@@ -178,7 +178,7 @@ void ChartWindow::buildED50Plot()
 
     chart->addGraph();
     chart->graph(ModelGeneralizedHyperbolic)->setLineStyle(QCPGraph::lsLine);
-    chart->graph(ModelGeneralizedHyperbolic)->setName("Generalized-Hyperbolic");
+    chart->graph(ModelGeneralizedHyperbolic)->setName("Loewenstein-Prelec");
     chart->graph(ModelGeneralizedHyperbolic)->setPen(QPen(Qt::darkBlue, penWidth));
 
     chart->addGraph();
@@ -543,7 +543,7 @@ void ChartWindow::buildAUCPlot()
 
     chartArea->addGraph();
     chartArea->graph(ModelQuasiHyperbolic)->setLineStyle(QCPGraph::lsLine);
-    chartArea->graph(ModelQuasiHyperbolic)->setName("Quasi Hyperbolic");
+    chartArea->graph(ModelQuasiHyperbolic)->setName("Beta-Delta");
     chartArea->graph(ModelQuasiHyperbolic)->setPen(QPen(Qt::blue, penWidth));
 
     chartArea->addGraph();
@@ -558,7 +558,7 @@ void ChartWindow::buildAUCPlot()
 
     chartArea->addGraph();
     chartArea->graph(ModelGeneralizedHyperbolic)->setLineStyle(QCPGraph::lsLine);
-    chartArea->graph(ModelGeneralizedHyperbolic)->setName("Generalized-Hyperbolic");
+    chartArea->graph(ModelGeneralizedHyperbolic)->setName("Loewenstein-Prelec");
     chartArea->graph(ModelGeneralizedHyperbolic)->setPen(QPen(Qt::darkBlue, penWidth));
 
     chartArea->addGraph();
@@ -1009,9 +1009,9 @@ void ChartWindow::plotProbabilities(int index)
 
     expCheck = hypCheck = quasiCheck = myerCheck = rachCheck = rodriguezCheck = ebertCheck = bleichrodtCheck = false;
 
-    QVector<QString> modelStrings({"Exponential", "Hyperbolic", "Beta Delta",
-                                   "Green-Myerson", "Rachlin", "G. Hyperbolic",
-                                   "Ebert-Prelec", "Beleichrodt", "Noise", "Parabolic",
+    QVector<QString> modelStrings({"E", "H", "B-D",
+                                   "G-M", "R", "L-P",
+                                   "E-P", "B", "Noise", "Para.",
                                    "Power"});
 
     QVector<double> modelTicks({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11});

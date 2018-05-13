@@ -410,7 +410,7 @@ public:
 
     double CostFunction(std::vector<double> inputs, double delay) const override
     {
-        return pow((1 + delay * exp(inputs[0])),(-exp(inputs[1]) / exp(inputs[0])));
+        return pow((1 + delay * exp(inputs[0])),(-(exp(inputs[1]) / exp(inputs[0]))));
     }
 
     std::vector<Constraints> GetConstraints() const override

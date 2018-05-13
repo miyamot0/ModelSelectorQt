@@ -285,7 +285,7 @@
           <item>
            <widget class="QCheckBox" name="checkBoxQuasiHyperbolic">
             <property name="text">
-             <string>Include Beta Delta Model</string>
+             <string>Include Beta-Delta Model</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -315,7 +315,7 @@
           <item>
            <widget class="QCheckBox" name="checkBoxGeneralizedHyper">
             <property name="text">
-             <string>Include Generalized Hyperbolic Model</string>
+             <string>Include Loewenstein-Prelec Model</string>
             </property>
             <property name="checked">
              <bool>true</bool>

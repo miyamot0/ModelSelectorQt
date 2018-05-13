@@ -143,19 +143,19 @@ ResultsDialog::ResultsDialog(int nSeries, bool tripLogNormal, QWidget *parent) :
     // 35
     if (tripLogNormal)
     {
-        columnList << "GeneralizedHyperbolic.k";
+        columnList << "Loewenstein-Prelec.k";
     }
     else
     {
-        columnList << "GeneralizedHyperbolic.lnk";
+        columnList << "Loewenstein-Prelec.lnk";
     }
-    columnList << "GeneralizedHyperbolic.beta";
-    columnList << "GeneralizedHyperbolic.RMSE";
-    columnList << "GeneralizedHyperbolic.BIC";
-    columnList << "GeneralizedHyperbolic.AIC";
-    columnList << "GeneralizedHyperbolic.BF";
-    columnList << "GeneralizedHyperbolic.prob";
-    columnList << "GeneralizedHyperbolic.notes";
+    columnList << "Loewenstein-Prelec.beta";
+    columnList << "Loewenstein-Prelec.RMSE";
+    columnList << "Loewenstein-Prelec.BIC";
+    columnList << "Loewenstein-Prelec.AIC";
+    columnList << "Loewenstein-Prelec.BF";
+    columnList << "Loewenstein-Prelec.prob";
+    columnList << "Loewenstein-Prelec.notes";
 
     // 35
     if (tripLogNormal)
