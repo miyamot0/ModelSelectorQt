@@ -32,6 +32,7 @@ enum class ModelType {
     Parabolic,
     Hyperbolic,
     GeneralizedHyperbolic,
+    Power,
     BetaDelta,
     Myerson,
     Rachlin,

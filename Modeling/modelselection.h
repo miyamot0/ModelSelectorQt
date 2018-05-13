@@ -64,6 +64,7 @@ public:
 
     double getED50ep();
     double getED50parabolic();
+    double getED50power();
     double getED50crdi();
     double getED50genhyp();
 
@@ -79,6 +80,7 @@ public:
     double getErrorGreenMyerson(double lnK, double s);
     double getErrorRachlin(double lnK, double s);
     double getErrorGeneralizedHyperbolic(double lnK, double beta);
+    double getErrorPower(double lnK, double lnS);
     double getErrorEbertPrelec(double lnK, double s);
     double getErrorBleichrodt(double lnK, double s, double beta);
 
@@ -90,6 +92,7 @@ public:
     void FitMyerson(const char *mStarts);
     void FitRachlin(const char *mStarts);
     void FitGeneralizedHyperbolic(const char *mStarts);
+    void FitPower(const char *mStarts);
     void FitEbertPrelec(const char *mStarts);
     void FitBleichrodt(const char *mStarts);
 
@@ -109,6 +112,7 @@ public:
     double aicMyerson = -1;
     double aicRachlin = -1;
     double aicGeneralizedHyperbolic  = -1;
+    double aicPower  = -1;
     double aicEbertPrelec  = -1;
     double aicBleichrodt  = -1;
 
@@ -123,6 +127,7 @@ public:
     double bicMyerson = -1;
     double bicRachlin = -1;
     double bicGeneralizedHyperbolic = -1;
+    double bicPower = -1;
     double bicEbertPrelec  = -1;
     double bicBleichrodt  = -1;
 
@@ -137,6 +142,7 @@ public:
     double bfMyerson = -1;
     double bfRachlin = -1;
     double bfGeneralizedHyperbolic = -1;
+    double bfPower = -1;
     double bfEbertPrelec  = -1;
     double bfBleichrodt  = -1;
 
@@ -151,6 +157,7 @@ public:
     double probsMyerson = -1;
     double probsRachlin = -1;
     double probsGeneralizedHyperbolic = -1;
+    double probsPower = -1;
     double probsEbertPrelec  = -1;
     double probsBleichrodt  = -1;
 
@@ -165,6 +172,7 @@ public:
     double rmseMyerson = -1;
     double rmseRachlin = -1;
     double rmseGeneralizedHyperbolic = -1;
+    double rmsePower = -1;
     double rmseEbertPrelec  = -1;
     double rmseBleichrodt  = -1;
 
@@ -182,6 +190,8 @@ public:
     double fitRachlinS = -1;
     double fitGeneralizedHyperbolicK = -1;
     double fitGeneralizedHyperbolicBeta = -1;
+    double fitPowerK = -1;
+    double fitPowerS = -1;
     double fitEbertPrelecK = -1;
     double fitEbertPrelecS = -1;
     double fitBleichrodtBeta = -1;

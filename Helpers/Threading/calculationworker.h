@@ -75,6 +75,7 @@ private:
               *fitResultGreenMyerson,
               *fitResultRachlin,
               *fitResultGeneralizedHyperbolic,
+              *fitResultPower,
               *fitResultEbertPrelec,
               *fitResultBleichrodt,
               *fitResultNoise;

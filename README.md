@@ -44,6 +44,7 @@ Features include:
 * **Ebert & Prelec Model**: Ebert, J. E. J., & Prelec, D. (2007). The Fragility of Time: Time-Insensitivity and Valuation of the Near and Far Future. Management Science, 53(9), 1423-1438. https://doi.org/10.1287/mnsc.1060.0671
 * **Bleichrodt et al. Constant Relative Decreasing Impatience Model**: Bleichrodt, H., Rohde, K. I. M., & Wakker, P. P. (2009). Non-hyperbolic time inconsistency. Games and Economic Behavior, 66(1), 27-38. https://doi.org/10.1016/j.geb.2008.05.007
 * **Parabolic Model**: Hartmann, M. N., Hager, O. M., Tobler, P. N., & Kaiser, S. (2013). Parabolic discounting of monetary rewards by physical effort. Behavioural Processes, 100, 192-196. https://doi.org/10.1016/j.beproc.2013.09.014
+* **Power Model (2 parameter)**: Białaszek, W., Marcowski, P., & Ostaszewski, P. (2017). Physical and Cognitive Effort Discounting across Different Reward Magnitudes: Tests of Discounting Models. PLOS ONE 12(7): e0182353. https://doi.org/10.1371/journal.pone.0182353
 
 ### Usage
 ------

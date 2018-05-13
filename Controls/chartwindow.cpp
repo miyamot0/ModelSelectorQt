@@ -1115,6 +1115,12 @@ double ChartWindow::parabolic_plotting(double k, double x)
     }
 }
 
+/**
+ * @brief ChartWindow::parabolic_prediction
+ * @param k
+ * @param x
+ * @return
+ */
 double ChartWindow::parabolic_prediction(double k, double x)
 {
     return 1.0 - (exp(k) * pow(x, 2));
@@ -1155,6 +1161,37 @@ double ChartWindow::quasi_hyperbolic_plotting(double beta, double delta, double 
     {
         return beta * pow(delta, x);
     }
+}
+
+/**
+ * @brief ChartWindow::power_plotting
+ * @param k
+ * @param s
+ * @param x
+ * @return
+ */
+double ChartWindow::power_plotting(double k, double s, double x)
+{
+    if (isLogNormalParamerized)
+    {
+        return (1 - k * pow(x, s));
+    }
+    else
+    {
+        return (1 - exp(k) * pow(x, exp(s)));
+    }
+}
+
+/**
+ * @brief ChartWindow::power_prediction
+ * @param k
+ * @param s
+ * @param x
+ * @return
+ */
+double ChartWindow::power_prediction(double k, double s, double x)
+{
+    return (1 - exp(k) * pow(x, exp(s)));
 }
 
 /**

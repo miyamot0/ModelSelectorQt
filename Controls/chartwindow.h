@@ -65,6 +65,7 @@ public:
     double parabolic_plotting(double k, double x);
     double hyperbolic_plotting(double k, double x);
     double quasi_hyperbolic_plotting(double beta, double delta, double x);
+    double power_plotting(double k, double s, double x);
     double myerson_plotting(double k, double s, double x);
     double rachlin_plotting(double k, double s, double x);
     double generalized_hyperbolic_plotting(double k, double s, double x);
@@ -74,6 +75,7 @@ public:
     void saveChartImage(QCustomPlot *currPlot, QString filePath, QString fileExt);
 
     double static parabolic_prediction(double k, double x);
+    double static power_prediction(double k, double s, double x);
     double static generalized_hyperbolic_prediction(double k, double s, double x);
     double static ebert_prelec_prediction(double k, double s, double x);
     double static bleichrodt_prediction(double k, double s, double beta, double x);

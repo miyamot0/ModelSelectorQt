@@ -323,6 +323,16 @@
            </widget>
           </item>
           <item>
+           <widget class="QCheckBox" name="checkBoxPower">
+            <property name="text">
+             <string>Include Power Model (Two Parameter)</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="checkBoxEbertPrelec">
             <property name="text">
              <string>Include Ebert-Prelec Model</string>

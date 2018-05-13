@@ -467,6 +467,85 @@ void quasi_hyperboloid_integration_log10(double x, double, double, double &y, vo
 }
 
 /**
+ * @brief power_discounting
+ * @param c
+ * @param x
+ * @param func
+ */
+void power_discounting(const real_1d_array &c, const real_1d_array &x, double &func, void *)
+{
+    func = (1 - exp(c[0]) * pow((double) x[0], exp(c[1])));
+}
+
+/**
+ * @brief power_discounting_grad
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ */
+void power_discounting_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *)
+{
+    func = (1 - exp(c[0]) * pow((double) x[0], exp(c[1])));
+
+    grad[0] = -(exp(c[0]) * (pow(x[0],exp(c[1]))));
+    grad[1] = -(exp(c[0]) * (pow(x[0], exp(c[1])) * (log(x[0]) * exp(c[1]))));
+}
+
+/**
+ * @brief power_discounting_hessian
+ * @param c
+ * @param x
+ * @param func
+ * @param grad
+ * @param hess
+ */
+void power_discounting_hessian(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, real_2d_array &hess, void *)
+{
+    func = (1 - exp(c[0]) * pow((double) x[0], exp(c[1])));
+
+    grad[0] = -(exp(c[0]) * (pow(x[0],exp(c[1]))));
+    grad[1] = -(exp(c[0]) * (pow(x[0], exp(c[1])) * (log(x[0]) * exp(c[1]))));
+
+    hess[0][0] = -(exp(c[0]) * (pow(x[0],exp(c[1]))));
+    hess[0][1] = -(exp(c[0]) * (pow(x[0], exp(c[1])) * (log(x[0]) * exp(c[1]))));
+
+    hess[1][0] = -(exp(c[0]) * (pow(x[0], exp(c[1])) * (log(x[0]) * exp(c[1]))));
+    hess[1][1] = -(exp(c[0]) * (pow(x[0], exp(c[1])) * (log(x[0]) * exp(c[1])) *
+            (log(x[0]) * exp(c[1])) + pow(x[0], exp(c[1])) * (log(x[0]) * exp(c[1]))));
+}
+
+/**
+ * @brief power_integration
+ * @param x
+ * @param y
+ * @param ptr
+ */
+void power_integration(double x, double, double, double &y, void *ptr)
+{
+    QList<double> *param = (QList<double> *) ptr;
+    double lnk = param->at(0);
+    double lns = param->at(1);
+
+    y = (1 - exp(lnk) * pow(x, exp(lns)));
+}
+
+/**
+ * @brief power_integration_log10
+ * @param x
+ * @param y
+ * @param ptr
+ */
+void power_integration_log10(double x, double, double, double &y, void *ptr)
+{
+    QList<double> *param = (QList<double> *) ptr;
+    double lnk = param->at(0);
+    double lns = param->at(1);
+
+    y = (1 - exp(lnk) * pow(pow(10,x), exp(lns)));
+}
+
+/**
  * @brief hyperboloid_myerson_discounting
  * @param c
  * @param x
@@ -1483,6 +1562,144 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
     }
 }
 
+/** Power
+  *  @brief
+  */
+void ModelSelection::FitPower(const char *mStarts)
+{
+    ErrorResidual.clear();
+
+    aicPower = NULL;
+    bicPower = NULL;
+    fitPowerK = NULL;
+    fitPowerS = NULL;
+
+    if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
+    {
+        QVector<double> xValues = GetXVector();
+        QVector<double> yValues = GetYVector();
+
+        PowerModel powerFunction(xValues, yValues);
+
+        de::DifferentialEvolution de(powerFunction, 100);
+
+        de.Optimize(1000, false);
+
+        std::vector<double> result = de.GetBestAgent();
+
+        N = y.length();
+        SSR = 0;
+
+        for (int i = 0; i < N; i++)
+        {
+            holder = (1 - exp(result[0]) * pow((double) x[i][0], exp(result[1])));
+
+            ErrorResidual.append(((double) y[i] - holder));
+
+            SSR += pow(ErrorResidual[i], 2);
+        }
+
+        S2 = SSR / N;
+
+        DF = 3;
+
+        aicPower = CalculateAIC();
+        bicPower = CalculateBIC();
+
+        fitPowerK = (double) result[0];
+        fitPowerS = (double) result[1];
+
+        if (SSR > 0)
+        {
+            rmsePower = sqrt(SSR/(double) N);
+        }
+    }
+    else
+    {
+        SetStarts(mStarts);
+
+        if (fittingAlgorithm == FittingAlgorithm::Function)
+        {
+            lsfitcreatef(x,
+                         y,
+                         c,
+                         diffstep,
+                         state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             power_discounting);
+
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradient)
+        {
+            lsfitcreatefg(x,
+                          y,
+                          c,
+                          true,
+                          state);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             power_discounting,
+                             power_discounting_grad);
+        }
+        else if (fittingAlgorithm == FittingAlgorithm::FunctionGradientHessian)
+        {
+            lsfitcreatefgh(x,
+                           y,
+                           c,
+                           state);
+
+            lsfitsetbc(state,
+                       bndl,
+                       bndu);
+
+            lsfitsetcond(state,
+                         epsx,
+                         maxits);
+
+            alglib::lsfitfit(state,
+                             power_discounting,
+                             power_discounting_grad,
+                             power_discounting_hessian);
+        }
+
+        lsfitresults(state, info, c, rep);
+
+        if ((int) info == 2 || (int) info == 5)
+        {
+            N = y.length();
+            SSR = 0;
+
+            for (int i = 0; i < N; i++)
+            {
+                holder = (1 - exp(c[0]) * pow((double) x[i][0], exp(c[1])));
+
+                ErrorResidual.append(((double) y[i] - holder));
+
+                SSR += pow(ErrorResidual[i], 2);
+            }
+
+            S2 = SSR / N;
+
+            DF = 3;
+
+            aicPower = CalculateAIC();
+            bicPower = CalculateBIC();
+
+            fitPowerK = (double) c[0];
+            fitPowerS = (double) c[1];
+        }
+    }
+}
+
 /** Hyperboloid Myerson
  * @brief
  */
@@ -2219,6 +2436,12 @@ QString ModelSelection::getED50BestModel(ModelType model)
 
         break;
 
+    case ModelType::Power:
+        result = getED50power();
+        return QString::number(result);
+
+        break;
+
     case ModelType::Myerson:
         result = log((pow(2, (1/fitMyersonS))-1)/exp(fitMyersonK));
         return QString::number(result);
@@ -2316,6 +2539,42 @@ double ModelSelection::getED50parabolic () {
       double lowEst = ChartWindow::parabolic_prediction(fitParabolicK, lowDelay);
       double midEst = ChartWindow::parabolic_prediction(fitParabolicK, (lowDelay+highDelay)/2);
       double highEst = ChartWindow::parabolic_prediction(fitParabolicK, highDelay);
+
+      if (lowEst > 0.5 && midEst > 0.5) {
+        //Above 50% mark range
+        lowDelay  = (lowDelay+highDelay)/2;
+        highDelay = highDelay;
+
+      } else if (highEst < 0.5 && midEst < 0.5) {
+        //Below 50% mark range
+        lowDelay  = lowDelay;
+        highDelay = (lowDelay+highDelay)/2;
+
+      }
+
+      i++;
+    }
+
+    double returnValue = log((lowDelay+highDelay)/2);
+
+    return returnValue;
+}
+
+double ModelSelection::getED50power () {
+    double lowDelay = 0;
+    double highDelay = x[x.rows()-1][0] * 100;
+
+    int i = 0;
+
+    if (ChartWindow::power_prediction(fitPowerK, fitPowerS, lowDelay) <= 0.5)
+    {
+        return log(lowDelay);
+    }
+
+    while ((highDelay - lowDelay) > 0.001 && i < 100) {
+      double lowEst = ChartWindow::power_prediction(fitPowerK, fitPowerS, lowDelay);
+      double midEst = ChartWindow::power_prediction(fitPowerK, fitPowerS, (lowDelay+highDelay)/2);
+      double highEst = ChartWindow::power_prediction(fitPowerK, fitPowerS, highDelay);
 
       if (lowEst > 0.5 && midEst > 0.5) {
         //Above 50% mark range
@@ -2493,6 +2752,20 @@ QString ModelSelection::getAUCBestModel(ModelType model)
 
         break;
 
+    case ModelType::Power:
+        mParams << fitPowerK;
+        mParams << fitPowerS;
+
+        autogksmooth(a, b, s);
+        alglib::autogkintegrate(s, power_integration, &mParams);
+        autogkresults(s, v, rep);
+
+        result = double(v) / (b - a);
+
+        return QString::number(result);
+
+        break;
+
     case ModelType::Myerson:
         mParams << fitMyersonK;
         mParams << fitMyersonS;
@@ -2659,6 +2932,20 @@ QString ModelSelection::getLogAUCBestModel(ModelType model)
 
         break;
 
+    case ModelType::Power:
+        mParams << fitPowerK;
+        mParams << fitPowerS;
+
+        autogksmooth(a, b, s);
+        alglib::autogkintegrate(s, power_integration_log10, &mParams);
+        autogkresults(s, v, rep);
+
+        result = double(v) / (b - a);
+
+        return QString::number(result);
+
+        break;
+
     case ModelType::Myerson:
         mParams << fitMyersonK;
         mParams << fitMyersonS;
@@ -2752,6 +3039,7 @@ void ModelSelection::PrepareProbabilities()
     bfMyerson = NULL;
     bfRachlin = NULL;
     bfGeneralizedHyperbolic = NULL;
+    bfPower = NULL;
     bfEbertPrelec = NULL;
     bfBleichrodt = NULL;
 
@@ -2780,6 +3068,11 @@ void ModelSelection::PrepareProbabilities()
         {
             bfQuasiHyperbolic = ScaleFactor(mBicList[i].second, NoiseBIC);
             sumBayesFactors = sumBayesFactors + bfQuasiHyperbolic;
+        }
+        else if (mBicList[i].first == ModelType::Power)
+        {
+            bfPower = ScaleFactor(mBicList[i].second, NoiseBIC);
+            sumBayesFactors = sumBayesFactors + bfPower;
         }
         else if (mBicList[i].first == ModelType::Myerson)
         {
@@ -2811,10 +3104,12 @@ void ModelSelection::PrepareProbabilities()
     probsNoise = bfNoise/sumBayesFactors;
     probsHyperbolic = NULL;
     probsExponential = NULL;
+    probsParabolic = NULL;
     probsQuasiHyperbolic = NULL;
     probsMyerson = NULL;
     probsRachlin = NULL;
     probsGeneralizedHyperbolic = NULL;
+    probsPower = NULL;
     probsEbertPrelec = NULL;
 
     mProbList.clear();
@@ -2856,6 +3151,11 @@ void ModelSelection::PrepareProbabilities()
         {
             probsGeneralizedHyperbolic = bfGeneralizedHyperbolic/sumBayesFactors;
             mProbList.append(QPair<ModelType, double>(ModelType::GeneralizedHyperbolic, probsGeneralizedHyperbolic));
+        }
+        else if (mBicList[i].first == ModelType::Power)
+        {
+            probsPower = bfPower/sumBayesFactors;
+            mProbList.append(QPair<ModelType, double>(ModelType::Power, probsPower));
         }
         else if (mBicList[i].first == ModelType::EbertPrelec)
         {
@@ -2992,6 +3292,24 @@ double ModelSelection::getErrorGeneralizedHyperbolic(double lnK, double beta)
     for (int i=0; i<y.length(); i++)
     {
         leastSquaresError = leastSquaresError + pow((y[i] - (pow((1 + x[i][0] * exp(lnK)),(-exp(beta) / exp(lnK))))), 2);
+    }
+
+    return leastSquaresError;
+}
+
+/**
+ * @brief ModelSelection::getErrorPower
+ * @param lnK
+ * @param lnS
+ * @return
+ */
+double ModelSelection::getErrorPower(double lnK, double lnS)
+{
+    leastSquaresError = 0;
+
+    for (int i=0; i<y.length(); i++)
+    {
+        leastSquaresError = leastSquaresError + pow((y[i] - (1 - exp(lnK) * pow(x[i][0], exp(lnS)))), 2);
     }
 
     return leastSquaresError;

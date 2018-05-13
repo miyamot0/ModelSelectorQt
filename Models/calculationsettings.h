@@ -68,7 +68,8 @@ public:
          modelRachlin,
          modelGeneralizedHyperbolic,
          modelEbertPrelec,
-         modelBleichrodt;
+         modelBleichrodt,
+         modelPower;
 
     ChartingOptions chartOption;
 

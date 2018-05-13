@@ -256,8 +256,6 @@ public:
     }
 };
 
-// TODO: check constraints for rate parameter
-
 class BetaDeltaModel : public BaseModel
 {
 public:
@@ -280,6 +278,33 @@ public:
 
         constr[0] = Constraints(-1000, 500, true);
         constr[1] = Constraints(-1000, 500, true);
+
+        return constr;
+    }
+};
+
+class PowerModel : public BaseModel
+{
+public:
+    PowerModel (QVector<double> delays, QVector<double> values) : BaseModel(delays, values)
+    {
+        _delays = delays;
+        _values = values;
+
+        m_dim = 2;
+    }
+
+    double CostFunction(std::vector<double> inputs, double delay) const override
+    {
+        return (1 - exp(inputs[0]) * pow(delay, exp(inputs[1])));
+    }
+
+    std::vector<Constraints> GetConstraints() const override
+    {
+        std::vector<Constraints> constr(2);
+
+        constr[0] = DefaultConstraints();
+        constr[1] = DefaultConstraints();
 
         return constr;
     }
@@ -365,8 +390,6 @@ public:
         return constr;
     }
 };
-
-// TODO: check reporting for Gen Hyp beta
 
 class GeneralizedHyperbolicModel : public BaseModel
 {

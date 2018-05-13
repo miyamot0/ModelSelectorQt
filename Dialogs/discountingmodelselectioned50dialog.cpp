@@ -170,6 +170,7 @@ void DiscountingModelSelectionED50Dialog::on_pushButton_clicked()
     temp->calculationSettings->modelGeneralizedHyperbolic = ui->checkBoxGeneralizedHyper->isChecked();
     temp->calculationSettings->modelEbertPrelec = ui->checkBoxEbertPrelec->isChecked();
     temp->calculationSettings->modelBleichrodt = ui->checkBoxBleichrodt->isChecked();
+    temp->calculationSettings->modelPower = ui->checkBoxPower->isChecked();
 
     temp->calculationSettings->cbRachlin = ui->checkBoxRachlin->isChecked();
     temp->calculationSettings->johnsonBickelTest = ui->checkBoxJohnson->isChecked();
