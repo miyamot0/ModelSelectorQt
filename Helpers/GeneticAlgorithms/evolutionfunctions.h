@@ -52,6 +52,12 @@ public:
         _values = values;
     }
 
+    void SetData(QVector<double> delays, QVector<double> values)
+    {
+        _delays = delays;
+        _values = values;
+    }
+
     /**
      * @brief CostFunction
      *

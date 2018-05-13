@@ -323,7 +323,7 @@ private:
     double N = 0;
     double S2 = 0;
     double DF = 0;
-    double holder = 0;
+
     double sumBayesFactors = 0;
     double leastSquaresError = 0;
 
