@@ -1025,14 +1025,12 @@ void ModelSelection::FitExponential(const char *mStarts)
 {
     ErrorResidual.clear();
 
-    aicExponential = NULL;
-    bicExponential = NULL;
-    fitExponentialK = NULL;
+    aicExponential = bicExponential = fitExponentialK = NULL;
 
     if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        QVector<double> xValues = GetXVector();
-        QVector<double> yValues = GetYVector();
+        xValues = GetXVector();
+        yValues = GetYVector();
 
         ExponentialModel exponentialFunction(xValues, yValues);
 
@@ -1040,7 +1038,7 @@ void ModelSelection::FitExponential(const char *mStarts)
 
         de.Optimize(maximumIterationsDE, false);
 
-        std::vector<double> result = de.GetBestAgent();
+        result = de.GetBestAgent();
 
         fitExponentialK = (double) result[0];
 
@@ -1143,14 +1141,12 @@ void ModelSelection::FitParabolic(const char *mStarts)
 {
     ErrorResidual.clear();
 
-    aicParabolic = NULL;
-    bicParabolic = NULL;
-    fitParabolicK = NULL;
+    aicParabolic = bicParabolic = fitParabolicK = NULL;
 
     if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        QVector<double> xValues = GetXVector();
-        QVector<double> yValues = GetYVector();
+        xValues = GetXVector();
+        yValues = GetYVector();
 
         ParabolicModel parabolicFunction(xValues, yValues);
 
@@ -1158,7 +1154,7 @@ void ModelSelection::FitParabolic(const char *mStarts)
 
         de.Optimize(maximumIterationsDE, false);
 
-        std::vector<double> result = de.GetBestAgent();
+        result = de.GetBestAgent();
 
         fitParabolicK = (double) result[0];
 
@@ -1259,14 +1255,12 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 {
     ErrorResidual.clear();
 
-    aicHyperbolic = NULL;
-    bicHyperbolic = NULL;
-    fitHyperbolicK = NULL;
+    aicHyperbolic = bicHyperbolic = fitHyperbolicK = NULL;
 
     if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        QVector<double> xValues = GetXVector();
-        QVector<double> yValues = GetYVector();
+        xValues = GetXVector();
+        yValues = GetYVector();
 
         HyperbolicModel hyperbolicFunction(xValues, yValues);
 
@@ -1274,7 +1268,7 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
         de.Optimize(maximumIterationsDE, false);
 
-        std::vector<double> result = de.GetBestAgent();
+        result = de.GetBestAgent();
 
         fitHyperbolicK = (double) result[0];
 
@@ -1374,15 +1368,12 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 {
     ErrorResidual.clear();
 
-    aicQuasiHyperbolic = NULL;
-    bicQuasiHyperbolic = NULL;
-    fitQuasiHyperbolicBeta = NULL;
-    fitQuasiHyperbolicDelta = NULL;
+    aicQuasiHyperbolic = bicQuasiHyperbolic = fitQuasiHyperbolicBeta = fitQuasiHyperbolicDelta = NULL;
 
     if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        QVector<double> xValues = GetXVector();
-        QVector<double> yValues = GetYVector();
+        xValues = GetXVector();
+        yValues = GetYVector();
 
         BetaDeltaModel quasiHyperbolicFunction(xValues, yValues);
 
@@ -1390,7 +1381,7 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
         de.Optimize(maximumIterationsDE, false);
 
-        std::vector<double> result = de.GetBestAgent();
+        result = de.GetBestAgent();
 
         fitQuasiHyperbolicBeta = InvIt((double) result[0]);
         fitQuasiHyperbolicDelta = InvIt((double) result[1]);
@@ -1507,15 +1498,12 @@ void ModelSelection::FitPower(const char *mStarts)
 {
     ErrorResidual.clear();
 
-    aicPower = NULL;
-    bicPower = NULL;
-    fitPowerK = NULL;
-    fitPowerS = NULL;
+    aicPower = bicPower = fitPowerK = fitPowerS = NULL;
 
     if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        QVector<double> xValues = GetXVector();
-        QVector<double> yValues = GetYVector();
+        xValues = GetXVector();
+        yValues = GetYVector();
 
         PowerModel powerFunction(xValues, yValues);
 
@@ -1523,7 +1511,7 @@ void ModelSelection::FitPower(const char *mStarts)
 
         de.Optimize(maximumIterationsDE, false);
 
-        std::vector<double> result = de.GetBestAgent();
+        result = de.GetBestAgent();
 
         fitPowerK = (double) result[0];
         fitPowerS = (double) result[1];
@@ -1635,15 +1623,12 @@ void ModelSelection::FitMyerson(const char *mStarts)
 {
     ErrorResidual.clear();
 
-    aicMyerson = NULL;
-    bicMyerson = NULL;
-    fitMyersonK = NULL;
-    fitMyersonS = NULL;
+    aicMyerson = bicMyerson = fitMyersonK = fitMyersonS = NULL;
 
     if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        QVector<double> xValues = GetXVector();
-        QVector<double> yValues = GetYVector();
+        xValues = GetXVector();
+        yValues = GetYVector();
 
         GreenMyersonModel greenMyersonFunction(xValues, yValues);
 
@@ -1651,7 +1636,7 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
         de.Optimize(maximumIterationsDE, false);
 
-        std::vector<double> result = de.GetBestAgent();
+        result = de.GetBestAgent();
 
         fitMyersonK = (double) result[0];
         fitMyersonS = (double) exp(result[1]);
@@ -1753,16 +1738,12 @@ void ModelSelection::FitRachlin(const char *mStarts)
 {
     ErrorResidual.clear();
 
-    statusValue = NULL;
-    aicRachlin = NULL;
-    bicRachlin = NULL;
-    fitRachlinK = NULL;
-    fitRachlinS = NULL;
+    statusValue = aicRachlin = bicRachlin = fitRachlinK = fitRachlinS = NULL;
 
     if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        QVector<double> xValues = GetXVector();
-        QVector<double> yValues = GetYVector();
+        xValues = GetXVector();
+        yValues = GetYVector();
 
         RachlinModel rachlinFunction(xValues, yValues);
 
@@ -1770,7 +1751,7 @@ void ModelSelection::FitRachlin(const char *mStarts)
 
         de.Optimize(maximumIterationsDE, false);
 
-        std::vector<double> result = de.GetBestAgent();
+        result = de.GetBestAgent();
 
         fitRachlinK = (double) result[0];
         fitRachlinS = exp(result[1]);
@@ -1878,15 +1859,12 @@ void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
 {
     ErrorResidual.clear();
 
-    aicGeneralizedHyperbolic = NULL;
-    bicGeneralizedHyperbolic = NULL;
-    fitGeneralizedHyperbolicK = NULL;
-    fitGeneralizedHyperbolicBeta = NULL;
+    aicGeneralizedHyperbolic = bicGeneralizedHyperbolic = fitGeneralizedHyperbolicK = fitGeneralizedHyperbolicBeta = NULL;
 
     if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        QVector<double> xValues = GetXVector();
-        QVector<double> yValues = GetYVector();
+        xValues = GetXVector();
+        yValues = GetYVector();
 
         GeneralizedHyperbolicModel generalizedHyperbolicFunction(xValues, yValues);
 
@@ -1894,7 +1872,7 @@ void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
 
         de.Optimize(maximumIterationsDE, false);
 
-        std::vector<double> result = de.GetBestAgent();
+        result = de.GetBestAgent();
 
         fitGeneralizedHyperbolicK = (double) result[0];
         fitGeneralizedHyperbolicBeta = (double) result[1];
@@ -1998,15 +1976,12 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
 {
     ErrorResidual.clear();
 
-    aicEbertPrelec = NULL;
-    bicEbertPrelec = NULL;
-    fitEbertPrelecK = NULL;
-    fitEbertPrelecS = NULL;
+    aicEbertPrelec = bicEbertPrelec = fitEbertPrelecK = fitEbertPrelecS = NULL;
 
     if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        QVector<double> xValues = GetXVector();
-        QVector<double> yValues = GetYVector();
+        xValues = GetXVector();
+        yValues = GetYVector();
 
         EbertPrelecModel ebertPrelecFunction(xValues, yValues);
 
@@ -2014,7 +1989,7 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
 
         de.Optimize(maximumIterationsDE, false);
 
-        std::vector<double> result = de.GetBestAgent();
+        result = de.GetBestAgent();
 
         fitEbertPrelecK = (double) result[0];
         fitEbertPrelecS = (double) exp(result[1]);
@@ -2116,16 +2091,12 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
 {
     ErrorResidual.clear();
 
-    aicBleichrodt = NULL;
-    bicBleichrodt = NULL;
-    fitBleichrodtK = NULL;
-    fitBleichrodtS = NULL;
-    fitBleichrodtBeta = NULL;
+    aicBleichrodt = bicBleichrodt = fitBleichrodtK = fitBleichrodtS = fitBleichrodtBeta = NULL;
 
     if (fittingAlgorithm == FittingAlgorithm::DifferentialEvolution)
     {
-        QVector<double> xValues = GetXVector();
-        QVector<double> yValues = GetYVector();
+        xValues = GetXVector();
+        yValues = GetYVector();
 
         BeleichrodtModel beleichrodtFunction(xValues, yValues);
 
@@ -2133,7 +2104,7 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
 
         de.Optimize(maximumIterationsDE, false);
 
-        std::vector<double> result = de.GetBestAgent();
+        result = de.GetBestAgent();
 
         fitBleichrodtK = (double) result[0];
         fitBleichrodtS = (double) exp(result[1]);

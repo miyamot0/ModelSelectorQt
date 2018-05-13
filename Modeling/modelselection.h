@@ -329,6 +329,10 @@ private:
 
     int maximumIterationsDE = 1200;
     int populationSize = 100;
+
+    QVector<double> xValues, yValues;
+
+    std::vector<double> result;
 };
 
 #endif // MODELSELECTION_H
