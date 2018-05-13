@@ -96,6 +96,11 @@ private:
         return lhs.err < rhs.err;
     }
 
+    double InvIt(double value) const
+    {
+        return exp(value) / (exp(value) + 1);
+    }
+
     QString formatStringResult(double value, bool returnLogNormal)
     {
         if (!isnan(value))

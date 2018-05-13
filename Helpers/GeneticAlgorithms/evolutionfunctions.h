@@ -264,17 +264,22 @@ public:
         m_dim = 2;
     }
 
+    double InvIt(double value) const
+    {
+        return exp(value) / (exp(value) + 1);
+    }
+
     double CostFunction(std::vector<double> inputs, double delay) const override
     {
-        return (inputs[0] * pow(inputs[1], delay));
+        return (InvIt(inputs[0]) * pow(InvIt(inputs[1]), delay));
     }
 
     std::vector<Constraints> GetConstraints() const override
     {
         std::vector<Constraints> constr(2);
 
-        constr[0] = Constraints(0.001, 1, true);
-        constr[1] = Constraints(0.9, 1, true);
+        constr[0] = Constraints(-1000, 500, true);
+        constr[1] = Constraints(-1000, 500, true);
 
         return constr;
     }

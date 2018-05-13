@@ -402,10 +402,11 @@ void CalculationWorker::working()
 
                 mFittingObject->mBicList.append(QPair<ModelType, double>(ModelType::BetaDelta, mFittingObject->bicQuasiHyperbolic));
 
-                double delta = (settings->logNormalParameters) ? (1.0 - mFittingObject->fitQuasiHyperbolicDelta) : mFittingObject->fitQuasiHyperbolicDelta;
+                double delta = (settings->logNormalParameters) ? (1.0 - InvIt(mFittingObject->fitQuasiHyperbolicDelta)) :
+                                                                 InvIt(mFittingObject->fitQuasiHyperbolicDelta);
 
                 fitResultBetaDelta = new FitResult(ModelType::BetaDelta);
-                fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Beta"), mFittingObject->fitQuasiHyperbolicBeta));
+                fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Beta"), InvIt(mFittingObject->fitQuasiHyperbolicBeta)));
                 fitResultBetaDelta->Params.append(QPair<QString, double>(QString("BetaDelta Delta"), delta));
 
                 fitResultBetaDelta->RMS = mFittingObject->rmseQuasiHyperbolic;
