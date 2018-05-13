@@ -28,7 +28,10 @@
 
 #include "chartwindow.h"
 
-ChartWindow::ChartWindow(QList<FitResults> stringList, bool isLogNormal, ChartingOptions chartOption, QWidget *parent)
+ChartWindow::ChartWindow(QList<FitResults> stringList,
+                         bool isLogNormal,
+                         ChartingOptions chartOption,
+                         QWidget *parent)
 {
     if (chartOption == ChartingOptions::None)
     {

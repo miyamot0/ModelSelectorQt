@@ -73,16 +73,16 @@ public:
     QString getAUCBestModel(ModelType model);
     QString getLogAUCBestModel(ModelType model);
 
-    double getErrorExponential(double lnK);
-    double getErrorParabolic(double lnK);
-    double getErrorHyperbolic(double lnK);
-    double getErrorQuasiHyperbolic(double beta, double delta);
-    double getErrorGreenMyerson(double lnK, double s);
-    double getErrorRachlin(double lnK, double s);
-    double getErrorGeneralizedHyperbolic(double lnK, double beta);
-    double getErrorPower(double lnK, double lnS);
-    double getErrorEbertPrelec(double lnK, double s);
-    double getErrorBleichrodt(double lnK, double s, double beta);
+    double getErrorExponential(double lnK, bool retainResiduals);
+    double getErrorParabolic(double lnK, bool retainResiduals);
+    double getErrorHyperbolic(double lnK, bool retainResiduals);
+    double getErrorQuasiHyperbolic(double beta, double delta, bool retainResiduals);
+    double getErrorGreenMyerson(double lnK, double s, bool retainResiduals);
+    double getErrorRachlin(double lnK, double s, bool retainResiduals);
+    double getErrorGeneralizedHyperbolic(double lnK, double beta, bool retainResiduals);
+    double getErrorPower(double lnK, double lnS, bool retainResiduals);
+    double getErrorEbertPrelec(double lnK, double s, bool retainResiduals);
+    double getErrorBleichrodt(double lnK, double s, double beta, bool retainResiduals);
 
     void FitNoise();
     void FitExponential(const char *mStarts);

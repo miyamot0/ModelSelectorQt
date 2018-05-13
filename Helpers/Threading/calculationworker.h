@@ -166,15 +166,15 @@ private:
         {
             if (model == ModelType::Exponential)
             {
-                obj.err = mFittingObject->getErrorExponential(obj.p1);
+                obj.err = mFittingObject->getErrorExponential(obj.p1, false);
             }
             else if (model == ModelType::Parabolic)
             {
-                obj.err = mFittingObject->getErrorParabolic(obj.p1);
+                obj.err = mFittingObject->getErrorParabolic(obj.p1, false);
             }
             else if (model == ModelType::Hyperbolic)
             {
-                obj.err = mFittingObject->getErrorHyperbolic(obj.p1);
+                obj.err = mFittingObject->getErrorHyperbolic(obj.p1, false);
             }
         }
 
@@ -206,27 +206,27 @@ private:
         {
             if (model == ModelType::BetaDelta)
             {
-                obj.err = mFittingObject->getErrorQuasiHyperbolic(obj.p1, obj.p2);
+                obj.err = mFittingObject->getErrorQuasiHyperbolic(obj.p1, obj.p2, false);
             }
             else if (model == ModelType::Myerson)
             {
-                obj.err = mFittingObject->getErrorGreenMyerson(obj.p1, obj.p2);
+                obj.err = mFittingObject->getErrorGreenMyerson(obj.p1, obj.p2, false);
             }
             else if (model == ModelType::Rachlin)
             {
-                obj.err = mFittingObject->getErrorRachlin(obj.p1, obj.p2);
+                obj.err = mFittingObject->getErrorRachlin(obj.p1, obj.p2, false);
             }
             else if (model == ModelType::GeneralizedHyperbolic)
             {
-                obj.err = mFittingObject->getErrorGeneralizedHyperbolic(obj.p1, obj.p2);
+                obj.err = mFittingObject->getErrorGeneralizedHyperbolic(obj.p1, obj.p2, false);
             }
             else if (model == ModelType::Power)
             {
-                obj.err = mFittingObject->getErrorPower(obj.p1, obj.p2);
+                obj.err = mFittingObject->getErrorPower(obj.p1, obj.p2, false);
             }
             else if (model == ModelType::EbertPrelec)
             {
-                obj.err = mFittingObject->getErrorEbertPrelec(obj.p1, obj.p2);
+                obj.err = mFittingObject->getErrorEbertPrelec(obj.p1, obj.p2, false);
             }
         }
 
@@ -251,15 +251,15 @@ private:
         {
             if (model == ModelType::Exponential)
             {
-                obj.err = mFittingObject->getErrorExponential(obj.p1);
+                obj.err = mFittingObject->getErrorExponential(obj.p1, false);
             }
             else if (model == ModelType::Parabolic)
             {
-                obj.err = mFittingObject->getErrorParabolic(obj.p1);
+                obj.err = mFittingObject->getErrorParabolic(obj.p1, false);
             }
             else if (model == ModelType::Hyperbolic)
             {
-                obj.err = mFittingObject->getErrorHyperbolic(obj.p1);
+                obj.err = mFittingObject->getErrorHyperbolic(obj.p1, false);
             }
         }
 
@@ -291,27 +291,27 @@ private:
         {
             if (model == ModelType::BetaDelta)
             {
-                obj.err = mFittingObject->getErrorQuasiHyperbolic(obj.p1, obj.p2);
+                obj.err = mFittingObject->getErrorQuasiHyperbolic(obj.p1, obj.p2, false);
             }
             else if (model == ModelType::Myerson)
             {
-                obj.err = mFittingObject->getErrorGreenMyerson(obj.p1, obj.p2);
+                obj.err = mFittingObject->getErrorGreenMyerson(obj.p1, obj.p2, false);
             }
             else if (model == ModelType::Rachlin)
             {
-                obj.err = mFittingObject->getErrorRachlin(obj.p1, obj.p2);
+                obj.err = mFittingObject->getErrorRachlin(obj.p1, obj.p2, false);
             }
             else if (model == ModelType::GeneralizedHyperbolic)
             {
-                obj.err = mFittingObject->getErrorGeneralizedHyperbolic(obj.p1, obj.p2);
+                obj.err = mFittingObject->getErrorGeneralizedHyperbolic(obj.p1, obj.p2, false);
             }
             else if (model == ModelType::Power)
             {
-                obj.err = mFittingObject->getErrorPower(obj.p1, obj.p2);
+                obj.err = mFittingObject->getErrorPower(obj.p1, obj.p2, false);
             }
             else if (model == ModelType::EbertPrelec)
             {
-                obj.err = mFittingObject->getErrorEbertPrelec(obj.p1, obj.p2);
+                obj.err = mFittingObject->getErrorEbertPrelec(obj.p1, obj.p2, false);
             }
         }
 

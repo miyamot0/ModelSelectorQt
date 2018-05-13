@@ -912,7 +912,7 @@ void CalculationWorker::working()
 
                     for(BruteForce & obj : provisionalValues.threeParamStartingValueArray)
                     {
-                        obj.err = mFittingObject->getErrorBleichrodt(obj.p1, obj.p2, obj.p3);
+                        obj.err = mFittingObject->getErrorBleichrodt(obj.p1, obj.p2, obj.p3, false);
                     }
 
                     std::sort(provisionalValues.threeParamStartingValueArray, provisionalValues.threeParamStartingValueArray + 1000);
@@ -953,7 +953,7 @@ void CalculationWorker::working()
 
                     for(BruteForce & obj : provisionalValues.largeBruteStartingValueArray)
                     {
-                        obj.err = mFittingObject->getErrorBleichrodt(obj.p1, obj.p2, obj.p3);
+                        obj.err = mFittingObject->getErrorBleichrodt(obj.p1, obj.p2, obj.p3, false);
                     }
 
                     std::sort(provisionalValues.largeBruteStartingValueArray, provisionalValues.largeBruteStartingValueArray + 1000000);

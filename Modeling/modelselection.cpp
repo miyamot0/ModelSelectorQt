@@ -1044,7 +1044,7 @@ void ModelSelection::FitExponential(const char *mStarts)
 
         N = y.length();
 
-        SSR = getErrorExponential(fitExponentialK);
+        SSR = getErrorExponential(fitExponentialK, true);
 
         S2 = SSR / N;
 
@@ -1120,7 +1120,7 @@ void ModelSelection::FitExponential(const char *mStarts)
 
             fitExponentialK = (double) c[0];
 
-            SSR = getErrorExponential(fitExponentialK);
+            SSR = getErrorExponential(fitExponentialK, true);
 
             S2 = SSR / N;
 
@@ -1160,7 +1160,7 @@ void ModelSelection::FitParabolic(const char *mStarts)
 
         N = y.length();
 
-        SSR = getErrorParabolic(fitParabolicK);
+        SSR = getErrorParabolic(fitParabolicK, true);
 
         S2 = SSR / N;
 
@@ -1236,7 +1236,7 @@ void ModelSelection::FitParabolic(const char *mStarts)
 
             fitParabolicK = (double) c[0];
 
-            SSR = getErrorParabolic(fitParabolicK);
+            SSR = getErrorParabolic(fitParabolicK, true);
 
             S2 = SSR / N;
 
@@ -1274,7 +1274,7 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
         N = y.length();
 
-        SSR = getErrorHyperbolic(fitHyperbolicK);
+        SSR = getErrorHyperbolic(fitHyperbolicK, true);
 
         S2 = SSR / N;
 
@@ -1349,7 +1349,7 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
             fitHyperbolicK = (double) c[0];
 
-            SSR = getErrorHyperbolic(fitHyperbolicK);
+            SSR = getErrorHyperbolic(fitHyperbolicK, true);
 
             S2 = SSR / N;
 
@@ -1388,7 +1388,7 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
         N = y.length();
 
-        SSR = getErrorQuasiHyperbolic(fitQuasiHyperbolicBeta, fitQuasiHyperbolicDelta);
+        SSR = getErrorQuasiHyperbolic(fitQuasiHyperbolicBeta, fitQuasiHyperbolicDelta, true);
 
         S2 = SSR / N;
 
@@ -1479,7 +1479,7 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
             N = y.length();
 
-            SSR = getErrorQuasiHyperbolic(fitQuasiHyperbolicBeta, fitQuasiHyperbolicDelta);
+            SSR = getErrorQuasiHyperbolic(fitQuasiHyperbolicBeta, fitQuasiHyperbolicDelta, true);
 
             S2 = SSR / N;
 
@@ -1518,7 +1518,7 @@ void ModelSelection::FitPower(const char *mStarts)
 
         N = y.length();
 
-        SSR = getErrorPower(fitPowerK, fitPowerS);
+        SSR = getErrorPower(fitPowerK, fitPowerS, true);
 
         S2 = SSR / N;
 
@@ -1599,7 +1599,7 @@ void ModelSelection::FitPower(const char *mStarts)
 
             N = y.length();
 
-            SSR = getErrorPower(fitPowerK, fitPowerS);
+            SSR = getErrorPower(fitPowerK, fitPowerS, true);
 
             S2 = SSR / N;
 
@@ -1643,7 +1643,7 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
         N = y.length();
 
-        SSR = getErrorGreenMyerson(fitMyersonK, log(fitMyersonS));
+        SSR = getErrorGreenMyerson(fitMyersonK, log(fitMyersonS), true);
 
         S2 = SSR / N;
 
@@ -1719,7 +1719,7 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
             N = y.length();
 
-            SSR = getErrorGreenMyerson(fitMyersonK, log(fitMyersonS));
+            SSR = getErrorGreenMyerson(fitMyersonK, log(fitMyersonS), true);
 
             S2 = SSR / N;
 
@@ -1758,7 +1758,7 @@ void ModelSelection::FitRachlin(const char *mStarts)
 
         N = y.length();
 
-        SSR = getErrorRachlin(fitRachlinK, log(fitRachlinS));
+        SSR = getErrorRachlin(fitRachlinK, log(fitRachlinS), true);
 
         S2 = SSR / N;
 
@@ -1836,7 +1836,7 @@ void ModelSelection::FitRachlin(const char *mStarts)
 
             N = y.length();
 
-            SSR = getErrorRachlin(fitRachlinK, log(fitRachlinS));
+            SSR = getErrorRachlin(fitRachlinK, log(fitRachlinS), true);
 
             S2 = SSR / N;
 
@@ -1879,7 +1879,7 @@ void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
 
         N = y.length();
 
-        SSR = getErrorGeneralizedHyperbolic(fitGeneralizedHyperbolicK, fitGeneralizedHyperbolicBeta);
+        SSR = getErrorGeneralizedHyperbolic(fitGeneralizedHyperbolicK, fitGeneralizedHyperbolicBeta, true);
 
         S2 = SSR / N;
 
@@ -1957,7 +1957,7 @@ void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
 
             N = y.length();
 
-            SSR = getErrorGeneralizedHyperbolic(fitGeneralizedHyperbolicK, fitGeneralizedHyperbolicBeta);
+            SSR = getErrorGeneralizedHyperbolic(fitGeneralizedHyperbolicK, fitGeneralizedHyperbolicBeta, true);
 
             S2 = SSR / N;
 
@@ -1996,7 +1996,7 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
 
         N = y.length();
 
-        SSR = getErrorEbertPrelec(fitEbertPrelecK, log(fitEbertPrelecS));
+        SSR = getErrorEbertPrelec(fitEbertPrelecK, log(fitEbertPrelecS), true);
 
         S2 = SSR / N;
 
@@ -2072,7 +2072,7 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
 
             N = y.length();
 
-            SSR = getErrorEbertPrelec(fitEbertPrelecK, log(fitEbertPrelecS));
+            SSR = getErrorEbertPrelec(fitEbertPrelecK, log(fitEbertPrelecS), true);
 
             S2 = SSR / N;
 
@@ -2112,7 +2112,7 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
 
         N = y.length();
 
-        SSR = getErrorBleichrodt(fitBleichrodtK, log(fitBleichrodtS), fitBleichrodtBeta);
+        SSR = getErrorBleichrodt(fitBleichrodtK, log(fitBleichrodtS), fitBleichrodtBeta, true);
 
         S2 = SSR / N;
 
@@ -2203,7 +2203,7 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
 
             N = y.length();
 
-            SSR = getErrorBleichrodt(fitBleichrodtK, log(fitBleichrodtS), fitBleichrodtBeta);
+            SSR = getErrorBleichrodt(fitBleichrodtK, log(fitBleichrodtS), fitBleichrodtBeta, true);
 
             S2 = SSR / N;
 
@@ -2998,13 +2998,19 @@ void ModelSelection::PrepareProbabilities()
  * @param lnK
  * @return
  */
-double ModelSelection::getErrorExponential(double lnK)
+double ModelSelection::getErrorExponential(double lnK, bool retainResiduals)
 {
     leastSquaresError = 0;
+
+    if (retainResiduals)
+        ErrorResidual.clear();
 
     for (int i=0; i<y.length(); i++)
     {
         leastSquaresError = leastSquaresError + pow((y[i] - (exp(-exp(lnK)*x[i][0]))), 2);
+
+        if (retainResiduals)
+            ErrorResidual.append((y[i] - (exp(-exp(lnK)*x[i][0]))));
     }
 
     return leastSquaresError;
@@ -3015,13 +3021,19 @@ double ModelSelection::getErrorExponential(double lnK)
  * @param lnK
  * @return
  */
-double ModelSelection::getErrorParabolic(double lnK)
+double ModelSelection::getErrorParabolic(double lnK, bool retainResiduals)
 {
     leastSquaresError = 0;
+
+    if (retainResiduals)
+        ErrorResidual.clear();
 
     for (int i=0; i<y.length(); i++)
     {
         leastSquaresError = leastSquaresError + pow((y[i] - (1.0 - (exp(lnK) * pow(x[i][0], 2)))), 2);
+
+        if (retainResiduals)
+            ErrorResidual.append((y[i] - (1.0 - (exp(lnK) * pow(x[i][0], 2)))));
     }
 
     return leastSquaresError;
@@ -3032,13 +3044,19 @@ double ModelSelection::getErrorParabolic(double lnK)
  * @param lnK
  * @return
  */
-double ModelSelection::getErrorHyperbolic(double lnK)
+double ModelSelection::getErrorHyperbolic(double lnK, bool retainResiduals)
 {
     leastSquaresError = 0;
+
+    if (retainResiduals)
+        ErrorResidual.clear();
 
     for (int i=0; i<y.length(); i++)
     {
         leastSquaresError = leastSquaresError + pow((y[i] - (pow((1+exp(lnK)*x[i][0]), -1))), 2);
+
+        if (retainResiduals)
+            ErrorResidual.append((y[i] - (pow((1+exp(lnK)*x[i][0]), -1))));
     }
 
     return leastSquaresError;
@@ -3050,13 +3068,19 @@ double ModelSelection::getErrorHyperbolic(double lnK)
  * @param delta
  * @return
  */
-double ModelSelection::getErrorQuasiHyperbolic(double beta, double delta)
+double ModelSelection::getErrorQuasiHyperbolic(double beta, double delta, bool retainResiduals)
 {
     leastSquaresError = 0;
+
+    if (retainResiduals)
+        ErrorResidual.clear();
 
     for (int i=0; i<y.length(); i++)
     {
         leastSquaresError = leastSquaresError + pow((y[i] - (beta * pow( (double) delta, (double) x[i][0]))), 2);
+
+        if (retainResiduals)
+            ErrorResidual.append((y[i] - (beta * pow( (double) delta, (double) x[i][0]))));
     }
 
     return leastSquaresError;
@@ -3068,15 +3092,21 @@ double ModelSelection::getErrorQuasiHyperbolic(double beta, double delta)
  * @param s
  * @return
  */
-double ModelSelection::getErrorGreenMyerson(double lnK, double s)
+double ModelSelection::getErrorGreenMyerson(double lnK, double s, bool retainResiduals)
 {
     leastSquaresError = 0;
+
+    if (retainResiduals)
+        ErrorResidual.clear();
 
     s = exp(s);
 
     for (int i=0; i<y.length(); i++)
     {
         leastSquaresError = leastSquaresError + pow((y[i] - (pow((1+exp(lnK)*x[i][0]), (-s)))), 2);
+
+        if (retainResiduals)
+            ErrorResidual.append((y[i] - (pow((1+exp(lnK)*x[i][0]), (-s)))));
     }
 
     return leastSquaresError;
@@ -3088,15 +3118,21 @@ double ModelSelection::getErrorGreenMyerson(double lnK, double s)
  * @param s
  * @return
  */
-double ModelSelection::getErrorRachlin(double lnK, double s)
+double ModelSelection::getErrorRachlin(double lnK, double s, bool retainResiduals)
 {
     leastSquaresError = 0;
+
+    if (retainResiduals)
+        ErrorResidual.clear();
 
     s = exp(s);
 
     for (int i=0; i<y.length(); i++)
     {
         leastSquaresError = leastSquaresError + pow((y[i] - pow((1+exp(lnK)*(pow(x[i][0],s))),(-1))), 2);
+
+        if (retainResiduals)
+            ErrorResidual.append((y[i] - pow((1+exp(lnK)*(pow(x[i][0],s))),(-1))));
     }
 
     return leastSquaresError;
@@ -3108,13 +3144,19 @@ double ModelSelection::getErrorRachlin(double lnK, double s)
  * @param beta
  * @return
  */
-double ModelSelection::getErrorGeneralizedHyperbolic(double lnK, double beta)
+double ModelSelection::getErrorGeneralizedHyperbolic(double lnK, double beta, bool retainResiduals)
 {
     leastSquaresError = 0;
+
+    if (retainResiduals)
+        ErrorResidual.clear();
 
     for (int i=0; i<y.length(); i++)
     {
         leastSquaresError = leastSquaresError + pow((y[i] - (pow((1 + x[i][0] * exp(lnK)),(-exp(beta) / exp(lnK))))), 2);
+
+        if (retainResiduals)
+            ErrorResidual.append((y[i] - (pow((1 + x[i][0] * exp(lnK)),(-exp(beta) / exp(lnK))))));
     }
 
     return leastSquaresError;
@@ -3126,13 +3168,19 @@ double ModelSelection::getErrorGeneralizedHyperbolic(double lnK, double beta)
  * @param lnS
  * @return
  */
-double ModelSelection::getErrorPower(double lnK, double lnS)
+double ModelSelection::getErrorPower(double lnK, double lnS, bool retainResiduals)
 {
     leastSquaresError = 0;
+
+    if (retainResiduals)
+        ErrorResidual.clear();
 
     for (int i=0; i<y.length(); i++)
     {
         leastSquaresError = leastSquaresError + pow((y[i] - (1 - exp(lnK) * pow(x[i][0], exp(lnS)))), 2);
+
+        if (retainResiduals)
+            ErrorResidual.append((y[i] - (1 - exp(lnK) * pow(x[i][0], exp(lnS)))));
     }
 
     return leastSquaresError;
@@ -3144,15 +3192,21 @@ double ModelSelection::getErrorPower(double lnK, double lnS)
  * @param s
  * @return
  */
-double ModelSelection::getErrorEbertPrelec(double lnK, double s)
+double ModelSelection::getErrorEbertPrelec(double lnK, double s, bool retainResiduals)
 {
     leastSquaresError = 0;
+
+    if (retainResiduals)
+        ErrorResidual.clear();
 
     s = exp(s);
 
     for (int i=0; i<y.length(); i++)
     {
         leastSquaresError = leastSquaresError + pow((y[i] - exp(-pow((exp(lnK)*x[i][0]),s))), 2);
+
+        if (retainResiduals)
+            ErrorResidual.append((y[i] - exp(-pow((exp(lnK)*x[i][0]),s))));
     }
 
     return leastSquaresError;
@@ -3165,15 +3219,21 @@ double ModelSelection::getErrorEbertPrelec(double lnK, double s)
  * @param beta
  * @return
  */
-double ModelSelection::getErrorBleichrodt(double lnK, double s, double beta)
+double ModelSelection::getErrorBleichrodt(double lnK, double s, double beta, bool retainResiduals)
 {
     leastSquaresError = 0;
+
+    if (retainResiduals)
+        ErrorResidual.clear();
 
     s = exp(s);
 
     for (int i=0; i<y.length(); i++)
     {
         leastSquaresError = leastSquaresError + pow((y[i] - (beta*exp(-(exp(lnK)*pow(x[i][0],s))))), 2);
+
+        if (retainResiduals)
+            ErrorResidual.append((y[i] - (beta*exp(-(exp(lnK)*pow(x[i][0],s))))));
     }
 
     return leastSquaresError;
