@@ -164,6 +164,11 @@ public:
         return Constraints(-100, 100, true);
     }
 
+    double InvIt(double value) const
+    {
+        return exp(value) / (exp(value) + 1);
+    }
+
     unsigned int m_dim = 1;
 
     QVector<double> _delays;
@@ -262,11 +267,6 @@ public:
         _values = values;
 
         m_dim = 2;
-    }
-
-    double InvIt(double value) const
-    {
-        return exp(value) / (exp(value) + 1);
     }
 
     double CostFunction(std::vector<double> inputs, double delay) const override
@@ -408,16 +408,16 @@ public:
 
     double CostFunction(std::vector<double> inputs, double delay) const override
     {
-        return (inputs[2] * exp(-exp(inputs[0]) * pow(delay, exp(inputs[1]))));
+        return (InvIt(inputs[2]) * exp(-exp(inputs[0]) * pow(delay, exp(inputs[1]))));
     }
 
     std::vector<Constraints> GetConstraints() const override
     {
         std::vector<Constraints> constr(3);
 
-        constr[0] = Constraints(-10, 10, true);
-        constr[1] = Constraints(-10, 10, true);
-        constr[2] = Constraints(0, 1, true);
+        constr[0] = DefaultConstraints();
+        constr[1] = DefaultConstraints();
+        constr[2] = DefaultConstraints();
 
         return constr;
     }

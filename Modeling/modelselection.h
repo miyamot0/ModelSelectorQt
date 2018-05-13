@@ -226,6 +226,21 @@ public:
         return returnVector;
     }
 
+    double InvIt(double value) const
+    {
+        return exp(value) / (exp(value) + 1);
+    }
+
+    double CalculateAIC()
+    {
+        return N + N * log(2 * M_PI) + N * log(SSR/N) + 2 * (DF);
+    }
+
+    double CalculateBIC()
+    {
+        return N + N * log(2 * M_PI) + N * log(SSR/N) + log(N) * (DF);
+    }
+
 private:
     real_2d_array x;
     real_1d_array y;
@@ -249,9 +264,7 @@ private:
     double SSR = 0;
     double N = 0;
     double S2 = 0;
-    double L = 0;
     double DF = 0;
-    double PROJ = 0;
     double holder = 0;
     double sumBayesFactors = 0;
     double leastSquaresError = 0;

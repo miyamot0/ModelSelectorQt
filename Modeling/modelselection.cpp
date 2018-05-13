@@ -57,6 +57,8 @@
 
 #include "Controls/chartwindow.h"
 
+#include <QDebug>
+
 using namespace alglib;
 
 /**
@@ -929,12 +931,11 @@ void ModelSelection::FitNoise()
 
     S2 = SSR / N;
 
-    L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
     DF = 2;
 
-    aicNoise = (-2 * log(L)) + (2 * DF);
-    bicNoise = -2 * log(L) + log(N) * DF;
+    aicNoise = CalculateAIC();
+    bicNoise = CalculateBIC();
+
     NoiseRMSE = sqrt(S2);
 }
 
@@ -976,12 +977,11 @@ void ModelSelection::FitExponential(const char *mStarts)
 
         S2 = SSR / N;
 
-        L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
         DF = 2;
 
-        aicExponential = (-2 * log(L)) + (2 * DF);
-        bicExponential = -2 * log(L) + log(N) * DF;
+        aicExponential = CalculateAIC();
+        bicExponential = CalculateBIC();
+
         fitExponentialK = (double) result[0];
 
         if (SSR > 0)
@@ -1061,12 +1061,11 @@ void ModelSelection::FitExponential(const char *mStarts)
 
             S2 = SSR / N;
 
-            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
             DF = 2;
 
-            aicExponential = (-2 * log(L)) + (2 * DF);
-            bicExponential = -2 * log(L) + log(N) * DF;
+            aicExponential = CalculateAIC();
+            bicExponential = CalculateBIC();
+
             fitExponentialK = (double) c[0];
         }
     }
@@ -1110,12 +1109,11 @@ void ModelSelection::FitParabolic(const char *mStarts)
 
         S2 = SSR / N;
 
-        L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
         DF = 2;
 
-        aicParabolic = (-2 * log(L)) + (2 * DF);
-        bicParabolic = -2 * log(L) + log(N) * DF;
+        aicParabolic = CalculateAIC();
+        bicParabolic = CalculateBIC();
+
         fitParabolicK = (double) result[0];
 
         if (SSR > 0)
@@ -1195,12 +1193,11 @@ void ModelSelection::FitParabolic(const char *mStarts)
 
             S2 = SSR / N;
 
-            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
             DF = 2;
 
-            aicParabolic = (-2 * log(L)) + (2 * DF);
-            bicParabolic = -2 * log(L) + log(N) * DF;
+            aicParabolic = CalculateAIC();
+            bicParabolic = CalculateBIC();
+
             fitParabolicK = (double) c[0];
         }
     }
@@ -1244,12 +1241,11 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
         S2 = SSR / N;
 
-        L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
         DF = 2;
 
-        aicHyperbolic = (-2 * log(L)) + (2 * DF);
-        bicHyperbolic = -2 * log(L) + log(N) * DF;
+        aicHyperbolic = CalculateAIC();
+        bicHyperbolic = CalculateBIC();
+
         fitHyperbolicK = (double) result[0];
 
         if (SSR > 0)
@@ -1328,12 +1324,11 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
             S2 = SSR / N;
 
-            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
             DF = 2;
 
-            aicHyperbolic = (-2 * log(L)) + (2 * DF);
-            bicHyperbolic = -2 * log(L) + log(N) * DF;
+            aicHyperbolic = CalculateAIC();
+            bicHyperbolic = CalculateBIC();
+
             fitHyperbolicK = (double) c[0];
         }
     }
@@ -1369,7 +1364,7 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
         for (int i = 0; i < N; i++)
         {
-            holder = (double) result[0] * pow( (double) result[1], (double) x[i][0]);
+            holder = (double) InvIt(result[0]) * pow( (double) InvIt(result[1]), (double) x[i][0]);
 
             ErrorResidual.append(((double) y[i] - holder));
 
@@ -1378,14 +1373,13 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
         S2 = SSR / N;
 
-        L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
         DF = 3;
 
-        aicQuasiHyperbolic = (-2 * log(L)) + (2 * DF);
-        bicQuasiHyperbolic = -2 * log(L) + log(N) * DF;
-        fitQuasiHyperbolicBeta = (double) result[0];
-        fitQuasiHyperbolicDelta = (double) result[1];
+        aicQuasiHyperbolic = CalculateAIC();
+        bicQuasiHyperbolic = CalculateBIC();
+
+        fitQuasiHyperbolicBeta = InvIt((double) result[0]);
+        fitQuasiHyperbolicDelta = InvIt((double) result[1]);
 
         if (SSR > 0)
         {
@@ -1478,12 +1472,11 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
             S2 = SSR / N;
 
-            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
             DF = 3;
 
-            aicQuasiHyperbolic = (-2 * log(L)) + (2 * DF);
-            bicQuasiHyperbolic = -2 * log(L) + log(N) * DF;
+            aicQuasiHyperbolic = CalculateAIC();
+            bicQuasiHyperbolic = CalculateBIC();
+
             fitQuasiHyperbolicBeta = (double) c[0];
             fitQuasiHyperbolicDelta = (double) c[1];
         }
@@ -1530,12 +1523,11 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
         S2 = SSR / N;
 
-        L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
         DF = 3;
 
-        aicMyerson = (-2 * log(L)) + (2 * DF);
-        bicMyerson = -2 * log(L) + log(N) * DF;
+        aicMyerson = CalculateAIC();
+        bicMyerson = CalculateBIC();
+
         fitMyersonK = (double) result[0];
         fitMyersonS = (double) exp(result[1]);
 
@@ -1616,12 +1608,11 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
             S2 = SSR / N;
 
-            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
             DF = 3;
 
-            aicMyerson = (-2 * log(L)) + (2 * DF);
-            bicMyerson = -2 * log(L) + log(N) * DF;
+            aicMyerson = CalculateAIC();
+            bicMyerson = CalculateBIC();
+
             fitMyersonK = (double) c[0];
             fitMyersonS = (double) c[1];
         }
@@ -1668,12 +1659,11 @@ void ModelSelection::FitRachlin(const char *mStarts)
 
         S2 = SSR / N;
 
-        L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
         DF = 3;
 
-        aicRachlin = (-2 * log(L)) + (2 * DF);
-        bicRachlin = -2 * log(L) + log(N) * DF;
+        aicRachlin = CalculateAIC();
+        bicRachlin = CalculateBIC();
+
         fitRachlinK = (double) result[0];
         fitRachlinS = exp(result[1]);
 
@@ -1755,12 +1745,11 @@ void ModelSelection::FitRachlin(const char *mStarts)
 
             S2 = SSR / N;
 
-            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
             DF = 3;
 
-            aicRachlin = (-2 * log(L)) + (2 * DF);
-            bicRachlin = -2 * log(L) + log(N) * DF;
+            aicRachlin = CalculateAIC();
+            bicRachlin = CalculateBIC();
+
             fitRachlinK = (double) c[0];
             fitRachlinS = (double) c[1];
 
@@ -1808,12 +1797,11 @@ void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
 
         S2 = SSR / N;
 
-        L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
         DF = 3;
 
-        aicGeneralizedHyperbolic = (-2 * log(L)) + (2 * DF);
-        bicGeneralizedHyperbolic = -2 * log(L) + log(N) * DF;
+        aicGeneralizedHyperbolic = CalculateAIC();
+        bicGeneralizedHyperbolic = CalculateBIC();
+
         fitGeneralizedHyperbolicK = (double) result[0];
         fitGeneralizedHyperbolicBeta = (double) result[1];
 
@@ -1895,12 +1883,11 @@ void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
 
             S2 = SSR / N;
 
-            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
             DF = 3;
 
-            aicGeneralizedHyperbolic = (-2 * log(L)) + (2 * DF);
-            bicGeneralizedHyperbolic = -2 * log(L) + log(N) * DF;
+            aicGeneralizedHyperbolic = CalculateAIC();
+            bicGeneralizedHyperbolic = CalculateBIC();
+
             fitGeneralizedHyperbolicK = (double) c[0];
             fitGeneralizedHyperbolicBeta = (double) c[1];
         }
@@ -1946,12 +1933,11 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
 
         S2 = SSR / N;
 
-        L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
         DF = 3;
 
-        aicEbertPrelec = (-2 * log(L)) + (2 * DF);
-        bicEbertPrelec = -2 * log(L) + log(N) * DF;
+        aicEbertPrelec = CalculateAIC();
+        bicEbertPrelec = CalculateBIC();
+
         fitEbertPrelecK = (double) result[0];
         fitEbertPrelecS = (double) exp(result[1]);
 
@@ -2031,12 +2017,11 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
 
             S2 = SSR / N;
 
-            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
             DF = 3;
 
-            aicEbertPrelec = (-2 * log(L)) + (2 * DF);
-            bicEbertPrelec = -2 * log(L) + log(N) * DF;
+            aicEbertPrelec = CalculateAIC();
+            bicEbertPrelec = CalculateBIC();
+
             fitEbertPrelecK = (double) c[0];
             fitEbertPrelecS = (double) c[1];
         }
@@ -2073,8 +2058,8 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
         SSR = 0;
 
         for (int i = 0; i < N; i++)
-        {
-            holder = result[2] * exp(-exp(result[0])*pow(x[i][0], exp(result[1])));
+        {            
+            holder = InvIt(result[2]) * exp(-exp(result[0])*pow(x[i][0], exp(result[1])));
 
             ErrorResidual.append(((double) y[i] - holder));
 
@@ -2083,15 +2068,14 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
 
         S2 = SSR / N;
 
-        L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
         DF = 4;
 
-        aicBleichrodt = (-2 * log(L)) + (2 * DF);
-        bicBleichrodt = -2 * log(L) + log(N) * DF;
+        aicBleichrodt = CalculateAIC();
+        bicBleichrodt = CalculateBIC();
+
         fitBleichrodtK = (double) result[0];
         fitBleichrodtS = (double) exp(result[1]);
-        fitBleichrodtBeta = (double) result[2];
+        fitBleichrodtBeta = InvIt((double) result[2]);
 
         if (SSR > 0)
         {
@@ -2183,12 +2167,11 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
 
             S2 = SSR / N;
 
-            L = pow((1.0 / sqrt(2 * M_PI * S2)), N) * exp(-SSR / (S2 * 2.0));
-
             DF = 4;
 
-            aicBleichrodt = (-2 * log(L)) + (2 * DF);
-            bicBleichrodt = -2 * log(L) + log(N) * DF;
+            aicBleichrodt = CalculateAIC();
+            bicBleichrodt = CalculateBIC();
+
             fitBleichrodtK = (double) c[0];
             fitBleichrodtS = (double) c[1];
             fitBleichrodtBeta = (double) c[2];
