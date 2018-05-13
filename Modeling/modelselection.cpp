@@ -1850,8 +1850,6 @@ void ModelSelection::FitRachlin(const char *mStarts)
     }
 }
 
-// TODO: check error estimates here
-
 /** Lewenstein & Prelec Model
   *  @brief
   */
