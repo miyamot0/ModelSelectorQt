@@ -65,7 +65,7 @@ public:
     double getED50ep();
     double getED50parabolic();
     double getED50crdi();
-    double getED50rodriguez();
+    double getED50genhyp();
 
     FittingAlgorithm fittingAlgorithm;
 

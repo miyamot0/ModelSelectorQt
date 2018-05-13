@@ -2232,7 +2232,7 @@ QString ModelSelection::getED50BestModel(ModelType model)
         break;
 
     case ModelType::GeneralizedHyperbolic:
-        result = getED50rodriguez();
+        result = getED50genhyp();
         return QString::number(result);
 
         break;
@@ -2381,7 +2381,7 @@ double ModelSelection::getED50crdi () {
  * @brief ModelSelection::getED50rodriguez
  * @return
  */
-double ModelSelection::getED50rodriguez () {
+double ModelSelection::getED50genhyp () {
     double lowDelay = 0;
     double highDelay = x[x.rows()-1][0] * 100;
 
