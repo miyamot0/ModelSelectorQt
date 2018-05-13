@@ -1042,17 +1042,11 @@ void ModelSelection::FitExponential(const char *mStarts)
 
         std::vector<double> result = de.GetBestAgent();
 
+        fitExponentialK = (double) result[0];
+
         N = y.length();
-        SSR = 0;
 
-        for (int i = 0; i < N; i++)
-        {
-            holder = (exp(-exp( (double) result[0])* (double) x[i][0]));
-
-            ErrorResidual.append(((double) y[i] - holder));
-
-            SSR += pow(ErrorResidual[i], 2);
-        }
+        SSR = getErrorExponential(fitExponentialK);
 
         S2 = SSR / N;
 
@@ -1060,8 +1054,6 @@ void ModelSelection::FitExponential(const char *mStarts)
 
         aicExponential = CalculateAIC();
         bicExponential = CalculateBIC();
-
-        fitExponentialK = (double) result[0];
 
         if (SSR > 0)
         {
@@ -1127,16 +1119,10 @@ void ModelSelection::FitExponential(const char *mStarts)
         if ((int) info == 2 || (int) info == 5)
         {
             N = y.length();
-            SSR = 0;
 
-            for (int i = 0; i < N; i++)
-            {
-                holder = (exp(-exp( (double) c[0])* (double) x[i][0]));
+            fitExponentialK = (double) c[0];
 
-                ErrorResidual.append(((double) y[i] - holder));
-
-                SSR += pow(ErrorResidual[i], 2);
-            }
+            SSR = getErrorExponential(fitExponentialK);
 
             S2 = SSR / N;
 
@@ -1145,7 +1131,7 @@ void ModelSelection::FitExponential(const char *mStarts)
             aicExponential = CalculateAIC();
             bicExponential = CalculateBIC();
 
-            fitExponentialK = (double) c[0];
+
         }
     }
 }
@@ -1174,17 +1160,11 @@ void ModelSelection::FitParabolic(const char *mStarts)
 
         std::vector<double> result = de.GetBestAgent();
 
+        fitParabolicK = (double) result[0];
+
         N = y.length();
-        SSR = 0;
 
-        for (int i = 0; i < N; i++)
-        {
-            holder = 1.0 - (exp((double) result[0]) * pow(x[i][0], 2));
-
-            ErrorResidual.append(((double) y[i] - holder));
-
-            SSR += pow(ErrorResidual[i], 2);
-        }
+        SSR = getErrorParabolic(fitParabolicK);
 
         S2 = SSR / N;
 
@@ -1192,8 +1172,6 @@ void ModelSelection::FitParabolic(const char *mStarts)
 
         aicParabolic = CalculateAIC();
         bicParabolic = CalculateBIC();
-
-        fitParabolicK = (double) result[0];
 
         if (SSR > 0)
         {
@@ -1259,16 +1237,10 @@ void ModelSelection::FitParabolic(const char *mStarts)
         if ((int) info == 2 || (int) info == 5)
         {
             N = y.length();
-            SSR = 0;
 
-            for (int i = 0; i < N; i++)
-            {
-                holder = 1.0 - (exp((double) c[0]) * pow(x[i][0], 2));
+            fitParabolicK = (double) c[0];
 
-                ErrorResidual.append(((double) y[i] - holder));
-
-                SSR += pow(ErrorResidual[i], 2);
-            }
+            SSR = getErrorParabolic(fitParabolicK);
 
             S2 = SSR / N;
 
@@ -1276,8 +1248,6 @@ void ModelSelection::FitParabolic(const char *mStarts)
 
             aicParabolic = CalculateAIC();
             bicParabolic = CalculateBIC();
-
-            fitParabolicK = (double) c[0];
         }
     }
 }
@@ -1306,17 +1276,11 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
         std::vector<double> result = de.GetBestAgent();
 
+        fitHyperbolicK = (double) result[0];
+
         N = y.length();
-        SSR = 0;
 
-        for (int i = 0; i < N; i++)
-        {
-            holder = pow((1+exp( (double) result[0])* (double) x[i][0]), -1);
-
-            ErrorResidual.append(((double) y[i] - holder));
-
-            SSR += pow(ErrorResidual[i], 2);
-        }
+        SSR = getErrorHyperbolic(fitHyperbolicK);
 
         S2 = SSR / N;
 
@@ -1324,8 +1288,6 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
         aicHyperbolic = CalculateAIC();
         bicHyperbolic = CalculateBIC();
-
-        fitHyperbolicK = (double) result[0];
 
         if (SSR > 0)
         {
@@ -1390,16 +1352,10 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
         if ((int) info == 2 || (int) info == 5)
         {
             N = y.length();
-            SSR = 0;
 
-            for (int i = 0; i < N; i++)
-            {
-                holder = pow((1+exp( (double) c[0])* (double) x[i][0]), -1);
+            fitHyperbolicK = (double) c[0];
 
-                ErrorResidual.append(((double) y[i] - holder));
-
-                SSR += pow(ErrorResidual[i], 2);
-            }
+            SSR = getErrorHyperbolic(fitHyperbolicK);
 
             S2 = SSR / N;
 
@@ -1407,8 +1363,6 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
             aicHyperbolic = CalculateAIC();
             bicHyperbolic = CalculateBIC();
-
-            fitHyperbolicK = (double) c[0];
         }
     }
 }
@@ -1438,17 +1392,12 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
         std::vector<double> result = de.GetBestAgent();
 
+        fitQuasiHyperbolicBeta = InvIt((double) result[0]);
+        fitQuasiHyperbolicDelta = InvIt((double) result[1]);
+
         N = y.length();
-        SSR = 0;
 
-        for (int i = 0; i < N; i++)
-        {
-            holder = (double) InvIt(result[0]) * pow( (double) InvIt(result[1]), (double) x[i][0]);
-
-            ErrorResidual.append(((double) y[i] - holder));
-
-            SSR += pow(ErrorResidual[i], 2);
-        }
+        SSR = getErrorQuasiHyperbolic(fitQuasiHyperbolicBeta, fitQuasiHyperbolicDelta);
 
         S2 = SSR / N;
 
@@ -1456,9 +1405,6 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
         aicQuasiHyperbolic = CalculateAIC();
         bicQuasiHyperbolic = CalculateBIC();
-
-        fitQuasiHyperbolicBeta = InvIt((double) result[0]);
-        fitQuasiHyperbolicDelta = InvIt((double) result[1]);
 
         if (SSR > 0)
         {
@@ -1536,18 +1482,13 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
         lsfitresults(state, info, c, rep);
 
         if ((int) info == 2 || (int) info == 5)
-        {
+        {            
+            fitQuasiHyperbolicBeta = (double) c[0];
+            fitQuasiHyperbolicDelta = (double) c[1];
+
             N = y.length();
-            SSR = 0;
 
-            for (int i = 0; i < N; i++)
-            {
-                holder = (double) c[0] * pow( (double) c[1], (double) x[i][0]);
-
-                ErrorResidual.append(((double) y[i] - holder));
-
-                SSR += pow(ErrorResidual[i], 2);
-            }
+            SSR = getErrorQuasiHyperbolic(fitQuasiHyperbolicBeta, fitQuasiHyperbolicDelta);
 
             S2 = SSR / N;
 
@@ -1555,9 +1496,6 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
             aicQuasiHyperbolic = CalculateAIC();
             bicQuasiHyperbolic = CalculateBIC();
-
-            fitQuasiHyperbolicBeta = (double) c[0];
-            fitQuasiHyperbolicDelta = (double) c[1];
         }
     }
 }
@@ -1587,17 +1525,12 @@ void ModelSelection::FitPower(const char *mStarts)
 
         std::vector<double> result = de.GetBestAgent();
 
+        fitPowerK = (double) result[0];
+        fitPowerS = (double) result[1];
+
         N = y.length();
-        SSR = 0;
 
-        for (int i = 0; i < N; i++)
-        {
-            holder = (1 - exp(result[0]) * pow((double) x[i][0], exp(result[1])));
-
-            ErrorResidual.append(((double) y[i] - holder));
-
-            SSR += pow(ErrorResidual[i], 2);
-        }
+        SSR = getErrorPower(fitPowerK, fitPowerS);
 
         S2 = SSR / N;
 
@@ -1605,9 +1538,6 @@ void ModelSelection::FitPower(const char *mStarts)
 
         aicPower = CalculateAIC();
         bicPower = CalculateBIC();
-
-        fitPowerK = (double) result[0];
-        fitPowerS = (double) result[1];
 
         if (SSR > 0)
         {
@@ -1675,17 +1605,13 @@ void ModelSelection::FitPower(const char *mStarts)
 
         if ((int) info == 2 || (int) info == 5)
         {
+
+            fitPowerK = (double) c[0];
+            fitPowerS = (double) c[1];
+
             N = y.length();
-            SSR = 0;
 
-            for (int i = 0; i < N; i++)
-            {
-                holder = (1 - exp(c[0]) * pow((double) x[i][0], exp(c[1])));
-
-                ErrorResidual.append(((double) y[i] - holder));
-
-                SSR += pow(ErrorResidual[i], 2);
-            }
+            SSR = getErrorPower(fitPowerK, fitPowerS);
 
             S2 = SSR / N;
 
@@ -1694,8 +1620,10 @@ void ModelSelection::FitPower(const char *mStarts)
             aicPower = CalculateAIC();
             bicPower = CalculateBIC();
 
-            fitPowerK = (double) c[0];
-            fitPowerS = (double) c[1];
+            if (SSR > 0)
+            {
+                rmsePower = sqrt(SSR/(double) N);
+            }
         }
     }
 }
@@ -1725,18 +1653,12 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
         std::vector<double> result = de.GetBestAgent();
 
+        fitMyersonK = (double) result[0];
+        fitMyersonS = (double) exp(result[1]);
+
         N = y.length();
 
-        SSR = 0;
-
-        for (int i = 0; i < N; i++)
-        {
-            holder = pow((1+exp( (double) result[0])* (double) x[i][0]),  (double) -exp(result[1]));
-
-            ErrorResidual.append(((double) y[i] - holder));
-
-            SSR += pow(ErrorResidual[i], 2);
-        }
+        SSR = getErrorGreenMyerson(fitMyersonK, log(fitMyersonS));
 
         S2 = SSR / N;
 
@@ -1744,9 +1666,6 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
         aicMyerson = CalculateAIC();
         bicMyerson = CalculateBIC();
-
-        fitMyersonK = (double) result[0];
-        fitMyersonS = (double) exp(result[1]);
 
         if (SSR > 0)
         {
@@ -1810,18 +1729,12 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
         if ((int) info == 2 || (int) info == 5)
         {
+            fitMyersonK = (double) c[0];
+            fitMyersonS = (double) c[1];
+
             N = y.length();
 
-            SSR = 0;
-
-            for (int i = 0; i < N; i++)
-            {
-                holder = pow((1+exp( (double) c[0])* (double) x[i][0]),  (double) -c[1]);
-
-                ErrorResidual.append(((double) y[i] - holder));
-
-                SSR += pow(ErrorResidual[i], 2);
-            }
+            SSR = getErrorGreenMyerson(fitMyersonK, log(fitMyersonS));
 
             S2 = SSR / N;
 
@@ -1829,9 +1742,6 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
             aicMyerson = CalculateAIC();
             bicMyerson = CalculateBIC();
-
-            fitMyersonK = (double) c[0];
-            fitMyersonS = (double) c[1];
         }
     }
 }
@@ -1862,17 +1772,12 @@ void ModelSelection::FitRachlin(const char *mStarts)
 
         std::vector<double> result = de.GetBestAgent();
 
+        fitRachlinK = (double) result[0];
+        fitRachlinS = exp(result[1]);
+
         N = y.length();
-        SSR = 0;
 
-        for (int i = 0; i < N; i++)
-        {
-            holder = pow((1+exp((double) result[0])*pow((double) x[i][0], exp(result[1]))), -1);
-
-            ErrorResidual.append(((double) y[i] - holder));
-
-            SSR += pow(ErrorResidual[i], 2);
-        }
+        SSR = getErrorRachlin(fitRachlinK, log(fitRachlinS));
 
         S2 = SSR / N;
 
@@ -1880,9 +1785,6 @@ void ModelSelection::FitRachlin(const char *mStarts)
 
         aicRachlin = CalculateAIC();
         bicRachlin = CalculateBIC();
-
-        fitRachlinK = (double) result[0];
-        fitRachlinS = exp(result[1]);
 
         statusValue = -1;
 
@@ -1948,17 +1850,12 @@ void ModelSelection::FitRachlin(const char *mStarts)
 
         if ((int) GetInfo() == 2 || (int) GetInfo() == 5)
         {
+            fitRachlinK = (double) c[0];
+            fitRachlinS = (double) c[1];
+
             N = y.length();
-            SSR = 0;
 
-            for (int i = 0; i < N; i++)
-            {
-                holder = pow((1+exp( (double) c[0])*pow( (double) x[i][0], (double) c[1])), -1);
-
-                ErrorResidual.append(((double) y[i] - holder));
-
-                SSR += pow(ErrorResidual[i], 2);
-            }
+            SSR = getErrorRachlin(fitRachlinK, log(fitRachlinS));
 
             S2 = SSR / N;
 
@@ -1967,13 +1864,12 @@ void ModelSelection::FitRachlin(const char *mStarts)
             aicRachlin = CalculateAIC();
             bicRachlin = CalculateBIC();
 
-            fitRachlinK = (double) c[0];
-            fitRachlinS = (double) c[1];
-
             statusValue = (int) info;
         }
     }
 }
+
+// TODO: check error estimates here
 
 /** Lewenstein & Prelec Model
   *  @brief
@@ -2000,17 +1896,12 @@ void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
 
         std::vector<double> result = de.GetBestAgent();
 
+        fitGeneralizedHyperbolicK = (double) result[0];
+        fitGeneralizedHyperbolicBeta = (double) result[1];
+
         N = y.length();
-        SSR = 0;
 
-        for (int i = 0; i < N; i++)
-        {
-            holder = pow((1 + x[i][0] * exp(result[0])),(-exp(result[1]) / exp(result[0])));
-
-            ErrorResidual.append(((double) y[i] - holder));
-
-            SSR += pow(ErrorResidual[i], 2);
-        }
+        SSR = getErrorGeneralizedHyperbolic(fitGeneralizedHyperbolicK, fitGeneralizedHyperbolicBeta);
 
         S2 = SSR / N;
 
@@ -2018,9 +1909,6 @@ void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
 
         aicGeneralizedHyperbolic = CalculateAIC();
         bicGeneralizedHyperbolic = CalculateBIC();
-
-        fitGeneralizedHyperbolicK = (double) result[0];
-        fitGeneralizedHyperbolicBeta = (double) result[1];
 
         if (SSR > 0)
         {
@@ -2085,18 +1973,13 @@ void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
         lsfitresults(state, info, c, rep);
 
         if ((int) GetInfo() == 2 || (int) GetInfo() == 5)
-        {
+        {            
+            fitGeneralizedHyperbolicK = (double) c[0];
+            fitGeneralizedHyperbolicBeta = (double) c[1];
+
             N = y.length();
-            SSR = 0;
 
-            for (int i = 0; i < N; i++)
-            {
-                holder = pow((1 + x[i][0] * exp(c[0])),(-exp(c[1]) / exp(c[0])));
-
-                ErrorResidual.append(((double) y[i] - holder));
-
-                SSR += pow(ErrorResidual[i], 2);
-            }
+            SSR = getErrorGeneralizedHyperbolic(fitGeneralizedHyperbolicK, fitGeneralizedHyperbolicBeta);
 
             S2 = SSR / N;
 
@@ -2104,9 +1987,6 @@ void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
 
             aicGeneralizedHyperbolic = CalculateAIC();
             bicGeneralizedHyperbolic = CalculateBIC();
-
-            fitGeneralizedHyperbolicK = (double) c[0];
-            fitGeneralizedHyperbolicBeta = (double) c[1];
         }
     }
 }
@@ -2136,17 +2016,12 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
 
         std::vector<double> result = de.GetBestAgent();
 
+        fitEbertPrelecK = (double) result[0];
+        fitEbertPrelecS = (double) exp(result[1]);
+
         N = y.length();
-        SSR = 0;
 
-        for (int i = 0; i < N; i++)
-        {
-            holder = exp(-pow((exp(result[0])*x[i][0]), exp(result[1])));
-
-            ErrorResidual.append(((double) y[i] - holder));
-
-            SSR += pow(ErrorResidual[i], 2);
-        }
+        SSR = getErrorEbertPrelec(fitEbertPrelecK, log(fitEbertPrelecS));
 
         S2 = SSR / N;
 
@@ -2154,9 +2029,6 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
 
         aicEbertPrelec = CalculateAIC();
         bicEbertPrelec = CalculateBIC();
-
-        fitEbertPrelecK = (double) result[0];
-        fitEbertPrelecS = (double) exp(result[1]);
 
         if (SSR > 0)
         {
@@ -2220,17 +2092,12 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
 
         if ((int) GetInfo() == 2 || (int) GetInfo() == 5)
         {
+            fitEbertPrelecK = (double) c[0];
+            fitEbertPrelecS = (double) c[1];
+
             N = y.length();
-            SSR = 0;
 
-            for (int i = 0; i < N; i++)
-            {
-                holder = exp(-pow((exp(c[0])*x[i][0]), c[1]));
-
-                ErrorResidual.append(((double) y[i] - holder));
-
-                SSR += pow(ErrorResidual[i], 2);
-            }
+            SSR = getErrorEbertPrelec(fitEbertPrelecK, log(fitEbertPrelecS));
 
             S2 = SSR / N;
 
@@ -2238,9 +2105,6 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
 
             aicEbertPrelec = CalculateAIC();
             bicEbertPrelec = CalculateBIC();
-
-            fitEbertPrelecK = (double) c[0];
-            fitEbertPrelecS = (double) c[1];
         }
     }
 }
@@ -2271,17 +2135,13 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
 
         std::vector<double> result = de.GetBestAgent();
 
+        fitBleichrodtK = (double) result[0];
+        fitBleichrodtS = (double) exp(result[1]);
+        fitBleichrodtBeta = InvIt((double) result[2]);
+
         N = y.length();
-        SSR = 0;
 
-        for (int i = 0; i < N; i++)
-        {            
-            holder = InvIt(result[2]) * exp(-exp(result[0])*pow(x[i][0], exp(result[1])));
-
-            ErrorResidual.append(((double) y[i] - holder));
-
-            SSR += pow(ErrorResidual[i], 2);
-        }
+        SSR = getErrorBleichrodt(fitBleichrodtK, log(fitBleichrodtS), fitBleichrodtBeta);
 
         S2 = SSR / N;
 
@@ -2289,10 +2149,6 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
 
         aicBleichrodt = CalculateAIC();
         bicBleichrodt = CalculateBIC();
-
-        fitBleichrodtK = (double) result[0];
-        fitBleichrodtS = (double) exp(result[1]);
-        fitBleichrodtBeta = InvIt((double) result[2]);
 
         if (SSR > 0)
         {
@@ -2370,17 +2226,13 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
 
         if ((int) GetInfo() == 2 || (int) GetInfo() == 5)
         {
+            fitBleichrodtK = (double) c[0];
+            fitBleichrodtS = (double) c[1];
+            fitBleichrodtBeta = (double) c[2];
+
             N = y.length();
-            SSR = 0;
 
-            for (int i = 0; i < N; i++)
-            {
-                holder = c[2] * exp(-exp(c[0])*pow(x[i][0], c[1]));
-
-                ErrorResidual.append(((double) y[i] - holder));
-
-                SSR += pow(ErrorResidual[i], 2);
-            }
+            SSR = getErrorBleichrodt(fitBleichrodtK, log(fitBleichrodtS), fitBleichrodtBeta);
 
             S2 = SSR / N;
 
@@ -2388,10 +2240,6 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
 
             aicBleichrodt = CalculateAIC();
             bicBleichrodt = CalculateBIC();
-
-            fitBleichrodtK = (double) c[0];
-            fitBleichrodtS = (double) c[1];
-            fitBleichrodtBeta = (double) c[2];
         }
     }
 }
@@ -2560,6 +2408,10 @@ double ModelSelection::getED50parabolic () {
     return returnValue;
 }
 
+/**
+ * @brief ModelSelection::getED50power
+ * @return
+ */
 double ModelSelection::getED50power () {
     double lowDelay = 0;
     double highDelay = x[x.rows()-1][0] * 100;
@@ -3233,7 +3085,7 @@ double ModelSelection::getErrorQuasiHyperbolic(double beta, double delta)
 
     for (int i=0; i<y.length(); i++)
     {
-        leastSquaresError = leastSquaresError + pow((y[i] - (pow((beta*delta),x[i][0]))), 2);
+        leastSquaresError = leastSquaresError + pow((y[i] - (beta * pow( (double) delta, (double) x[i][0]))), 2);
     }
 
     return leastSquaresError;
