@@ -1036,9 +1036,9 @@ void ModelSelection::FitExponential(const char *mStarts)
 
         ExponentialModel exponentialFunction(xValues, yValues);
 
-        de::DifferentialEvolution de(exponentialFunction, 100);
+        de::DifferentialEvolution de(exponentialFunction, populationSize);
 
-        de.Optimize(1000, false);
+        de.Optimize(maximumIterationsDE, false);
 
         std::vector<double> result = de.GetBestAgent();
 
@@ -1168,9 +1168,9 @@ void ModelSelection::FitParabolic(const char *mStarts)
 
         ParabolicModel parabolicFunction(xValues, yValues);
 
-        de::DifferentialEvolution de(parabolicFunction, 100);
+        de::DifferentialEvolution de(parabolicFunction, populationSize);
 
-        de.Optimize(1000, false);
+        de.Optimize(maximumIterationsDE, false);
 
         std::vector<double> result = de.GetBestAgent();
 
@@ -1300,9 +1300,9 @@ void ModelSelection::FitHyperbolic(const char *mStarts)
 
         HyperbolicModel hyperbolicFunction(xValues, yValues);
 
-        de::DifferentialEvolution de(hyperbolicFunction, 100);
+        de::DifferentialEvolution de(hyperbolicFunction, populationSize);
 
-        de.Optimize(1000, false);
+        de.Optimize(maximumIterationsDE, false);
 
         std::vector<double> result = de.GetBestAgent();
 
@@ -1432,9 +1432,9 @@ void ModelSelection::FitQuasiHyperbolic(const char *mStarts)
 
         BetaDeltaModel quasiHyperbolicFunction(xValues, yValues);
 
-        de::DifferentialEvolution de(quasiHyperbolicFunction, 100);
+        de::DifferentialEvolution de(quasiHyperbolicFunction, populationSize);
 
-        de.Optimize(1000, false);
+        de.Optimize(maximumIterationsDE, false);
 
         std::vector<double> result = de.GetBestAgent();
 
@@ -1581,9 +1581,9 @@ void ModelSelection::FitPower(const char *mStarts)
 
         PowerModel powerFunction(xValues, yValues);
 
-        de::DifferentialEvolution de(powerFunction, 100);
+        de::DifferentialEvolution de(powerFunction, populationSize);
 
-        de.Optimize(1000, false);
+        de.Optimize(maximumIterationsDE, false);
 
         std::vector<double> result = de.GetBestAgent();
 
@@ -1719,9 +1719,9 @@ void ModelSelection::FitMyerson(const char *mStarts)
 
         GreenMyersonModel greenMyersonFunction(xValues, yValues);
 
-        de::DifferentialEvolution de(greenMyersonFunction, 100);
+        de::DifferentialEvolution de(greenMyersonFunction, populationSize);
 
-        de.Optimize(1000, false);
+        de.Optimize(maximumIterationsDE, false);
 
         std::vector<double> result = de.GetBestAgent();
 
@@ -1856,9 +1856,9 @@ void ModelSelection::FitRachlin(const char *mStarts)
 
         RachlinModel rachlinFunction(xValues, yValues);
 
-        de::DifferentialEvolution de(rachlinFunction, 100);
+        de::DifferentialEvolution de(rachlinFunction, populationSize);
 
-        de.Optimize(1000, false);
+        de.Optimize(maximumIterationsDE, false);
 
         std::vector<double> result = de.GetBestAgent();
 
@@ -1994,9 +1994,9 @@ void ModelSelection::FitGeneralizedHyperbolic(const char *mStarts)
 
         GeneralizedHyperbolicModel generalizedHyperbolicFunction(xValues, yValues);
 
-        de::DifferentialEvolution de(generalizedHyperbolicFunction, 100);
+        de::DifferentialEvolution de(generalizedHyperbolicFunction, populationSize);
 
-        de.Optimize(1000, false);
+        de.Optimize(maximumIterationsDE, false);
 
         std::vector<double> result = de.GetBestAgent();
 
@@ -2130,9 +2130,9 @@ void ModelSelection::FitEbertPrelec(const char *mStarts)
 
         EbertPrelecModel ebertPrelecFunction(xValues, yValues);
 
-        de::DifferentialEvolution de(ebertPrelecFunction, 100);
+        de::DifferentialEvolution de(ebertPrelecFunction, populationSize);
 
-        de.Optimize(1000, false);
+        de.Optimize(maximumIterationsDE, false);
 
         std::vector<double> result = de.GetBestAgent();
 
@@ -2265,9 +2265,9 @@ void ModelSelection::FitBleichrodt(const char *mStarts)
 
         BeleichrodtModel beleichrodtFunction(xValues, yValues);
 
-        de::DifferentialEvolution de(beleichrodtFunction, 100);
+        de::DifferentialEvolution de(beleichrodtFunction, populationSize);
 
-        de.Optimize(1000, false);
+        de.Optimize(maximumIterationsDE, false);
 
         std::vector<double> result = de.GetBestAgent();
 

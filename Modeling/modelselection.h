@@ -326,6 +326,9 @@ private:
     double holder = 0;
     double sumBayesFactors = 0;
     double leastSquaresError = 0;
+
+    int maximumIterationsDE = 1200;
+    int populationSize = 100;
 };
 
 #endif // MODELSELECTION_H
