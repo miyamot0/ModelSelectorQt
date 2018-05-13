@@ -15,10 +15,11 @@ Features include:
 
 ### Version
 ------
-1.8.1 (beta)
+1.8.2 (beta)
 
 ### Changelog
 ------
+ * 1.8.2 - Added power model, many bugfixes and UI tweaks
  * 1.8.1 - Added parabolic model
  * 1.8.0 - Added differential evolution methods for derivative-free fitting
  * 1.7.2 - Better charting libaries
@@ -37,7 +38,7 @@ Features include:
 * **Noise Model**: Intecept-only comparison model (included by default)
 * **Exponential Model**: Samuelson, P. A. (1937). A note on measurement of utility. The Review of Economic Studies, 4(2), 155-161. https://doi.org/10.2307/2967612
 * **Hyperbolic Model**: Mazur, J. E. (1987). An adjusting procedure for studying delayed reinforcement. In Quantitative analysis of behavior: Vol. 5. The effect of delay and intervening events on reinforcement value (pp. 55-73). Hillsdale, NJ: Erlbaum.
-* **Generalized Hyperbolic Model**: Loewenstein, G., and D. Prelec. “Anomalies in Intertemporal Choice: Evidence and an Interpretation.” The Quarterly Journal of Economics 107, no. 2 (May 1, 1992): 573–97. https://doi.org/10.2307/2118482.
+* **Loewenstein & Prelec Model**: Loewenstein, G., and D. Prelec. “Anomalies in Intertemporal Choice: Evidence and an Interpretation.” The Quarterly Journal of Economics 107, no. 2 (May 1, 1992): 573–97. https://doi.org/10.2307/2118482.
 * **Beta Delta Model**: Laibson, D. (1997). Golden eggs and hyperbolic discounting. The Quarterly Journal of Economics, 112(2), 443-478. https://doi.org/10.1162/003355397555253
 * **Green & Myerson Model**: Green, L., & Myerson, J. (2004). A discounting framework for choice with delayed and probabilistic rewards. Psychological Bulletin, 130(5), 769-792. https://doi.org/10.1037/0033-2909.130.5.769
 * **Rachlin Model**: Rachlin, H. (2006). Notes on discounting. Journal of the Experimental Analysis of Behavior, 85(3), 425-435. https://doi.org/10.1901/jeab.2006.85-05
