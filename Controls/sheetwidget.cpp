@@ -1369,7 +1369,8 @@ void SheetWidget::updateDelayModalWindow()
 {
     if (!isToolWindowShown())
     {
-        return;
+        showDiscountingED50Window();
+        //return;
     }
 
     QList<QTableWidgetSelectionRange> mList = table->selectedRanges();
@@ -1413,7 +1414,8 @@ void SheetWidget::updateValueModalWindow()
 {
     if (!isToolWindowShown())
     {
-        return;
+        showDiscountingED50Window();
+        //return;
     }
 
     QList<QTableWidgetSelectionRange> mList = table->selectedRanges();
@@ -1443,7 +1445,8 @@ void SheetWidget::updateMaxValueModalWindow()
 {
     if (!isToolWindowShown())
     {
-        return;
+        showDiscountingED50Window();
+        //return;
     }
 
     if (table->currentItem() != NULL)
