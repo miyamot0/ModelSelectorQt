@@ -57,8 +57,6 @@
 
 #include "Controls/chartwindow.h"
 
-#include <QDebug>
-
 using namespace alglib;
 
 /**
