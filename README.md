@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/86599732.svg)](https://zenodo.org/badge/latestdoi/86599732)
+
 # Small N Stats Discounting Model Selector (Qt)
 
 Discounting Model Selector is a Qt-based application that easily facilitate many complex calculations in delay discounting research, including the fitting of multiple models of intertemporal choice as well as a Bayesian model comparison method, using a friendly spreadsheet-based approach.
